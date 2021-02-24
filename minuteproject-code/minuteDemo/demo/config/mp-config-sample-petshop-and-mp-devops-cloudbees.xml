@@ -1,0 +1,143 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="mp-config.xsd">
+	<!-- adapted for cloudbees petshop model -->
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>
+		<application name="petshopdevops">
+			<models>
+				<model name="petshop" version="1.0" package-root="net.sf.mp.demo">
+					<data-model>
+						<driver name="mysql" version="5.1.16" groupId="mysql"
+							artifactId="mysql-connector-java"></driver>
+						<dataSource>
+							<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+							<url>jdbc:mysql://localhost:3306/mp_devops</url>
+							<username>root</username>
+							<password>mysql</password>
+						</dataSource>
+						<primaryKeyPolicy oneGlobal="false">
+							<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+						</primaryKeyPolicy>
+					</data-model>
+					<business-model>
+						<business-package default="devops">
+							<condition type="package" startsWith="MP_DEVOPS_I18N" result="i18n"></condition>
+							<condition type="package" startsWith="MP_DEVOPS_RIGHT" result="right"></condition>
+						</business-package>
+					</business-model>
+				</model>
+				
+				<model name="petshop" version="1.0" package-root="net.sf.mp.demo">
+					<data-model>
+						<driver name="mysql" version="5.1.16" groupId="mysql"
+							artifactId="mysql-connector-java"></driver>
+						<dataSource>
+							<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+							<url>jdbc:mysql://localhost:3306/petshop</url>
+							<username>root</username>
+							<password>mysql</password>
+						</dataSource>
+						<primaryKeyPolicy oneGlobal="false">
+							<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+						</primaryKeyPolicy>
+					</data-model>
+					<business-model>
+						<generation-condition>
+							<condition type="exclude" startsWith="DUAL"></condition>
+							<condition type="exclude" startsWith="ID_GEN"></condition>
+							<condition type="exclude" startsWith="SEQUENCE"></condition>
+						</generation-condition>
+						<business-package default="pet">
+							<condition type="package" startsWith="PRODUCT" result="product"></condition>
+							<condition type="package" startsWith="ITEM" result="product"></condition>
+						</business-package>
+						<enrichment>
+							<conventions>
+								<entity-naming-convention type="apply-strip-table-name-prefix"
+									pattern-to-strip="SYS,FIN" />
+								<reference-naming-convention
+									type="apply-referenced-alias-when-no-ambiguity"
+									is-to-plurialize="true"></reference-naming-convention>
+							</conventions>
+							<package name="product">
+								<entity-group entities="PRODUCT"></entity-group>
+								<entity-group entities="ITEM"></entity-group>
+							</package>
+							<entity name="PRODUCT" alias="MY_GOOD_PRODUCT">
+							</entity>
+							<entity name="ITEM" alias="MY_GOOD_ITEM" comment="my item table">
+								<field name="PRODUCTID" alias="THIS_IS_MY_PRODUCT"
+									comment="my product field reference"></field>
+							</entity>
+							<entity name="CATEGORY" content-type="reference-data">
+								<field name="DESCRIPTION" ordering="asc" label="my description"
+									is-searchable="true"></field>
+								<field name="NAME" ordering="asc"></field>
+								<semantic-reference>
+									<sql-path path="NAME" />
+								</semantic-reference>
+							</entity>
+							<entity name="TAG" content-type="reference-data">
+								<field name="TAG" ordering="asc" />
+								<semantic-reference>
+									<sql-path path="TAG" />
+								</semantic-reference>
+							</entity>
+						</enrichment>
+					</business-model>
+					<statement-model>
+						<queries>
+							<query name="get address abstract" id="dashAddress" type="dashboard"
+								category="pie-chart">
+								<query-body> <!-- dimensions column first -->
+									<value>
+<![CDATA[select city, count(*) as nb from address group by city order by count(*) desc limit ?]]>
+									</value>
+								</query-body>
+								<query-params>
+									<query-param name="top city" is-mandatory="false"
+										type="INT" sample="37" default="10"></query-param>
+								</query-params>
+							</query>
+							<query name="get address summary" id="dashCity" type="dashboard"
+								category="bar-chart">
+								<query-body> <!-- dimensions column first -->
+									<value>
+<![CDATA[select city, count(*) as nb, count(*) as nb2 from address group by city order by count(*) desc]]>
+									</value>
+								</query-body>
+							</query>
+							<query name="get addresses by criteria" id="c">
+								<query-body>
+									<value>
+<![CDATA[select * from address where lcase(city) like ?]]>
+									</value>
+								</query-body>
+								<query-params>
+									<query-param name="city" type="STRING" sample="'S'"
+										convert="lowercase,append%" default="%">
+									</query-param>
+								</query-params>
+							</query>
+						</queries>
+					</statement-model>
+				</model>
+
+			</models>
+		</application>
+		<targets catalog-entry="Primefaces-Spring,Vaadin">
+			<property name="environment" value="remote"></property>
+			<property name="cloud-platform" value="cloudbees"></property>
+			<property name="cloud-name" value="petshopapp"></property>
+
+			<property name="sourcecode-host" value="github" />
+			<property name="sourcecode-url"
+				value="https://github.com/minuteproject/demo/tree/master/petshop/solution/primefaces-spring/output/petshop" />
+
+		</targets>
+	</configuration>
+</generator-config>

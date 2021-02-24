@@ -1,0 +1,34 @@
+<target name="JSF - bsla">		
+	<architecture-target name="JSF primefaces" description="JSF primefaces architecture">
+	</architecture-target>	
+    <plugin name="cloudbeesUtils" className="net.sf.minuteProject.plugin.cloud.CloudbeesUtils"></plugin>
+<!-- 
+	<template-target 
+    	name="cloudbees"
+		outputdir="src/main/webapp"
+		package-root=""
+		belongToPackage="true">
+
+		<template name="CloudbeesContext" templateFileName="CloudbeesContext.xml.vm" 
+			file-extension="xml" technicalPackage="META-INF" file-suffix="context" 
+			application-specific="true" add-model-name="false" has-updatable-nature="true">
+		</template>
+
+	</template-target>
+ -->
+ 	
+	<template-target 
+    	name="cloudbees"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+
+		<template name="CloudbeesScript" templateFileName="CloudbeesScript.cmd.vm" 
+			file-extension="cmd" technicalPackage="" file-suffix="cloudbees" 
+			application-specific="true" add-model-name="false" has-updatable-nature="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresence">
+		</template>
+
+	</template-target>
+
+</target>

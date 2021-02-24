@@ -1,0 +1,49 @@
+#exposeWLSBuildSpecific()
+#exposeJdbc()
+#set ($datasource = $model.dataModel.basicDataSource)
+#
+# deploy properties
+#
+#exposeModelUpdatedAreas("weblogic-properties")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+wls.username=$wls-username
+wls.password=$wls-password
+wls.hostname=$server-hostname
+wls.port=$server-port
+wls.admin.url=$server-hostname:$server-port
+
+
+wls.deploy.target=$wls-deploy-target
+wls.deploy.name=$template.getPropertyValue("wls-release-name","")
+releaseDir=$template.getPropertyValue("wls-release-dir","")
+wls.deploy.source=$template.getPropertyValue("wls-deploy-source","")
+
+#*
+domain.name=7001_Domain
+admin.url=t3://localhost:7001
+admin.userName=weblogic
+admin.password=weblogic
+*#
+#foreach ($model in $configuration.models())
+# ----------------------------------
+# datasource ${model.name}DS
+# ----------------------------------
+
+datasource.name=${model.name}DS
+datasource.database.name=${model.name}DS
+datasource.target=$template.getPropertyValue("wls-ds-target-server","AdminServer")
+##datasource.filename=DS_One.xml
+datasource.jndiname=jdbc/${model.name}DS
+datasource.driver.class=$datasource.driverClassName
+datasource.url=$datasource.url
+datasource.username=$datasource.username
+datasource.password=$datasource.password
+
+##datasource.test.query=SQL SELECT * FROM DUAL
+#end
+
+$!updatedAreaEnd
+#end

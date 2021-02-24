@@ -1,0 +1,33 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="mp-config.xsd">
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>
+		<model name="mptechnical" version="1.0" package-root="mp.demo">
+			<data-model>
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://127.0.0.1:3306/mp_technical</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<primaryKeyPolicy oneGlobal="false">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="orderentry">
+					<condition type="package" startsWith="DEP" result="hr"></condition>
+					<condition type="package" startsWith="EMP" result="hr"></condition>
+				</business-package>
+			</business-model>
+		</model>
+		<targets catalog-entry="JPA2">
+		</targets>
+	</configuration>
+</generator-config>

@@ -1,0 +1,254 @@
+#exposeADFFacesModelSpecific()
+#exposeADFFacesDataControlModelSpecific()
+#exposeFrontEndBackendBindingType()
+#exposeADFFacesSpringModelBindingSpecific()
+#set($thisClassName=$className)
+package $packageName;
+
+
+import java.lang.reflect.InvocationTargetException;
+
+import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+
+import java.sql.Timestamp;
+import java.math.BigInteger;
+
+import net.sf.minuteproject.adf.query.QueryRequest;
+import net.sf.minuteproject.adf.query.QueryResponse;
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+import net.sf.minuteProject.model.data.criteria.EntityCriteria;
+import net.sf.minuteProject.model.data.criteria.EntitySort;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+
+import net.sf.minuteproject.adf.utils.ADFUtils;
+
+import java.util.ArrayList;
+
+import $ADFSDOWsDcFaceImport;
+import static ${ADFFEBEConverterImport}.*;
+
+#foreach($table in $entities)
+#exposeADFFacesEntitySpecific()
+#exposeADFFacesDataControlEntitySpecific()
+#if(!$isMany2Many)
+import $beanVOADFFacesImport;
+import $beanVOADFFacesQueryResponseImport;
+import $beanVOADFFacesQueryRequestImport;
+#end
+#end
+#if($isBindingSpring)
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeADFFacesSpringBindingSpecific()
+#if(!$isMany2Many)
+import $beanADFFacesSpringServiceImport;
+#end
+#end
+#end
+
+#foreach ($query in $model.getStatementModel().getQueries().getQueries())
+#exposeADFQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+import $sddServiceInterfaceImport;
+#end
+
+public class $thisClassName implements $ADFSDOWsDcFaceClass {
+
+#if($isBindingSpring)
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeADFFacesSpringBindingSpecific()
+#set($domainTemplate = $commonUtils.getTargetTemplate($template, "DomainEntityJPA2Annotation"))
+#if(!$isMany2Many)
+    private $beanADFFacesSpringServiceClass $beanADFFacesSpringServiceVariable;
+#end
+#end
+#end
+// SDD
+#foreach ($query in $model.getStatementModel().getQueries().getQueries())
+#exposeADFQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+    ${sddServiceInterfaceClass} $sddServiceInterfaceVariable;
+#end
+    public $thisClassName() {
+#if($isBindingSpring)
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeADFFacesSpringBindingSpecific()
+#if(!$isMany2Many)
+        $beanADFFacesSpringServiceVariable = ($beanADFFacesSpringServiceClass)${beanADFFacesSpringAppContextLoaderClass}.getContextLoader().getAppContext().getBean("$beanADFFacesSpringServiceVariable");
+#end
+#end
+#end
+#foreach ($query in $model.getStatementModel().getQueries().getQueries())
+#exposeADFQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+        $sddServiceInterfaceVariable  = (${sddServiceInterfaceClass})${beanADFFacesSpringAppContextLoaderClass}.getContextLoader().getAppContext().getBean("$sddServiceInterfaceVariable");;
+#end
+    }
+ 
+    private EntityMatchType getEntityMatchType(QueryRequest request) {
+        if (QueryRequest.PrototypeMatchType.ALL.equals(request.getMatchType()))
+            return EntityMatchType.ALL;
+        if (QueryRequest.PrototypeMatchType.ANY.equals(request.getMatchType()))
+            return EntityMatchType.ANY;
+        return EntityMatchType.ALL;
+    }
+	
+    private boolean isCaseSensitive(QueryRequest request) {
+        return (QueryRequest.PrototypeCase.SENSITIVE.equals(request.getCaseSensitiveness()))?true:false;
+    }
+	
+    private OperandType getOperandType(QueryRequest request) {
+        if (QueryRequest.PrototypeType.EQUALS.equals(request.getType()))
+           return OperandType.EQUALS;
+        if (QueryRequest.PrototypeType.LIKE.equals(request.getType()))
+           return OperandType.LIKE;
+        if (QueryRequest.PrototypeType.CONTAINS.equals(request.getType()))
+           return OperandType.CONTAINS; 
+        if (QueryRequest.PrototypeType.STARTWITH.equals(request.getType()))
+           return OperandType.STARTWITH; 
+        return OperandType.STARTWITH;
+    } 
+ 
+    private QuerySortOrder getSortOrder(QueryRequest request) {
+        if (request.getSort()!= null) {
+            return QuerySortOrder.valueOf(request.getSort().name());
+        } 
+        return QuerySortOrder.ASC;
+    } 
+
+    BigInteger getStartPosition (QueryRequest request) {
+       return (request.getPagination() != null && request.getPagination().getStartPosition()!=null) ? request.getPagination().getStartPosition() : BigInteger.valueOf(0);
+	}
+
+    BigInteger getFetchPosition (QueryRequest request) {
+       return (request.getPagination() != null && request.getPagination().getFetchSize()!=null) ? request.getPagination().getFetchSize() : BigInteger.valueOf(10);
+    }
+#foreach($table in $entities)
+#exposeADFFacesEntitySpecific()
+#exposeADFFacesDataControlEntitySpecific()
+#exposeADFFacesSpringBindingSpecific()
+#set($tableHasOnlyOnePrimaryKey=$hasOnlyOnePrimaryKey)
+#if(!$isMany2Many)
+#set($beanVOADFFacesVariable = $formatUtils.getJavaNameVariableConvertReservedWord($beanVOADFFacesVariable))
+  /**
+   * @return $beanVOADFFacesQueryResponseClass
+   */
+  public $beanVOADFFacesQueryResponseClass list$domainClassName($beanVOADFFacesQueryRequestClass request) {
+     $beanVOADFFacesClass ${beanVOADFFacesVariable}Criteria = request.get${beanVOADFFacesClass}Criteria();
+     $beanVOADFFacesClass ${beanVOADFFacesVariable}Sort = request.get${beanVOADFFacesClass}Sort();
+     if (${beanVOADFFacesVariable}Criteria==null)
+        ${beanVOADFFacesVariable}Criteria = new $beanVOADFFacesClass();
+     ${domainClassImport} criteriaMask = new ${domainClassImport} ();
+     convert(${beanVOADFFacesVariable}Criteria, criteriaMask);
+     criteriaMask.assignNullToBlank();
+	 
+     if (${beanVOADFFacesVariable}Sort==null)
+        ${beanVOADFFacesVariable}Sort = new $beanVOADFFacesClass();
+     ${domainClassImport} sortMask = new ${domainClassImport} ();
+     convert(${beanVOADFFacesVariable}Sort, sortMask);
+     sortMask.assignNullToBlank();
+     BigInteger start = getStartPosition(request);
+     BigInteger fetchSize = getFetchPosition(request);
+     EntitySort<$domainClassImport> entitySort = new EntitySort<$domainClassImport>(sortMask, getSortOrder(request));
+     EntityCriteria<$domainClassImport> entityCriteria = new EntityCriteria<$domainClassImport>(criteriaMask, getEntityMatchType(request), getOperandType(request), isCaseSensitive(request));
+    
+     //strangely outboxing in constructor seems not to work...
+     QueryData<$domainClassImport> queryData = new QueryData<$domainClassImport>(new Integer(start.intValue()),new Integer(fetchSize.intValue()), entitySort, entityCriteria);
+    
+     ${beanADFFacesSpringServiceVariable}.find(queryData);
+
+     $beanVOADFFacesQueryResponseClass ret = new $beanVOADFFacesQueryResponseClass();
+     ret.setTotalRowsCount(queryData.getTotalResultCount().intValue());
+     for($domainClassImport element : queryData.getResult()) {
+        $beanVOADFFacesClass output = new $beanVOADFFacesClass();
+        convertSimple(element, output);
+        ret.add$beanVOADFFacesClass(output);
+     }
+     return ret;
+  }
+
+   /**
+    * @return $beanVOADFFacesClass
+   */
+   public $beanVOADFFacesClass get$domainClassName ($beanVOADFFacesClass $beanVOADFFacesVariable) {
+#if($tableHasOnlyOnePrimaryKey)
+      ${domainClassImport} var = ${beanADFFacesSpringServiceVariable}.load(${beanVOADFFacesVariable}.get$primaryKeyJavaNameClass());
+      convert(var, $beanVOADFFacesVariable);
+#else
+      // multiple primary key not supported yet
+#end
+	  return $beanVOADFFacesVariable;
+   }
+   
+   public $beanVOADFFacesClass createOrUpdate$domainClassName ($beanVOADFFacesClass $beanVOADFFacesVariable){
+#if($isBindingSpring)
+      ${domainClassImport} var = new ${domainClassImport} ();
+      convert($beanVOADFFacesVariable, var);
+#if (!$tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+	  if (var.get$primaryKeyJavaNameClass()!=null)
+		 ${beanADFFacesSpringServiceVariable}.update(var);
+	  else
+		 ${beanADFFacesSpringServiceVariable}.create(var);
+#end
+#end
+      return $beanVOADFFacesVariable;
+   }
+  
+   public void delete$domainClassName ($beanVOADFFacesClass $beanVOADFFacesVariable){
+#if($tableHasOnlyOnePrimaryKey)
+      ${domainClassImport} var = new ${domainClassImport} ();
+      convert($beanVOADFFacesVariable, var);
+      ${beanADFFacesSpringServiceVariable}.delete(var);
+#else
+      // multiple primary key not supported yet
+#end
+   }
+
+#if ($tableUtils.isAdminContentType($table))
+    public List<$beanVOADFFacesClass> get${beanVOADFFacesClass}DropDownList() {
+      List<$beanVOADFFacesClass> ret = new ArrayList<$beanVOADFFacesClass>();
+      for($domainClassImport element : ${beanADFFacesSpringServiceVariable}.getList()) {
+         $beanVOADFFacesClass output = new $beanVOADFFacesClass();
+         convert(element, output);
+         ret.add(output);
+      }
+      return ret;
+    }
+		
+#end
+#end
+#end
+
+#foreach ($query in $model.getStatementModel().getQueries().getQueries())
+#exposeADFQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+    public $sddOutputBeanCollectionClass get$sddOutputBeanCollectionClass (#if($isNotVoidInput)$sddInputBeanClass $sddInputBeanVariable#end) {
+		return ${sddServiceInterfaceVariable}.execute (#if($isNotVoidInput)$sddInputBeanVariable#end);
+    }
+	
+    public $sddOutputBeanClass get${sddOutputBeanClass}Detail ($sddOutputBeanClass $sddOutputBeanVariable) {
+        if ($sddOutputBeanVariable==null)   
+           $sddOutputBeanVariable = ($sddOutputBeanClass)ADFUtils.getApplicationScopeValue("$sddOutputBeanVariable");
+        //go for further processing
+        return $sddOutputBeanVariable;
+		
+    }
+	
+#end
+}

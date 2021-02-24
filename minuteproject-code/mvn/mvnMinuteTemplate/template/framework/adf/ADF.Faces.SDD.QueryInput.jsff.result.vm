@@ -1,0 +1,14 @@
+#exposeADFQuerySpecific()
+#putImportQuerySDDBean()
+#exposeADFFacesCommon()
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+#if ($isChartLayout)
+          xmlns:dvt="http://xmlns.oracle.com/dss/adf/faces"
+#end
+          >
+#putSDDResultGraph()
+#putSDDResultTable()
+</jsp:root>

@@ -1,0 +1,37 @@
+<target name="Liferay">		
+	<architecture-target name="Liferay" description="Liferay artifacts">
+	</architecture-target>	
+     <plugin name="liferayUtils" className="net.sf.minuteProject.plugin.liferay.LiferayUtils"></plugin>
+
+	<template-target 
+    	name="Liferay set"
+		libdir=""
+		outputdir="src/main/webapp/WEB-INF"
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="Portlet.xml" templateFileName="Portlet.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="portlet" file-suffix="" 
+			has-updatable-nature="true"
+			application-specific="true" add-model-name="false">
+		</template>
+				
+		<template name="Liferay.display.xml" templateFileName="Liferay.display.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="liferay-display" file-suffix="" 
+			has-updatable-nature="true"
+			application-specific="true" add-model-name="false">
+		</template>
+		
+		<template name="Liferay.portlet.app.xml" templateFileName="Liferay.portlet.app.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="liferay-portlet" file-suffix="" 
+			has-updatable-nature="true"
+			application-specific="true" add-model-name="false">
+		</template>
+
+
+	</template-target> 	
+  	         		
+</target>

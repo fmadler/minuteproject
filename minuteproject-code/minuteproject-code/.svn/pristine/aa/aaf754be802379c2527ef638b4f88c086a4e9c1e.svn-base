@@ -1,0 +1,200 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+        </conventions>
+		<model name="winy" version="1.0" package-root="com">
+			<description>
+				<CDATA>
+					This model illustrates:
+					Reverse-engineering on tables, views
+					SDD
+					Add ad-hoc forms and actions
+				</CDATA>
+			</description>
+			<data-model database-type="MYSQL">
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/winy</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="project">
+					<condition type="package" startsWith="STAT" result="statistics"></condition>
+					<condition type="package" startsWith="SEC" result="security"></condition>
+					<condition type="package" startsWith="ADMIN" result="admin"></condition>
+					<condition type="package" startsWith="RELEASE" result="release"></condition>
+					<condition type="package" startsWith="BUS" result="business"></condition>
+					<condition type="package" startsWith="VIEW_STAT" result="stats"></condition>
+				</business-package>
+				<enrichment>
+					<conventions>
+						<column-naming-convention type="apply-strip-column-name-suffix"
+							pattern-to-strip="_ID" />
+						<reference-naming-convention
+							type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+						<ordering-convention field-pattern="DISPLAY_ORDER"
+							field-pattern-type="endsWith" ordering="asc" />
+
+						<!-- stereotype email, URL -->
+						<stereotype-convention field-pattern="email"
+							field-pattern-type="contains" stereotype="email" />
+						<stereotype-convention field-pattern="url"
+							field-pattern-type="contains" stereotype="url" />
+						<stereotype-convention field-pattern="password"
+							field-pattern-type="contains" stereotype="password" />
+						<stereotype-convention field-pattern="notes"
+							field-pattern-type="equals" stereotype="text-html" />
+
+						<!-- primary key conv -->
+						<column-naming-convention
+							type="apply-fix-primary-key-column-name-when-no-ambiguity-and-not-natural"
+							default-value="ID" />
+
+						<!-- strip prefix -->
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+							pattern-to-strip="ADMIN_,SEC_,BUS_" />
+						<!-- semantic reference -->
+						<semantic-entity-convention
+							field-pattern="NAME,NUMBER" field-pattern-type="contains"
+							max-number-of-fields="2" />
+
+						<!-- trigger -->
+						<property-convention scope="field" pattern="CREATION_DATE"
+							tag="trigger-insert-with-current-date" type="start-with" />
+						
+						<view-primary-key-convention 
+						            type="apply-default-primary-key-otherwise-first-one" 
+						            default-primary-key-names="IDENTIFIER,ID" /> 
+					</conventions>
+
+				</enrichment>
+			</business-model>
+			<!-- S D D -->
+			<statement-model>
+				<queries>
+					<query name="productList" id="product_list" package-name="product">
+						<query-body>
+							<value>
+								select p.name product, p.detail detail, p.price_info price, w.name winery, r.name region 
+								from product p, winery w, region r
+								where p.winery_id = w.id and w.region_id = r.id
+								 order by region desc, winery desc, product desc
+							</value>
+						</query-body>
+					</query>
+					<query name="call_new_domain" id="call_new_domain" >
+                         <query-body>
+                         <value>
+<![CDATA[call new_domain (?,?,?,?,?,?,?,?,?,?,?,?,?,?)]]>
+<!-- 
+http://stackoverflow.com/questions/10966695/mysql-stored-procedure-always-returning-out-parameter-value-0
+
+  _name CHAR(35), 
+  _description CHAR(255), 
+  _geo CHAR(45), 
+  _latitude LONG,
+  _longitude LONG,
+  _contact_email CHAR(255), 
+  _region_id INT,
+  _contact_name CHAR(255),
+  _contact_street1 CHAR(255),
+  _contact_street2 CHAR(255),
+  _contact_post_code CHAR(255),
+  _contact_city CHAR(255),
+  _contact_phone CHAR(255),
+  INOUT ID INT
+   -->
+                            </value>
+                         </query-body>
+                         <query-params>
+                         <!-- 
+                             <query-param name="username" is-mandatory="true" type="string" sample="'a'" is-id="true"></query-param>
+                             <query-param name="email" is-mandatory="true" type="string" sample="'b'">
+                             	<stereotype stereotype="EMAIL" />
+                             </query-param>
+                             <query-param name="role" is-mandatory="true" type="string" sample="'c'">
+                                <query-param-link entity-name="sec_role" field-name="role"/>
+                             </query-param>
+                             -->
+                         </query-params>
+                          
+                     </query>
+                     
+			         <query name="call_new_product" id="call_new_product" package-name="product">
+                         <query-body>
+                         <value>
+<![CDATA[call new_product (?,?,?)]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="username" is-mandatory="true" type="string" sample="'a'" is-id="true"></query-param>
+                             <query-param name="email" is-mandatory="true" type="string" sample="'b'">
+                             	<stereotype stereotype="EMAIL" />
+                             </query-param>
+                             <query-param name="role" is-mandatory="true" type="string" sample="'c'">
+                                <query-param-link entity-name="sec_role" field-name="role"/>
+                             </query-param>
+                         </query-params>
+                     </query>
+ 
+ 			         <query name="get_domain_profile" id="get_domain_profile" package-name="profile">
+                         <query-body>
+                         <value>
+<![CDATA[select * TODO from domain where identifier_email = ? and isActive]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="identifier" is-mandatory="true" type="string" sample="'a'" is-id="true"></query-param>
+                         </query-params>
+                     </query>
+ 
+ 			         <query name="get_user_profile" id="get_user_profile" package-name="profile">
+                         <query-body>
+                         <value>
+<![CDATA[select * TODO from domain where identifier_email = ? and isActive]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="identifier" is-mandatory="true" type="string" sample="'a'" is-id="true"></query-param>
+                         </query-params>
+                     </query>
+                     
+ <!-- region -->
+ 			         <query name="get_wineries_in_region" id="get_wineries_in_region" package-name="region">
+                         <query-body>
+	                         <value>
+                         <!-- http://stackoverflow.com/questions/4687312/querying-within-longitude-and-latitude-in-mysql -->
+<![CDATA[SELECT id, ( 3959 * acos( cos( radians(37) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(-122) ) + sin( radians(37) ) * sin( radians( lat ) ) ) ) AS distance FROM markers HAVING distance < 25 ORDER BY distance LIMIT 0 , 20]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="longitude" is-mandatory="true" type="string" sample="'a'" is-id="true"></query-param>
+                             <query-param name="latitude" is-mandatory="true" type="string" sample="'a'" is-id="true"></query-param>
+                             <query-param name="range" is-mandatory="true" type="string" sample="'a'" is-id="true"></query-param>
+                             <query-param name="unit" is-mandatory="true" type="string" sample="'km'" is-id="true"></query-param>
+                         </query-params>
+                     </query>
+                     
+				</queries>
+			</statement-model>
+		</model>
+
+		<targets catalog-entry="REST-Custom" outputdir-root="E:\DEV\WINY\repo\trunk\main\REST-Custom-generated">
+			<property name="target-server" value="tomcat"></property>
+			<property name="auto-complete-sdd-on-like-min-char" value="3"></property>
+			<property name="auto-complete-sdd-on-like-max-record-display" value="10"></property>
+		</targets>
+
+
+	</configuration>
+</generator-config>

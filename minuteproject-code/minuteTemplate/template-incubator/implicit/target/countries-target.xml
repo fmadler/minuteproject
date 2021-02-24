@@ -1,0 +1,23 @@
+<target name="countries">		
+	<architecture-target name="bsla" description="basic springframework layer architecture"/>	
+	<plugin name="geoUtils" className="net.sf.minuteProject.plugin.geo.GeoUtils"></plugin>
+	<plugin name="stringUtils" className="org.apache.commons.lang.StringUtils"></plugin>
+	<template-target 
+	    templatedir = "" 
+		tool="velocity" 
+		outputdir="C:/MP/implicit"
+		package-root="testit"
+		name="build" 
+		belongToPackage="false">
+
+			<template 
+				name="countries" templateFileName="countries.vm" 
+				file-extension="java" file-prefix="" file-suffix="" 
+				scope-specific-value="document" 
+				append-end-package-dir="face" 	
+				>
+			</template>	
+			
+	</template-target>	
+
+</target>	

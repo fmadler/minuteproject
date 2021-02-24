@@ -1,0 +1,73 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>	
+		<model name="conference" version="1.0" package-root="net.sf.mp.demo">
+			<data-model>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://127.0.0.1:3306/conference</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+			</data-model>
+			<business-model>
+	﻿  ﻿  ﻿  ﻿  <business-package default="conference">
+	﻿  ﻿  ﻿  ﻿      <condition type="package" startsWith="STAT" result="statistics"></condition>
+	﻿  ﻿  ﻿  ﻿      <condition type="package" startsWith="COUNTRY" result="admin"></condition>
+	﻿  ﻿  ﻿  ﻿      <condition type="package" startsWith="ROLE" result="admin"></condition>﻿  ﻿  ﻿  ﻿  
+	﻿  ﻿  ﻿  ﻿  </business-package>			
+				<enrichment>
+					<conventions>
+					    <view-primary-key-convention 
+					       type="apply-default-primary-key-otherwise-first-one" 
+					       default-primary-key-names="ID" >
+					    </view-primary-key-convention>
+					</conventions>
+				</enrichment>
+			</business-model>
+			<function-model/>
+		</model>
+		<targets> 
+			<target refname="store-proc" 
+			   fileName="mp-template-config-SP-beans.xml" 
+			   outputdir-root="../../DEV/bsla-jpa2/lazuly/bsla"
+			   templatedir-root="../../minuteTemplate/template/framework/bean">
+			</target> 
+			<target refname="BackendOnBsla" 
+			   name="default" 
+			   fileName="mp-template-config-JPA2-bsla.xml" 
+			   outputdir-root="../../DEV/bsla-jpa2/lazuly/bsla"
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target> 
+			<target refname="JPA2" 
+			   name="JPA2" 
+			   fileName="mp-template-config-JPA2.xml" 
+			   outputdir-root="../../DEV/bsla-jpa2/lazuly/jpa2"
+			   templatedir-root="../../minuteTemplate/template/framework/jpa">
+               <property name="add-querydsl" value="2.1.2"></property>
+               <property name="add-jpa2-implementation" value="hibernate"></property>
+               <property name="add-cache-implementation" value="ehcache"></property>
+               <property name="add-domain-specific-method" value="true"></property>
+			</target> 	
+			<target refname="CACHE-LIB" 
+			   fileName="mp-template-config-CACHE-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>
+			<target refname="COMMON-LIB" 
+			   fileName="mp-template-config-COMMON-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/common">
+			</target>
+			<target refname="MavenMaster" 
+			   name="maven" 
+			   fileName="mp-template-config-maven.xml" 
+			   outputdir-root="../../DEV/bsla-jpa2/lazuly"
+			   templatedir-root="../../minuteTemplate/template/framework/maven">
+			</target>
+            
+		</targets>		
+
+	</configuration>
+</generator-config>

@@ -1,0 +1,35 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<model name="petshop" package-root="sf.net.mp.demo">
+			<data-model>
+				 <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+<!-- 					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url> -->
+					<url>jdbc:hsqldb:file:../../sample/hsql/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema 
+				<schema> </schema>
+				 -->				
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+				</generation-condition>		
+				<business-package default="pet">
+					<condition type="package" startsWith="TB_" result="other"></condition>
+				</business-package>							
+			</business-model>
+		</model>
+		<target refname="BackendOnBsla" name="default" 
+			fileName="catalog/mp-template-config-jpa.xml" 
+			outputdir-root="../output/StandardSpringJpa/src-generated"
+			templatedir-root="../../template/framework/bsla">
+		</target> 	
+	</configuration>
+</generator-config>

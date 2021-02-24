@@ -1,0 +1,142 @@
+#exposeBackendTechnology()
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+#exposeModelType()
+#exposeCmisSpecifics()
+#set ($sizeChunk = $query.getQueryChunks().size())
+package $packageName;
+
+$!updatedAreaImport
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
+import org.apache.chemistry.opencmis.client.api.QueryResult;
+import org.apache.chemistry.opencmis.client.api.QueryStatement;
+import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.api.ItemIterable;
+import org.apache.chemistry.opencmis.client.api.SessionFactory;
+import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
+import org.apache.chemistry.opencmis.commons.SessionParameter;
+import org.apache.chemistry.opencmis.commons.data.Properties;
+import org.apache.chemistry.opencmis.commons.data.PropertyData;
+import org.apache.chemistry.opencmis.commons.enums.BindingType;
+
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+import $sddDaoInterfaceImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+
+#if ($isSpringBackend)
+import org.springframework.stereotype.Service;
+#end
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: SDD DAO Spring JPA implementation </p>
+ *
+ */
+#if ($isSpringBackend)
+@Service ("$sddDaoInterfaceVariable")
+public class ${className} implements $sddDaoInterfaceClass {
+#else
+@javax.ejb.Stateless ##(name="$sddDaoInterfaceVariable")
+public class ${className} { ## CDI apparently does not work with implement $sddDaoInterfaceClass
+#end
+
+#set ($coreQuery = $queryUtils.getQueryBodyQuestionMark($query))
+	public static final String QUERY_NATIVE = "$coreQuery";
+#foreach ($filter in $query.queryFilters)
+##set($filterChunk=$javaUtils.getJavaVariableNaming($filter.name))
+	public static final String CHUNK_$filter.name = "$filter.value";
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+	public static final String CHUNK_${chunkName} = "$queryChunk.name";
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+	public static final String CHUNK_${chunkName}_${chunkValueName} = "$queryChunkValue.value";
+#end
+#end
+
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    public $sddOutputBeanCollectionClass execute (
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        String $chunkName 
+#else
+        ,String $chunkName 
+#end 
+#end
+		) {
+		$sddOutputBeanCollectionClass $sddOutputBeanCollectionVariable = new $sddOutputBeanCollectionClass();
+		List<$sddOutputBeanClass> list = executeCMISQuery (
+#if($isNotVoidInput)
+			$sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        	$chunkName 
+#else
+        	, $chunkName 
+#end
+#end
+			);
+		${sddOutputBeanCollectionVariable}.set$sddOutputBeanClasses (list);
+        return ${sddOutputBeanCollectionVariable};
+    }
+#end
+$!updatedAreaEnd
+
+#putSddCmisLookup()
+
+    private Session getSession () {
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(SessionParameter.REPOSITORY_ID, "$repositoryId");
+
+        BindingType bindingType = BindingType.fromValue("$repositoryBinding");
+        parameters.put(SessionParameter.BINDING_TYPE, bindingType.value());
+
+        //if (StringUtils.isNotBlank(httpInvokerClass)) {
+        //    parameters.put(SessionParameter.HTTP_INVOKER_CLASS, "httpInvokerClass");
+        //}
+        org.apache.chemistry.opencmis.client.bindings.CmisBindingFactory c;
+        //link the session to user
+        parameters.put(SessionParameter.USER, "$username");
+
+        switch (bindingType) {
+            case ATOMPUB:
+                parameters.put(SessionParameter.ATOMPUB_URL, "$repositoryUrl");
+                break;
+            case BROWSER:
+                parameters.put(SessionParameter.BROWSER_URL, "$repositoryUrl");
+                break;
+            default:
+                throw new IllegalArgumentException("Repository binding of type '" + "$repositoryBinding" + "' is not supported!");
+        }
+
+        return SessionFactoryImpl.newInstance().createSession(parameters);
+    }
+    	
+$!updatedAreaImplementation
+
+}

@@ -1,0 +1,27 @@
+#exposeADFFacesEntitySpecific()
+#exposeEnvironmentParams()
+#putImportSDDBean()
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.61.92"
+          id="$className" Package="$packageName"
+          BeanClass="${packageName}.$className"
+          isJavaBased="true">
+  <AccessorAttribute id="$listVariable" IsCollection="true"
+                     AddMethod="add$beanClass"
+                     BeanClass="$beanImport"
+                     CollectionBeanClass="UpdateableCollection">
+    <Properties>
+      <Property Name="AddMethod" Value="add$beanClass"/>
+    </Properties>
+  </AccessorAttribute>
+  <MethodAccessor IsCollection="false" Type="void" id="add$beanClass"
+                  ReturnNodeName="Return">
+    <ParameterInfo id="p0"
+                   Type="$beanImport"
+                   isStructured="true"/>
+  </MethodAccessor>
+  <ConstructorMethod IsCollection="true"
+                     Type="${packageName}.$className"
+                     BeanClass="${packageName}.$className"
+                     id="$className"/>
+</JavaBean>

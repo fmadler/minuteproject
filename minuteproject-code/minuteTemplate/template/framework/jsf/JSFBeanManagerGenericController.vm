@@ -1,0 +1,213 @@
+#putJPA2TemplateDefinition()
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#if($isSpringBackend)
+#exposeSpringDomainObjectSpecific()
+#elseif($isEJBBackend)
+#exposeEJBDomainObjectSpecific()
+#end
+#exposeSpringServiceDomainObject()
+#set ($EJBDaoImplClass = $SpringServiceInterfaceClass)
+#set ($EJBDaoImplVariable = $SpringServiceInterfaceVariable)
+#exposeSpringModelSpecific()
+
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import org.primefaces.event.ToggleEvent;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.model.DualListModel;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
+
+import net.sf.minuteProject.model.data.criteria.EntityCriteria;
+import net.sf.minuteProject.model.data.criteria.EntitySort;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+
+import $lookupBeanImport;
+import $beanSpringModelServiceImport;
+import $SpringServiceInterfaceImport;
+import $modelJSFUtilsImport;
+import $modelSemanticReferenceUtilsJSFImport;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ejb.EJB;
+
+import $EJBDaoImplImport;
+
+#end
+import $importDomainObjectUML;
+import net.sf.minuteProject.model.service.GenericService;
+#exposeJPA2Import()
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: JSF controller ${className} </p>
+ *
+ */
+#if($isSpringBackend)
+@ManagedBean (name="${entityControllerJSFVariable}")
+@ViewScoped
+#elseif($isEJBBackend)
+##@Named(value = "$entityControllerJSFVariable")
+@ManagedBean (name="${entityControllerJSFVariable}")
+##@Default
+@ViewScoped
+#end
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+#exposeEmbeddedId($table)
+#set($deletionNotYetImplemented=true)
+#set($primaryKeyJavaNameClass = $embeddedIdClass+"_")
+#end
+public abstract class ${className} <T, S extends GenericService> implements java.io.Serializable{
+
+	protected abstract S getService();
+	
+	@PostConstruct
+	void initialiseSession() {
+	    FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+	}
+
+    public List<T> findAll () {
+		return getService().findAll(t);
+	}
+
+#if ($hasOnlyOnePrimaryKey)
+	public T findById ($primaryKeyFullType $primaryKeyVariable) {
+		return getService().findById($primaryKeyVariable);
+	}
+#end
+
+	public void delete (T ${tableVariableName}) {
+		getService().delete (${tableVariableName});
+	}
+	
+	public String delete () {
+		getService().delete (selectedT);
+        return "success";
+	}
+	
+    public LazyDataModel<T> getLazyModel() {
+    	if (lazyModel == null) {
+    		lazyModel = new LazyDataModel<T>() {
+
+			     @Override
+			     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,String> filters) {
+                	QuerySortOrder order = QuerySortOrder.ASC;
+                	if (sortOrder == SortOrder.DESCENDING) {
+            			order = QuerySortOrder.DESC;     
+            		}
+					T esMask = new T();
+					esMask.mask(sortField);
+                	EntitySort<T> es = new EntitySort<T>(esMask, order);
+
+            		T ecMask = new T();
+            		ecMask.mask(filters);
+            		EntityCriteria<T> ec = new EntityCriteria<T>(ecMask, EntityMatchType.ALL, OperandType.CONTAINS, false);
+
+            		QueryData<T> data = new QueryData<T>(first, pageSize, es, ec);
+            		getService().find(data);
+            		List<T> list = data.getResult();
+            		int count = data.getTotalResultCount().intValue();
+            		this.setRowCount(count);
+                    return list;
+				}
+				
+				@Override
+				public void setRowIndex(final int rowIndex)
+				{
+		            if (rowIndex == -1 || getPageSize() == 0)
+		            {
+		               super.setRowIndex(-1);
+		            }
+		            else
+		            {
+		               super.setRowIndex(rowIndex % getPageSize());
+		            }
+				 }
+
+                @Override
+				//Strange why is the getRowData input a string and not an object
+                public T getRowData(String rowKey) {
+					return serviceLoad(rowKey);
+                }
+
+                @Override
+                public Object getRowKey(T element) {
+					return getRowKeyImplementation (element);
+                }
+			};
+    	}
+    	return lazyModel;
+    }
+
+	protected abstract Object getRowKeyImplementation (T element);
+
+    public void recoverItemRowToggle(ToggleEvent toggleEvent) {
+        selectedT = (T) toggleEvent.getData();
+    } 
+
+    public void createOrUpdateListener(ActionEvent event) {
+		createOrUpdateListener();
+	}
+
+    public void clearListener(ActionEvent event) {
+##    	selectedT = new ${tableClassName}();
+        resetSelectedElement();
+    	UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+	    UIComponent component = viewRoot.findComponent("form2");  
+	    ${modelJSFUtilsClass}.clearComponentHierarchy(component);
+    }
+    
+    protected abstract void resetSelectedElement();
+
+	public String create () {
+		getService().create(t);
+		return "success";
+	}
+	
+	public T update () {
+		return getService().update (t);
+	}
+
+	//TODO put in upperclass
+    public String displayInput () {
+		return "success";
+	}	
+
+$!updatedAreaImplementation
+}

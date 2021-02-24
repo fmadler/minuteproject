@@ -1,0 +1,117 @@
+#exposeBackendTechnology()
+#exposeDbApiRestQuerySpecific()
+#exposeCompositeSpecific()
+#putImportCompositeSDDBean()
+#putImportCompositeInputSDDBean()
+#set($thisClassName=$className)
+#exposeSDDCompositeSpring()
+#putImportCompositeOutputSDDBean()
+#addedAreas()
+#macro(resourceCompositeSignature $param $showType)
+## TODO remove duplicates
+#if (!$column.hasBeenDuplicated() && !$column.isImplicit())
+#putColumnParamNaming()
+#if($columnUtils.isTime($column))
+#set($columnType=$dateParamImport)
+#end
+			#if($velocityCount>1),#end #if($param != "")@ApiParam(value = "$columnVar", required = ${column.isRequired()}) @${param} ("$columnVar") #end #if($showType)#if(!$column.isArray())$columnType#else String#end #end$columnVar
+#end
+#end
+package $packageName;
+$!updatedAreaImport
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.annotations.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.io.*;
+import java.sql.*;
+import java.io.IOException;
+import javax.servlet.http.*;
+import java.util.List;
+import java.util.ArrayList;
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ejb.EJB;
+import $EJBDaoImplImport;
+#end
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBElement;
+import $sddInputCompositeBeanImport;
+import $sddOutputCompositeBeanImport;
+import $sddCompositeDaoInterfaceImport;
+
+/**
+*
+* <p>Title: ${className}</p>
+*
+* <p>Description: class for ${className} service </p>
+*
+*/
+@Path("/composite/${sddInputCompositeBeanClass}")
+@Produces(MediaType.APPLICATION_JSON)
+@Api(value="/composite/${sddInputCompositeBeanClass}", description = "operation about ${sddInputCompositeBeanClass}")
+public class ${className} {
+#if ($isSpringBackend)
+    @Autowired
+    @Qualifier("$sddCompositeDaoInterfaceVariable")	
+#elseif($isEJBBackend)
+    @EJB ## (name="$BslaDaoInterfaceVariable")	
+#end
+${sddCompositeDaoInterfaceClass} $sddCompositeDaoInterfaceVariable;
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+    $!updatedAreaSnippet
+#else
+    @GET
+    @ApiOperation(value = "$composite.name", response = ${sddOutputCompositeBeanClass}.class)
+    @ApiResponses(value = {
+    	@ApiResponse(code = 200, message = "ok")
+    })
+    public $sddOutputCompositeBeanClass execute (
+#foreach($column in ${composite.distinctInputColumn})
+#resourceCompositeSignature("QueryParam", true)
+#end
+    ) {
+        return ${sddCompositeDaoInterfaceVariable}.execute(
+			new $sddInputCompositeBeanClass(
+#foreach($column in ${composite.distinctInputColumn})
+#putColumnParamNaming()
+				#if($velocityCount>1),#end $columnVar
+#end
+			)
+        );
+    }
+
+#end
+
+
+$!updatedAreaEnd
+$!updatedAreaImplementation
+}

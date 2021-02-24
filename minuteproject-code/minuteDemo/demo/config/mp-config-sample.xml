@@ -1,0 +1,115 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+	<configuration>
+	    <!-- adapt your model here -->
+		<model name="petshop" version="1.0" package-root="sf.net.mp.demo">
+			<data-model>
+			    <!-- driver properties are given for mvn pom integration  -->
+			    <!-- TODO oracle, mysql, db2 -->
+			    <driver name="hsqldb" version="1.8.0.7" groupId="hsqldb" artifactId="hsqldb"></driver>
+                <!-- 
+                <driver name="mysql" version="5.0.5" groupId="mysql" artifactId="mysql-connector-java"></driver>     			 
+			     -->
+			    <dataSource>	
+			        <!-- driver class name from your jdbc provider jar -->
+			        <!-- TODO oracle, mysql, db2 -->
+				    <!-- mysql
+				    <driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+				     -->
+				     <!-- oracle
+				     <driverClassName>oracle.jdbc.OracleDriver</driverClassName>
+				      -->			        
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- example of mysql connection 
+                <dataSource>
+	                <driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+	                <url>jdbc:mysql://localhost:3306/petshop</url>
+	                <username>root</username>
+	                <password></password>
+                </dataSource>			
+                -->	
+				<!-- for Oracle and DB2 please set the schema 
+				<schema> </schema>
+				 -->
+				 
+				<!-- choose your primary key policy : sequence (oracle, db2, hsqldb), autoincrement (mysql, hsqldb) supported-->
+				<!-- sample to have a global sequence -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+				<!-- sample to have one sequence per table composition (prefix+table-name+suffix)
+				<primaryKeyPolicy oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="_SEQ" name="sequencePattern" ></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+				-->	
+				<!-- autoincrement primary key
+				<primaryKeyPolicy>
+					<primaryKeyPolicyPattern name="autoincrementPattern" ></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+				 -->
+			</data-model>
+			<business-model>
+			    <!-- choose the entities you want to generate against -->
+			    <!-- by default takes into account all the entites except the ones specified in exclude -->
+				<generation-condition>
+					<condition type="exclude" startsWith="SYS_ADMIN"></condition>
+				</generation-condition>
+				<!-- if you want to generate only for the specified 
+				<generation-condition default-type="exclude">
+					<condition type="include" startsWith="SYS_ADMIN"></condition>
+				</generation-condition>			
+				-->
+				
+				<!-- adding a business package can help grouping your entities in common sets (all tables starting with ADMIN goes in package 'adminstration', those starting by FIN goes in 'finance' etc ... -->			
+				<business-package default="pet">
+					<condition type="package" startsWith="TB_" result="other"></condition>
+				</business-package>		
+				
+				<!-- Enrichment gives extra information that can be used by the template 
+					 Ex: one concept such as indicating that an entity contains master data can trigger specific artifact generation on multiple level:
+					     - specific DAO,
+					     - cache configuration,
+					     - presentation navigation behaviour (access to the entity via drop down list and not classical affection Sub Use Case)
+					     - enumeration (strong typing) in some cases
+					     - sql constraint statement in some cases	
+					 Enrichment	can target entities, fields, business package
+				-->
+				<enrichment>
+				    <!-- content-type enrichment -->
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <!-- TODO semantic reference -->
+					</entity>
+					
+					<!-- stereotype enrichment 
+					TODO 
+					-->
+					
+					<!-- views -->
+					<!-- Add a primary key field to a view (if in your view a field can be considered as unique) then use it has a virtual primary key 
+					     This way you can use it has a full ORM entity (hibernate, JPA) for Read operation not Create Update Delete
+					-->
+					<!-- TODO -->
+					<!-- Nest views together: a view can have a field that point to the virtual primary key of the other field
+					     You can specify if this relationship is bidirectional
+					     This way you can use all the graph navigation offer by the ORM.
+					     In fact it gives you the ability to create an entire (even many entire) model on top of the existing one (persistence).
+					     It is ideal for monitoring, help desk troubleshooting, testing, having tune performant query.
+					 -->
+					<!-- TODO -->
+					
+					<!-- constraining a field -->
+				</enrichment>					
+			</business-model>
+		</model>
+		<!-- change your catalog entry with one of the track -->
+		<targets catalog-entry="xxx"/>
+
+
+	</configuration>
+</generator-config>

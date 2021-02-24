@@ -1,0 +1,142 @@
+#macro (exposeMaven)
+#generatorSpecific()
+#set($rootPackage=$mavenUtils.getRootPackage($template, $generatorBean))
+#set($groupId="${rootPackage}.${generatorBean.name}")
+#set($artifactId=$mavenUtils.getArtifactId($template, $generatorBean))
+#set($version=$mavenUtils.getVersion($generatorBean))
+#set($DbApiName=$mavenUtils.getDbApiName($generatorBean))
+#set($packaging=$mavenUtils.getPackaging($template))
+##set($mavenDependentArtifact=$mavenUtils.getJarArtifactName($template, $generatorBean))
+#set($resourcesDir="src/main/resources")
+#set($bslaJpaVersion="0.8.11")
+#set($hasMasterPom=$mavenUtils.hasMasterPom($template, $generatorBean))
+#end
+
+#macro (exposeMavenModel)
+#set($hasDriver=$mavenUtils.hasDriver($model))
+#set($driver=$mavenUtils.getDriver($model))
+#set($version=$mavenUtils.getVersion($model))
+#end
+
+#macro (exposeMavenApplication)
+#set($rootPackage=$mavenUtils.getRootPackage($template, $application))
+#set($groupId="${rootPackage}.${application.name}")
+#set($artifactId=$mavenUtils.getDbApiName($application))
+#set($version=$mavenUtils.getVersion($application))
+#end
+
+#macro (exposePom)
+#set($groupId="${rootPackage}.${generatorBean.name}")
+#set($artifactId=$mavenUtils.getArtifactId($template,$generatorBean))
+#set($versionId="${version}")
+#set($mavenFinalName=$mavenUtils.getFinalName($template, $generatorBean))
+## add web, ejb are in properties
+#set($mavenReleaseName="${model.name}App")
+#set($mavenReleaseWebName=$mavenUtils.getWebArtifactName($template, $generatorBean))
+#set($mavenReleaseEjbName=$mavenUtils.getEjbArtifactName($template, $generatorBean))
+#end
+
+#macro (exposeCompilerPlugin)
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.3</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+#end
+
+
+#macro (exposeApplicationPropertiesPlugin)
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<executions>
+						<execution>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<tasks>
+									<!-- Safety -->
+									<mkdir dir="${project.build.directory}"/>
+					
+									<tstamp>
+										<format property="last.updated" pattern="yyyy-MM-dd hh:mm:ss"/>
+									</tstamp>
+									<echo file="${basedir}/target/application.properties" message="build.time=${last.updated}"/>
+								</tasks>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+#end
+
+#macro (exposeJacocoPluginDep)
+	            <plugin>
+            		<groupId>org.jacoco</groupId>
+		            <artifactId>jacoco-maven-plugin</artifactId>
+		            <configuration>
+		                <!-- The destination file for the code coverage report has to be set
+		                                to the same value in the parent pom and in each module pom. Then JaCoCo will
+		                                add up information in the same report, so that, it will give the cross-module
+		                                code coverage. -->
+		                <destFile>${project.basedir}/../target/jacoco-it.exec</destFile>
+		            </configuration>
+		        </plugin>
+#end
+
+#macro (exposeSassPluginDep)
+#set($disableSassMavenPlugin=$template.getPropertyValue("disable-sass-maven-plugin",false))
+#if(!$disableSassMavenPlugin)
+		        <plugin>
+		        	<groupId>nl.geodienstencentrum.maven</groupId>
+		        	<artifactId>sass-maven-plugin</artifactId>
+		        	<version>3.5.2</version>
+		        </plugin>
+#end
+#end
+
+#macro (exposeSassPlugin)
+#set($disableSassMavenPlugin=$template.getPropertyValue("disable-sass-maven-plugin",false))
+#if(!$disableSassMavenPlugin)
+			<plugin>
+				<groupId>nl.geodienstencentrum.maven</groupId>
+				<artifactId>sass-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>sassProcessSource</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>update-stylesheets</goal>
+                        </goals>
+                        <configuration>
+                            <buildDirectory>${project.build.directory}</buildDirectory>
+                            <sassSourceDirectory>${basedir}/src/main/sass</sassSourceDirectory>
+                            <sassOptions>
+                            	<cache>false</cache>
+								<always_update>true</always_update>
+                            </sassOptions>
+                             <resources>
+						       <resource>
+						         <source>
+						             <directory>${basedir}/src/main/sass</directory>
+						             <includes>
+						                 <include>**/*.scss</include>
+						             </includes>
+						         </source>
+						         <relativeOutputDirectory>..</relativeOutputDirectory>
+						         <destination>${project.build.directory}/${project.build.finalName}/css
+						             </destination>
+						       </resource>
+						     </resources>
+     
+                        </configuration>
+                    </execution>
+                </executions>
+			</plugin>
+#end
+#end

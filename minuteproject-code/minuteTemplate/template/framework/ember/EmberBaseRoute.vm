@@ -1,0 +1,48 @@
+import Ember from 'ember';
+import {getUserLanguage, setUserLanguage} from '../utils/common-utils';
+import ResetScrollPositionMixin from '../mixins/reset-scroll-position';
+import {inject} from '@ember/service';
+import ENV from '../config/environment';
+
+export default Ember.Route.extend(ResetScrollPositionMixin,{
+    
+  translationsFetcher: inject(),
+  i18n: inject(),
+  titleToken: null,
+  authenticationRoute : "/accounts/login",
+  env: ENV.environment,
+
+  headTags: [{
+      type: 'meta',
+      tagId: 'meta-og-name',
+      attrs: {
+        property: 'og:name',
+        content: '$applicationName'
+      }
+    },
+    {
+      type: 'meta',
+      tagId: 'meta-description-tag',
+      attrs: {
+        name: 'description',
+        content: '$applicationName'
+      }
+    },
+    {
+      type: 'link',
+      tagId: 'canonical-link',
+      attrs: {
+        rel: 'canonical',
+        content: '$applicationName'
+      }
+    }
+  ]
+  ,
+  beforeModel: function(params) {
+
+    let i18nLocale = this.get('i18n.locale');
+    let userLanguage = getUserLanguage();
+
+  },
+  
+});

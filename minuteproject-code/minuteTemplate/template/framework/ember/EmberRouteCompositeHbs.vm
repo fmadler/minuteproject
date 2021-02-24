@@ -1,0 +1,14 @@
+#exposeEmberCompositeSpecific()
+<$importEmberCompositeComponentIndexPath
+	@data={{model}}
+## queryparams are available at this stage
+#if($composite.distinctInputColumn.size() > 0)
+#foreach($column in $composite.distinctInputColumn)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+	@$columnVar={{this.$columnVar}}
+#end
+#end
+#end
+/>

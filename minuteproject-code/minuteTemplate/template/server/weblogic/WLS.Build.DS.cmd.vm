@@ -1,0 +1,29 @@
+#exposeWLSBuildSpecific()
+#exposeWeblogicObject()
+##sh
+#!/bin/sh
+
+GENDIR=$(cd `dirname $0`;pwd)
+
+MW_HOME=${WLS_SERVER}
+export MW_HOME
+##$WLS_SERVER/bin/setWLSEnv.sh
+cd $WLS_SERVER/bin
+./setWLSEnv.sh
+##./setWLSEnv.sh
+
+cd $GENDIR
+java weblogic.WLST $datasourceCreatePyClass
+
+
+## windows
+@echo off
+set currentdir=%cd%
+
+set MW_HOME=$formatUtils.windowizePath(${WLS_SERVER})
+cd %MW_HOME%\server\bin
+call setWLSEnv.cmd
+
+cd %currentdir%
+##common
+java weblogic.WLST $datasourceCreatePyClass

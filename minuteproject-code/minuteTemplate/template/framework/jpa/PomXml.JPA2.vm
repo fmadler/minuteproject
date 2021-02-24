@@ -1,0 +1,373 @@
+#exposeBackendTechnology()
+#exposeMaven()
+##exposeJPA2Specifics()
+#putJPA2TemplateDefinition()
+#putTargetServerDefinition()
+#set($isQuerydslPowered=$template.hasProperty("add-querydsl"))
+#set($querydslVersion=$template.getPropertyValue("add-querydsl"))
+#set($bslaJpaVersion=$template.getPropertyValue("bsla-jpa-version"))
+##set($jpa2Implementation=$jpaUtils.getJpa2Implementation($template))
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>  
+#if($hasMasterPom)
+#set($masterPomArtifactId = $mavenUtils.getMasterPomArtifactId($template, $generatorBean))
+    <parent>
+        <artifactId>${masterPomArtifactId}</artifactId>
+        <groupId>${groupId}</groupId>
+        <version>${version}</version>
+    </parent>
+
+#end
+#if(!$hasMasterPom)
+  	<groupId>${groupId}</groupId>
+  	<version>${version}</version>
+#end
+  	<artifactId>$artifactId</artifactId>
+  	<name>$artifactId JPA2 specification and implementation</name>
+  	<packaging>jar</packaging>
+  	
+    <dependencies>
+#foreach ($model in $configuration.models())
+#exposeMavenModel()
+#exposeJPA2Specifics()
+#addMavenDependencyJdbcDriver()
+#end
+
+        <!-- junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+#if(!$hasMasterPom)
+            <version>4.8.1</version>
+#end
+            <scope>test</scope>
+        </dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+#if(!$hasMasterPom)
+			<version>1.16.16</version>
+#end
+			<scope>provided</scope>
+		</dependency>
+
+	    <!-- Logging -->
+        <!-- add slf4j interfaces to classpath -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4jVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4jVersion}</version>
+        </dependency>
+
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+#if(!$hasMasterPom)
+		    <version>1.3.0-alpha5</version>
+#end
+		    <scope>test</scope>
+		</dependency>
+        <!-- rest jackson -->
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.6.1</version>
+            <scope>compile</scope>
+        </dependency>
+		<!-- JPA2 provider $jpa2Implementation -->
+#if($jpa2ImplementationIsEclipseLink)
+        <dependency>
+          <groupId>org.eclipse.persistence</groupId>
+          <artifactId>eclipselink</artifactId>
+          <version>2.0.0</version>
+        </dependency>
+#else
+	    <dependency>
+	      <groupId>org.hibernate</groupId>
+	      <artifactId>hibernate-entitymanager</artifactId>
+##	      <version>3.5.1-Final</version>
+	      <version>${hibernateVersion}</version>
+	    </dependency>
+		
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>${hibernateValidatorVersion}</version>
+		    <scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${hibernateValidatorVersion}</version>
+		    <scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		    <version>2.0.1.Final</version>
+		    <scope>compile</scope>
+		</dependency>
+
+ 
+#end
+#if ($groovify)
+        <dependency>     
+        	<groupId>org.codehaus.groovy</groupId>     
+        	<artifactId>groovy-all</artifactId>     
+        	<version>${groovyVersion}</version>   
+        </dependency>
+#end
+#if ($isCacheEnabled)
+		<!-- caching -->
+#* before hib 4 
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+*#
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+            <version>${hibernateVersion}</version>
+        </dependency>
+#end
+#if ($hasABLNature)
+        <dependency>
+            <groupId>com.autobizlogic.abl</groupId>
+            <artifactId>autobizlogic</artifactId>
+            <version>$autobizlogicVersion</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hibernate-jpa-2.0-api</artifactId>
+                    <groupId>org.hibernate.javax.persistence</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+#end
+#if($isQuerydslPowered)	
+	    <!-- querydsl integration -->
+        <dependency>
+          <groupId>com.mysema.querydsl</groupId>
+          <artifactId>querydsl-apt</artifactId>
+          <version>${querydsl.version}</version>
+          <scope>provided</scope>
+        </dependency>    
+    
+        <dependency>
+          <groupId>com.mysema.querydsl</groupId>
+          <artifactId>querydsl-jpa</artifactId>
+          <version>${querydsl.version}</version>
+          <exclusions>
+              <exclusion>
+                  <artifactId>hibernate-jpa-2.0-api</artifactId>
+                  <groupId>org.hibernate.javax.persistence</groupId>
+              </exclusion>
+          </exclusions>          
+        </dependency>
+#end	
+#if($addDomainSpecificMethod)
+        <dependency>
+          <groupId>org.mod4j.org.apache.commons</groupId>
+          <artifactId>lang</artifactId>
+          <version>2.1.0</version>
+          <type>jar</type>
+          <scope>compile</scope>
+        </dependency>        
+    
+    	<dependency>
+    	  <groupId>commons-beanutils</groupId>
+    	  <artifactId>commons-beanutils</artifactId>
+    	  <version>1.8.3</version>
+    	</dependency>
+    	
+        <dependency>
+          <groupId>net.sf.minuteproject</groupId>
+          <artifactId>mp-bsla-jpa</artifactId>
+          <version>$bslaJpaVersion</version>
+          <exclusions>          
+              <exclusion>
+                  <artifactId>hibernate-jpa-2.0-api</artifactId>
+                  <groupId>org.hibernate.javax.persistence</groupId>
+              </exclusion>          
+#if($isEJBBackend)
+              <exclusion>
+                  <groupId>org.springframework</groupId>
+                  <artifactId>spring-context</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>org.springframework</groupId>
+                  <artifactId>spring-orm</artifactId>
+              </exclusion>
+#end
+          </exclusions>
+        </dependency>	
+#end	
+    </dependencies>
+    
+    <!-- properties -->
+	<properties>
+#if($isQuerydslPowered)	
+      <querydsl.version>$querydslVersion</querydsl.version>
+#end 
+#if($groovify)	
+      <gmavenVersion>1.4</gmavenVersion>   
+      <gmavenProviderSelection>2.0</gmavenProviderSelection>   
+      <groovyVersion>2.0.0</groovyVersion>
+#end 
+#if ($isWeblogicTargetServer)
+##      <hibernateVersion>5.1.0.Final</hibernateVersion>
+      <hibernateVersion>4.3.11.Final</hibernateVersion>
+#else
+## https://github.com/aol/micro-server/issues/65 
+## config validator / hibernate / jboss logging
+##      <hibernateVersion>5.1.0.Final</hibernateVersion>
+##      <hibernateValidatorVersion>5.1.0.Final</hibernateValidatorVersion>
+##if does not work 6.0.13.Final switch to       <hibernateVersion>4.3.11.Final</hibernateVersion>
+		<hibernateVersion>4.3.11.Final</hibernateVersion>
+##		<hibernateVersion>6.0.13.Final</hibernateVersion>
+#end
+##if does not work 6.0.13.Final switch to      <hibernateValidatorVersion>4.3.2.Final</hibernateValidatorVersion>
+      <hibernateValidatorVersion>6.0.13.Final</hibernateValidatorVersion>
+        <slf4jVersion>1.7.25</slf4jVersion>
+    </properties>
+    <build>
+        <!--<finalName>$DbApiName</finalName>-->
+        <resources>
+          <!-- overwrite generated artifacts for packaging: for example by providing another jndi name ... -->
+    	  <resource>
+    		<directory>src-overwritten/main/resources</directory>
+            <excludes>
+              <exclude>**/*.java</exclude>
+            </excludes>
+    	  </resource>    
+    	  <resource>
+    		<directory>$resourcesDir</directory>
+            <excludes>
+              <exclude>**/*.java</exclude>
+            </excludes>
+    	  </resource>
+    	</resources> 		
+        <plugins>
+#if($groovify)
+            <plugin>
+            	<groupId>org.codehaus.gmaven</groupId>
+            	<artifactId>gmaven-plugin</artifactId>
+            	<version>${gmavenVersion}</version>
+            	<configuration>           
+            	<providerSelection>${gmavenProviderSelection}</providerSelection>
+            	<sourceEncoding>UTF-8</sourceEncoding>
+            	</configuration>         
+            	<executions>           
+                	<execution>             
+                    	<goals>               
+                        	<goal>generateStubs</goal>
+                        	<goal>compile</goal>
+                        	<goal>generateTestStubs</goal>
+                        	<goal>testCompile</goal>             
+                    	</goals>           
+                	</execution>
+            	</executions>
+            	<dependencies>
+                	<dependency>            
+                	<groupId>org.codehaus.groovy</groupId>
+                	<artifactId>groovy-all</artifactId>            
+                	<version>${groovyVersion}</version>
+                	</dependency>        
+            	</dependencies>
+        	</plugin>
+#end
+#exposeCompilerPlugin()
+#if($isQuerydslPowered && !$groovify)	            
+            <!-- querydsl integration -->
+            <plugin>
+				<groupId>com.mysema.maven</groupId>
+			    <artifactId>apt-maven-plugin</artifactId>
+			    <version>1.0.5</version>
+			    <executions>
+			        <execution>
+			            <goals>
+			                <goal>process</goal>
+			            </goals>
+			            <configuration>
+			                <outputDirectory>target/generated-sources/java</outputDirectory>
+			                <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+			            </configuration>
+			        </execution>
+			     </executions>
+		        <dependencies>
+		            <dependency>
+		                <groupId>com.mysema.querydsl</groupId>
+		                <artifactId>querydsl-apt</artifactId>
+		                <version>${querydsl.version}</version>
+		            </dependency>
+		            <dependency>
+		                <groupId>com.mysema.querydsl</groupId>
+		                <artifactId>querydsl-jpa</artifactId>
+		                <classifier>apt</classifier>
+		                <version>${querydsl.version}</version>
+		            </dependency>
+		        </dependencies>
+            </plugin>
+             
+			<plugin>
+			    <groupId>org.codehaus.mojo</groupId>
+			    <artifactId>build-helper-maven-plugin</artifactId>
+			    <version>1.3</version>
+			    <executions>
+			        <execution>
+			            <id>add-source</id>
+			            <phase>generate-sources</phase>
+			            <goals>
+			                <goal>add-source</goal>
+			            </goals>
+			            <configuration>
+			                <sources>
+			                    <source>target/generated-sources/java</source>
+			                </sources>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin> 
+#end           
+        </plugins>
+    </build>
+    <repositories>
+#if($jpa2ImplementationIsEclipseLink)
+      <repository>
+        <id>EclipseLink Repo</id>
+     <!-- note that ampersands in this URL are escaped because this is in an xml file -
+            un-escape them to use in browser 
+     -->
+         <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
+     <!-- use this for javax.persistence
+     <snapshots>
+        <enabled>true</enabled>
+     </snapshots> -->
+       </repository>    
+#end
+#if ($hasABLNature)
+       <repository>
+         <id>automated-business-logic</id>
+         <name>Automated Business Logic repository</name>
+         <url>http://resources.automatedbusinesslogic.com/maven2</url>
+       </repository>
+#end
+       <repository>
+         <id>sonatype-repo</id>
+         <name>Sonatype repository</name>
+         <url>https://oss.sonatype.org/content/repositories/releases</url>
+       </repository>
+    </repositories>   
+</project>

@@ -1,0 +1,32 @@
+#exposeJSFModelSpecific()
+package $packageName;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+import java.io.ByteArrayInputStream;
+
+$!updatedAreaImport
+
+@ManagedBean (name="$classVariable")
+@ApplicationScoped
+public class $className {
+
+    public StreamedContent getStreamedImageFromString(String s) {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        if (s==null) {
+##ontext.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+            return new DefaultStreamedContent();
+        }
+        else {
+##           String id = context.getExternalContext().getRequestParameterMap().get("id");
+            return new DefaultStreamedContent(new ByteArrayInputStream(s.getBytes()));
+        }
+    }
+	
+$!updatedAreaImplementation
+}

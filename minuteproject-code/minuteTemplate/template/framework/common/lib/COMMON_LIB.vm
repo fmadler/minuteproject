@@ -1,0 +1,1049 @@
+#macro(generatorSpecific)
+#if($configuration.isSingleModel())
+#set($generatorBean=$model)
+#set($hasCmisModel=$model.hasCmisModel())
+#else
+#set($generatorBean=$configuration.application)
+#set($hasCmisModel=$application.hasCmisModel())
+#end
+#end
+
+#macro(putReadmeText)
+$readmeUtils.getReadme($template)
+#end
+
+#macro(exposeCmisSpecifics)
+#set($cmisModel  = $model.cmisModel)
+#set($cmisSource = $cmisModel.cmisSource)
+#set($repositoryId = $cmisSource.repositoryId)
+#set($repositoryBinding = $cmisSource.repositoryBinding)
+#set($username = $cmisSource.username)
+#set($repositoryUrl = $cmisSource.repositoryUrl)
+#end
+
+#macro (asUML $table)
+#set ($table = $tableUtils.asUML($table))
+#end
+
+#macro (exposeApplicationSpecific)
+#set ($configuration = $model.configuration)
+#set ($applicationName=$configuration.name)
+#end
+
+#macro (exposeVariableApplicationSpecific)
+#exposeVariableModelDetailSpecific()
+#end
+
+#macro(exposeVariableFunctionSpecific)
+#exposeVariableEntitySpecific()
+#exposeFunction()
+#set ($functionNameUpperCase=$routineUtils.getFunctionCallName($function))
+#set ($functionCall=$routineUtils.getFunctionCall($function))
+#end
+
+#macro(exposeCompositeSpecific)
+#set ($in = $commonUtils.getDirection("IN"))
+#set ($out = $commonUtils.getDirection("OUT"))
+#set ($packageName = $commonUtils.getPackageName($composite, $template))
+#set ($className = $commonUtils.getClassName($composite, $template))
+#set ($classVariableName = $formatUtils.firstLowerCase(${className}))
+#end
+
+#macro(exposeInputCompositeSpecific)
+#set ($in = $commonUtils.getDirection("IN"))
+#set ($out = $commonUtils.getDirection("OUT"))
+#set ($packageName = $commonUtils.getPackageName($composite, $template))
+#set ($className = $commonUtils.getClassName($composite, $template))
+#set ($classVariableName = $formatUtils.firstLowerCase(${className}))
+#end
+
+#macro(exposeQuerySpecific)
+#set ($packageName = $commonUtils.getPackageName($query, $template))
+#set ($className = $commonUtils.getClassName($query, $template))
+#set ($classVariableName = $formatUtils.firstLowerCase(${className}))
+#set ($inputBean = $query.inputBean)
+#set ($outputBean = $query.outputBean)
+#set ($isNotVoidInput = !$inputBean.getColumns().isEmpty())
+#set ($hasQueryChunkWithParams = $query.hasQueryChunkWithParams())
+#end
+
+#macro(exposeQueryPivotSpecific)
+#set ($query = $querypivot.query)
+#exposeQuerySpecific()
+#end
+
+#macro(exposeChartSpecific)
+#set ($isChartLayout = $queryUtils.isChartLayout($query))
+#set ($isPieChart = $queryUtils.isPieChart($query))
+#set ($isBarChart = $queryUtils.isBarChart($query))
+#set ($isColumnChart = $queryUtils.isColumnChart($query))
+#set ($outputBeanColumnDimension1 = $queryUtils.getOutputBeanDimension($query,0))
+#set ($outputBeanColumnValue = $queryUtils.getOutputBeanValue($query))
+#set ($outputBeanDimension1 = $formatUtils.getJavaName($outputBeanColumnDimension1.alias))
+#set ($outputBeanDimension1Var = $commonUtils.getJavaNameVariableFirstLetter($outputBeanDimension1))
+#set ($outputBeanDimensionValue = $formatUtils.getJavaName($outputBeanColumnValue.alias))
+#set ($dimensions = $queryUtils.getOutputBeanDimension($query))
+#end
+
+#macro(exposeStatementParam)
+#set($javaType=$statementUtils.getJavaType($param))	
+#set($javaVariable=$statementUtils.getJavaVariableName($param))	
+#set($setterType=$statementUtils.getJdbcSetter($param))	
+#set($getterType=$statementUtils.getJdbcGetter($param))	
+#end
+
+#macro (exposeFunction)
+#exposeFunctionTemplate()
+#set ($in = $commonUtils.getDirection("IN"))
+#set ($out = $commonUtils.getDirection("OUT"))
+#set ($input = $function.getEntity($in))
+#set ($output = $function.getEntity($out))
+#set ($functionInputClass = $commonUtils.getTemplateClassName($input, $model, $templateFunctionInput))
+#set ($functionInputVariable = $commonUtils.getJavaNameVariableFirstLetter($functionInputClass))
+#set ($functionInputImport = $commonUtils.getEntityLevelTemplateFullPath($model, $input, $template, $templateFunctionInput))
+#set ($functionOutputClass = $commonUtils.getTemplateClassName($output, $model, $templateFunctionOutput))
+#set ($functionOutputVariable = $commonUtils.getJavaNameVariableFirstLetter($functionOutputVariable))
+#set ($functionOutputImport = $commonUtils.getEntityLevelTemplateFullPath($model, $output, $template, $templateFunctionOutput))
+#set ($functionInterfaceClassName = $commonUtils.getTemplateClassName($output, $model, $templateFunctionInterface))
+#set ($functionInterfaceVariableName = $commonUtils.getJavaNameVariableFirstLetter($functionInterfaceClassName))
+#set ($functionInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $output, $template, $templateFunctionInterface))
+#end
+
+#macro (exposeFunctionTemplate)
+#set ($templateFunctionInput = "StoredProcedureInputBean")
+#set ($templateFunctionOutput = "StoredProcedureOutputBean")
+#set ($templateFunctionInterface = $template.getPropertyValue("functionInterface","DaoInterfaceStoreProcedure"))
+#end
+
+#macro (putGetterSetter $class $variable)
+#putGetterSetterAlt($class, $class, $variable)
+#end
+
+#macro (putGetterSetterAlt $class $classVariable $variable)
+    public ${class} get${classVariable} () {
+        return ${variable};
+    }
+
+    public void set${classVariable} (${class} ${variable}) {
+        this.${variable} = ${variable};
+    }
+
+#end
+
+#macro(exposeVariableTriggerSpecific)
+#set($triggerColumn =$triggerUtils.getColumn($trigger))
+#set($triggerColumnName =$triggerColumn.name)
+#set($triggerVar =$triggerUtils.getTriggerAlias($trigger))
+#set($triggerType =$triggerUtils.getTriggerType($trigger))
+#set($triggerJavaExpressionChunk =$triggerUtils.getJavaDisplayChunk($trigger, $template))
+#set($triggerSqlExpressionChunk =$triggerUtils.getSqlDisplayChunk($trigger, $template))
+#end
+
+#macro (putGetterAdder $classList $listVariable $class $variable)
+#set ($listClasses = $i18nUtils.plurialize(${class}))
+#if($addXmlBinding)
+    @XmlTransient
+#end
+    public List<${class}> get${listClasses} () {
+        if (${listVariable}==null)
+            ${listVariable} = new ArrayList<>();
+        return ${listVariable};
+    }
+
+    public void add${class} (${class} ${variable}) {
+        get${listClasses} ().add(${variable});
+    }
+
+#end
+
+#macro (toString)
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+#foreach($column in ${table.columns})
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+        sb.append("$columnClass: "+get$columnClass());
+#if($velocityCount<${table.columnCount})
+        sb.append(", ");
+#end
+#end
+#end
+        return sb.toString();
+    }
+#end
+#macro (putSetterGetterAdder $classList $listVariable $class $variable)
+#set ($listClasses = $i18nUtils.plurialize(${class}))
+    public void set${listClasses} (List<${class}> ${listVariable}) {
+        this.${listVariable} = ${listVariable};
+    }
+
+#putGetterAdder($classList $listVariable $class $variable)
+#end
+
+#macro (putImportSDDBean)
+#set ($templateJavaBean=$template.getPropertyValue("JavaBeanTemplate","SDDOutputBean"))
+#set ($beanClass = $commonUtils.getTemplateClassName($table, $model, $templateJavaBean))
+#set ($beanVariable = $commonUtils.getJavaNameVariableFirstLetter($beanClass))
+#set ($beanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateJavaBean))
+#set ($listVariable = $i18nUtils.plurialize(${beanVariable}))
+#set ($addXmlBinding=$template.getPropertyValue("add-xmlbinding",false))
+#set ($xmlFormat=$template.getPropertyValue("add-xml-format","none"))
+#end
+
+#macro (putImportCompositeSDDBean)
+#templateCommonDefinition()
+#set ($inputComposite = $composite.getInputComposite())
+#set ($outputComposite = $composite.getOutputComposite())
+#set ($sddInputCompositeBeanClass = $commonUtils.getTemplateClassName($inputComposite, $template, $templateSDDInputCompositeBean))
+#set ($sddInputCompositeBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputCompositeBeanClass))
+#set ($sddInputCompositeBeanImport = $commonUtils.getEntityLevelTemplateFullPath($inputComposite, $template, $templateSDDInputCompositeBean))
+#set ($sddOutputCompositeBeanClass = $commonUtils.getTemplateClassName($outputComposite, $template, $templateSDDOutputCompositeBean))
+#set ($sddOutputCompositeBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputCompositeBeanClass))
+#set ($sddOutputCompositeBeanImport = $commonUtils.getEntityLevelTemplateFullPath($outputComposite, $template, $templateSDDOutputCompositeBean))
+#end
+
+#macro (putImportCompositeOutputSDDBean)
+#templateCommonDefinition()
+#set ($sddOutputBeanClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDOutputBean))
+#set ($sddOutputBeanClasses = $i18nUtils.plurialize(${sddOutputBeanClass}))
+#set ($sddOutputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanClass))
+#set ($sddOutputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDOutputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDOutputBeanCollection))
+#set ($sddOutputBeanCollectionVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanCollectionClass))
+#set ($sddOutputBeanCollectionImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDOutputBeanCollection))
+#end
+
+#macro (putImportCompositeRESTSDDBean)
+#templateCommonDefinition()
+#set ($sddInputRestClass = $commonUtils.getTemplateClassName($composite, $template, $templateSDDInputBean))
+#set ($sddInputRestVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#end
+
+#*
+#macro (putImportCompositeRESTSDDBean)
+#templateCommonDefinition()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($composite, $template, $templateSDDRestResource))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($composite, $template, $templateSDDInputBean))
+#end
+*#
+
+#macro (putImportCompositeInputSDDBean)
+#templateCommonDefinition()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($table, $template, $templateSDDInputBean))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSDDInputBean))
+#end
+
+#macro (putImportQuerySDDBean)
+#templateCommonDefinition()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($query.getInputBean(), $model, $templateSDDInputBean))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $query.getInputBean(), $template, $templateSDDInputBean))
+#set ($sddOutputBeanClass = $commonUtils.getTemplateClassName($query.getOutputBean(), $model, $templateSDDOutputBean))
+#set ($sddOutputBeanClasses = $i18nUtils.plurialize(${sddOutputBeanClass}))
+#set ($sddOutputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanClass))
+#set ($sddOutputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $query.getOutputBean(), $template, $templateSDDOutputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getTemplateClassName($query.getOutputBean(), $model, $templateSDDOutputBeanCollection))
+#set ($sddOutputBeanCollectionVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanCollectionClass))
+#set ($sddOutputBeanCollectionImport = $commonUtils.getEntityLevelTemplateFullPath($model, $query.getOutputBean(), $template, $templateSDDOutputBeanCollection))
+#end
+
+#macro(templateCommonDefinition)
+#set ($templateSDDInputBean  = "SDDInputBean")
+#set ($templateSDDOutputBean = "SDDOutputBean")
+#set ($templateSDDInputCompositeBean  = "SDDInputCompositeBean")
+#set ($templateSDDOutputCompositeBean = "SDDOutputCompositeBean")
+#set ($templateSDDOutputBeanCollection = "SDDOutputBeanCollection")
+#set ($templateSDDRestResource = "RESTDbAPISDDCompositeResource")
+##set ($templateSDDCompositeRepository = "SDDOutputBeanCollection")
+#end
+
+#macro (putImportSDDInputBean)
+#templateCommonDefinition()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDInputBean))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDInputBean))
+#end
+
+#macro(exposeWebXmlSpecific)
+#set($webXmlVersion=$template.getPropertyValue("web-xml-version","3.0"))
+#set($hasCorsFilter=$template.hasProperty("filter-cors"))
+#set($corsFilter=$template.getPropertyValue("filter-cors"))
+#set($restPomFinalName=$template.getPropertyValue("rest-pom-maven-artifact-finalName-suffix", "App"))
+#if($template.hasProperty("final-name"))
+#set($finalName=$template.getPropertyValue("final-name"))
+#else
+#set($finalName="${generatorBean.name}${restPomFinalName}")
+#end
+#exposeEnabledProperties()
+#end
+
+#macro(exposeEnabledProperties)
+#set($swagger=$template.hasPropertyValue("swagger",false))
+#set($botdetect=$template.hasPropertyValue("botdetect",false))
+#set($isVelocityEnabled=$template.hasPropertyValue("velocity-enabled",true))
+#end
+
+#macro(putColumnDefaultValue)
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+#if(!$isForeignKey && !$isPrimaryKey)
+#if($hasDefaultValue && ($columnUtils.isString($column) || $columnUtils.isNumeric($column)))
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+#if ($columnUtils.isString($column))
+#set($defaultType="String")
+#else
+#set($defaultType=$columnType)
+#end
+	public static final $defaultType $defaultConstant = $defaultValue;
+#end
+#end
+#end
+#end
+
+#* 
+#macro(putColumnDefaultValueGetter)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+    public $columnType get$columnClass() {
+        return ($columnVar!=null)?$columnVar:$defaultConstant;
+    }
+#end
+*#
+
+#macro(putColumnDefaultValueAffectation)
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+#if(!$isForeignKey && !$isPrimaryKey)
+#if($hasDefaultValue && ($columnUtils.isString($column) || $columnUtils.isNumeric($column)) && !$isEnum)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+        if ($columnVar==null) $columnVar=$defaultConstant;
+#end
+#end
+#end
+#end
+
+#macro(putOrmForeignKeyColumn)
+#if($columnUtils.isForeignKey($column) || $columnUtils.isPartOfCompositePrimaryKey($column))
+#set($columnClass="${columnClass}_")
+#set($columnVar="${columnVar}_")
+#end
+#end
+
+#macro(putOrmForeignAndPrimaryKeyColumn)
+#if($columnUtils.isForeignKey($column))
+#set($columnClass="${columnClass}_")
+#set($columnVar="${columnVar}_")
+#if($column.isPrimaryKey())
+##set($columnClass="${columnClass}_")
+##if(!$columnUtils.isForeignKey($primaryKeyFirstColumn))
+#set($primaryKeyJavaNameClass="${primaryKeyJavaNameClass}_")
+##end
+#elseif($columnUtils.isForeignKey($primaryKeyFirstColumn))
+#set($primaryKeyJavaNameClass = "${primaryKeyJavaNameClass}_")
+#end
+#end
+##if($columnUtils.isForeignKey($primaryKeyFirstColumn))
+##set($primaryKeyJavaNameClass = "${primaryKeyJavaNameClass}_")
+##end
+#end
+
+#macro (putSddJdbcLookup)
+#exposeQueryUpdatedAreas("SDD_EXECUTE_JDBC")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+	public List<$sddOutputBeanClass> executeJDBC(
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        String $chunkName 
+#else
+        ,String $chunkName 
+#end
+#end
+		) {
+#if($isNotVoidInput)
+		if ($sddInputBeanVariable==null)
+			$sddInputBeanVariable = new $sddInputBeanClass();
+#end
+		List<$sddOutputBeanClass> list = new ArrayList<>();
+#if($query.queryParams.hasOutputParam())
+		CallableStatement pstmt = null;
+#else
+		PreparedStatement pstmt = null;
+#end
+#if (!$query.isWrite())
+		ResultSet rs = null;
+#end
+		Connection conn = null;
+		try {
+			conn = getConnection();
+#putSddExecuteStatement()
+		} catch (Exception e) {
+		      e.printStackTrace();
+	    } finally {
+	      try {
+#if (!$query.isWrite())
+	        if (rs!=null) rs.close();
+#end
+	        if (pstmt!=null) pstmt.close();
+	        if (conn!=null) conn.close();
+	      } catch (Exception e) {
+	        e.printStackTrace();
+	      }
+	    }
+		return list;
+	}
+
+#putSddQueryLookupMisc()
+$!updatedAreaEnd
+#end
+
+#macro (putSddExecuteStatement) 
+#if($query.queryParams.hasOutputParam())
+			pstmt = conn.prepareCall(
+#else
+			pstmt = conn.prepareStatement(
+#end
+				getStatement(
+#if($isNotVoidInput) 
+					$sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+					$chunkName 
+#else
+					, $chunkName 
+#end
+#end
+				));		
+			int index = 1;
+#foreach($column in $inputBean.columns)
+#if ($column.isOutputParam())
+			pstmt.registerOutParameter(index, java.sql.Types.${column.type});
+			index++;
+#else
+#if($isTransientDefinition)
+#if (!$column.isTransient() && $column.isPrimaryKey()) 
+#injectSDDParameter()
+#end
+#else
+##TODO use setFilter to add the filter group $column.isFilter() <filter
+#if (!$column.isFilter())
+#injectSDDParameter()
+#else
+			if (isFilter${column.filterName}Active(#if($isNotVoidInput) $sddInputBeanVariable#end)) {
+#injectSDDParameter()
+			}
+#end	
+#end
+#end
+#end
+## TODO replace ? by ?param: key
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#foreach($queryParam in $queryChunk.getQueryChunkParams())
+#injectChunkParameter("${chunkName}_${queryParam.name}", $queryParam)
+#end
+#end
+## correct only if the output are at the end
+#*
+#if($query.queryParams.hasOutputParam())
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+			pstmt.registerOutParameter($queryUtils.getQueryPositionFromOutputbeanPosition($query, $velocityCount), java.sql.Types.${column.type});
+#end
+#end
+*#
+#if ($query.isWrite())
+#if($query.queryParams.hasOutputParam())
+			pstmt.execute();
+#else
+			pstmt.executeUpdate();
+#end	
+#else
+#if($query.queryParams.hasOutputParam())
+			pstmt.execute();
+#else
+			rs = pstmt.executeQuery();
+#end		
+#end
+#if($query.queryParams.hasOutputParam())
+			$sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+			${sddOutputBeanVariable}.set$columnClass(pstmt.get${columnType}($queryUtils.getQueryPositionFromOutputbeanPosition($query, $velocityCount)));
+#end
+			list.add(${sddOutputBeanVariable});
+#else
+#if ($statementUtils.hasResult($outputBean))
+			while (rs.next()) {
+#if ($query.isScalar())
+#set ($firstColumn = $columnUtils.getFirstColumn($inputBean))
+#set ($firstClass = $commonUtils.getJavaType($firstColumn))
+				x = ($firstClass) rs.getInt(1);
+				break;
+#else
+				$sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+				${sddOutputBeanVariable}.set$columnClass(rs.get${columnType}($velocityCount));
+#end
+				list.add(${sddOutputBeanVariable});
+#end
+	        }
+#end
+#end
+
+#end
+
+
+#macro (injectPrepareStatementParams)
+#if($query.isWrite())
+		private void injectPrepareStatementParams(CallableStatement pstmt#if($isNotVoidInput), $sddInputBeanClass $sddInputBeanVariable#end) throws SQLException {
+#else
+		private void injectPrepareStatementParams(PreparedStatement pstmt#if($isNotVoidInput), $sddInputBeanClass $sddInputBeanVariable#end) throws SQLException {
+#end
+			int index = 1;
+#foreach($column in $inputBean.columns)
+#if ($column.isOutputParam())
+			pstmt.registerOutParameter(index, java.sql.Types.${column.type});
+			index++;
+#else
+#if($isTransientDefinition)
+#if (!$column.isTransient() && $column.isPrimaryKey()) 
+#injectSDDParameter()
+#end
+#else
+##TODO use setFilter to add the filter group $column.isFilter() <filter
+#if (!$column.isFilter())
+#injectSDDParameter()
+#else
+			if (isFilter${column.filterName}Active(#if($isNotVoidInput) $sddInputBeanVariable#end)) {
+#injectSDDParameter()
+			}
+#end	
+#end
+#end
+#end
+## TODO replace ? by ?param: key
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#foreach($queryParam in $queryChunk.getQueryChunkParams())
+#injectChunkParameter("${chunkName}_${queryParam.name}", $queryParam)
+#end
+#end
+		}
+#end
+##end macro injectPrepareStatementParams
+
+##macro putSddExecuteStatementClosable
+#macro (putSddExecuteStatementClosable) 
+#if($isNotVoidInput || $hasQueryChunkWithParams) 
+					injectPrepareStatementParams(pstmt#if($isNotVoidInput), $sddInputBeanVariable#end);
+#end
+#if ($query.isWrite())
+#if($query.queryParams.hasOutputParam())
+					pstmt.execute();
+#else
+					pstmt.executeUpdate();
+#end	
+#else
+#if($query.queryParams.hasOutputParam())
+					pstmt.execute();
+#else
+					try (ResultSet rs = pstmt.executeQuery()) {
+#end		
+#end
+#if($query.queryParams.hasOutputParam())
+				$sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+				${sddOutputBeanVariable}.set$columnClass(pstmt.get${columnType}($queryUtils.getQueryPositionFromOutputbeanPosition($query, $velocityCount)));
+#end
+				list.add(${sddOutputBeanVariable});
+#else
+#if ($statementUtils.hasResult($outputBean))
+					while (rs.next()) {
+#if ($query.isScalar())
+#set ($firstColumn = $columnUtils.getFirstColumn($inputBean))
+#set ($firstClass = $commonUtils.getJavaType($firstColumn))
+						x = ($firstClass) rs.getInt(1);
+						break;
+#else
+						$sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+#if (!$column.getSeparatorCharacters())
+						${sddOutputBeanVariable}.set$columnClass(rs.get${columnType}("${column.name}"));
+#else
+						${sddOutputBeanVariable}.set${columnClass}(
+							Arrays.asList(rs.get${columnType}("${column.name}").split("\\,")).stream()
+								.map(u -> {
+									String[] uA = u.split("\\|");
+									${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnClass}();
+									if (uA.length==$column.structuredArray.size()) {
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldClass = $commonUtils.getJavaClassName($field.name))
+#set($vIndex = $velocityUtils.getIndexFromCount(${velocityCount}))
+										c.set$fieldClass(uA[${vIndex}]);
+#end
+									}
+									return c;
+								})
+								.collect(Collectors.toList())
+						);
+#end
+#end
+						list.add(${sddOutputBeanVariable});
+#end
+	        		}//from while (rs.next())
+#end
+#end
+	        	}//from try (autoclosable)
+#if(!$query.isWrite()) 
+			}
+#end
+#end
+##end macro putSddExecuteStatementClosable
+
+
+#macro (putSddCmisLookup)
+#exposeQueryUpdatedAreas("SDD_EXECUTE_CMIS")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+	public List<$sddOutputBeanClass> executeCMISQuery(
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        String $chunkName 
+#else
+        ,String $chunkName 
+#end
+#end
+		) {
+#if($isNotVoidInput)
+		if ($sddInputBeanVariable==null)
+			$sddInputBeanVariable = new $sddInputBeanClass();
+#end
+		List<$sddOutputBeanClass> list = new ArrayList<>();
+#if (!$query.isWrite())
+##		ResultSet rs = null;
+#end
+		Session session = getSession();
+		QueryStatement qs = session.createQueryStatement (
+					getStatement(
+#if($isNotVoidInput) 
+						$sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        				$chunkName 
+#else
+        				, $chunkName 
+#end
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+					, ${chunkName}_${queryParams.name}
+#end
+#end
+					));
+		int index = 1;
+#foreach($column in $inputBean.columns)
+#if($isTransientDefinition)
+#if (!$column.isTransient() && $column.isPrimaryKey()) 
+#injectSDDCmisParameter()
+#end
+#else
+##TODO use setFilter to add the filter group $column.isFilter() <filter
+#if (!$column.isFilter())
+#injectSDDCmisParameter()
+#else
+		if (isFilter${column.filterName}Active(#if($isNotVoidInput) $sddInputBeanVariable#end)) {
+#injectSDDCmisParameter()
+		}
+#end	
+#end
+#end
+#if ($query.isWrite())
+##			pstmt.executeUpdate();
+#else
+		String statement = qs.toQueryString();
+	    ItemIterable<QueryResult> results = getSession().query(statement, false);
+#end
+#if ($statementUtils.hasResult($outputBean))
+        for (QueryResult result : results) {
+        	$sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+            for (PropertyData prop : result.getProperties()) {
+                //System.out.println("> "+prop.getQueryName()+", "+prop.getFirstValue());
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getCmisType($column))
+##				if (prop.getQueryName().equals("$column.name")) {
+				if (prop.getQueryName().toLowerCase().endsWith("$columnClass".toLowerCase())) {
+#if ($columnType.equals("java.math.BigInteger"))
+					${sddOutputBeanVariable}.set$columnClass((($columnType)prop.getFirstValue()).longValue());
+#elseif ($columnType.equals("java.util.GregorianCalendar"))
+					${sddOutputBeanVariable}.set$columnClass((($columnType)prop.getFirstValue()).getTime());
+#else
+					${sddOutputBeanVariable}.set$columnClass(($columnType)prop.getFirstValue());
+#end
+				}
+#end
+			
+            }
+            list.add(${sddOutputBeanVariable});
+        }
+
+#end
+#if (!$query.isWrite())
+##	        rs.close();
+#end
+
+		return list;
+	}
+
+#putSddQueryLookupMisc()
+$!updatedAreaEnd
+#end
+#end
+
+#macro (putSddQueryLookupMisc)
+#foreach ($filter in $query.queryFilters)
+	public boolean isFilter${filter.name}Active(#if($isNotVoidInput)$sddInputBeanClass $sddInputBeanVariable#end) {
+#foreach ($param in $filter.queryParams.queryParams)
+#set($paramName=$formatUtils.getJavaName(${param.name}))
+##array
+#set($col = $queryUtils.getInputBeanColumn($query, $param.name))
+		if (${sddInputBeanVariable}.get${paramName}() == null) return false;
+#if($col.isArray())
+		if (${sddInputBeanVariable}.get${paramName}().size()==0) return false;
+#end
+#end
+		return true;	
+	}
+#end
+
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+	String get${chunkName}(String ${chunkName}) {
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+#set($chunkValue=$formatUtils.getJavaNameVariable($queryChunkValue.name))
+		if ("${chunkValueName}".equals(${chunkName}) || "${chunkValue}".equals(${chunkName}))
+			return CHUNK_${chunkName}_${chunkValueName};
+#end
+##default value
+#if($queryChunk.hasDefault())
+#set($queryChunkValue=$queryChunk.defaultValue)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+#set($chunkValue=$formatUtils.getJavaNameVariable($queryChunkValue.name))
+		return CHUNK_${chunkName}_${chunkValueName};
+#else
+		return ${chunkName};
+#end
+	}  
+#end
+
+	public String getStatement(
+#if($isNotVoidInput)
+			$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        	String $chunkName 
+#else
+        	,String $chunkName 
+#end
+#end
+		) {
+		String query = QUERY_NATIVE;
+		boolean isWhereDone = false;
+#foreach($column in $inputBean.columns)
+#if($column.isArray() && !$column.isFilter())
+#putColumnParamNaming()
+	   StringBuffer inSb$columnVar = new StringBuffer();
+	   for (int i = 0; i < ${sddInputBeanVariable}.get$columnClass().size(); i++) {
+	   	  inSb${columnVar}.append("?");
+	   	  if (i+1!=${sddInputBeanVariable}.get$columnClass().size())
+	   	  	inSb${columnVar}.append(",");
+	   }
+	   query = StringUtils.replace (query, "?...", inSb${columnVar}.toString());
+#end
+#end
+#injectGetStatementChunk()
+#injectGetStatementFilter()
+		return query;
+	}
+#injectGetStatementMethodForArrayFilter()
+#end
+#end
+
+#macro(injectGetStatementChunk)
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkNameString=$javaUtils.getJavaVariableNaming($queryChunk.name))
+		query = StringUtils.replace (query, "$"+"$chunkNameString", get${chunkNameString}(${chunkNameString}));  
+#end
+#end
+
+#macro(injectGetStatementFilter)
+#foreach ($filter in $query.queryFilters)
+		if (
+##TODO Case none
+#foreach ($param in $filter.queryParams.queryParams)
+#set($paramName=$formatUtils.getJavaName(${param.name}))
+			#if ($velocityCount>1) && #end isFilter${filter.name}Active(#if($isNotVoidInput) $sddInputBeanVariable#end)##${sddInputBeanVariable}.get${paramName}() != null
+#end
+			) {
+			String connectionWord = " AND ";
+#if ($filter.isWhere())
+			if (!isWhereDone) {
+				connectionWord = " WHERE ";
+			}
+#end
+#if ($filter.isNone())
+			connectionWord = "";
+#end
+			query = StringUtils.replace (query, "$"+"$filter.name", connectionWord + getChunk${filter.name}(${sddInputBeanVariable}, CHUNK_${filter.name}) ); //replaceOnce
+#if (!$filter.isNone())
+			isWhereDone = true;
+#end
+		} else {
+			query = StringUtils.replace (query, "$"+"$filter.name","");//replaceOnce
+		}
+#end
+#end
+
+#macro(injectGetStatementMethodForArrayFilter)
+#foreach ($filter in $query.queryFilters)
+##set($filterQueryParamFirst = $filter.queryParams.queryParams[0])
+#set($filterQueryParamFirst = $queryUtils.getFirstParam($filter.queryParams))
+#set($column = $queryUtils.getInputBeanColumn($query, $filterQueryParamFirst.name))
+## ###ATTENTION filter with ?... only works with one param
+
+	private String getChunk${filter.name} (${sddInputBeanClass} ${sddInputBeanVariable}, String chunk) {
+#if (!$column.isArray())
+		return chunk;
+#else
+#putColumnParamNaming()
+	   StringBuffer inSb$columnVar = new StringBuffer();
+	   for (int i = 0; i < ${sddInputBeanVariable}.get$columnClass().size(); i++) {
+	   	  inSb${columnVar}.append("?");
+	   	  if (i+1!=${sddInputBeanVariable}.get$columnClass().size())
+	   	  	inSb${columnVar}.append(",");
+	   }
+	   return StringUtils.replace (chunk, "?...", inSb${columnVar}.toString());//replaceOnce
+#end
+	}
+#end
+#end
+
+#macro(injectChunkParameter $variableName $queryParam)
+#set($columnType = $statementUtils.getJdbcSqlType($queryParam))
+#set($jdbcType = $statementUtils.getJdbcType($queryParam))
+#set($columnJavaType = $convertUtils.getJavaType($queryParam))
+            if ($variableName==null) {
+            	pstmt.setNull(index, java.sql.Types.${columnType});
+            } else {
+           		pstmt.set$jdbcType(index, $variableName);
+            }
+            index ++;
+#end
+
+#macro(injectSDDParameter)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+#set($columnJavaType = $convertUtils.getJavaTypeClassFromDBType($column))
+            if (${sddInputBeanVariable}.get$columnClass()==null) {
+#if (!$column.isArray())
+               pstmt.setNull(index, java.sql.Types.${column.type});
+#else
+			   for (${columnJavaType} element : ${sddInputBeanVariable}.get$columnClass()) {
+			      pstmt.setNull(index, java.sql.Types.${column.type});
+			      index ++;
+			   }
+#end
+            } else {
+#if(${column.hasProperty("like-mode")})
+#set($likeMode = ${column.getPropertyValue("like-mode")})
+#if($likeMode =="startsWith")
+               $columnType var = ${sddInputBeanVariable}.get$columnClass() + "%";
+#elseif ($likeMode =="endsWith")
+               $columnType var = "%" + ${sddInputBeanVariable}.get$columnClass();
+#elseif ($likeMode =="contains")
+               $columnType var = "%" + ${sddInputBeanVariable}.get$columnClass() + "%";
+#else
+			   //TODO update your minuteproject config to set property like-mode to startsWith
+               // endsWith or contains
+               $columnType var = ${sddInputBeanVariable}.get$columnClass();
+#end
+               pstmt.set$columnType(index, var); 
+#else
+#if($columnUtils.isTimeColumn($column))
+               pstmt.set$columnType(index, new java.sql.Date(${sddInputBeanVariable}.get$columnClass().getTime())); 
+#else
+#if (!$column.isArray())
+               pstmt.set$columnType(index, ${sddInputBeanVariable}.get$columnClass()); 
+#else
+			   for (${columnJavaType} element : ${sddInputBeanVariable}.get$columnClass()) {
+			      pstmt.set$columnType(index, element);
+			      index ++;
+			   }
+#end
+#end
+#end
+            }
+            index ++;
+#end
+
+#macro(injectSDDCmisParameter)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+            if (${sddInputBeanVariable}.get$columnClass()==null) {
+#if (!$column.isArray())
+##               pstmt.setNull(index, java.sql.Types.${column.type});
+#else
+#* 			   for (${columnType} element : ${sddInputBeanVariable}.get$columnClass()) {
+			      pstmt.setNull(index, java.sql.Types.${column.type});
+			      index ++;
+			   }
+			    
+*# 
+#end
+            } else {
+#if(${column.hasProperty("like-mode")})
+#set($likeMode = ${column.getPropertyValue("like-mode")})
+#if($likeMode =="startsWith")
+               $columnType var = ${sddInputBeanVariable}.get$columnClass() + "%";
+#elseif ($likeMode =="endsWith")
+               $columnType var = "%" + ${sddInputBeanVariable}.get$columnClass();
+#elseif ($likeMode =="contains")
+               $columnType var = "%" + ${sddInputBeanVariable}.get$columnClass() + "%";
+#else
+			   //TODO update your minuteproject config to set property like-mode to startsWith
+               // endsWith or contains
+               $columnType var = ${sddInputBeanVariable}.get$columnClass();
+#end
+               qs.set$columnType(index, var); 
+#else
+#if($columnUtils.isTimeColumn($column))
+               qs.set$columnType(index, new java.sql.Date(${sddInputBeanVariable}.get$columnClass().getTime())); 
+#else
+#if (!$column.isArray())
+               qs.set$columnType(index, ${sddInputBeanVariable}.get$columnClass()); 
+#else
+			   for (${columnType} element : ${sddInputBeanVariable}.get$columnClass()) {
+			      qs.set$columnType(index, element);
+			      index ++;
+			   }
+#end
+#end
+#end
+            }
+            index ++;
+#end
+	
+
+#macro (putSemanticReference $element)
+	  StringBuffer sb = new StringBuffer();
+#set($count=0)
+#foreach($column in $presentationUtils.getPotentialDisplayableColumns($table))
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if(!$isForeignKey)
+#if($columnUtils.isPartOfCompositePrimaryKey($column))
+#set($columnClass = "${columnClass}_")
+#end
+#set($count=$count+1)
+      if (${element}.get$columnClass()!=null)
+         sb.append (${element}.get$columnClass()#if($count<$velocityCount) +" - "); 
+#else +" " ); 
+#end 
+#end
+#end
+#end
+      return sb.toString();
+#end
+
+
+#macro (addMavenDependencyJdbcDriver)
+        <!-- JDBC driver --> 
+#if($hasDriver)		
+	    <!-- 
+		if driver is not on a maven repository 
+		download it manually and run the following command	   
+		mvn install:install-file -Dfile=${driver.artifactId}.jar -Dpackaging=jar -DgroupId=${driver.groupId} -DartifactId=${driver.artifactId} -Dversion=$driver.version
+		
+		remark:
+		this command assumes that your jar name is the same as your groupId name
+		-->
+        <dependency>
+            <groupId>$driver.groupId</groupId>
+            <artifactId>$driver.artifactId</artifactId>
+            <version>$driver.version</version>        
+        </dependency>    
+#else
+	    <!-- add jdbc driver : it is not provided in the configuration -->
+#exposeModelUpdatedAreas("jdbc-driver-dependency")
+#end
+#end
+
+#macro(exposeModelType)
+#set ($isRdbmsModel=$model.hasRdbmsModel())
+#end
+
+#macro(exposeBackendTechnology)
+#set ($isSpringBackend=$template.hasPropertyValue("add-backend-implementation","spring"))
+#set ($hasScheduler=$schedulerUtils.hasSchedulerEntry($generatorBean))
+#set ($isEJBBackend=$template.hasPropertyValue("add-backend-implementation","ejb"))
+#end
+
+#macro (putTargetServerDefinition)
+#set($isWeblogicTargetServer=$template.hasPropertyValue("target-server","weblogic"))
+#set($isTomcatTargetServer=$template.hasPropertyValue("target-server","tomcat"))
+#set($isGlassfishTargetServer=$template.hasPropertyValue("target-server","glassfish"))
+#set($isJBossTargetServer=$template.hasPropertyValue("target-server","jboss"))
+#end
+
+#macro (groovify)
+#if($groovify)
+#set($annotationListTagBeginning="([")
+#set($annotationListTagEnding="])")
+#set($accessor="")
+#else
+#set($annotationListTagBeginning="({")
+#set($annotationListTagEnding="})")	
+#set($accessor="private")
+#end
+#end
+
+#macro (exposeSourcecode)
+#set($isGithub=$template.hasPropertyValue("sourcecode-host","github"))
+#set($sourcecodeUrl=$template.getPropertyValue("sourcecode-url","none"))
+#end
+
+#macro (exposeQueryTarget)
+#if($configuration.isSingleModel())
+#set($targetQuery = $model.getStatementModel().getQueryByIdOrName($queryId))
+#else
+#set($targetQuery = $queryUtils.getQueryByIdOrName($configuration.application, $queryId))
+#end
+#end

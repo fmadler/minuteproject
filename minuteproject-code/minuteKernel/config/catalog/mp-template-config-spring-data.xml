@@ -1,0 +1,36 @@
+<target name="spring-data">		
+<!-- TODO 
+	maven-artifact-finalName-suffix in main catalog config
+	move artifact to REST dir
+	remove from Kendoui dir
+	remove from mp-template-config-Kendoui
+	
+
+ -->
+	<architecture-target name="spring-data" description="spring-data">
+	</architecture-target>	
+   	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"/>
+   	<plugin name="queryUtils" className="net.sf.minuteProject.utils.sql.QueryUtils"/>
+
+  	<template-target 
+    	name="spring-data Maven"
+		outputdir=""
+		package-root=""
+		libdir="lib/REST_LIB.vm">
+
+<!-- 
+		<template name="PomXml.REST.KendoUiJersey" templateFileName="PomXml.REST.KendoUiJersey.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>
+ -->		
+		<template name="PomXml.REST-2" templateFileName="PomXml.REST-2.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>
+		
+	</template-target>				
+	
+</target>

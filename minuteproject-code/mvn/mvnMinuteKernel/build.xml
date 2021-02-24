@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="archive" basedir="." name="minuteKernel">
+    <description>This build file will build all the minuteKernel modules</description>
+    <!-- ===================================================================== -->
+    <!-- import files -->
+    <!-- ===================================================================== -->
+	<property file="build.properties"/>
+    <!-- ===================================================================== -->
+    <!-- properties definitions -->
+    <!-- ===================================================================== -->
+    <!-- LOCAL PROPERTIES 	
+    <property name="project.name" value="minuteProject"/>-->
+    <property name="home.dir" value="."/>
+    <property name="application.dir" value="${home.dir}/application"/>
+	<property name="application.name" value="${project.name}"/>
+	<property name="application.version" value="${project.version}"/>
+	
+	<property name="lib.dir" value="${home.dir}/lib"/>
+	<property name="libextra.dir" value="${lib.dir}/extra"/>
+    <property name="src.dir" value="${home.dir}/src"/>
+	<property name="src-patch.dir" value="${home.dir}/src-patch"/>
+	<property name="src-plugin.dir" value="${home.dir}/src-plugin"/>
+    <property name="test.dir" value="${home.dir}/test"/>	
+    <property name="dist.dir" value="${application.dir}/java/lib"/>	
+	<property name="archive.name" value="${application.name}-${application.version}.jar"/>
+	<property name="archive.src.name" value="${application.name}-${application.version}-src.zip"/>
+	<property name="classes.dir" value="${home.dir}/classes"/>
+
+	
+	<!-- ===================================================================== -->
+    <!-- classpath definitions -->
+    <!-- ===================================================================== -->
+    <path id="compile.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+            <fileset dir="${libextra.dir}">
+                <include name="*.jar"/>
+            </fileset>    	
+        <fileset dir="${deplib.dir}">
+            <include name="*.jar"/>
+        </fileset>    	
+    </path>
+    <!-- ===================================================================== -->
+    <!-- specific macros definition -->
+    <!-- ===================================================================== -->
+    <macrodef name="macro_compile">
+        <attribute name="debug"/>
+        <attribute name="optimize"/>
+        <sequential>
+            <javac debug="@{debug}" deprecation="false" destdir="${classes.dir}" 
+            	optimize="@{optimize}" nowarn="false">
+                <classpath refid="compile.classpath"/>
+                <src path="${src.dir}"/>
+            	<src path="${src-plugin.dir}"/>
+            	<src path="${src-patch.dir}"/>
+                <include name="**/*.java"/>
+            </javac>
+        </sequential>
+    </macrodef>
+    	
+    <macrodef name="macro_copy_resource">
+        <attribute name="todir"/>
+        <attribute name="filesetDir"/>
+        <sequential>
+            <copy todir="@{todir}">
+                <fileset dir="@{filesetDir}">
+                    <include name="**/*.xml"/>
+                    <include name="**/*.properties"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+	
+    <macrodef name="macro_copy_code">
+        <attribute name="todir"/>
+        <attribute name="filesetDir"/>
+        <sequential>
+        	<mkdir dir="@{filesetDir}"/>
+            <copy todir="@{todir}">
+                <fileset dir="@{filesetDir}">
+                	<include name="**/*.java"/>
+                    <include name="**/*.xml"/>
+                    <include name="**/*.properties"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+	
+    <macrodef name="macro_archive">
+        <attribute name="compress"/>
+        <attribute name="destdir"/>
+        <attribute name="destfile"/>
+    	<attribute name="classesdir"/>
+        <sequential>
+            <jar compress="@{compress}" destfile="@{destdir}/@{destfile}">
+                <fileset dir="@{classesdir}">
+                    <include name="**/*.*"/>
+                </fileset>
+            </jar>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="title">
+        <attribute name="title"/>
+        <attribute name="projectname"/>
+        <attribute name="projectdir"/>
+        <sequential>
+			<echo>***************************</echo>
+			<echo>* task @{title}</echo>
+			<echo>* on project @{projectname}</echo>
+        	<echo>***************************</echo>
+        </sequential>
+    </macrodef>
+
+    <!-- ===================================================================== -->
+    <!-- target definitions -->
+    <!-- ===================================================================== -->
+
+	<target name="compileGroovy" >  
+		<taskdef name="groovyc"
+		  classname="org.codehaus.groovy.ant.Groovyc"
+		  classpath="${lib.dir}/groovy-all-1.8.0.jar"/>	
+	    <mkdir dir="${classes.dir}"/>
+		<groovyc destdir="${classes.dir}"> 
+            <src path="${src.dir}"/>
+        	<src path="${src-plugin.dir}"/>
+        	<src path="${src-patch.dir}"/>
+			<classpath refid="compile.classpath"/>
+			<classpath> 				
+				<pathelement path="${classes.dir}"/>
+			</classpath> 
+			<javac debug="on" deprecation="true"/>
+		</groovyc>  		
+	</target>	    
+
+	<!-- target clean -->
+    <target name="clean">
+        <title title="clean" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Clean the business project</description>
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="${classes.dir}"/>
+        	<fileset dir="${dist.dir}"/>
+        </delete>
+        <delete failonerror="false" dir="${reports.dir}"/>
+    </target>	
+	
+    <!-- target prepare -->
+    <target name="prepare">
+        <title title="TASK prepare" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Creates the directories necessary for building the business</description>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>	
+
+    <!-- target compile -->
+    <target name="compile" depends="prepare">
+        <title title="TASK compile" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Compile the migration project</description>
+        <macro_compile debug="true" optimize="false"/>
+    </target>	
+
+    <!-- target resource -->
+    <target name="resource">
+        <title title="TASK resource" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Copy all the properties and xml files to the working directory (classes.dir).</description>
+    	<macro_copy_resource todir="${classes.dir}" filesetDir="${src.dir}"/>
+    	<!--<macro_copy_resource todir="${classes.dir}" filesetDir="${test.dir}"/>-->
+    </target>	
+
+    <!-- target copy code -->
+    <target name="archive-code">
+        <title title="TASK copy code" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Copy all the code.</description>
+    	<delete dir="${release.code.dir}" ></delete>
+    	<mkdir dir="${dist.dir}"/>
+    	<macro_copy_code filesetDir="${src.dir}" todir="${release.code.dir}"/>
+    	<macro_copy_code filesetDir="${src-plugin.dir}" todir="${release.code.dir}"/>
+    	<zip basedir="${release.code.dir}" destfile="${dist.dir}/${archive.src.name}"></zip>
+    	<delete dir="${release.code.dir}" ></delete>
+    </target>	
+	
+    <!-- target archive -->
+    <target name="archive" depends="clean,compileGroovy,resource,archive-code">
+        <title title="TASK archive" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Create an archive containing all the classes of the migration project</description>
+        <macro_archive compress="true" destdir="${dist.dir}" destfile="${archive.name}" classesdir="${classes.dir}"/>
+    </target>	
+	
+		
+</project>

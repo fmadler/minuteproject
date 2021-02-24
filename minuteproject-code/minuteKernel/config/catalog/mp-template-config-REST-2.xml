@@ -1,0 +1,182 @@
+<target name="REST-2">		
+<!-- TODO 
+	maven-artifact-finalName-suffix in main catalog config
+	move artifact to REST dir
+	remove from Kendoui dir
+	remove from mp-template-config-Kendoui
+	
+
+ -->
+	<architecture-target name="REST" description="REST architecture">
+	</architecture-target>	
+   	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"/>
+   	<plugin name="queryUtils" className="net.sf.minuteProject.utils.sql.QueryUtils"/>
+   	<plugin name="securityUtils" className="net.sf.minuteProject.utils.security.SecurityUtils"/>
+
+   	<template-target 
+    	name="Kendo client"
+		outputdir="src/main/java"
+		libdir="lib/REST_LIB.vm">
+
+<!--  add also RESTDbAPILookupResource dependencies
+        <template name="RESTDbAPILookupResource" templateFileName="RESTDbAPILookupResource.vm" 
+            technicalPackage="rest"
+            file-extension="java" file-prefix="" file-suffix="LookupDefaultingResource"
+            has-updatable-nature="true" 
+            scope-specific-value="model">
+        </template> 
+-->        
+		<template
+			name="RESTDbAPIGenericResource" templateFileName="RESTDbAPIGenericResource.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest" add-model-name="false" 
+			file-extension="java" file-prefix="" file-suffix="GenericResource" 
+			model-specific="true">
+		</template>	
+
+		<template
+			name="RESTDbAPIEntityResource" templateFileName="RESTDbAPIEntityResource.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest" 
+			file-extension="java" file-prefix="" file-suffix="GenericResource" 
+			entity-specific="true" 
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+		
+		<template name="RESTDbAPISDDResource" templateFileName="RESTDbAPISDDResource.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="Resource"
+			add-package-name="false" add-business-package-dir-name="false" 
+			scope-specific-value="query" has-updatable-nature="true"
+			check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedRestStackRequired"
+			is-indirection-compatible="true"
+			>
+			<!-- is-indirection-compatible="true" -->
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>				
+		
+		<template name="RESTDbAPISDDCompositeResource" templateFileName="RESTDbAPISDDCompositeResource.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="Resource"
+			add-package-name="false" add-business-package-dir-name="true" 
+			scope-specific-value="composite" has-updatable-nature="true">
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>
+		
+		<!-- for SSE to decide if global or by query -->
+	
+		<template name="REST.SSE.event" templateFileName="REST.SSE.event.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest.sse"
+			file-extension="java" file-prefix="Sse" file-suffix="Resource" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+		
+		<template name="REST.Cache.Annotation" templateFileName="REST.Cache.Annotation.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="Cacheable" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+		
+		<template name="REST.Compress.Annotation" templateFileName="REST.Compress.Annotation.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="Compress" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+		
+		<template name="REST.GZIPWriterInterceptor" templateFileName="REST.GZIPWriterInterceptor.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="GZIPWriterInterceptor" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+		
+		<template name="REST.Exception-handling" templateFileName="REST.Exception-handling.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="GenericExceptionMapper" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+		
+		<template name="REST.Cache.ControlDecorator" templateFileName="REST.Cache.ControlDecorator.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="ControlDecorator" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+		
+		<template name="REST.DateParam" templateFileName="REST.DateParam.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest.param"
+			file-extension="java" file-prefix="" file-suffix="DateParam" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+			<property name="format" value="date" />
+		</template>
+		
+		<template name="REST.TimeParam" templateFileName="REST.DateParam.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest.param"
+			file-extension="java" file-prefix="" file-suffix="TimeParam" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+			<property name="format" value="time" />
+		</template>
+		
+		<template name="REST.TimestampParam" templateFileName="REST.DateParam.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest.param"
+			file-extension="java" file-prefix="" file-suffix="TimestampParam" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+			<property name="format" value="timestamp" />
+		</template>
+		
+		<!-- jwt -->
+				
+		<template name="REST.JWTUtils" templateFileName="REST.JWTUtils.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="JWTUtils" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+				
+		<template name="REST.JWTTokenNeeded.Annotation" templateFileName="REST.JWTTokenNeeded.Annotation.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="JWTTokenNeeded" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+				
+		<template name="REST.JWTTokenNeededFilter" templateFileName="REST.JWTTokenNeededFilter.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="JWTTokenNeededFilter" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+				
+		<template name="REST.JWTTokenResource" templateFileName="REST.JWTTokenResource.vm" 
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="JWTTokenResource" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>		
+
+		
+		<template name="REST.environment.build.info" templateFileName="REST.environment.build.info.vm" 
+			technicalPackage="rest"
+			file-extension="java" file-suffix="ApplicationInfoResource" 
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>
+
+		<template name="REST.application.botdetect.captcha" templateFileName="REST.application.botdetect.captcha.vm"
+			technicalPackage="rest"
+			file-extension="java" file-suffix="BotdetectResource"
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="botdetect"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+	</template-target>
+		
+  	<template-target 
+    	name="Kendo client Maven"
+		outputdir=""
+		package-root=""
+		libdir="lib/REST_LIB.vm">
+	
+		<template name="PomXml.REST-2" templateFileName="PomXml.REST-2.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>
+		
+	</template-target>				
+	
+</target>

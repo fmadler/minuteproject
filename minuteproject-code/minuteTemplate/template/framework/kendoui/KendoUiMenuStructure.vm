@@ -1,0 +1,7 @@
+#generatorSpecific()
+<div class="k-content">
+<ul id="${generatorBean.name}-Menu">
+#exposeVariableModelSpecific()
+#putKendoUIMenuStructure()
+</ul>
+</div>

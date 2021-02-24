@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:trh="http://myfaces.apache.org/trinidad/html"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  
+  
+  <!--<trh:script id="blockNoteWindow">    
+    function blockNoteWindow(event) {
+        var src = event.getSource();
+        src.getPeer().ShouldShowHint = function() {             
+            return false;
+        }    
+    }
+  </trh:script>-->
+  
+  
+  <af:pageTemplateDef var="attrs">
+    <af:xmlContent>
+      <component xmlns="http://xmlns.oracle.com/adf/faces/rich/component">
+        <display-name>tableTemplate</display-name>
+        <facet>
+          <facet-name>table</facet-name>
+        </facet>
+        <attribute>
+          <attribute-name>paginationUtils</attribute-name>
+          <attribute-class>net.sf.minuteproject.adf.utils.TablePaginationUtils</attribute-class>
+          <required>true</required>
+        </attribute>
+        <attribute>
+          <attribute-name>tableName</attribute-name>
+          <attribute-class>java.lang.String</attribute-class>
+          <required>false</required>
+        </attribute>
+        <attribute>
+          <attribute-name>tableId</attribute-name>
+          <attribute-class>java.lang.String</attribute-class>
+          <required>true</required>
+        </attribute>
+      </component>
+    </af:xmlContent>
+    <af:panelGroupLayout layout="horizontal" halign="left">
+      <af:panelBox text="#{attrs.tableName}" id="pb1" showDisclosure="false"
+                   showHeader="always" ramp="core" styleClass="section">
+        <f:facet name="toolbar">
+          <af:panelGroupLayout id="pgl1" halign="right" valign="middle"
+                               layout="horizontal"
+                               inlineStyle="font-weight:normal;">
+            <f:facet name="separator">
+              <af:spacer width="5" height="1"/>
+            </f:facet>
+            <af:commandImageLink shortDesc="First Page"
+                                 action="#{attrs.paginationUtils.goFirstPage}"
+                                 id="cb1" icon="/images/pagination/first.png"
+                                 partialSubmit="true"
+                                 partialTriggers="soc1 cb1 cb2 cb3 cb4 pt_it1"
+                                 disabled="#{!attrs.paginationUtils.previousEnabled}"
+                                 disabledIcon="/images/pagination/first-disabled.png"
+                                 hoverIcon="/images/pagination/first-hover.png"/>
+            <af:commandImageLink shortDesc="Previous" id="cb2"
+                                 action="#{attrs.paginationUtils.goPreviousSet}"
+                                 partialSubmit="true"
+                                 partialTriggers="soc1 cb1 cb2 cb3 cb4 pt_it1"
+                                 disabled="#{!attrs.paginationUtils.previousEnabled}"
+                                 icon="/images/pagination/prev.png"
+                                 disabledIcon="/images/pagination/prev-disabled.png"
+                                 hoverIcon="/images/pagination/prev-hover.png"/>
+            <af:inputText  id="pt_it1"
+                          label="Page" value="#{attrs.paginationUtils.pageNumber}" 
+                          partialTriggers="soc1 cb1 cb2 cb3 cb4 pt_it1"
+                          columns="2"
+                          autoSubmit="true"
+                          valueChangeListener="#{attrs.paginationUtils.pageNumberListener}"
+                          maximumLength="4"
+                          converter="javax.faces.Integer">
+                <!--<af:clientListener method="blockNoteWindow" type="focus"/>-->
+            </af:inputText>
+            <af:outputText value="of #{attrs.paginationUtils.lastPage}"
+                           id="pt_ot1" partialTriggers="soc1 cb1 cb2 cb3 cb4 pt_it1"/>
+            <af:commandImageLink shortDesc="Next" id="cb3"
+                                 action="#{attrs.paginationUtils.goNextSet}"
+                                 disabled="#{!attrs.paginationUtils.nextEnabled}"
+                                 partialSubmit="true"
+                                 partialTriggers="soc1 cb1 cb2 cb3 cb4 pt_it1"
+                                 icon="/images/pagination/next.png"
+                                 disabledIcon="/images/pagination/next-disabled.png"
+                                 hoverIcon="/images/pagination/next-hover.png"/>
+            <af:commandImageLink id="cb4"
+                                 action="#{attrs.paginationUtils.goLastPage}"
+                                 disabled="#{!attrs.paginationUtils.nextEnabled}"
+                                 iconPosition="leading" partialSubmit="true"
+                                 shortDesc="LastPage"
+                                 partialTriggers="soc1 cb1 cb2 cb3 cb4 pt_it1"
+                                 icon="/images/pagination/last.png"
+                                 disabledIcon="/images/pagination/last-disabled.png"
+                                 hoverIcon="/images/pagination/last-hover.png"/>
+            <af:selectOneChoice valueChangeListener="#{attrs.paginationUtils.rangeSizeListener}"
+                                value="#{attrs.paginationUtils.rangeSize}"
+                                id="soc1" autoSubmit="true" simple="true" shortDesc="">
+              <f:selectItem itemLabel="10" itemValue="10"/>
+              <f:selectItem itemLabel="20" itemValue="20"/>
+              <f:selectItem itemLabel="30" itemValue="30"/>
+              <!--<af:clientListener method="blockNoteWindow" type="focus"/>-->
+            </af:selectOneChoice>
+            <af:commandImageLink id="xlsExportCmd"
+                                     icon="/images/pagination/xlsExport.png"
+                                     styleClass="toolbarIcon">
+              <af:exportCollectionActionListener exportedId="#{attrs.tableId}"
+                                                 type="excelHTML"/>
+            </af:commandImageLink>
+          </af:panelGroupLayout>
+        </f:facet>
+        <af:panelGroupLayout id="pgl2" partialTriggers="soc1 cb1 cb2 cb3 cb4 pt_it1">
+          <af:facetRef facetName="table"/>
+        </af:panelGroupLayout>
+      </af:panelBox>
+    </af:panelGroupLayout>
+  </af:pageTemplateDef>
+</jsp:root>

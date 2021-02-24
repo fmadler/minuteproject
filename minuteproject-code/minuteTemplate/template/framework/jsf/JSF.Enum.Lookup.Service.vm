@@ -1,0 +1,60 @@
+#exposeVariableModelSpecific()
+#set($thisClassName=$className)
+#set($thisDomainVariableName=$classVariable)
+package $packageName;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import javax.faces.model.SelectItem;
+
+import java.io.Serializable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@ManagedBean(name="${thisDomainVariableName}")
+@ViewScoped
+public class $thisClassName implements Serializable{
+
+#foreach($table in ${entities})
+#asUML($table)
+#exposeVariableEntitySpecific()
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+#if($isEnum)
+#set ($enumColumn = $columnUtils.getColumn($table, $column.name))
+#set ($columnType = $enumUtils.getEnumType($template, $enumColumn))
+##    private $enumImport  $columnType;
+##	
+	public $enumImport [] get${domainClassName}${columnClass}Array() {
+		return ${enumImport}.values();
+	}
+	
+	private static List<SelectItem> get${domainClassName}${columnClass}SelectItemList;
+		
+	public static List<SelectItem> get${domainClassName}${columnClass}SelectItemList() {
+		if (get${domainClassName}${columnClass}SelectItemList==null) {
+            get${domainClassName}${columnClass}SelectItemList = new ArrayList<SelectItem>();
+            for ($enumImport element : ${enumImport}.values())  {
+                SelectItem item = new SelectItem();
+                item.setLabel(element.name());
+                item.setValue(element.value());
+                get${domainClassName}${columnClass}SelectItemList.add(item);
+            }
+		}
+        return get${domainClassName}${columnClass}SelectItemList;
+    }
+	
+	public static List<SelectItem> get${domainClassName}${columnClass}SelectItemListSelect() {
+		List<SelectItem> list = new ArrayList<SelectItem>();
+		list.add (new SelectItem("", "Select"));
+		list.addAll (get${domainClassName}${columnClass}SelectItemList());
+		return list;
+	}
+#end
+#end
+#end
+
+}

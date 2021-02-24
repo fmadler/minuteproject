@@ -1,0 +1,99 @@
+#exposeEnabledProperties()
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+       default-autowire="byName">
+
+    <context:annotation-config />
+
+#if ($configuration.hasPropertyPlaceholder())
+#set($propertyPlaceholder = $configuration.environments.getPropertyPlaceholder())
+    <context:property-placeholder location="classpath*:${propertyPlaceholder}"/>
+
+#end
+
+#* TODO_ENV
+	<bean id="propertyConfigurer" class="$dbPropertyConfigurer">
+		<constructor-arg index="0" value= "java:comp/env/jdbc/DatasourceTODO"  />
+		<constructor-arg index="1" value="SELECT PARAM_KEY, PARAM_VALUE FROM CONF_PARAM"  />
+	</bean>
+*#	
+    <task:annotation-driven/>
+#foreach ($model in $configuration.allModels)
+#set ($templateToScan=$template.getPropertyValue("template-to-scan",""))
+#set ($scanPackage=$commonUtils.getPackageName($model, $template, $templateToScan))
+#set ($templateToScan2=$template.getPropertyValue("template-to-scan-2",""))
+#set ($scanPackage2=$commonUtils.getPackageName($model, $template, $templateToScan2))
+#if ($schedulerUtils.hasSchedulerEntry($model))
+#set ($templateToScanScheduler=$template.getPropertyValue("template-to-scan-scheduler","SpringScheduler"))
+#set ($scanPackageScheduler=$commonUtils.getPackageName($model, $template, $templateToScanScheduler))
+<!-- $templateToScanScheduler $scanPackageScheduler -->
+#else
+#set ($scanPackageScheduler="")
+#end
+#exposeVariableModelSpecific()
+#exposeSpringModelSpecific()
+
+    <import resource="classpath:${pathSpringBackendConfig}"/>    
+ 
+	<context:component-scan base-package="$scanPackage,$scanPackage2,$scanPackageScheduler" />
+
+#end
+#if ($isVelocityEnabled)
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+
+            <value>
+                resource.loader=class
+                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+            </value>
+#*             
+            <!--
+            <value>
+                resource.loader=class
+                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+                velocimacro.library=xxx.vm
+            </value>
+            -->
+            <!--
+            <value>
+                resource.loader=ds
+                ds.resource.loader.public.name=DataSource
+                ds.resource.loader.class=org.apache.velocity.runtime.resource.loader.DataSourceResourceLoader
+                ds.resource.loader.resource.datasource=java:comp/env/jdbc/xxxDS
+                ds.resource.loader.resource.table=v_velocity_template
+                ds.resource.loader.resource.keycolumn=template_name
+                ds.resource.loader.resource.templatecolumn=TEMPLATE_DEFINITION
+                ds.resource.loader.resource.timestampcolumn=TEMPLATE_TIMESTAMP
+                ds.resource.loader.cache=false
+                ds.resource.loader.modificationCheckInterval=60
+                velocimacro.library=xxx.vm, yyy.vm
+                velocimacro.library.autoreload=true
+            </value>
+-->
+*#
+
+        </property>
+    </bean>
+
+
+    <bean id="velocityMerger" class="com.winy.rendering.VelocityMerger">
+        <property name="engine" ref="velocityEngine"/>
+        <property name="toolBoxConfigLocation" value="/WEB-INF/velocity-tools.xml"/>
+    </bean>
+#end
+##TODO add scheduling component
+</beans>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="generation-sample" basedir="." name="MinuteProject - ANT integration">
+	<description>This is a sample ant integration</description>
+
+	<!-- ===================================================================== -->
+	<!-- properties definitions -->
+	<!-- ===================================================================== -->
+
+	<property environment="env"/>
+	<property name="minuteproject.home" value="${env.MP_HOME}" />
+
+	<!-- ===================================================================== -->
+	<!-- classpath definitions -->
+	<!-- ===================================================================== -->
+
+	<!-- 
+	   this is used to get the minuteproject release, dependencies and config    
+	-->
+	
+	<path id="mp.library.path">
+		<pathelement location="${env.MP_HOME}/demo/config" />
+		<fileset dir="${env.MP_HOME}/application">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<!-- ===================================================================== -->
+	<!-- macro definitions -->
+	<!-- ===================================================================== -->
+	
+	<macrodef name="macro_generate">
+		<attribute name="config" />
+		<sequential>
+			<echo message="Generate for config @{config}" />
+			<java fork="true" classname="net.sf.minuteProject.application.ModelViewGenerator">
+				<classpath>
+					<path refid="mp.library.path" />
+				</classpath>
+				<arg line="@{config}" />
+			</java>
+		</sequential>
+	</macrodef>
+
+	<!-- ===================================================================== -->
+	<!-- ant generation tasks definitions -->
+	<!-- ===================================================================== -->
+	
+	<target name="generation-sample">
+		<!-- 
+		    check that your configuration file mp-config-xxx  are place in 
+		    ${env.MP_HOME}/demo/config
+			
+			The ouput of the generation with go to the outputdir specified in the configuration
+			If none it goes in ${env.MP_HOME}/demo/output
+			
+			Remark:
+				this sample works with Minuteproject distribution.
+				The configuration relies on a hsqldb database located on the file system.
+				For advanced test check that the database is up and running at the url specified 
+				in the url node of the configuration
+		-->
+		
+        <macro_generate config="mp-config-JPA2.xml" />
+		
+	</target>
+
+</project>

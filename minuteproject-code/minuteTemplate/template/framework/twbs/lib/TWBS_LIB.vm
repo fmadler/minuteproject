@@ -1,0 +1,33 @@
+#macro(exposeTwbsGeneratorBeanSpecific)
+#exposeTwbsTemplate()
+#set($kendoUiMenuStructurePath=$commonUtils.getTemplateArtifactName($generatorBean, $templateKendoUiMenuStructure))
+#set($kendoUiMenuPath=$commonUtils.getTemplateArtifactName($generatorBean, $templateKendoUiMenu))
+#set($kendoUiMainCssPath=$commonUtils.getArtifactRootPathDirAndFullName($generatorBean, $template, $templateKendoUiMainCss))
+#set($kendoUiMainJsPath=$commonUtils.getArtifactRootPathDirAndFullName($generatorBean, $template, $templateKendoUiMainJs))
+#end
+
+#macro(exposeTwbsTemplate)
+
+#end
+
+#macro(putTwbsMenuPackage)
+#set($displayableEntities = $presentationUtils.getDisplayableEntityFromPackage($package))
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#set($packageLabel=$i18nUtils.getPackageName($package))
+#set($subMenuVar = "submenu${package.name}")
+#set($tabVar = "tab${package.name}")
+#if(!$displayableEntities.isEmpty())
+								<li><a href="#">$packageLabel</a>
+								    <ul class="nav nav-third-level">
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$kendoUIUtils.getAccessUrl($table.name))
+#exposeKendoUIEntitySpecific()
+        								<li><a href="/$entityFullPath"> $tableLabel</a></li>
+#end
+#end
+								    </ul>
+								</li>
+#end
+#end

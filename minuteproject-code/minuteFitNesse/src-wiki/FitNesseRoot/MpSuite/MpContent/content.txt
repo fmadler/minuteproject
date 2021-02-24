@@ -1,0 +1,17 @@
+!contents -R2 -g -p -f -h
+
+>UtilsSuite
+>ConventionSuite
+>DataModelStructureSuite
+>TypeSuite
+
+!define MP_KERNEL {../../minuteKernel}
+!define MP_FITNESSE {..}
+
+!path ${MP_KERNEL}/bin
+!path ${MP_KERNEL}/classes
+!path ${MP_KERNEL}/lib/*
+!path ${MP_KERNEL}/lib/extra/*
+!path ${MP_FITNESSE}/bin
+!path ${MP_FITNESSE}/classes
+!path ${MP_FITNESSE}/lib/*

@@ -1,0 +1,36 @@
+.textMandatoryField {
+    font-weight: normal;
+    font-style:italic;
+    font-size: 1em;
+    padding-right: 5px;
+    text-align: right;
+    float: right;
+}
+
+.section {
+    margin-top: 10px;
+}
+.subsection {
+    padding: 5px 2%;
+}
+div.subsectionForm {
+    border-color:#AEB4BD #FFF; 
+    border-style:solid; 
+    border-width:1px; 
+    padding:5px 0 5px 0;
+}
+
+div.dialogFormLayout {
+    padding:10px;
+    line-height: 1.5em;
+}
+
+
+.toolbarIcon img {
+    width:17px;
+    height:20px;
+}
+
+.toolbarIcon img:hover {
+    background-color:#369FFF;
+}

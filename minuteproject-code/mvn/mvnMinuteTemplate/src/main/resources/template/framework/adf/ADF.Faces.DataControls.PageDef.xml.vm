@@ -1,0 +1,157 @@
+#exposeADFFacesEntitySpecific()
+#exposeADFDataBindingControlSpecific()
+#exposeADFFacesDataControlEntitySpecific()
+#exposeADFFacesDomainObject()
+#exposeFrontEndBackendBindingType()
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel"
+                version="11.1.1.61.92" id="$className"
+                Package="${packageName}.$domainClassName">
+  <parameters/>
+  <executables>
+	<variableIterator id="variables"/>
+#if($isBindingDBDirect)	
+    <iterator Binds="${entityADFViewClass}1" RangeSize="25" DataControl="AppModuleDataControl" id="${entityADFViewClass}1Iterator"
+              ChangeEventPolicy="ppr"/>
+#end			  
+    <methodIterator Binds="list${domainClassName}.result" DataControl="${dataControlRef}"
+                    RangeSize="1"
+                    BeanClass="$beanVOADFFacesQueryResponseImport"
+                    id="list${domainClassName}Iterator" Refresh="ifNeeded"/>
+##set ($listClasses = $i18nUtils.plurialize("${beanVOADFFacesVariable}"))
+    <accessorIterator MasterBinding="list${domainClassName}Iterator" Binds="$beanVOADFFacesVariable"
+                      RangeSize="50" DataControl="${dataControlRef}"
+                      BeanClass="$beanVOADFFacesImport"
+                      id="${domainVariableName}DTOsIterator" Refresh="ifNeeded"/>
+    <searchRegion Binds="${domainVariableName}DTOsIterator" Criteria=""
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  id="${domainVariableName}DTOsQuery" />
+   </executables>
+  <bindings>
+#if($isBindingDBDirect)	
+    <attributeValues IterBinding="${entityADFViewClass}1Iterator" id="DepartmentId">
+      <AttrNames>
+        <Item Value="DepartmentId"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="${entityADFViewClass}1Iterator" id="DepartmentName">
+      <AttrNames>
+        <Item Value="DepartmentName"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="${entityADFViewClass}1Iterator" id="ManagerId">
+      <AttrNames>
+        <Item Value="ManagerId"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="${entityADFViewClass}1Iterator" id="LocationId">
+      <AttrNames>
+        <Item Value="LocationId"/>
+      </AttrNames>
+    </attributeValues>
+    <action IterBinding="${entityADFViewClass}1Iterator" id="First" RequiresUpdateModel="true" Action="first"/>
+    <action IterBinding="${entityADFViewClass}1Iterator" id="Previous" RequiresUpdateModel="true" Action="previous"/>
+    <action IterBinding="${entityADFViewClass}1Iterator" id="Next" RequiresUpdateModel="true" Action="next"/>
+    <action IterBinding="${entityADFViewClass}1Iterator" id="Last" RequiresUpdateModel="true" Action="last"/>
+    <attributeValues IterBinding="EmployeesView3Iterator" id="EmployeeId">
+      <AttrNames>
+        <Item Value="EmployeeId"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="EmployeesView3Iterator" id="FirstName">
+      <AttrNames>
+        <Item Value="FirstName"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="EmployeesView3Iterator" id="LastName">
+      <AttrNames>
+        <Item Value="LastName"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="EmployeesView3Iterator" id="Email">
+      <AttrNames>
+        <Item Value="Email"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="EmployeesView3Iterator" id="PhoneNumber">
+      <AttrNames>
+        <Item Value="PhoneNumber"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="EmployeesView3Iterator" id="HireDate">
+      <AttrNames>
+        <Item Value="HireDate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="EmployeesView3Iterator" id="JobId">
+      <AttrNames>
+        <Item Value="JobId"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="EmployeesView3Iterator" id="Salary">
+      <AttrNames>
+        <Item Value="Salary"/>
+      </AttrNames>
+    </attributeValues>
+    <graph IterBinding="EmployeesView3Iterator" id="EmployeesView31" xmlns="http://xmlns.oracle.com/adfm/dvt"
+           type="PIE">
+      <graphDataMap convert="false" leafOnly="true">
+        <series>
+          <item value="LastName"/>
+        </series>
+        <groups>
+          <data>
+            <item value="Salary"/>
+          </data>
+        </groups>
+      </graphDataMap>
+    </graph>
+    <tree IterBinding="EmployeesView3Iterator" id="EmployeesView3">
+      <nodeDefinition DefName="demo.model.EmployeesView" Name="EmployeesView30">
+        <AttrNames>
+#foreach ($column in $table.columns)  
+#putColumnParamNaming()
+          <Item Value="${columnVar}"/>
+#end 
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+#end	
+#if ($isBindingWsSDO || $isBindingSpring)
+##if($hasSearch)
+    <methodAction id="list${domainClassName}" RequiresUpdateModel="true"
+                  Action="invokeMethod" MethodName="list${domainClassName}"
+                  IsViewObjectMethod="false" DataControl="${dataControlRef}"
+                  InstanceName="${dataControlRef}.dataProvider"
+                  ReturnName="data.${dataControlRef}.methodResults.list${domainClassName}_${dataControlRef}_dataProvider_list${domainClassName}_result">
+      <NamedData NDName="request"
+                 NDValue="#{viewScope.${domainVariableName}BackingBean.${domainVariableName}Table.request}"
+                 NDType="$beanVOADFFacesQueryRequestImport"
+                 NDOption="2"/>
+    </methodAction>
+    <tree IterBinding="${domainVariableName}DTOsIterator" id="${domainVariableName}DTOs">
+      <nodeDefinition DefName="$beanVOADFFacesImport"
+                      Name="${domainVariableName}">
+        <AttrNames>
+#foreach ($column in $table.columns)  
+#putColumnParamNaming()
+          <Item Value="${columnVar}"/>
+#if($isForeignKey)
+          <Item Value="${columnVar}_"/>
+#end
+#end 
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="createOrUpdate${domainClassName}" RequiresUpdateModel="true"
+                  Action="invokeMethod" MethodName="createOrUpdate${domainClassName}"
+                  IsViewObjectMethod="false"
+                  DataControl="${dataControlRef}"
+                  InstanceName="${dataControlRef}.dataProvider">
+      <NamedData NDName="${domainVariableName}" NDType="$beanVOADFFacesImport"
+                 NDOption="2"/>
+    </methodAction>
+#end
+  </bindings>
+</pageDefinition>
+

@@ -1,0 +1,62 @@
+<target name="doctrine">		
+	<architecture-target name="doctrine" description="doctrine ORM">
+	</architecture-target>	
+    <plugin name="doctrineUtils" className="net.sf.minuteProject.plugin.doctrine.DoctrineUtils"></plugin>
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="entitySecurityUtils" className="net.sf.minuteProject.utils.security.EntitySecurityUtils"/>
+	<plugin name="persistenceUtils" className="net.sf.minuteProject.plugin.persistence.PersistenceUtils"/>
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	
+	<template-target 
+    	name="Doctrine ORM set"
+		libdir="lib/DOCTRINE_LIB.vm"
+		outputdir="src"
+		belongToPackage="true">
+		
+		<template name="DomainEntityDoctrineAnnotation" templateFileName="DomainEntityDoctrineAnnotation.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="php"
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+		
+<!-- 		<template name="DomainEntityJPA2Metamodel" templateFileName="DomainEntityJPA2Metamodel.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="_" 
+			entity-specific="true" package-specific="false" model-specific="false"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property>
+      		<property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2" ></property>
+		    <property name="DomainEntityJPA2EmbeddedId" value="DomainEntityJPA2EmbeddedId" ></property> 
+		</template>		
+ -->
+    </template-target>
+
+	<template-target name="build"
+	    templatedir = "template" 
+		libdir="lib/DOCTRINE_LIB.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+
+		<template name="Doctrine.Bootstrap.php" templateFileName="Doctrine.Bootstrap.php.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="false"	 has-updatable-nature="true"	
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="php" file-prefix="bootstrap" 
+			model-specific="true">
+		</template>
+					
+		<template name="Doctrine.cli-config.php" templateFileName="Doctrine.cli-config.php.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="false"	 has-updatable-nature="true"	
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="php" file-prefix="cli-config" 
+			model-specific="true">
+		</template>
+					
+	</template-target>	  	
+  	         		
+</target>

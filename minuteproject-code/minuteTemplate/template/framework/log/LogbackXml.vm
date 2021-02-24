@@ -1,0 +1,57 @@
+#generatorSpecific()
+#exposeApplicationSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- acc log -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d %-5.5level [${generatorBean.name}] %-60.60logger{60} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	
+	<appender name="${generatorBean.name}_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>../logs/${generatorBean.name}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>../logs/${generatorBean.name}.%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 100MB -->
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d %-5.5level [${generatorBean.name}] %-60.60logger{60} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	
+	<!--
+	<property file="${appli.config.path}" />
+	-->
+
+	<timestamp key="bySecond" datePattern="yyyyMMddHHmmss" />
+	
+#if($configuration.isSingleModel())
+	<root name="${model.getPackageRoot()}" level="INFO">
+		<appender-ref ref="${generatorBean.name}_APPENDER" />
+	</root>
+
+	<root name="${model.getPackageRoot()}" level="DEBUG">
+		<appender-ref ref="STDOUT" />
+	</root>
+#else
+#foreach ($model in $application.getModels())
+	<root name="${model.getPackageRoot()}" level="INFO">
+		<appender-ref ref="${generatorBean.name}_APPENDER" />
+	</root>
+
+	<root name="${model.getPackageRoot()}" level="DEBUG">
+		<appender-ref ref="STDOUT" />
+	</root>
+	
+#end
+#end
+</configuration>

@@ -1,0 +1,21 @@
+!contents -R2 -g -p -f -h
+
+define COMMAND_PATTERN {java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 -cp %p %m}
+
+!2 Load model
+JOOQ model load
+!| net.sf.minuteProject.model.NavigateModelSequenceFixture|
+|load| mp-config-JOOQ-tech.xml |
+|check | store procedure has return |f_number |true |
+|check | store procedure exists | f317| true |
+|check | store procedure input columns are |f317| p1, p2, p3, p4 |true |
+|check | store procedure has return |f317 |true |
+
+
+Liferay model load
+!| net.sf.minuteProject.model.NavigateModelSequenceFixture|
+|load| mp-config-LAZULY-BSLA-JPA2.xml |
+|check | store procedure exists | registerAttendeeFull| true |
+|check | store procedure input columns are |registerAttendeeFull| firstName , lastName,email,conferenceId,address_street1,address_street2,countryId |true |
+|check | store procedure output columns are |registerAttendeeFull| attendeeId |true |
+

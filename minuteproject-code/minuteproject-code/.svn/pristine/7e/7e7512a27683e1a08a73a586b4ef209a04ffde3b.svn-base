@@ -1,0 +1,12 @@
+<target name="i18n lib">		
+	<architecture-target name="i18n" description="i18n architecture">
+	</architecture-target>	
+
+	<template-target 
+    	name="i18n set"
+		outputdir="src"
+		belongToPackage="true">
+	
+    </template-target>		
+         		
+</target>

@@ -1,0 +1,19 @@
+#exposeADFFacesEntitySpecific()
+#exposeEnvironmentParams()
+#putImportSDDBean()
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.61.92"
+          id="$className" Package="$packageName"
+          BeanClass="${packageName}.$className"
+          isJavaBased="true">
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+  <Attribute Name="$columnVar" Type="$columnFullType"/>
+#end
+  <MethodAccessor IsCollection="false" Type="java.lang.String" id="toString"
+                  ReturnNodeName="Return"/>
+  <ConstructorMethod IsCollection="true"
+                     Type="${packageName}.$className"
+                     BeanClass="${packageName}.$className"
+                     id="$className"/>
+</JavaBean>

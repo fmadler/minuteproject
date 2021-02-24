@@ -1,0 +1,11 @@
+!contents -R2 -g -p -f -h
+
+!2 Load model
+Liferay model load
+!| net.sf.minuteProject.model.NavigateModelSequenceFixture              |
+|load |mp-config-LIFERAY-JPA2.xml                                       |
+|check|number of parents for entity            |portletitem |4          |
+|check|column name of table name is foreign key|emailAddress|User_|false|
+|check|column name of table name is foreign key|contactId   |User_|true |
+|check|column name of table name is foreign key|companyId   |User_|true |
+

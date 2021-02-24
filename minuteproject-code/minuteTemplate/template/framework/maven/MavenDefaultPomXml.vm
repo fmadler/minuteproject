@@ -1,0 +1,35 @@
+#generatorSpecific()
+#exposeMaven()
+#exposeBackendTechnology()
+#exposePom()
+#set($dependentJarArtifactName = $mavenUtils.getDependentJarArtifactName($template, $generatorBean))
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>${groupId}</groupId>
+	<artifactId>${artifactId}</artifactId>
+	<version>${versionId}</version>
+	<packaging>${packaging}</packaging>
+	<name>${mavenReleaseName} artifact</name>
+
+<!-- Define the versions of your ear components here -->
+	<dependencies>
+	  <dependency>
+	    <groupId>${groupId}</groupId>
+##	    <artifactId>${mavenDependentArtifact}</artifactId>
+	    <artifactId>${dependentJarArtifactName}</artifactId>
+	    <version>${versionId}</version>
+	    <type>jar</type>
+	  </dependency>
+#addArea("custom-dependencies")
+	</dependencies>
+	
+	<build>
+#addArea("custom-build")
+	  <finalName>${mavenFinalName}</finalName>
+	</build>
+	
+#addArea("custom-maven-nodes")
+
+</project>
+

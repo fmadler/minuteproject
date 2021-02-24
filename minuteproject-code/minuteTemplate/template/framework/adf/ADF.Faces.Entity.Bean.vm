@@ -1,0 +1,383 @@
+#exposeVariableEntitySpecific()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
+import javax.faces.model.SelectItem;
+import java.sql.*;
+
+#if($addDomainSpecificMethod)
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+#end
+import java.io.Serializable;
+
+#exposeADFFacesEntityImport()
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ */
+
+public class ${className} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+	
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+##if (!$isMany2Many)
+##if (!$isPkUserProvided)
+    private $columnType $columnVar;
+
+##end
+##end
+#end
+
+#foreach ($column in ${table.attributes})
+#fieldAnnotationAddedAreas()
+#updatedColumnAttributeAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+#putColumnParamNaming()
+#if ($column.isLob())
+#exposeLobProperties()
+#end
+#if($isEnum)
+#set($columnType=$enumClassName)
+#end
+#if($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+#end
+    private $columnType $columnVar; 
+#end
+$!updatedAreaEnd
+
+#end
+
+#foreach ($reference in $table.parents)
+#if(!$referenceUtils.isReferenceInPrimaryKey($reference))
+#putReferenceParams2()
+#set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
+    private $linkedTableClass ${colVar};
+#set($column = $reference.localColumn)
+#putColumnParamNaming()
+    private $columnType ${columnVar}_;  
+
+#end	
+#end	
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#exposeEntityUpdatedAreas("${childrenListVariable}-field")
+#if(!$linktableDB.isManyToMany())
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#set ($importDomainObjectForeignTable = $commonUtils.getEntityLevelTemplateFullPath($model, $linktableDB, $template, $templateJPA2DomainObject))
+#set ($targetEntityClass="${importDomainObjectForeignTable}.class")
+#exposeEnrichedPk(${reference.column})
+#if (!$isEnrichedPk)
+#set ($foreignColumnVar = $formatUtils.getJavaNameVariable($columnDB.name))
+#else
+#set ($foreignColumnVar = $domainVariableName)
+#end
+    private Set <$linkedTableClass> $childrenListVariable = new HashSet<$linkedTableClass>(); 
+
+#end
+#end
+#if(!$linktableDB.isManyToMany())
+$!updatedAreaEnd
+#end
+#end
+
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeEntityUpdatedAreas("m2m-$childrenListVariable")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+
+    private Set <$targetTableName> $childrenListVariable = new HashSet <$targetTableName> ();
+
+#end
+#updatedAreaEnd()
+#end
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+
+
+#####
+#if($addDomainSpecificMethod)
+    /**
+    * toString implementation
+    */
+	public String toString() {
+		return toString(this);
+	}
+
+	public ToStringBuilder getToStringBuilder(Object object) {
+	 	return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+            .append("$columnVar", $columnVar)
+#end	 	
+	 	    ;
+	} 
+		
+	public String toString(Object object) {
+	 	return getToStringBuilder(object).toString();
+	} 
+	
+	public String toStringWithParents() {
+	    ToStringBuilder toStringBuilder = getToStringBuilder(this);
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#columnJavaNaming()
+#set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
+        if ($colVar!=null)
+            toStringBuilder.append("${colVar}", ${colVar}.toStringWithParents());
+#end
+	 	return toStringBuilder.toString();	
+	}
+	/**
+    * hashCode implementation
+    */
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(flat());
+	}
+	
+	/**
+    * equals implementation
+
+	public boolean equals(Object object) {
+		return super.toEquals(flat(), object);
+	}
+    */
+	public boolean equals(Object object) {
+		if (object == null) return false;	
+		if (object == this) return true;
+		if (!(object instanceof ${className})) return false;
+		${className} ${variableName} = (${className}) object;
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+		if (${variableName}.${columnVar}==null || !${variableName}.${columnVar}.equals(${columnVar})) return false;
+#end
+		return true;
+	}    
+
+	public ${className} clone() {
+        ${className} ${variableName} = flat();
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeRelationship($table, $reference)
+#set($localColumnVariable = $commonUtils.getColumnAliasVariable($table, $reference))
+#set($localColumnClass = $commonUtils.getColumnAliasClass($table, $reference))
+        if (get${localColumnClass}()!=null) 
+            ${variableName}.set${localColumnClass} (get${localColumnClass}().clone());   
+#end	   
+        return ${variableName};
+	}
+	
+	public void copy (${className} ${variableName}) {
+		if (${variableName}!=null) {
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+			set$columnClass (${variableName}.get$columnClass());
+#end
+		}
+	}
+	
+	public static ${className} fullMask() {
+		return new ${className}(
+#foreach ($column in ${table.columns})
+#putDefaultMaskColumnValue()
+			$defaultMask #if ($velocityCount!=$table.columnCount),
+#end
+#end
+
+		);
+	}
+
+#else
+#toString()
+#end  
+
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+    public $columnType get$columnClass() {
+        return $columnVar;
+    }
+	
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar =  $columnVar;
+    }
+    
+#end
+
+#foreach ($column in ${table.attributes})
+#updatedColumnGetterSetterAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+#putColumnParamNaming()
+#if ($column.isLob())
+#exposeLobProperties()
+#end
+#if($isEnum)
+#set($columnType=$enumClassName)
+#end
+#if($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+#end
+    public $columnType get$columnClass() {
+        return $columnVar;
+    }
+	
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar =  $columnVar;
+    } 
+	
+#if($columnUtils.hasCheckConstraint($column))
+	public List<SelectItem> get${columnClass}Enum() {
+        List<SelectItem> list = new ArrayList<SelectItem>();
+#set($property=$columnUtils.getCheckConstraintProperty($column))
+#set($propertyList=$property.getPropertiesArray())
+#foreach ($prop in $propertyList)
+#exposeEnumerationSpecific()
+        list.add(new SelectItem("$enumName","$enumValue"));
+#end
+        return list;
+	}
+#end
+
+#if($columnUtils.hasCheckConstraint($column))
+	public Map<String,String> get${columnClass}EnumMap() {
+        Map<String,String> map = new HashMap<String, String>();
+#set($property=$columnUtils.getCheckConstraintProperty($column))
+#set($propertyList=$property.getPropertiesArray())
+#foreach ($prop in $propertyList)
+#exposeEnumerationSpecific()
+##        list.add("$prop.value");
+        map.put("$enumName","$enumValue");
+#end
+        return map;
+	}
+#end
+#end
+$!updatedAreaEnd
+
+#end
+
+#foreach ($reference in $table.parents)
+#if(!$referenceUtils.isReferenceInPrimaryKey($reference))
+#putReferenceParams2()
+#exposeRelationship($table, $reference)
+#set($localColumnVariable = $commonUtils.getColumnAliasVariable($table, $reference))
+#set($localColumnClass = $commonUtils.getColumnAliasClass($table, $reference))
+    public $linkedTableClass get$localColumnClass () {
+    	return ${localColumnVariable};
+    }
+	
+    public void set${localColumnClass} ($linkedTableClass ${localColumnVariable}) {
+    	this.${localColumnVariable} = ${localColumnVariable};
+    }
+
+#set($column = $reference.localColumn)
+#putColumnParamNaming()
+    public $columnType get${columnClass}_() {
+        return ${columnVar}_;
+    }
+	
+    public void set${columnClass}_ ($columnType $columnVar) {
+        this.${columnVar}_ =  $columnVar;
+    }
+#end
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#exposeEntityUpdatedAreas("${childrenListVariable}-getter")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#if(!$linktableDB.isManyToMany())
+##if($addXmlBinding)
+##    @XmlElement(name="$childrenListVariable")
+##end
+#set($linkedTableVariable = $formatUtils.getJavaNameVariableConvertReservedWord($linkedTableVariable))
+    public Set<$linkedTableClass> get${childrenListClass}() {
+        if (${childrenListVariable} == null){
+            ${childrenListVariable} = new HashSet<$linkedTableClass>();
+        }
+        return ${childrenListVariable};
+    }
+
+    public void set${childrenListClass} (Set<$linkedTableClass> ${childrenListVariable}) {
+        this.${childrenListVariable} = ${childrenListVariable};
+    }	
+    
+    public void add${childrenListClass} ($linkedTableClass ${linkedTableVariable}) {
+    	    get${childrenListClass}().add($linkedTableVariable);
+    }
+    
+#end    
+#end
+$!updatedAreaEnd
+#end
+
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+    public Set<$targetTableName> get${childrenListClass}() {
+        if (${childrenListVariable} == null){
+            ${childrenListVariable} = new HashSet<$targetTableName>();
+        }
+        return ${childrenListVariable};
+    }
+
+    public void set${childrenListClass} (Set<$targetTableName> ${childrenListVariable}) {
+        this.${childrenListVariable} = ${childrenListVariable};
+    }
+    	
+    public void add${targetTableName} ($targetTableName ${childrenListVariable}) {
+        get${childrenListClass}().add($childrenListVariable);
+    }	    
+
+#end
+
+    public ${className} mask(String pattern) {
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+#if($columnUtils.isForeignKey($column) && !$isPrimaryKey)
+#set($columnClass="${columnClass}_")
+#end
+        if ("${columnVar}".equals(pattern))
+           set$columnClass($columnUtils.getDefaultStuffingForColumn($column)); //$column.type
+#end
+        return this;
+    }
+	
+$!updatedAreaImplementation
+
+}

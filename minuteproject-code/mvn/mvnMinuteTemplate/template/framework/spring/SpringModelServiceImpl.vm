@@ -1,0 +1,89 @@
+#exposeVariableModelSpecific()
+#exposeSpringModelSpecific()
+#addedAreas()
+#set($thisClassName="$className")
+package $packageName;
+
+$!updatedAreaImport
+
+import java.util.List;
+import java.util.ArrayList;
+
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#exposeJPA2DomainObject($table)
+#exposeSpringBslaDomainObject()
+#if(!$isMany2Many)
+import $importDomainObjectUML;
+import $BslaDaoInterfaceImport;
+import $BslaDaoExtInterfaceImport;
+#end
+#end
+
+import org.springframework.transaction.annotation.Transactional;
+
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+
+import $beanSpringModelServiceImport;
+
+/**
+ *
+ * <p>Title: $thisClassName</p>
+ *
+ * <p>Description: Service layer Interface 
+ * It offers coarse grain methods over the fine grain DAO layer:
+ * It performs input and business validation.
+ * </p>
+ *
+ */
+@Service ("$beanSpringModelServiceVariable")
+@Transactional
+public class $thisClassName implements $beanSpringModelServiceClass {
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#exposeJPA2DomainObject($table)
+#exposeSpringBslaDomainObject()
+#if(!$isMany2Many)
+	
+    @Autowired
+    @Qualifier("$BslaDaoInterfaceVariable")	
+	$BslaDaoInterfaceClass $BslaDaoInterfaceVariable;
+
+    @Autowired
+    @Qualifier("$BslaDaoExtInterfaceVariable")	
+	$BslaDaoExtInterfaceClass $BslaDaoExtInterfaceVariable;
+	
+    public List<$tableClassName> getList ($tableClassName $tableVariableName) {
+        $tableClassName sortMask = new $tableClassName();
+#set($ordering=$orderingUtils.getFirstOrdering($table))
+#set($column=$ordering.column)
+#set($order=$ordering.order)
+#putColumnParamNaming()
+#if (!$columnUtils.isPartOfCompositePrimaryKey($column))
+#set($defaultStuffing = $columnUtils.getDefaultStuffingForColumn($column))
+#if($columnUtils.isForeignKey($column))
+#set($columnClass = "${columnClass}_")
+#end
+        sortMask.set$columnClass($defaultStuffing);
+#end
+        return ${BslaDaoExtInterfaceVariable}.list($tableVariableName, sortMask, QuerySortOrder.$order);
+    }
+#end
+#end
+
+$!updatedAreaImplementation
+
+}

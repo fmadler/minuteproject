@@ -1,0 +1,370 @@
+Release 0.9
+-----------
+Android
+content-oriented structure
+
+Nested SDD:
+	- list 
+		- each record with actions
+		- go detail (composite extension)
+			- each detail with actions
+	- action click
+		- use default (statement, CRUD, to implement)
+		- growl message
+			- refresh list
+			- go to another
+			
+	- sdd background (atmosphere)			
+			
+--> cross concern bodyguard with security aspects			
+
+---
+Analysis:
+Display in master paginated list the parent link
+if (has semantic reference => yes + semref 
+if parent = masterdata add DDL in list
+
+master list: display entity semref + parent semref
+---
+
+
+Release 0.8.9
+--------------
+Validation correct generation: not ${model.name} in artifacts
+no CLASS_NOT_FOUND or any type thrown by common utils
+
+Release 0.8.8
+--------------
+
+Bugs:
+composite pk junit bsla
+bela arquilian
+
+REST junit, kendoUI, twitterbootstrap
+
+KendoUI:
+-> entity search
+-> jersey provider + converter
+-> menu
+-> master-detail + CRUD
+-> navigation frame (twbs, kendo) (header-footer)
+
+OX to investigate Menu with TwitterBootstrap NOK
+
+PF: wheel
+File upload + display
+Error handling
+
+Display with LBD with masterdata 4 PF, Vaadin, KendoUI 
+	(outer join if not mandatory for what override by inner join if where (mandatory))
+
+Vaadin: 
+- pagination 
+- css menu (twitterbootstrap)
+- display associations
+
+REST
+
+/data/entity/<$entityName>/?	NOK
+?:
+single (pk)
+/find?what.name=&where.company.name=&start=&number&order.name=ASC NOK
+
+Functional
+---------
+Porphyry
+
+Release 0.8.7
+--------------
+
+MAVEN unit test in progress 
+--------
+-> junit
+-> mockito
+-> cobertura
+--> TODO in maven integration
+
+
+Velocity
+- Vm in jar check with lib
+- assembly to construct package
+
+OX to investigate Menu with TwitterBootstrap NOK
+
+
+
+Presentation essentials
+KendoUI:
+- list detail client w/ spring mvc
+
+Vaadin: 
+- pagination 
+- css menu (twitterbootstrap)
+- display associations
+
+REST
+
+/data/entity/<$entityName>/?	NOK
+?:
+single (pk)
+/find?what.name=&where.company.name=&start=&number&order.name=ASC NOK
+
+/data/statement/<$statement>/? NOK
+
+Test unit: REST for BSLA idem unit test bsla NOK
+
+Release for multiple server REST on board, NOK
+
+Add KendoUI generation NOK
+
+---------------
+Release 0.8.6.2
+---------------
+REST
+Bsla/Bela to rest	OK
+CRUD				OK
+ear					OK
+
+Bug
+---
+recursive many to many duplicate variable name (fix) add in regression suite	OK
+Table corresponding to DB reserved word (solved)								OK
+
+joomla test OK
+--------------
+add convention to remove special char (' ', '#"...) OK
+
+DB.API
+------
+BSLA 0.8.10 to release 							TODO 
+
+fitnesse lib : mvn build not in release anymore TODO
+------------
+->TODO add technical with 'keys' OK
+->TODO add technical insert trigger
+
+Primefaces
+----------
+
+PF: file upload, upload enrichment 
+	(document type enrichment, storage DB or file system (with storage path) file name)
+PF: with improved validation
+PF: clear reset list
+PE: integration 		OK
+PE: report				TODO with spinning wheel
+Bug: change item -> 2nd display list does not change
+
+PF : error page
+PF : go to home page
+PE : improve report
+PE :loading wheel
+PE : color button
+PE : icon '+' on add button
+
+---------------
+Release 0.8.6.1
+---------------
+
+PF: 
+children lazy pagination (ok)
+drop down on list filter (ok)
+yes/no in filter (ok)
+
+check with mssql table name
+
+groovy JPA2 (ok)
+groovy OX (to test)
+
+REST: bsla/bela connection
+Add container wls: 12c, tomee, glassfish
+
+BELA/BSLA test suite
+--------------------
+4 article: 7 ways to 
+
+---
+Release 0.8.6
+-------------
+Ox:
+--
+Build time + date OK
+Home to default index page OK 
+correct display jquery OK+/-
+
+PF:
+--
+Error page OK
+404 / 505 OK
+paginated association TODO
+when save click reset the associated elements + add TODO
+
+
+PHP
+- doctrine2
+
+Go Github //TODO
+velocity template in jar (check for lib)
+ant script / mvn artifact
+
+Build to maven:
+-> copy src and package + code coverage + sonar
+
+--
+Improve test:
+ Test generation (hsqldb embedded)
+ - generate sample:
+ 	-> if fails : log error
+ - build sample
+ 	-> if fails : log error
+ - report 
+ 	-> OK for track or failure
+ 	
+ Test for deployment
+ xpath change connection
+
+ --
+=======
+ One config with all web track (REST(4), WS, OX, Vaadin, JSF(2))
+ with hsqldb started (url)
+ generation, package + deploy (tomcat (tomcat_home))
+ 
+ generate for webapps
+ -> petshop
+ -> porphyry
+ -> deploy on cloudbees automated
+ 
+ --
+ Investigation Vaadin, PF, REST
+ 
+ Make bsla generic+persistence annotation
+ 
+Release 0.8.5.1
+---------------
+Bsla with repository annotation and persistencecontext
+Bsla with generic
+PF with accordion menu
+PF with delete/i18n
+PF with many2many (two ways)
+
+
+DB H2
+=======
+ Test console
+
+
+New version of mp-bsla-jpa 0.8.5
+To adapt backend pom jpa
+
+--
+annotation
+jsr303
+content search
+
+
+Release 0.8.5
+-------------
+Liferay SB generation
+portlet with vaadin and PF
+Productivity
+Liferay productivity suite
+OX generation with Transient definition and SDD
+
+DB H2
+
+New version of mp-bsla-jpa 0.8.5
+To adapt backend pom jpa
+
+Release 0.8.3
+-------------
+Springdata + rest based on heuristics
+TODO
+
+Primefaces w/ pagination:
+OK
+Example: DD list order asc
+liferay integration
+TODO
+
+ADF:
+SDO
+ADF-FACES
+Selenium
+OK
+
+jquery WS datatable:
+Gson servlet
+
+Full CRUD primefaces
+
+
+sdd 3 parts
+ drop down and sub select PF
+ 
+Add primefaces 4 liferay
+
+Publish
+-------
+MP as a workspace
+
+Tune your JPA2 back-end
+--> add extra annotations (hibernate search)
+
+ADF
+---
+-> tuning (caching) adf-config.xml
+-> adf logger for error in separate dir
+-> adf error page
+-> adf permission denied
+-> id suppress auto in web.xml (for selenium test)
+
+Adf TODO
+--------
+- lookup fragment (passing id) + bean
+-- for subUC and DDlist
+- SDD dashboard
+
+- matrix (detect) matrix = collection with pivot column pointing towards a masterdata table
+-- pivot column (detect) = if table A is refered by table B via B.a and B contain a unique key based on 2 fk among which B.a then the other fk is the pivot column.
+    column which is
+    1) FK
+    2) belonging to a Unique constraint made of 2 columns
+    3) is part of PK
+    4) table of column contains more than 2 columns
+    
+-- pivot value order
+-- display pivot value as Read-Only
+-- optional (associate w/ icon)
+
+Oracle
+------
+-> oracle search
+-> historisation
+-> testing framework
+
+Investigate
+-----------
+Android
+Eclipse plugin
+HTML5
+Cloud
+pf on cloudbees
+
+Think sellenium
+-> for each technology: menu, entry point for select
+-> for (ADF, OX, PF)
+-> CRUD
+-> HOW-to
+-->select count(*)
+-->create unique
+--->validation
+-->select count(*)
+-->select unique
+-->update unique
+
+--
+go home
+check menu
++ fitnesse fixture
+-->delete
+-->select count(*)
+

@@ -1,0 +1,1225 @@
+2020-11-27 18:09:53,380 - Could not auto-initialize Velocity
+org.apache.velocity.exception.VelocityException: Velocimacro : Error using VM library : lib/KENDOUI_LIB.vm
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:219)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+Caused by: org.apache.velocity.exception.ParseErrorException: Encountered "+data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at lib/KENDOUI_LIB.vm[line 845, column 65]
+Was expecting one of:
+    "," ...
+    "}" ...
+    <WHITESPACE> ...
+    "}" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	... 17 more
+2020-11-27 18:12:09,041 - Parser Exception: lib/KENDOUI_LIB.vm
+org.apache.velocity.runtime.parser.ParseException: Encountered "+ data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at line 845, column 66.
+Was expecting one of:
+    "," ...
+    "}" ...
+    "}" ...
+    
+	at org.apache.velocity.runtime.parser.Parser.generateParseException(Parser.java:3441)
+	at org.apache.velocity.runtime.parser.Parser.jj_consume_token(Parser.java:3318)
+	at org.apache.velocity.runtime.parser.Parser.Map(Parser.java:1002)
+	at org.apache.velocity.runtime.parser.Parser.Parameter(Parser.java:1206)
+	at org.apache.velocity.runtime.parser.Parser.Method(Parser.java:1265)
+	at org.apache.velocity.runtime.parser.Parser.Reference(Parser.java:1324)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:354)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.process(Parser.java:311)
+	at org.apache.velocity.runtime.parser.Parser.parse(Parser.java:105)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1131)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1086)
+	at org.apache.velocity.Template.process(Template.java:124)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:12:09,046 - ResourceManager.getResource() parse exception
+org.apache.velocity.exception.ParseErrorException: Encountered "+ data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at lib/KENDOUI_LIB.vm[line 845, column 66]
+Was expecting one of:
+    "," ...
+    "}" ...
+    "}" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:12:09,047 - Velocimacro : Velocimacro : Error using VM library : lib/KENDOUI_LIB.vm
+org.apache.velocity.exception.ParseErrorException: Encountered "+ data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at lib/KENDOUI_LIB.vm[line 845, column 66]
+Was expecting one of:
+    "," ...
+    "}" ...
+    "}" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:12:09,048 - Could not auto-initialize Velocity
+org.apache.velocity.exception.VelocityException: Velocimacro : Error using VM library : lib/KENDOUI_LIB.vm
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:219)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+Caused by: org.apache.velocity.exception.ParseErrorException: Encountered "+ data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at lib/KENDOUI_LIB.vm[line 845, column 66]
+Was expecting one of:
+    "," ...
+    "}" ...
+    "}" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	... 17 more
+2020-11-27 18:12:50,275 - Parser Exception: lib/KENDOUI_LIB.vm
+org.apache.velocity.runtime.parser.ParseException: Encountered "+ data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at line 845, column 66.
+Was expecting one of:
+    "," ...
+    "}" ...
+    "}" ...
+    
+	at org.apache.velocity.runtime.parser.Parser.generateParseException(Parser.java:3441)
+	at org.apache.velocity.runtime.parser.Parser.jj_consume_token(Parser.java:3318)
+	at org.apache.velocity.runtime.parser.Parser.Map(Parser.java:1002)
+	at org.apache.velocity.runtime.parser.Parser.Parameter(Parser.java:1206)
+	at org.apache.velocity.runtime.parser.Parser.Method(Parser.java:1265)
+	at org.apache.velocity.runtime.parser.Parser.Reference(Parser.java:1324)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:354)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.process(Parser.java:311)
+	at org.apache.velocity.runtime.parser.Parser.parse(Parser.java:105)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1131)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1086)
+	at org.apache.velocity.Template.process(Template.java:124)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:12:50,288 - ResourceManager.getResource() parse exception
+org.apache.velocity.exception.ParseErrorException: Encountered "+ data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at lib/KENDOUI_LIB.vm[line 845, column 66]
+Was expecting one of:
+    "," ...
+    "}" ...
+    "}" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:12:50,288 - Velocimacro : Velocimacro : Error using VM library : lib/KENDOUI_LIB.vm
+org.apache.velocity.exception.ParseErrorException: Encountered "+ data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at lib/KENDOUI_LIB.vm[line 845, column 66]
+Was expecting one of:
+    "," ...
+    "}" ...
+    "}" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:12:50,289 - Could not auto-initialize Velocity
+org.apache.velocity.exception.VelocityException: Velocimacro : Error using VM library : lib/KENDOUI_LIB.vm
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:219)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+Caused by: org.apache.velocity.exception.ParseErrorException: Encountered "+ data.responseText });\n            },\n            dataType: \'html\',\n            async : false\n        });\n        \n" at lib/KENDOUI_LIB.vm[line 845, column 66]
+Was expecting one of:
+    "," ...
+    "}" ...
+    "}" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	... 17 more
+2020-11-27 18:14:24,131 - Parser Exception: lib/COMMON_LIB.vm
+org.apache.velocity.runtime.parser.ParseException: Encountered "[" at line 831, column 86.
+Was expecting one of:
+    "," ...
+    ")" ...
+    <WHITESPACE> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.runtime.parser.Parser.generateParseException(Parser.java:3441)
+	at org.apache.velocity.runtime.parser.Parser.jj_consume_token(Parser.java:3318)
+	at org.apache.velocity.runtime.parser.Parser.Method(Parser.java:1284)
+	at org.apache.velocity.runtime.parser.Parser.Reference(Parser.java:1324)
+	at org.apache.velocity.runtime.parser.Parser.PrimaryExpression(Parser.java:2468)
+	at org.apache.velocity.runtime.parser.Parser.UnaryExpression(Parser.java:2443)
+	at org.apache.velocity.runtime.parser.Parser.MultiplicativeExpression(Parser.java:2292)
+	at org.apache.velocity.runtime.parser.Parser.AdditiveExpression(Parser.java:2216)
+	at org.apache.velocity.runtime.parser.Parser.RelationalExpression(Parser.java:2084)
+	at org.apache.velocity.runtime.parser.Parser.EqualityExpression(Parser.java:2008)
+	at org.apache.velocity.runtime.parser.Parser.ConditionalAndExpression(Parser.java:1968)
+	at org.apache.velocity.runtime.parser.Parser.ConditionalOrExpression(Parser.java:1928)
+	at org.apache.velocity.runtime.parser.Parser.Expression(Parser.java:1875)
+	at org.apache.velocity.runtime.parser.Parser.SetDirective(Parser.java:1807)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:363)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.process(Parser.java:311)
+	at org.apache.velocity.runtime.parser.Parser.parse(Parser.java:105)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1131)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1086)
+	at org.apache.velocity.Template.process(Template.java:124)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:14:24,134 - ResourceManager.getResource() parse exception
+org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 86]
+Was expecting one of:
+    "," ...
+    ")" ...
+    <WHITESPACE> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:14:24,134 - Velocimacro : Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 86]
+Was expecting one of:
+    "," ...
+    ")" ...
+    <WHITESPACE> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:14:24,135 - Could not auto-initialize Velocity
+org.apache.velocity.exception.VelocityException: Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:219)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+Caused by: org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 86]
+Was expecting one of:
+    "," ...
+    ")" ...
+    <WHITESPACE> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	... 17 more
+2020-11-27 18:15:50,178 - Parser Exception: lib/COMMON_LIB.vm
+org.apache.velocity.runtime.parser.ParseException: Encountered "[" at line 831, column 87.
+Was expecting one of:
+    "," ...
+    ")" ...
+    
+	at org.apache.velocity.runtime.parser.Parser.generateParseException(Parser.java:3441)
+	at org.apache.velocity.runtime.parser.Parser.jj_consume_token(Parser.java:3318)
+	at org.apache.velocity.runtime.parser.Parser.Method(Parser.java:1284)
+	at org.apache.velocity.runtime.parser.Parser.Reference(Parser.java:1324)
+	at org.apache.velocity.runtime.parser.Parser.PrimaryExpression(Parser.java:2468)
+	at org.apache.velocity.runtime.parser.Parser.UnaryExpression(Parser.java:2443)
+	at org.apache.velocity.runtime.parser.Parser.MultiplicativeExpression(Parser.java:2292)
+	at org.apache.velocity.runtime.parser.Parser.AdditiveExpression(Parser.java:2216)
+	at org.apache.velocity.runtime.parser.Parser.RelationalExpression(Parser.java:2084)
+	at org.apache.velocity.runtime.parser.Parser.EqualityExpression(Parser.java:2008)
+	at org.apache.velocity.runtime.parser.Parser.ConditionalAndExpression(Parser.java:1968)
+	at org.apache.velocity.runtime.parser.Parser.ConditionalOrExpression(Parser.java:1928)
+	at org.apache.velocity.runtime.parser.Parser.Expression(Parser.java:1875)
+	at org.apache.velocity.runtime.parser.Parser.SetDirective(Parser.java:1807)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:363)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.process(Parser.java:311)
+	at org.apache.velocity.runtime.parser.Parser.parse(Parser.java:105)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1131)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1086)
+	at org.apache.velocity.Template.process(Template.java:124)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:15:50,181 - ResourceManager.getResource() parse exception
+org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 87]
+Was expecting one of:
+    "," ...
+    ")" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:15:50,181 - Velocimacro : Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 87]
+Was expecting one of:
+    "," ...
+    ")" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:15:50,182 - Could not auto-initialize Velocity
+org.apache.velocity.exception.VelocityException: Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:219)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+Caused by: org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 87]
+Was expecting one of:
+    "," ...
+    ")" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	... 17 more
+2020-11-27 18:16:49,217 - Parser Exception: lib/COMMON_LIB.vm
+org.apache.velocity.runtime.parser.ParseException: Encountered "." at line 831, column 88.
+Was expecting one of:
+    "," ...
+    ")" ...
+    
+	at org.apache.velocity.runtime.parser.Parser.generateParseException(Parser.java:3441)
+	at org.apache.velocity.runtime.parser.Parser.jj_consume_token(Parser.java:3318)
+	at org.apache.velocity.runtime.parser.Parser.Method(Parser.java:1284)
+	at org.apache.velocity.runtime.parser.Parser.Reference(Parser.java:1324)
+	at org.apache.velocity.runtime.parser.Parser.PrimaryExpression(Parser.java:2468)
+	at org.apache.velocity.runtime.parser.Parser.UnaryExpression(Parser.java:2443)
+	at org.apache.velocity.runtime.parser.Parser.MultiplicativeExpression(Parser.java:2292)
+	at org.apache.velocity.runtime.parser.Parser.AdditiveExpression(Parser.java:2216)
+	at org.apache.velocity.runtime.parser.Parser.RelationalExpression(Parser.java:2084)
+	at org.apache.velocity.runtime.parser.Parser.EqualityExpression(Parser.java:2008)
+	at org.apache.velocity.runtime.parser.Parser.ConditionalAndExpression(Parser.java:1968)
+	at org.apache.velocity.runtime.parser.Parser.ConditionalOrExpression(Parser.java:1928)
+	at org.apache.velocity.runtime.parser.Parser.Expression(Parser.java:1875)
+	at org.apache.velocity.runtime.parser.Parser.SetDirective(Parser.java:1807)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:363)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.process(Parser.java:311)
+	at org.apache.velocity.runtime.parser.Parser.parse(Parser.java:105)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1131)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1086)
+	at org.apache.velocity.Template.process(Template.java:124)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:16:49,220 - ResourceManager.getResource() parse exception
+org.apache.velocity.exception.ParseErrorException: Encountered "." at lib/COMMON_LIB.vm[line 831, column 88]
+Was expecting one of:
+    "," ...
+    ")" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:16:49,220 - Velocimacro : Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+org.apache.velocity.exception.ParseErrorException: Encountered "." at lib/COMMON_LIB.vm[line 831, column 88]
+Was expecting one of:
+    "," ...
+    ")" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:16:49,222 - Could not auto-initialize Velocity
+org.apache.velocity.exception.VelocityException: Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:219)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+Caused by: org.apache.velocity.exception.ParseErrorException: Encountered "." at lib/COMMON_LIB.vm[line 831, column 88]
+Was expecting one of:
+    "," ...
+    ")" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	... 17 more
+2020-11-27 18:18:12,767 - Parser Exception: lib/COMMON_LIB.vm
+org.apache.velocity.runtime.parser.ParseException: Encountered "[" at line 831, column 86.
+Was expecting one of:
+    "," ...
+    ")" ...
+    <WHITESPACE> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.runtime.parser.Parser.generateParseException(Parser.java:3441)
+	at org.apache.velocity.runtime.parser.Parser.jj_consume_token(Parser.java:3318)
+	at org.apache.velocity.runtime.parser.Parser.Method(Parser.java:1284)
+	at org.apache.velocity.runtime.parser.Parser.Reference(Parser.java:1324)
+	at org.apache.velocity.runtime.parser.Parser.PrimaryExpression(Parser.java:2468)
+	at org.apache.velocity.runtime.parser.Parser.UnaryExpression(Parser.java:2443)
+	at org.apache.velocity.runtime.parser.Parser.MultiplicativeExpression(Parser.java:2292)
+	at org.apache.velocity.runtime.parser.Parser.AdditiveExpression(Parser.java:2216)
+	at org.apache.velocity.runtime.parser.Parser.RelationalExpression(Parser.java:2084)
+	at org.apache.velocity.runtime.parser.Parser.EqualityExpression(Parser.java:2008)
+	at org.apache.velocity.runtime.parser.Parser.ConditionalAndExpression(Parser.java:1968)
+	at org.apache.velocity.runtime.parser.Parser.ConditionalOrExpression(Parser.java:1928)
+	at org.apache.velocity.runtime.parser.Parser.Expression(Parser.java:1875)
+	at org.apache.velocity.runtime.parser.Parser.SetDirective(Parser.java:1807)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:363)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.process(Parser.java:311)
+	at org.apache.velocity.runtime.parser.Parser.parse(Parser.java:105)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1131)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1086)
+	at org.apache.velocity.Template.process(Template.java:124)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:18:12,770 - ResourceManager.getResource() parse exception
+org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 86]
+Was expecting one of:
+    "," ...
+    ")" ...
+    <WHITESPACE> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:18:12,770 - Velocimacro : Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 86]
+Was expecting one of:
+    "," ...
+    ")" ...
+    <WHITESPACE> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:18:12,771 - Could not auto-initialize Velocity
+org.apache.velocity.exception.VelocityException: Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:219)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+Caused by: org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 86]
+Was expecting one of:
+    "," ...
+    ")" ...
+    <WHITESPACE> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	... 17 more
+2020-11-27 18:19:48,255 - Parser Exception: lib/COMMON_LIB.vm
+org.apache.velocity.runtime.parser.ParseException: Encountered "[" at line 831, column 62.
+Was expecting one of:
+    <RPAREN> ...
+    <WHITESPACE> ...
+    "-" ...
+    "+" ...
+    "*" ...
+    "/" ...
+    "%" ...
+    <LOGICAL_AND> ...
+    <LOGICAL_OR> ...
+    <LOGICAL_LT> ...
+    <LOGICAL_LE> ...
+    <LOGICAL_GT> ...
+    <LOGICAL_GE> ...
+    <LOGICAL_EQUALS> ...
+    <LOGICAL_NOT_EQUALS> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.runtime.parser.Parser.generateParseException(Parser.java:3441)
+	at org.apache.velocity.runtime.parser.Parser.jj_consume_token(Parser.java:3318)
+	at org.apache.velocity.runtime.parser.Parser.SetDirective(Parser.java:1808)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:363)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.Directive(Parser.java:888)
+	at org.apache.velocity.runtime.parser.Parser.Statement(Parser.java:373)
+	at org.apache.velocity.runtime.parser.Parser.process(Parser.java:311)
+	at org.apache.velocity.runtime.parser.Parser.parse(Parser.java:105)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1131)
+	at org.apache.velocity.runtime.RuntimeInstance.parse(RuntimeInstance.java:1086)
+	at org.apache.velocity.Template.process(Template.java:124)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:19:48,306 - ResourceManager.getResource() parse exception
+org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 62]
+Was expecting one of:
+    <RPAREN> ...
+    <WHITESPACE> ...
+    "-" ...
+    "+" ...
+    "*" ...
+    "/" ...
+    "%" ...
+    <LOGICAL_AND> ...
+    <LOGICAL_OR> ...
+    <LOGICAL_LT> ...
+    <LOGICAL_LE> ...
+    <LOGICAL_GT> ...
+    <LOGICAL_GE> ...
+    <LOGICAL_EQUALS> ...
+    <LOGICAL_NOT_EQUALS> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:19:48,306 - Velocimacro : Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 62]
+Was expecting one of:
+    <RPAREN> ...
+    <WHITESPACE> ...
+    "-" ...
+    "+" ...
+    "*" ...
+    "/" ...
+    "%" ...
+    <LOGICAL_AND> ...
+    <LOGICAL_OR> ...
+    <LOGICAL_LT> ...
+    <LOGICAL_LE> ...
+    <LOGICAL_GT> ...
+    <LOGICAL_GE> ...
+    <LOGICAL_EQUALS> ...
+    <LOGICAL_NOT_EQUALS> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+2020-11-27 18:19:48,308 - Could not auto-initialize Velocity
+org.apache.velocity.exception.VelocityException: Velocimacro : Error using VM library : lib/COMMON_LIB.vm
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:219)
+	at org.apache.velocity.runtime.RuntimeInstance.init(RuntimeInstance.java:261)
+	at org.apache.velocity.runtime.RuntimeInstance.requireInitialization(RuntimeInstance.java:290)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1398)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.RuntimeSingleton.getTemplate(RuntimeSingleton.java:305)
+	at org.apache.velocity.app.Velocity.getTemplate(Velocity.java:383)
+	at net.sf.minuteProject.application.AbstractGenerator.getVelocityTemplate(AbstractGenerator.java:677)
+	at net.sf.minuteProject.application.AbstractGenerator.produce(AbstractGenerator.java:643)
+	at net.sf.minuteProject.application.ModelGenerator.writeTemplateResult(ModelGenerator.java:608)
+	at net.sf.minuteProject.application.ModelGenerator.generateArtifactsByModel(ModelGenerator.java:420)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:315)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:444)
+	at net.sf.minuteProject.application.ModelGenerator.applyTargetConventionAndGenerate(ModelGenerator.java:245)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:153)
+	at net.sf.minuteProject.application.ModelGenerator.generate(ModelGenerator.java:132)
+	at net.sf.minuteProject.application.AbstractGenerator.generate(AbstractGenerator.java:300)
+	at net.sf.minuteProject.application.ModelViewGenerator.main(ModelViewGenerator.java:56)
+Caused by: org.apache.velocity.exception.ParseErrorException: Encountered "[" at lib/COMMON_LIB.vm[line 831, column 62]
+Was expecting one of:
+    <RPAREN> ...
+    <WHITESPACE> ...
+    "-" ...
+    "+" ...
+    "*" ...
+    "/" ...
+    "%" ...
+    <LOGICAL_AND> ...
+    <LOGICAL_OR> ...
+    <LOGICAL_LT> ...
+    <LOGICAL_LE> ...
+    <LOGICAL_GT> ...
+    <LOGICAL_GE> ...
+    <LOGICAL_EQUALS> ...
+    <LOGICAL_NOT_EQUALS> ...
+    <DOT> ...
+    "(" ...
+    
+	at org.apache.velocity.Template.process(Template.java:141)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.loadResource(ResourceManagerImpl.java:446)
+	at org.apache.velocity.runtime.resource.ResourceManagerImpl.getResource(ResourceManagerImpl.java:354)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1400)
+	at org.apache.velocity.runtime.RuntimeInstance.getTemplate(RuntimeInstance.java:1380)
+	at org.apache.velocity.runtime.VelocimacroFactory.initVelocimacro(VelocimacroFactory.java:202)
+	... 17 more
+2020-11-30 15:50:26,927 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,933 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,936 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,939 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,941 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,942 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,944 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,945 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,947 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,949 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,951 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,952 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,955 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,956 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,958 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,963 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,968 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,969 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,971 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,973 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:50:26,974 - ResourceManager : unable to find resource 'EmberRouteCompositeJs.vm' in any resource loader.
+2020-11-30 15:57:17,102 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 30, column 32]
+2020-11-30 15:57:17,105 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 30, column 32]
+2020-11-30 15:57:17,107 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 30, column 32]
+2020-11-30 15:57:17,109 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 30, column 32]
+2020-11-30 15:57:17,111 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 30, column 32]
+2020-11-30 16:01:49,701 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:01:49,708 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:01:49,720 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:01:49,724 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:01:49,730 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:03:17,106 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:03:17,110 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:03:17,114 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:03:17,115 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:03:17,118 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:20:47,852 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:20:47,856 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:20:47,859 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:20:47,862 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:20:47,865 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:21:29,048 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:21:29,058 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:21:29,066 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:21:29,073 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:21:29,078 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 32, column 32]
+2020-11-30 16:32:49,763 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:32:49,767 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:32:49,776 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:32:49,778 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:32:49,786 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:43:29,937 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:43:29,943 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:43:29,949 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:43:29,953 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:43:29,960 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:47:58,853 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:47:58,856 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:47:58,859 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:47:58,862 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:47:58,864 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:47:58,868 - Exception in macro #exposeVariableEntitySpecific at lib/Ember_LIB.vm[line 9, column 1]
+2020-11-30 16:47:58,868 - Exception in macro #exposeEmberQuerySpecific at EmberRouteCompositeHbs.vm[line 1, column 1]
+2020-11-30 16:51:53,652 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:51:53,657 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:51:53,661 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:51:53,664 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:51:53,669 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:51:53,674 - Exception in macro #exposeVariableEntitySpecific at lib/Ember_LIB.vm[line 25, column 1]
+2020-11-30 16:51:53,674 - Exception in macro #exposeEmberQuerySpecific at EmberRouteCompositeHbs.vm[line 1, column 1]
+2020-11-30 16:55:59,293 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:55:59,301 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:55:59,305 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:55:59,308 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:55:59,311 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 16:55:59,315 - Exception in macro #exposeVariableEntitySpecific at lib/Ember_LIB.vm[line 24, column 1]
+2020-11-30 16:55:59,315 - Exception in macro #exposeEmberQuerySpecific at EmberRouteCompositeHbs.vm[line 1, column 1]
+2020-11-30 17:02:27,002 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:02:27,006 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:02:27,010 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:02:27,012 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:02:27,014 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:02:27,018 - Exception in macro #exposeVariableEntitySpecific at lib/Ember_LIB.vm[line 19, column 1]
+2020-11-30 17:02:27,018 - Exception in macro #exposeEmberQuerySpecific at EmberRouteCompositeHbs.vm[line 1, column 1]
+2020-11-30 17:04:04,448 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:04,452 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:04,457 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:04,461 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:04,465 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:04,470 - Exception in macro #exposeVariableEntitySpecific at lib/Ember_LIB.vm[line 19, column 1]
+2020-11-30 17:04:04,470 - Exception in macro #exposeEmberQuerySpecific at EmberRouteCompositeHbs.vm[line 1, column 1]
+2020-11-30 17:04:50,317 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:50,320 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:50,322 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:50,325 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:04:50,329 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:16:56,306 - ResourceManager : unable to find resource 'EmberComponentCompositeHbs.vm' in any resource loader.
+2020-11-30 17:16:56,314 - ResourceManager : unable to find resource 'EmberComponentCompositeHbs.vm' in any resource loader.
+2020-11-30 17:16:56,317 - ResourceManager : unable to find resource 'EmberComponentCompositeHbs.vm' in any resource loader.
+2020-11-30 17:16:56,320 - ResourceManager : unable to find resource 'EmberComponentCompositeHbs.vm' in any resource loader.
+2020-11-30 17:16:56,323 - ResourceManager : unable to find resource 'EmberComponentCompositeHbs.vm' in any resource loader.
+2020-11-30 17:16:56,326 - ResourceManager : unable to find resource 'EmberComponentCompositeJs.vm' in any resource loader.
+2020-11-30 17:16:56,329 - ResourceManager : unable to find resource 'EmberComponentCompositeJs.vm' in any resource loader.
+2020-11-30 17:16:56,331 - ResourceManager : unable to find resource 'EmberComponentCompositeJs.vm' in any resource loader.
+2020-11-30 17:16:56,332 - ResourceManager : unable to find resource 'EmberComponentCompositeJs.vm' in any resource loader.
+2020-11-30 17:16:56,334 - ResourceManager : unable to find resource 'EmberComponentCompositeJs.vm' in any resource loader.
+2020-11-30 17:16:56,397 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:16:56,402 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:16:56,406 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:16:56,410 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:16:56,413 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:19:56,899 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:19:56,901 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:19:56,904 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:19:56,906 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:19:56,908 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:20:35,325 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:20:35,328 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:20:35,330 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:20:35,333 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-11-30 17:20:35,335 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:04:28,815 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:04:28,820 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:04:28,823 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:04:28,826 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:04:28,831 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:06:39,383 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:06:39,392 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:06:39,397 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:06:39,403 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:06:39,411 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:15:05,722 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:15:05,736 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:15:05,739 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:15:05,742 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]
+2020-12-01 15:15:05,748 - Left side ($inputBean.columns.size()) of '>' operation has null value at EmberRouteCompositeJs.vm[line 31, column 32]

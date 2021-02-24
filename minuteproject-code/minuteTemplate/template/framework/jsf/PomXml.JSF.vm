@@ -1,0 +1,308 @@
+##manage the dependency with JPA2 backend
+#exposeMaven()
+#exposeJSFConfig
+#exposePrimefacesConfig()
+#putTargetServerDefinition()
+#set($isLiferayPortlet=$template.getPropertyValue("liferay-portlet",false))
+#set($jsfImplementation=$jsfUtils.getJsfImplementation($template))
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  	<groupId>${groupId}</groupId>
+  	<artifactId>$artifactId</artifactId>
+  	<packaging>war</packaging>
+  	<version>${version}</version>
+  	<name>$artifactId JSF front end</name>
+    <url>http://maven.apache.org</url>	
+
+	<dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+			<scope>test</scope>
+        </dependency>
+#if($isSpringBackend)
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>${generatorBean.name}Bsla</artifactId>
+            <version>${version}</version>
+        </dependency>	
+    	<!-- spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+#elseif($isEJBBackend)
+	    <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>${generatorBean.name}Bela</artifactId>
+            <version>${version}</version>
+        </dependency>	
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>${DbApiName}</artifactId>
+            <version>${version}</version>
+        </dependency>		
+      <!-- CDI (JSR-299) -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>1.0-SP4</version>
+        </dependency>
+#end	
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+			<scope>provided</scope>
+		</dependency>
+	   <dependency>
+	     <groupId>javax</groupId>
+	     <artifactId>javaee-api</artifactId>
+	     <version>$javaeeApiVersion</version>
+	     <scope>provided</scope>
+	   </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+          </dependency>
+        
+          <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>2.2</version>
+            <!--<scope>provided</scope> for tomcat -->
+          </dependency>
+
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>${primefaces.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>cupertino</artifactId>
+			<version>${primefaces.theme.version}</version>
+		</dependency>
+<!-- pe with dependencies -->		
+        <dependency>
+        	<groupId>org.primefaces.extensions</groupId>
+        	<artifactId>primefaces-extensions</artifactId>
+        	<version>${primefaces.extension.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>${itext.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcprov-jdk14</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcmail-jdk14</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bctsp-jdk14</artifactId>
+                </exclusion>
+            </exclusions>			
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+<!-- pe with dependencies end -->		
+		
+#if($isLiferayPortlet)		
+        <dependency>
+        	<groupId>com.liferay.faces</groupId>
+        	<artifactId>liferay-faces-bridge-api</artifactId>
+        	<version>3.0.0-ga1</version>
+        </dependency>
+#end
+
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>2.2.4</version>
+#if ($isWeblogicTargetServer)
+			<scope>provided</scope>
+#else
+			<scope>runtime</scope>
+#end
+		</dependency>
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-impl</artifactId>
+			<version>2.2.4</version>
+#if ($isWeblogicTargetServer)
+			<scope>provided</scope>
+#else
+			<scope>runtime</scope>
+#end
+		</dependency>	
+	  
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<compilerArguments>
+						<endorseddirs>${endorsed.dir}</endorseddirs>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+#exposeModelUpdatedAreas("plugin-org.apache.maven.plugins")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+#if ($isWeblogicTargetServer)					
+					<packagingExcludes>WEB-INF/lib/stax*.jar,WEB-INF/lib/xml-api*.jar,WEB-INF/lib/jaxb*.jar,,WEB-INF/lib/servlet*.jar,WEB-INF/lib/javaee*.jar</packagingExcludes>
+#end					
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+#end
+$!updatedAreaEnd
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${endorsed.dir}</outputDirectory>
+							<silent>true</silent>
+							<artifactItems>
+								<artifactItem>
+									<groupId>javax</groupId>
+									<artifactId>javaee-endorsed-api</artifactId>
+									<version>6.0</version>
+									<type>jar</type>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ejb-plugin</artifactId>
+				<configuration>
+					<ejbVersion>3.1</ejbVersion>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		    <plugin>
+		        <groupId>org.mortbay.jetty</groupId>
+		        <artifactId>maven-jetty-plugin</artifactId>
+		        <version>6.1.10</version>
+		        <configuration>
+		          <scanIntervalSeconds>10</scanIntervalSeconds>
+		          <connectors>
+		            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+		              <port>8080</port>
+		              <maxIdleTime>60000</maxIdleTime>
+		            </connector>
+		          </connectors>
+		        </configuration>
+		    </plugin>				
+		</plugins>
+		<finalName>${generatorBean.name}App</finalName>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Repository for Maven</name>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+#if($isSpringBackend)
+#*
+        <repository>
+            <id>spring-maven-snapshot</id>
+            <name>Springframework Maven Snapshot Repository</name>
+            <url>http://maven.springframework.org/snapshot</url>
+            <snapshots>
+               <enabled>true</enabled>
+            </snapshots>
+        </repository>
+*#
+#elseif($isEJBBackend)
+		<repository>
+			<id>JBoss repository</id>
+			<url>http://repository.jboss.com/maven2/</url>
+		</repository>
+		<repository>
+			<id>EclipseLink Repo</id>
+			<url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+#end
+		<repository>
+			<id>primefaces-repo</id>
+			<name>Prime Technology Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+	<properties>
+#if($isSpringBackend)
+##		<spring-security.version>3.1.0.CI-SNAPSHOT</spring-security.version>
+		<spring.version>4.2.2.RELEASE</spring.version>
+		<cglib.version>2.2.2</cglib.version>
+#elseif($isEJBBackend)
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+#end
+		<junit.version>4.10</junit.version>
+		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+		<primefaces.version>$primefacesVersion</primefaces.version>
+		<primefaces.theme.version>1.0.10</primefaces.theme.version>
+		<primefaces.extension.version>2.1.0</primefaces.extension.version>
+		<poi.version>3.10-FINAL</poi.version>
+		<itext.version>4.2.1</itext.version>
+	</properties>
+</project>

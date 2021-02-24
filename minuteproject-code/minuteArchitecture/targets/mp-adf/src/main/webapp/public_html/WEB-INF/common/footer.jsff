@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1">
+<div class="layout-footer">
+    <p class="off-screen">Footer</p>
+    <ul class="reset-list">
+		<li><span>Powered by MinuteProject</span></li>
+		<li><a href="http://minuteproject.sf.net"
+						title="MP site">http://minuteproject.sf.net</a></li>
+
+		<li><a href="#top-page">Top</a></li>
+       </ul>
+</div>
+</jsp:root>

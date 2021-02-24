@@ -1,0 +1,8 @@
+Load model
+
+Liferay model load
+
+net.sf.minuteProject.application.ModelLoaderFixture
+load model 	mp-config-LIFERAY-JPA2.xml
+
+check foreign key name of table 	portletitem 	towards 	portlet 	is 	portletid

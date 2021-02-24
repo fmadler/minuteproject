@@ -1,0 +1,47 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<model name="nordwind" version="1.0" package-root="net.sf.mp.demo">
+			<data-model>
+				<driver name="sqlserver" version="4.0" groupId="com.microsoft.sqlserver"
+					artifactId="sqljdbc4"></driver>
+				<dataSource>
+					<driverClassName>com.microsoft.sqlserver.jdbc.SQLServerDriver</driverClassName>
+					<url>jdbc:sqlserver://D02DI1157666:1433;databaseName=northwind</url>
+					<username>sqlserver</username>
+					<password>Vw4LyuPpduh3RVkaEPmT</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<schema>dbo</schema>
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="identityPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="business">
+				    <condition type="package" database-object-type="VIEW" result="review"></condition>			
+				</business-package>
+				<enrichment>
+					<conventions>
+					    <view-primary-key-convention 
+					       type="apply-default-primary-key-otherwise-first-one" 
+					       default-primary-key-names="ID" />
+					    <entity-naming-convention type="apply-field-alias-based-on-camelcase"/>
+					    <column-naming-convention type="apply-field-alias-based-on-camelcase"/>
+					    <column-naming-convention
+							type="apply-fix-primary-key-column-name-when-no-ambiguity-and-not-natural"
+							default-value="ID" />
+						<reference-naming-convention
+							type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="false" />
+						<reference-naming-convention type="apply-many-to-many-aliasing" is-to-plurialize="false"/>
+					</conventions>
+				</enrichment>
+			</business-model>
+
+		</model>
+<!-- -->  		<targets catalog-entry="OpenXava" templatedir-root="../../minuteTemplate/template">
+		</targets>  
+<!--  		<targets catalog-entry="JPA2" templatedir-root="../../minuteTemplate/template">
+		</targets>   -->
+	</configuration>
+</generator-config>

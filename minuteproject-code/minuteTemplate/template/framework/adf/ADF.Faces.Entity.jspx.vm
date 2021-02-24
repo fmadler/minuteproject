@@ -1,0 +1,244 @@
+#exposeADFFacesEntitySpecific()
+#set($separator=$i18nUtils.getSeparator($template))
+#set($entityCriteriaActivated=$template.getPropertyValue("activate-entity-criteria",false))
+#set($displayChildren=$template.getPropertyValue("display-children",false))
+#set($windowHeight="$adfUtils.getDisplayWindowDetailsHeight($table)")##"400")
+#set($windowWidth="$adfUtils.getDisplayWindowDetailsWidth($table)")##"600")
+#set($createfieldWidth="80%")
+#set($createlabelWidth="20%")
+#set($searchWidth="718px")
+#set($resultListWidth="700px")
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  <f:view>
+    <af:document id="d1">
+      <af:messages id="m1"/>
+      <af:form id="f1">
+        <af:pageTemplate viewId="/WEB-INF/common/template.jspx" id="pt1">
+          <f:facet name="PageTitle">
+##            <af:outputText value="#{viewcontrollerBundle['${entityADFImport}.title']}"
+            <af:outputText value="#{viewcontrollerBundle['${tableVariableName}']}" id="ot1"/>
+          </f:facet>
+          <f:facet name="PageSubtitle"/>
+          <f:facet name="PageContent">
+            <af:panelTabbed id="${entityADFVariable}_pt2" dimensionsFrom="auto" binding="#{viewScope.${entityADFVariable}BackingBean.panelTab}">
+##              <af:showDetailItem text="#{viewcontrollerBundle['${entityADFImport}.consult.tabtitle']}"
+              <af:showDetailItem text="#{viewcontrollerBundle['consult.title']}"
+                                 id="${entityADFVariable}_sdi1">
+                 <af:panelGroupLayout id="${entityADFVariable}_pgl3" layout="horizontal" halign="left" inlineStyle="width:${searchWidth};">                
+                    <af:panelBox text="#{viewcontrollerBundle['consult.select.header']} #{viewcontrollerBundle['${tableVariableName}']}"
+                                 id="${entityADFVariable}_pb1" styleClass="section"
+                                 disclosed="#{viewScope.${entityADFVariable}BackingBean.displaySearch}">
+                      <af:panelFormLayout id="${entityADFVariable}_pfl1" labelWidth="100px" fieldWidth="400px">
+#if($entityCriteriaActivated)
+                        <af:panelBox text="#{viewcontrollerBundle['consult.select.criteria.header']}"
+                                 id="${entityADFVariable}_scpb1" styleClass="section" disclosed="false">
+                          <af:selectBooleanRadio group="searchRadioSearchMatch"
+                                                 label="Any" id="searchRadioAny"
+                                                 value="#{viewScope.${entityADFVariable}BackingBean.searchAny}"/>
+                          <af:selectBooleanRadio group="searchRadioSearchMatch"
+                                                 label="All" id="searchRadioAll"
+                                                 value="#{viewScope.${entityADFVariable}BackingBean.searchAll}"
+                                                 />
+                          <af:separator id="sep1"/>
+                          <af:selectBooleanRadio group="searchRadioSearchType"
+                                                 label="Equals" id="searchRadioEquals"
+                                                 value="#{viewScope.${entityADFVariable}BackingBean.searchEquals}"/>
+                          <af:selectBooleanRadio group="searchRadioSearchType"
+                                                 label="Contains" id="searchRadioContains"
+                                                 value="#{viewScope.${entityADFVariable}BackingBean.searchContains}"
+                                                 />
+                          <af:selectBooleanRadio group="searchRadioSearchType"
+                                                 label="Like" id="searchRadioLike"
+                                                 value="#{viewScope.${entityADFVariable}BackingBean.searchLike}"/>
+                          <af:separator id="sep2"/>
+                          <af:selectBooleanRadio group="searchRadioSearchCase"
+                                                 label="Case sensitive" id="searchRadioCaseSensitive"
+                                                 value="#{viewScope.${entityADFVariable}BackingBean.searchCaseSensitive}"
+                                                 />
+                          <af:selectBooleanRadio group="searchRadioSearchCase"
+                                                 label="Case insensitive" id="searchRadioCaseInsensitive"
+                                                 value="#{viewScope.${entityADFVariable}BackingBean.searchCaseInsensitive}"/>
+                          <af:separator id="sep3"/>
+                        </af:panelBox>
+#end
+#exposeModelUpdatedAreas("search-node")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+##foreach ($column in $table.columns)  
+#foreach ($column in $presentationUtils.getPotentialDisplayableColumnsWithOnePkInFirstPosition($table))
+#putColumnParamNaming()
+#adfEntityColumnDisplay("${columnVar}it")
+#ADFHtmlEntityId()
+#end 
+#end
+                      </af:panelFormLayout>
+                        <af:panelGroupLayout id="pgl1" halign="end"
+                                                 layout="horizontal">
+                              <f:facet name="separator">
+                                <af:spacer width="10" height="1"/>
+                              </f:facet>
+                              <af:commandButton text="#{viewcontrollerBundle['searchHeading']}"
+                                                id="search"
+                                                actionListener="#{viewScope.${entityADFVariable}BackingBean.doSearch}"
+                                                inlineStyle="background-color:#4B9FC9; background-image:none; color:#FFF;"/>
+                              <af:panelLabelAndMessage label="#{viewcontrollerBundle['selectOr']}"
+                                                       id="plam1"
+                                                       for="msdisplayall">
+                               <af:commandButton text="#{viewcontrollerBundle['displayAll']}"
+                                                  id="msdisplayall"
+                                                  actionListener="#{viewScope.${entityADFVariable}BackingBean.displayAll}"/>
+                              </af:panelLabelAndMessage>
+                        </af:panelGroupLayout>
+                    </af:panelBox>
+                 </af:panelGroupLayout>
+## list
+                 <af:panelGroupLayout layout="horizontal" halign="left"
+                        rendered="#{viewScope.${entityADFVariable}BackingBean.displayResults}">
+                    <af:panelBox id="${entityADFVariable}__pb2" showDisclosure="false"
+                                 showHeader="always" ramp="core"
+                                 styleClass="section">
+                      <af:pageTemplate viewId="/WEB-INF/common/tablePaginationTemplate.jspx"
+                                       id="${entityADFVariable}TableTmpl">
+                        <f:facet name="table">
+                        <af:table id="${entityADFVariable}Table"
+                                    value="#{bindings.${domainVariableName}DTOs.collectionModel}"
+                                    var="row"
+                                    rows="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table.rangeSize}"
+                                    emptyText="#{bindings.${domainVariableName}DTOs.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                    fetchSize="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table.rangeSize}"
+                                    rowBandingInterval="1"
+                                    filterModel="#{bindings.${domainVariableName}DTOsQuery.queryDescriptor}"
+##                                    queryListener="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table.queryListener}"
+                                    queryListener="#{viewScope.${entityADFVariable}BackingBean.queryListener}"
+                                    sortListener="#{viewScope.${entityADFVariable}BackingBean.sortListener}"
+                                    filterVisible="true"
+                                    columnResizing="disabled" autoHeightRows="0"
+                                    varStatus="vs" rowSelection="none"
+                                    width="${resultListWidth}" contentDelivery="immediate"
+                                    immediate="true"
+                                    binding="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table.tableUIComp}">
+##pk
+#exposeModelUpdatedAreas("list-node")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+##foreach ($column in $table.columns)  
+#foreach ($column in $presentationUtils.getPotentialDisplayableColumnsWithOnePkInFirstPosition($table))  
+#putColumnParamNaming()
+#if($isPrimaryKey)
+                            <af:column sortProperty="${columnVar}" sortable="true"
+                                       filterable="true"
+#if($columnUtils.isNaturalPk($column))
+                                       headerText="#{viewcontrollerBundle['$tableVariableName$separator$columnVar']}"
+#else
+                                       headerText="Reference"	
+#end
+                                       id="${columnVar}_id" width="$adfUtils.getDisplayColumnWithHeader($column)">
+                              <af:commandLink id="${columnVar}1"
+#if($columnUtils.isNaturalPk($column))
+                                              text="#{row.${columnVar}}" 
+#else
+                                              text="view" 
+#end
+                                              action="details" immediate="true"
+                                              partialSubmit="true"
+                                              useWindow="true"
+                                              windowEmbedStyle="inlineDocument"
+                                              windowModalityType="applicationModal"
+                                              windowHeight="$windowHeight"
+                                              windowWidth="$windowWidth"
+                                              launchListener="#{viewScope.${entityADFVariable}BackingBean.handleLaunchEdit${entityADFClass}Dlg}">
+##works for one pk only
+                                 <f:attribute name="${entityADFVariable}Reference" value="#{row.${columnVar}}"/>
+                              </af:commandLink>
+                            </af:column>
+#else
+                            <af:column sortProperty="${columnVar}" sortable="true"
+                                       filterable="true"
+                                       headerText="#{viewcontrollerBundle['$tableVariableName$separator$columnVar']}"
+                                       id="${columnVar}_col" width="$adfUtils.getDisplayColumnWithHeader($column)">
+#if($isForeignKey)
+#set($columnVar = "${columnVar}_")
+#end
+                              <af:outputText value="#{row.${columnVar}}" id="${columnVar}_ot2"/>
+                            </af:column>
+#end
+#end
+#end
+$updatedAreaEnd
+                          </af:table>
+                      </f:facet>
+                        <f:attribute name="paginationUtils"
+                                     value="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table}"/>
+                      </af:pageTemplate>
+                    </af:panelBox>
+                  </af:panelGroupLayout>
+              </af:showDetailItem>
+<!-- create -->              
+              <af:showDetailItem text="#{viewcontrollerBundle['createTitle']}" immediate="true"
+                                 id="$entityCreateId" >##${entityADFVariable}_sdi2" >
+                    <af:panelFormLayout id="pfl1" fieldWidth="$createfieldWidth" labelWidth="$createlabelWidth" styleClass="dialogFormLayout">
+#exposeModelUpdatedAreas("create-node")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+##foreach ($column in $table.columns) 
+#foreach ($column in $presentationUtils.getNotTechnicalColumns($table))  
+#putColumnParams()
+#adfEntityEditColumnDisplay("${columnVar}itdet")
+#end
+#end
+$updatedAreaEnd
+
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+<!-- m2m -->
+        <af:separator id="${childrenListVariable}Sep"/>
+        <af:selectManyShuttle label="#{viewcontrollerBundle['${childrenListVariable}_Shuttle']}"
+                              leadingHeader="#{viewcontrollerBundle['${childrenListVariable}_Available_Values']}"
+                              trailingHeader="#{viewcontrollerBundle['${childrenListVariable}_Selected_Values']}"
+                              binding="#{viewScope.${entityADFVariable}BackingBean.${childrenListVariable}Sms}"
+                              id="${childrenListVariable}Sms"
+                              value="#{viewScope.${entityADFVariable}BackingBean.selected${childrenListClass}}">
+          <f:selectItems value="#{viewScope.${entityADFVariable}BackingBean.all${childrenListClass}}"
+                         binding="#{viewScope.${entityADFVariable}BackingBean.${childrenListVariable}Si}"
+                         id="${childrenListVariable}Si"/>
+        </af:selectManyShuttle>
+#end
+#if($toImplement)
+           <af:panelTabbed id="tab-children" dimensionsFrom="auto" >##binding=""
+#foreach($reference in $table.children)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+<!-- $linktableDB.name -->
+#adfEntityTable($linktableDB "${childrenListClass}$velocityCount" $linkedTableVariable ${childrenListVariable} "viewScope" "${entityADFVariable}BackingBean" true "nocolumntoremove")
+##<jsp:include page="/$listADFFacesRelativePath">
+####  <jsp:param name="backingBean" value="${entityADFVariable}BackingBean"/>
+##</jsp:include>
+#end
+#end
+           </af:panelTabbed>
+#end
+                    </af:panelFormLayout>
+                    <af:panelGroupLayout id="itdetpgl1" halign="center"  layout="horizontal">
+                          <af:commandButton text="#{viewcontrollerBundle['save']}"
+                              id="itdetsave"
+                              actionListener="#{viewScope.${entityADFVariable}BackingBean.create${domainClassName}}"/>
+					</af:panelGroupLayout>
+                </af:showDetailItem>
+            </af:panelTabbed>
+          </f:facet>
+        </af:pageTemplate>
+      </af:form>
+    </af:document>
+  </f:view>
+</jsp:root>

@@ -1,0 +1,42 @@
+#exposeEmberQuerySpecific()
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+
+#set($emberClass=$emberUtils.getEmberClass($table.name))
+#set($emberClassVariable=$emberUtils.getEmberClassVariable($table.name))
+
+export default class Index${emberClass}Route extends Route {
+	
+	titleToken= ['field.${query.name}'];
+	
+	@service('${modelEmberServiceClass}') ${model.name}Service;
+	
+#if($inputBean.columns.size() > 0)
+	queryParams= {
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+        $columnVar : {
+            refreshModel: true,
+            replace: true
+        },
+#end
+#end
+    };
+#end
+
+	model(params) {
+#if($inputBean.columns.size() > 0)
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+		if (params.$columnVar === '') params.$columnVar = null;
+#end
+#end
+#end
+		return this.${model.name}Service.${emberClassVariable}(params);
+    }
+    
+}

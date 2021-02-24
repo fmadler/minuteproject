@@ -1,0 +1,23 @@
+!contents -R2 -g -p -f -h
+
+
+!2 Load model
+Liferay model load
+In the column displayed are the pk and fk that are removed from the semantic reference when generating
+!| net.sf.minuteProject.convention.ConventionSequenceFixture|
+|load| mp-config-ABL_INTRO-OpenXava.xml|
+|check | number of columns for entity| department| 7 |
+|check | column names of table name | department | idDepartment, DepartmentName, ManagedBy, HeadDeptId, SumSubDepartmentBudget, Budget, BudgetWithSubDepartmentBudget | true |
+|check | semantic reference columns and order of table name | department| DepartmentName | true|
+|check | semantic reference columns and order as child table of table name | lineitem| purchaseorder| productNumber, purchaseOrderNumber, qtyOrdered, partPrice, amount, kitQuantityOrdered, kitNumberRequired, kitComponentCount, kitPartNum, kitOrderNumber, notes, isReady, id, kitLineitemId, productNumber.name, kitLineitemId.kitNumberRequired, kitLineitemId.kitOrderNumber, kitLineitemId.amount | true |
+|check | semantic reference columns and order as child table of table name | employee| department|  | true |
+|check | semantic reference columns and order as child table of table name | payment_purchaseorder_allocation | purchaseorder| purchaseOrderNumber, paymentID, amount, paymentID.amount, paymentID.amountUnDisbursed | true |
+|check | semantic reference columns and order of table name | purchaseorder| SalesRepName, CustomerName, OrderNumber, ClonedFromOrderNumber, AmountTotal | true |
+|check | reset semantic reference for all tables | true|
+|check | semantic reference columns and order of table name | department|  | true|
+|add semref conv with field pattern type and field pattern and max fields | contains| Budget| 3 |  
+|check | semantic reference columns and order of table name | department| SumSubDepartmentBudget, Budget, BudgetWithSubDepartmentBudget| true|
+|add semref conv with field pattern type and field pattern and max fields | endsWith| Name   | 4 |  
+|check | semantic reference columns and order of table name | department|  SumSubDepartmentBudget, Budget, BudgetWithSubDepartmentBudget, DepartmentName| true|
+
+to add check | semantic reference column aliases and order of table name | purchaseorder| SalesRepName, CustomerName, id, ClonedFromOrderNumber, AmountTotal | true |

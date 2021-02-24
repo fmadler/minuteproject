@@ -1,0 +1,27 @@
+#exposeVariableModelSpecific()
+package $packageName;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class $className {
+
+    private ClassPathXmlApplicationContext ctx;
+
+    private static AppContextLoader appContextLoader;
+
+    private $className() {
+            ctx = new ClassPathXmlApplicationContext("classpath:application-context.xml");
+    }
+
+    public static synchronized AppContextLoader getContextLoader() {
+            if (appContextLoader == null) {
+                    appContextLoader = new AppContextLoader();
+            }
+            return appContextLoader;
+    }
+
+    public ClassPathXmlApplicationContext getAppContext() {
+            return ctx;
+    }
+	
+}

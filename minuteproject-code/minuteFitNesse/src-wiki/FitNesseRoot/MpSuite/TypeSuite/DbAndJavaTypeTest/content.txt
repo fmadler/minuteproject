@@ -1,0 +1,17 @@
+!contents -R2 -g -p -f -h
+
+define COMMAND_PATTERN {java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 -cp %p %m}
+
+!2 Load model
+JOOQ test model load
+!|net.sf.minuteProject.model.NavigateModelSequenceFixture|
+|load| mp-config-JOOQ-tech.xml|
+
+!2 Testing
+
+!|net.sf.minuteProject.model.ModelTypeColumnFixture|
+|table|column |performComputation?| checkDbType? | checkJavaType? | checkJavaFullType? |
+|t_dates|t|SUCCESSFUL| TIME | java.sql.Time| java.sql.Time |
+|t_book|ID|SUCCESSFUL| INTEGER| Integer| java.lang.Integer |
+|t_directory|is_directory|SUCCESSFUL| BIT| Boolean| java.lang.Boolean |
+

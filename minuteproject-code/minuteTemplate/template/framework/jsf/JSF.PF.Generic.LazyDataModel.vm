@@ -1,0 +1,138 @@
+#putJPA2TemplateDefinition()
+#exposeJSFModelSpecific()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import net.sf.minuteProject.architecture.bsla.domain.AbstractDomainObject;
+import org.primefaces.model.DualListModel;
+import org.primefaces.model.LazyDataModel;
+
+import net.sf.minuteProject.model.data.criteria.EntityCriteria;
+import net.sf.minuteProject.model.data.criteria.EntitySort;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+
+import org.primefaces.model.SortOrder;
+import net.sf.minuteProject.model.service.GenericService;
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: JSF Primefaces generic lazymodel </p>
+ *
+ */
+public abstract class ${className} <T extends AbstractDomainObject, S extends GenericService> implements java.io.Serializable{
+	
+	private LazyDataModel<T> lazyModel;
+		
+	T create(Class<T> clazz) throws Exception
+    {
+        return clazz.newInstance();
+    }
+	
+    protected S service;
+	private Class<T> t;
+
+	private QueryData<T> previousQueryData;
+    public ${className}() {}
+
+    public LazyDataModel<T> getLazyModel(final T maskWhere) {
+    	
+		if (lazyModel == null) {
+    		lazyModel = new LazyDataModel<T>() {
+
+			     @Override
+## primefaces 5.0
+			     public List<T> load(int first, int pageSize, String sortField,SortOrder sortOrder, Map<String,Object> filters) {
+##			     public List<T> load(int first, int pageSize, String sortField,SortOrder sortOrder, Map<String,String> filters) {
+                	QuerySortOrder order = QuerySortOrder.ASC;
+                	if (sortOrder == SortOrder.DESCENDING) {
+            			order = QuerySortOrder.DESC;     
+            		}
+					T esMask = getSortMask(sortField);
+
+                	EntitySort<T> es = new EntitySort<T>(esMask, order);
+
+#*                     Map<String,Object> filterMap = new HashMap<String, Object>();
+                    for (Map.Entry<String, Object> entry : filters.entrySet()) {
+                        filterMap.put(entry.getKey(), entry.getValue());
+                    }
+            		T ecMask = getFilterMask(maskWhere, filterMap);
+*#
+##  primefaces 5.0
+	          		T ecMask = getFilterMask(maskWhere, filters);
+
+            		EntityCriteria<T> ec = new EntityCriteria<T>(ecMask, EntityMatchType.ALL, OperandType.CONTAINS, false);
+
+            		QueryData<T> data = new QueryData<T>(first, pageSize, es, ec);
+
+				    if (data.needsNewCount(previousQueryData))  {
+						getService().find(data);
+                    }
+					else {
+						getService().findWithoutCount(data);
+                        data.setTotalResultCount(previousQueryData.getTotalResultCount());
+                    }
+
+					previousQueryData=data;
+
+            		List<T> list = data.getResult();
+                    int count = data.getTotalResultCount().intValue();
+            		this.setRowCount(count);
+                    return list;
+				}
+
+				public void setRowIndex(final int rowIndex)
+				{
+		            if (rowIndex == -1 || getPageSize() == 0)
+		            {
+		               super.setRowIndex(-1);
+		            }
+		            else
+		            {
+		               super.setRowIndex(rowIndex % getPageSize());
+		            }
+				}
+
+                @Override
+                public T getRowData(String rowKey) {
+					return serviceLoad(rowKey);
+                }
+
+                @Override
+                public Object getRowKey(T element) {
+					return getRowKeyImplementation (element);
+                }
+			};
+    	}
+    	return lazyModel;
+    }
+	
+    public LazyDataModel<T> getLazyModel() {
+        return getLazyModel(null);
+    }
+
+    protected S getService() {
+       return service;
+    }
+	
+    protected abstract T getSortMask(String sortField);
+
+    protected abstract T getFilterMask(T maskWhere, Map<String,Object> filters);
+
+    protected abstract Object getRowKeyImplementation (T element);
+
+	protected abstract T serviceLoad (String rowKey);
+
+
+}

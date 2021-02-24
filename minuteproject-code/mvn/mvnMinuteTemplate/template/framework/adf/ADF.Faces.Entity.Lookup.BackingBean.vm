@@ -1,0 +1,45 @@
+#exposeADFFacesModelSpecific()
+#exposeADFFacesSpringModelBindingSpecific()
+#set($thisClassName=$className)
+package $packageName;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Date;
+import java.util.ArrayList;
+
+import javax.faces.model.SelectItem;
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeADFFacesSpringBindingSpecific()
+#if(!$isMany2Many)
+import $beanADFFacesSpringServiceImport;
+#end
+#end
+import $beanADFFacesSpringAppContextLoaderImport;
+
+public class $thisClassName {
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeADFFacesSpringBindingSpecific()
+#if(!$isMany2Many)
+    private $beanADFFacesSpringServiceClass $beanADFFacesSpringServiceVariable;
+#end
+#end
+
+    public $thisClassName() {
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeADFFacesSpringBindingSpecific()
+#if(!$isMany2Many)
+        $beanADFFacesSpringServiceVariable = ($beanADFFacesSpringServiceClass)AppContextLoader.getContextLoader().getAppContext().getBean("$beanADFFacesSpringServiceVariable");
+#end
+#end
+    }
+
+#putSpringJSFModelLookup()
+
+}

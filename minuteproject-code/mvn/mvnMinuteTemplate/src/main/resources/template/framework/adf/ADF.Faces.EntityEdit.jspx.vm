@@ -1,0 +1,94 @@
+#exposeADFFacesEntitySpecific()
+#exposeADFJsfUtils()
+#set($separator=$i18nUtils.getSeparator($template))
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <c:set var="viewcontrollerBundle"
+         value="#{adfBundle['view.I18N.viewBundle']}"/>
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  <f:view>
+    <af:document id="d1">
+      <af:messages id="m1"/>
+      <af:resource type="css" source="/stylesheets/form.css"/>
+      <af:form id="f1">
+        <af:panelFormLayout id="pfl1" fieldWidth="80%" labelWidth="20%"
+                            styleClass="dialogFormLayout">
+#exposeModelUpdatedAreas("search-node")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+#if($columnUtils.hasTrigger($column))
+#set($isDisabled="true")
+#else
+#set($isDisabled="false")
+#end
+#adfEntityEditColumnDisplay4PageFlow("dldet${columnVar}", $isDisabled)
+##          <af:inputText label="#{viewcontrollerBundle['$tableVariableName$separator$columnVar']}" id="dldet${columnVar}"
+##                        value="#{pageFlowScope.${viewEditEntityBeanVariable}.${entityADFVariable}.${columnVar}}"/>
+#if($hasMessage)
+            <af:panelLabelAndMessage label="#{viewcontrollerBundle['$tableVariableName$separator$columnVar']}" id="dldetplam4"
+                                   for="dldetavailable">
+#if($isForeignKey)
+#set($columnVar = "${columnVar}_")
+#end
+                 <af:outputText value="#{pageFlowScope.${viewEditEntityBeanVariable}.${entityADFVariable}.${columnVar}}" id="dldet${columnVar}"/>
+            </af:panelLabelAndMessage>
+			  
+#end
+#end
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+<!-- m2m -->
+        <af:separator id="${childrenListVariable}Sep"/>
+        <af:selectManyShuttle label="#{viewcontrollerBundle['${childrenListVariable}_Shuttle']}"
+                              leadingHeader="#{viewcontrollerBundle['${childrenListVariable}_Available_Values']}"
+                              trailingHeader="#{viewcontrollerBundle['${childrenListVariable}_Selected_Values']}"
+                              binding="#{pageFlowScope.${viewEditEntityBeanVariable}.${childrenListVariable}Sms}"
+                              id="${childrenListVariable}Sms"
+                              value="#{pageFlowScope.${viewEditEntityBeanVariable}.selected${childrenListClass}}">
+          <f:selectItems value="#{pageFlowScope.${viewEditEntityBeanVariable}.all${childrenListClass}}"
+                         binding="#{pageFlowScope.${viewEditEntityBeanVariable}.${childrenListVariable}Si}"
+                         id="${childrenListVariable}Si"/>
+        </af:selectManyShuttle>
+#end
+#if($isDisplayChildren)
+           <af:separator id="displayChildrenSep"/>
+           <af:panelTabbed id="tab-children" dimensionsFrom="auto" >##binding=""
+#foreach($reference in $displayChildren)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+<!-- $linktableDB.name -->
+#adfEntityTable($linktableDB "${childrenListClass}$velocityCount" $linkedTableVariable ${childrenListVariable} "pageFlowScope" "${viewEditEntityBeanVariable}" true ${reference.foreignColumn.name} true)
+##<jsp:include page="/$listADFFacesRelativePath">
+####  <jsp:param name="backingBean" value="${entityADFVariable}BackingBean"/>
+##</jsp:include>
+#end
+#end
+           </af:panelTabbed>
+#end
+        </af:panelFormLayout>
+        
+        <af:panelGroupLayout id="dldetpgl1" halign="end"  layout="horizontal">
+                      <f:facet name="separator">
+                        <af:spacer width="10" height="1"/>
+                      </f:facet>
+                      <af:commandButton text="#{viewcontrollerBundle['deleteTitle']}"
+                                        id="dldetdelete" action="delete"/>
+                      <af:commandButton text="#{viewcontrollerBundle['cancelTitle']}"
+                                          id="dldetreturn" action="cancel"/>
+                      <af:commandButton text="#{viewcontrollerBundle['saveTitle']}"
+                                          id="dldetsave" action="save"/>
+          </af:panelGroupLayout>
+        
+      </af:form>
+    </af:document>
+  </f:view>
+</jsp:root>

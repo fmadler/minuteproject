@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:trh="http://myfaces.apache.org/trinidad/html">
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  
+  <trh:script id="blockNoteWindow">
+    function blockNoteWindow(event) {
+        var src = event.getSource();
+        src.getPeer().HideNoteWindow();
+        //src.getPeer().ShouldShowHint = function() { 
+        //    return false;
+       // }
+    }
+    </trh:script>
+
+  <af:pageTemplateDef var="attrs">
+    <af:xmlContent>
+      <component xmlns="http://xmlns.oracle.com/adf/faces/rich/component">
+        <display-name>tablePaginationTemplate</display-name>
+        <facet>
+          <facet-name>table</facet-name>
+        </facet>
+        <attribute>
+          <attribute-name>paginationUtils</attribute-name>
+          <attribute-class>net.sf.minuteproject.adf.utils.TableAbstractPaginator</attribute-class>
+          <required>true</required>
+        </attribute>
+      </component>
+    </af:xmlContent>
+    
+    
+        <af:panelGroupLayout id="pgl2">
+          <af:panelCollection id="tmplpc1" defaultToolbarItemDisplay="icon"
+                              featuresOff="statusBar viewMenu"
+                              inlineStyle="width:#{attrs.paginationUtils.tableUIComp.width};">
+            <f:facet name="toolbar">
+              <af:toolbar id="t2" inlineStyle="float:right;">
+                <af:panelGroupLayout id="pgl1" halign="end" valign="middle"
+                               layout="horizontal"
+                               inlineStyle="font-weight:normal;">
+                    <f:facet name="separator">
+                      <af:spacer width="5" height="0"/>
+                    </f:facet>
+                  <af:outputText value="#{attrs.paginationUtils.numberOfRecords}" id="pt_ot2"
+                                binding="#{attrs.paginationUtils.numberOfRecordsUIComp}"
+                                clientComponent="true"/>
+                  <af:outputText value="item(s) found" id="pt_ot3" noWrap="true"/>
+                  <af:commandImageLink shortDesc="First Page"
+                                         action="#{attrs.paginationUtils.goFirstPage}"
+                                         id="cb1"
+                                         icon="/images/pagination/first.png"
+                                         partialSubmit="true"
+                                         disabled="#{!attrs.paginationUtils.previousEnabled}"
+                                         disabledIcon="/images/pagination/first-disabled.png"
+                                         hoverIcon="/images/pagination/first-hover.png"
+                                         binding="#{attrs.paginationUtils.firstPageUIComp}"/>
+                    <af:commandImageLink shortDesc="Previous" id="cb2"
+                                         action="#{attrs.paginationUtils.goPreviousSet}"
+                                         partialSubmit="true"
+                                         disabled="#{!attrs.paginationUtils.previousEnabled}"
+                                         icon="/images/pagination/prev.png"
+                                         disabledIcon="/images/pagination/prev-disabled.png"
+                                         hoverIcon="/images/pagination/prev-hover.png"
+                                         binding="#{attrs.paginationUtils.previousPageUIComp}"/>
+                    <af:inputText id="pt_it1" label="Page"
+                                  value="#{attrs.paginationUtils.pageNumber}"
+                                  columns="2" autoSubmit="true"
+                                  valueChangeListener="#{attrs.paginationUtils.pageNumberListener}"
+                                  maximumLength="4" converter="javax.faces.Integer"
+                                  binding="#{attrs.paginationUtils.pageNoUIComp}"
+                                  clientComponent="true">
+                      <!--<af:clientListener method="blockNoteWindow" type="focus"/>-->
+                    </af:inputText>
+                    <af:outputText value="of #{attrs.paginationUtils.lastPage}"
+                                   id="pt_ot1"
+                                   noWrap="true"
+                                   binding="#{attrs.paginationUtils.lastPageNoUIComp}"
+                                   clientComponent="true"/>
+                    <af:commandImageLink shortDesc="Next" id="cb3"
+                                         action="#{attrs.paginationUtils.goNextSet}"
+                                         disabled="#{!attrs.paginationUtils.nextEnabled}"
+                                         partialSubmit="true"
+                                         icon="/images/pagination/next.png"
+                                         disabledIcon="/images/pagination/next-disabled.png"
+                                         hoverIcon="/images/pagination/next-hover.png"
+                                         binding="#{attrs.paginationUtils.nextPageUIComp}"/>
+                    <af:commandImageLink id="cb4"
+                                         action="#{attrs.paginationUtils.goLastPage}"
+                                         disabled="#{!attrs.paginationUtils.nextEnabled}"
+                                         iconPosition="leading" partialSubmit="true"
+                                         shortDesc="LastPage"
+                                         icon="/images/pagination/last.png"
+                                         disabledIcon="/images/pagination/last-disabled.png"
+                                         hoverIcon="/images/pagination/last-hover.png"
+                                         binding="#{attrs.paginationUtils.lastPageUIComp}"/>
+                    <af:selectOneChoice valueChangeListener="#{attrs.paginationUtils.rangeSizeListener}"
+                                        value="#{attrs.paginationUtils.RANGE_SIZE}"
+                                        id="soc1" autoSubmit="true" simple="true"
+                                        shortDesc=""
+                                        binding="#{attrs.paginationUtils.rangeSizeUIComp}"
+                                        changedDesc="toolTip">
+                      <f:selectItem itemLabel="10" itemValue="10"/>
+                      <f:selectItem itemLabel="20" itemValue="20"/>
+                      <f:selectItem itemLabel="30" itemValue="30"/>
+                      <af:clientListener method="blockNoteWindow" type="focus"/>
+                    </af:selectOneChoice>
+                </af:panelGroupLayout>
+              </af:toolbar>
+            </f:facet>
+            <f:facet name="secondaryToolbar">
+              <af:toolbar id="pt_t1">
+                <af:commandImageLink id="xlsExportCmd"
+                                     icon="/images/pagination/xlsExport.png"
+                                     styleClass="toolbarIcon">
+              <af:exportCollectionActionListener exportedId="#{attrs.paginationUtils.tableUIComp.id}"
+                                                 type="excelHTML"/>
+            </af:commandImageLink>
+              </af:toolbar>
+            </f:facet>
+            <af:facetRef facetName="table"/>
+          </af:panelCollection>
+        </af:panelGroupLayout>
+
+  </af:pageTemplateDef>
+</jsp:root>

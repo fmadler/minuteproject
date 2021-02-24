@@ -1,0 +1,37 @@
+#set ($packageName = $xmlSchemaUtils.getPackageName($window, $template))
+#set ($className = $commonUtils.getClassName($window, $template))
+#macro (putComponentSpecific)
+#set ($componentClassName = $formatUtils.getJavaName($component.name))
+#set ($componentVariableName = $formatUtils.getJavaNameVariable($component.name))
+#set ($componentJavaType = $htmlUtils.getComponentJavaType($component))
+#end
+package $packageName;
+
+public class $className {
+
+#foreach($block in $window.blocks)
+#if ($presentationUtils.isForm($block))
+#foreach($component in $block.components)
+#putComponentSpecific()
+   private $componentJavaType _$componentVariableName;
+#end
+#end
+#end
+
+#foreach($block in $window.blocks)
+#if ($presentationUtils.isForm($block))
+#foreach($component in $block.components)
+#putComponentSpecific()
+   public void set$componentClassName ($componentJavaType _$componentVariableName) {
+      return this._$componentVariableName = _$componentVariableName;
+   }
+      
+   public $componentJavaType get$componentClassName () {
+      return _$componentVariableName;
+   }
+   
+#end
+#end
+#end
+
+}

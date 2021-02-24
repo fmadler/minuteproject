@@ -1,0 +1,69 @@
+#generatorSpecific()
+#putOXTemplateDefinition()
+#set ($applicationOX=$configuration.name)
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+             
+    <!-- Tomcat + Hypersonic -->
+#foreach ($model in $configuration.models())
+#exposeVariableModelSpecific()
+#exposeJdbc()
+#exposeJPASpecifics()
+#putOXTemplateDefinition()
+#set ($hibernateDialect = $hibernate3.getDialect($database))
+    <persistence-unit name="$persistenceUnitName">
+    	<non-jta-data-source>java:comp/env/jdbc/${model.name}DS</non-jta-data-source>
+        <properties>
+            <property name="hibernate.dialect" value="$hibernateDialect"/>
+#if($enableHibernateEhcache)
+## hib 4            <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />
+<!-- disabled in OX6 since hibernate-ehcache dependencies not embedded
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
+            <property name="net.sf.ehcache.configurationResourceName" value="/ehcache.xml" />
+            <property name="hibernate.cache.use_query_cache" value="true" />
+            <property name="hibernate.cache.use_second_level_cache" value="true" />
+--> 
+#end
+            <property name="hibernate.generate_statistics" value="true" />
+#if($isSchemaNeeded)
+            <property name="hibernate.default_schema" value="$schemaName"/>
+#end
+#if ($hasABLNature)
+            <!-- Use this for environments without JTA -->
+##            <property name="hibernate.current_session_context_class" 
+##                        value="com.autobizlogic.abl.session.LogicThreadLocalSessionContext" />
+            <property name="hibernate.current_session_context_class" 
+                        value="com.autobizlogic.abl.session.LogicJTASessionContext" />
+            <!-- Use this for JTA -->
+            <!-- <property name="hibernate.current_session_context_class" 
+                        value="com.autobizlogic.abl.session.LogicJTASessionContext" /> -->
+#end
+#addArea("properties")
+        </properties>
+#addArea("persistence-unit")
+    </persistence-unit>    
+#set($defaultDS = "${model.name}DS") 
+#end
+
+    <persistence-unit name="default">
+    	<!-- datasource of the last model -->
+    	<non-jta-data-source>java:comp/env/jdbc/$defaultDS</non-jta-data-source>
+        <properties>
+            <property name="hibernate.dialect" value="$hibernateDialect"/>
+#if($enableHibernateEhcache)
+<!-- disabled in OX6 since hibernate-ehcache dependencies not embedded
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />                        
+            <property name="net.sf.ehcache.configurationResourceName" value="/ehcache.xml" />
+            <property name="hibernate.cache.use_query_cache" value="true" />
+            <property name="hibernate.cache.use_second_level_cache" value="true" />
+-->
+#end
+            <property name="hibernate.generate_statistics" value="true" />
+        </properties>
+    </persistence-unit>
+    	
+#addArea("persistence")
+
+</persistence>

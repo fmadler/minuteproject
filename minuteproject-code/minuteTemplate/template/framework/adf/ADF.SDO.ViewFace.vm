@@ -1,0 +1,29 @@
+#exposeVariableEntitySpecific()
+#addedAreas()
+package $packageName;
+
+#addArea("import")
+
+public interface $className extends java.io.Serializable {
+
+
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+#exposeModelUpdatedAreas("method-${column.name}")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+#set($getSDOColumnFullType=$adfUtils.getSDOColumnFullType($column))
+   public $getSDOColumnFullType get$columnClass();
+
+   public void set$columnClass($getSDOColumnFullType value);
+
+#end
+$!updatedAreaEnd
+#end
+
+#addArea("implementation")
+
+}
+

@@ -1,0 +1,9 @@
+#exposeEmberModelSpecific()
+/*
+Scss ember app
+*/
+@import "${model.name}";
+
+@import "ember-bootstrap/bootstrap";
+
+@import "ember-power-select";

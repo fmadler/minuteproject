@@ -1,0 +1,29 @@
+#exposeADFFacesModelSpecific()
+<?xml version="1.0" encoding="windows-1252" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+  <view id="homePage">
+    <page>/homePage.jspx</page>
+  </view>
+  <control-flow-rule id="__1">
+    <from-activity-id id="__2">*</from-activity-id>
+    <control-flow-case id="__4">
+      <from-outcome id="__5">gotoHomePage</from-outcome>
+      <to-activity-id id="__3">homePage</to-activity-id>
+    </control-flow-case>
+  </control-flow-rule>
+  <managed-bean id="__7">
+    <description id="__9">Menu Model Managed Bean</description>
+    <managed-bean-name id="__8">root_menu_model</managed-bean-name>
+    <managed-bean-class>oracle.adf.view.rich.model.MDSMenuModel</managed-bean-class>
+    <managed-bean-scope id="__10">request</managed-bean-scope>
+    <managed-property id="__11">
+      <property-name id="__13">createHiddenNodes</property-name>
+      <value id="__12">false</value>
+    </managed-property>
+    <managed-property id="__15">
+      <property-name id="__17">source</property-name>
+      <property-class id="__14">java.lang.String</property-class>
+      <value id="__16">/WEB-INF/${rootMenuConfigADFFacesName}.xml</value>
+    </managed-property>
+  </managed-bean>
+</adfc-config>

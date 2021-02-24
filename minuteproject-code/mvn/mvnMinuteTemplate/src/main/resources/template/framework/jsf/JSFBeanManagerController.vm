@@ -1,0 +1,374 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#if($isSpringBackend)
+#exposeSpringDomainObjectSpecific()
+#exposeSpringServiceDomainObject()
+#set ($EJBDaoImplClass = $SpringServiceInterfaceClass)
+#set ($EJBDaoImplVariable = $SpringServiceInterfaceVariable)
+#exposeSpringModelSpecific()
+#elseif($isEJBBackend)
+#exposeEJBDomainObjectSpecific()
+#end
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import org.primefaces.event.ToggleEvent;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import net.sf.minuteProject.model.data.criteria.EntityCriteria;
+import net.sf.minuteProject.model.data.criteria.EntitySort;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+
+import $lookupBeanImport;
+import $beanSpringModelServiceImport;
+import $SpringServiceInterfaceImport;
+import $modelJSFUtilsImport;
+import $modelSemanticReferenceUtilsJSFImport;
+
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ViewScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import $EJBDaoImplImport;
+
+#end
+import $importDomainObjectUML;
+#exposeJPA2Import()
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: JSF controller ${className} </p>
+ *
+ */
+#if($isSpringBackend)
+@ManagedBean (name="${entityControllerJSFVariable}")
+@ViewScoped
+#elseif($isEJBBackend)
+@Named(value = "$entityControllerJSFVariable")
+@Default
+@RequestScoped
+#end
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+#exposeEmbeddedId($table)
+#set($deletionNotYetImplemented=true)
+#set($primaryKeyJavaNameClass = $embeddedIdClass)
+#end
+public class ${className} implements java.io.Serializable{
+
+#if($isSpringBackend)
+	@ManagedProperty("#{${EJBDaoImplVariable}}")
+    ${EJBDaoImplClass} $EJBDaoImplVariable;
+	private LazyDataModel<$tableClassName> lazyModel;
+
+	@ManagedProperty("#{${lookupBeanVar}}")
+    ${lookupBeanClass} ${lookupBeanVar};
+
+	@ManagedProperty("#{${beanSpringModelServiceVariable}}")
+    ${beanSpringModelServiceClass} ${beanSpringModelServiceVariable};
+	
+#elseif($isEJBBackend)
+	@Inject 
+    private $EJBDaoImplClass $EJBDaoImplVariable;
+#end
+	
+	@PostConstruct
+	void initialiseSession() {
+	    FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+	}
+	
+	private $tableClassName $tableVariableName = new $tableClassName();
+	private $tableClassName selected$tableClassName = new $tableClassName();
+	
+#foreach ($reference in $presentationUtils.getDisplayableChildren($table))
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+##	private ${linkedTableClass} associated${childrenListClass};
+##putGetterSetterAlt (${linkedTableClass} "Associated${childrenListClass}" "associated${childrenListClass}")
+
+	private List<$linkedTableClass> $childrenListVariable;
+    public List<${linkedTableClass}> get${childrenListClass} () {
+        populate$childrenListVariable ();
+        return ${childrenListVariable};
+    }
+#if($velocityCount==1)
+#set($hasFirstRelationship=true)
+	private void populateFirst () {
+		populate$childrenListVariable ();
+	}
+#end
+	private void populate$childrenListVariable () {
+		if (selected${tableClassName}.get$primaryKeyJavaNameClass()!=null) {
+    		$linkedTableClass mask = new $linkedTableClass();
+    		mask.set${linkedColumnClass}_(selected${tableClassName}.get$primaryKeyJavaNameClass());
+    		$childrenListVariable = ${beanSpringModelServiceVariable}.getList(mask);
+		}
+	}
+#end
+#end
+
+    public List<$tableClassName> findAll () {
+		return ${EJBDaoImplVariable}.findAll($tableVariableName);
+	}
+
+#if ($hasOnlyOnePrimaryKey)
+	public $tableClassName findById ($primaryKeyFullType $primaryKeyVariable) {
+		return ${EJBDaoImplVariable}.findById($primaryKeyVariable);
+	}
+
+	public void delete ($tableClassName ${tableVariableName}) {
+		${EJBDaoImplVariable}.delete (${tableVariableName});
+	}
+	
+	public String delete () {
+		${EJBDaoImplVariable}.delete (selected$tableClassName);
+        return "success";
+	}
+	
+#end
+
+#if($isSpringBackend)
+    public LazyDataModel<$tableClassName> getLazyModel() {
+    	if (lazyModel == null) {
+    		lazyModel = new LazyDataModel<$tableClassName>() {
+
+			     @Override
+			     public List<$tableClassName> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,String> filters) {
+                	QuerySortOrder order = QuerySortOrder.ASC;
+                	if (sortOrder == SortOrder.DESCENDING) {
+            			order = QuerySortOrder.DESC;     
+            		}
+					$tableClassName esMask = new $tableClassName();
+					esMask.mask(sortField);
+                	EntitySort<$tableClassName> es = new EntitySort<$tableClassName>(esMask, order);
+
+            		$tableClassName ecMask = new $tableClassName();
+            		ecMask.mask(filters);
+            		EntityCriteria<$tableClassName> ec = new EntityCriteria<$tableClassName>(ecMask, EntityMatchType.ALL, OperandType.CONTAINS, false);
+
+            		QueryData<$tableClassName> data = new QueryData<$tableClassName>(first, pageSize, es, ec);
+            		${EJBDaoImplVariable}.find(data);
+            		List<$tableClassName> list = data.getResult();
+            		int count = data.getTotalResultCount().intValue();
+            		this.setRowCount(count);
+                    return list;
+				}
+				
+				@Override
+				public void setRowIndex(final int rowIndex)
+				{
+		            if (rowIndex == -1 || getPageSize() == 0)
+		            {
+		               super.setRowIndex(-1);
+		            }
+		            else
+		            {
+		               super.setRowIndex(rowIndex % getPageSize());
+		            }
+				 }
+
+                @Override
+				//Strange why is the getRowData input a string and not an object
+                public $tableClassName getRowData(String rowKey) {
+					return serviceLoad(rowKey);
+                }
+
+                @Override
+                public Object getRowKey($tableClassName element) {
+#if(!$columnUtils.isString($primaryKeyFirstColumn))
+                    if (element.get$primaryKeyJavaNameClass()==null)
+                        return null;
+                    return element.get$primaryKeyJavaNameClass().toString();
+#else
+                    return element.get$primaryKeyJavaNameClass();
+#end
+                }
+			};
+    	}
+    	return lazyModel;
+    }
+
+    public void reloadSelected() {
+##if($columnUtils.isForeignKey($primaryKeyFirstColumn) || $columnUtils.isPartOfCompositePrimaryKey($primaryKeyFirstColumn))
+#if($columnUtils.isPartOfCompositePrimaryKey($primaryKeyFirstColumn))
+        // not supported! cannot transform row in composite pk
+#else
+    	selected$tableClassName = ${EJBDaoImplVariable}.load(selected${tableClassName}.get$primaryKeyJavaNameClass());
+#end
+    }
+
+    public $tableClassName serviceLoad(String rowKey) {
+##if($columnUtils.isForeignKey($primaryKeyFirstColumn) || $columnUtils.isPartOfCompositePrimaryKey($primaryKeyFirstColumn))
+#if($columnUtils.isPartOfCompositePrimaryKey($primaryKeyFirstColumn))
+        // not supported! cannot transform row in composite pk
+        return new $tableClassName();
+#else
+	   if (rowKey == null) return new $tableClassName();
+#if($columnUtils.isString($primaryKeyFirstColumn))
+        return ${EJBDaoImplVariable}.load(rowKey);
+#else
+        return ${EJBDaoImplVariable}.load(${primaryKeyType}.valueOf(rowKey));
+#end
+#end
+    }
+
+    public void recoverItemRowToggle(ToggleEvent toggleEvent) {
+        selected$tableClassName = ($tableClassName) toggleEvent.getData();
+    } 
+
+    public void createOrUpdateListener(ActionEvent event) {
+    	try {
+#if (!$tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+	    	if (selected${tableClassName}.get$primaryKeyJavaNameClass() == null) {
+	    		${EJBDaoImplVariable}.create(selected${tableClassName});
+	            ${modelJSFUtilsClass}.addSuccessMessage(ResourceBundle.getBundle("${modelI18nJSFImport}").getString("entityCreated"), ${modelSemanticReferenceUtilsJSFClass}.getSemanticReference(selected${tableClassName}));
+	    	} else {
+	    		${EJBDaoImplVariable}.update(selected${tableClassName});
+	            ${modelJSFUtilsClass}.addSuccessMessage(ResourceBundle.getBundle("${modelI18nJSFImport}").getString("entityUpdated"), ${modelSemanticReferenceUtilsJSFClass}.getSemanticReference(selected${tableClassName}));
+	    	}
+#end
+	    	selected${tableClassName} = new ${tableClassName}();
+    	} catch (Exception e) {
+			${modelJSFUtilsClass}.addErrorMessage(ResourceBundle.getBundle("${modelI18nJSFImport}").getString("PersistenceErrorOccured"));
+        }
+    }
+
+    public void clearListener(ActionEvent event) {
+    	selected${tableClassName} = new ${tableClassName}();
+    	UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+	    UIComponent component = viewRoot.findComponent("form2");  
+	    ${modelJSFUtilsClass}.clearComponentHierarchy(component);
+    }
+	
+    public void deleteListener(ActionEvent event) {
+        try {
+            if (selected${tableClassName}.get$primaryKeyJavaNameClass() != null) {
+#if(!$deletionNotYetImplemented)
+                ${EJBDaoImplVariable}.delete(selected${tableClassName});
+                JsfUtils.addSuccessMessage(ResourceBundle.getBundle("${modelI18nJSFImport}").getString("entityDeleted"), ${modelSemanticReferenceUtilsJSFClass}.getSemanticReference(selected${tableClassName}));
+#else
+                JsfUtils.addSuccessMessage("deletion not implemented for composite pk, please contribute");
+#end
+            }
+			else {
+			   System.out.println("no resources found");
+			}
+	       	selected${tableClassName} = new ${tableClassName}();
+        } catch (Exception e) {
+			${modelJSFUtilsClass}.addErrorMessage(ResourceBundle.getBundle("${modelI18nJSFImport}").getString("PersistenceErrorOccured"));
+        }
+    }
+	
+#foreach ($reference in $table.parents)
+#set($foreignTable=$reference.foreignTable)
+##if ($tableUtils.isAdminContentType($foreignTable))
+#putReferenceParams2()
+#set($columnClass=$referenceUtils.getColumnClassNameForLinkTable($database, $linkedColumn))
+    public List<SelectItem> get${localColumnClass}List() {
+        return ${lookupBeanVar}.get${linkedTableClass}List();
+    }
+##end
+#end
+#end
+
+#if ($hasSemanticReference)
+##	public $tableClassName findBySemanticReference ($primaryKeyFullType $primaryKeyVariable) {
+##		return ${EJBDaoImplVariable}.findBySemanticReference (${tableClassName}.class, $primaryKeyVariable);
+##	}
+##	
+#end
+
+	public String create () {
+		${EJBDaoImplVariable}.create($tableVariableName);
+		return "success";
+	}
+	
+	public $tableClassName update () {
+		return ${EJBDaoImplVariable}.update (${tableVariableName});
+	}
+	
+	public $tableClassName get$tableClassName() {
+	    return $tableVariableName;
+	}
+	
+	public void set$tableClassName ($tableClassName $tableVariableName) {
+	    this.$tableVariableName = $tableVariableName;
+	}	
+	
+	public $tableClassName getSelected$tableClassName() {
+        if (selected$tableClassName==null) selected$tableClassName = new $tableClassName();
+	    return selected$tableClassName;
+	}
+	
+	public void setSelected$tableClassName ($tableClassName $tableVariableName) {
+	    this.selected$tableClassName = $tableVariableName;
+	}		
+
+	//TODO put in upperclass
+    public String displayInput () {
+		return "success";
+	}	
+
+    public void onRowSelect(SelectEvent event) {
+        selected$tableClassName = ($tableClassName) event.getObject();
+#if($hasFirstRelationship)
+		populateFirst ();
+#end
+    }
+
+    public void onTabChange(TabChangeEvent event) {
+	    String tabId = event.getTab().getId();
+#if ($presentationUtils.hasDisplayableChildren($table))
+#foreach ($reference in $presentationUtils.getDisplayableChildren($table))
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+	    if ("child-$childrenListVariable".equals(tabId)) {
+			populate$childrenListVariable ();
+		}
+#end
+#end
+#end
+    }
+
+#putGetterSetter ($EJBDaoImplClass $EJBDaoImplVariable)
+#if($isSpringBackend)
+#putGetterSetter ($lookupBeanClass $lookupBeanVar)
+#putGetterSetter (${beanSpringModelServiceClass} ${beanSpringModelServiceVariable})
+#end
+
+$!updatedAreaImplementation
+}

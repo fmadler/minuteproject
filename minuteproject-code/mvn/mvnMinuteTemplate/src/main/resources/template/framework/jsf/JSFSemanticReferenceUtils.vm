@@ -1,0 +1,42 @@
+#exposeJSFModelSpecific()
+package $packageName;
+
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+
+#foreach($table in $entities)
+#if(!$table.isManyToMany())
+#exposeJPA2DomainObject($table)
+import $importDomainObjectUML;
+#end
+#end
+
+@ManagedBean (name="$classVariable")
+@ApplicationScoped
+public class $className {
+
+#foreach($table in $entities)
+#if(!$table.isManyToMany())
+#exposeVariableEntitySpecific()
+   public static String getSemanticReference$tableClassName ($tableClassName element) {
+      return getSemanticReference(element);
+   }
+   public static String getSemanticReference ($tableClassName element) {
+      if (element==null) return "";
+	  StringBuffer sb = new StringBuffer();
+#foreach($column in $presentationUtils.getPotentialDisplayableColumns($table))
+#putColumnParamNaming()
+#if(!$isForeignKey)
+#if($columnUtils.isPartOfCompositePrimaryKey($column))
+#set($columnClass = "${columnClass}_")
+#end
+      sb.append (element.get$columnClass()+" - ");
+#end
+#end
+      return sb.toString();
+   }
+
+#end
+#end
+
+}

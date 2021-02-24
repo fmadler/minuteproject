@@ -1,0 +1,66 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+
+import net.sf.minuteproject.adf.utils.ADFUtils;
+
+import $sddOutputBeanImport;
+
+import oracle.adf.view.rich.component.rich.data.RichTable;
+import oracle.adf.view.rich.context.AdfFacesContext;
+
+import oracle.adf.view.rich.event.QueryEvent;
+
+import org.apache.myfaces.trinidad.event.RangeChangeEvent;
+import org.apache.myfaces.trinidad.event.RowDisclosureEvent;
+
+public class ${className} {
+    private $sddOutputBeanClass selected$sddOutputBeanClass;
+
+    public void setSelected$sddOutputBeanClass($sddOutputBeanClass selected$sddOutputBeanClass) {
+        this.selected$sddOutputBeanClass = selected$sddOutputBeanClass;
+    }
+
+    public $sddOutputBeanClass getSelected$sddOutputBeanClass() {
+##        System.out.println("getSelected$sddOutputBeanClass retrieval");
+        return selected$sddOutputBeanClass;
+    }
+    public void selectionEvent(org.apache.myfaces.trinidad.event.SelectionEvent selectionEvent) {
+##      System.out.println("selection event!");
+
+      /*
+      getDetaillog().setVisible(false);
+      getHeaderlog().setVisible(true);
+    */
+    }
+	
+    public void rowDisclosureListener(RowDisclosureEvent rowDisclosureEvent) {
+//        System.out.println("rowDisclosureListener event");
+        selected$sddOutputBeanClass = ADFUtils.getDisclosedTableRowValue(rowDisclosureEvent, ${sddOutputBeanClass}.class);    
+##        if(null != selected$sddOutputBeanClass){
+##           System.out.println("rowDisclosureListener EVENT!"+selected$sddOutputBeanClass);
+##        }
+		//
+		ADFUtils.setApplicationScopeValue("$sddOutputBeanVariable",selected$sddOutputBeanClass);
+    }
+    
+    public void rowDisclosureListenerWithPartialRefresh(RowDisclosureEvent rowDisclosureEvent) {
+        rowDisclosureListener(rowDisclosureEvent);
+        AdfFacesContext adfFacesContext = null;
+        adfFacesContext = AdfFacesContext.getCurrentInstance();
+        adfFacesContext.addPartialTarget(((RichTable)rowDisclosureEvent.getSource()).getParent());
+    }
+    
+    public void queryListener(QueryEvent queryEvent) {
+//       System.out.println("queryListener event!");
+    }
+
+    public void rangeChangeListener(RangeChangeEvent rangeChangeEvent) {
+//       System.out.println("rangeChangeListener event!");
+    }
+
+}

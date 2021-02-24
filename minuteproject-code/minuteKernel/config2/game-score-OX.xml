@@ -1,0 +1,177 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<conventions>
+			<!-- <target-convention type="enable-updatable-code-feature" /> -->
+			<target-convention type="disable-timestamp-comment-marker" />
+		</conventions>
+		<model name="score" version="${version}" package-root="com.game">
+			<description>
+				<CDATA>
+					GS project MP generation
+				</CDATA>
+			</description>
+			<data-model database-type="MYSQL">
+				<driver name="mysql" version="8.0.19" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
+				<!--	<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>-->
+
+					<url>${jdbcUrl}</url>
+					<username>${username}</username>
+					<password>${password}</password>
+
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> 
+				<schema>kohlantstats</schema>-->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="identityPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="v_sitemap" />
+				</generation-condition>
+				<business-package default="model">
+					<condition type="package" endsWith="_TYPE" result="type"></condition>
+					<condition type="package" startsWith="CONF" result="config"></condition>
+					<condition type="package" startsWith="GS_" result="core"></condition>					
+				</business-package>
+			</business-model>
+			<statement-model>
+				<queries>
+					<!-- write queries -->
+					<query name="create_game_participation" id="create_game_participation"
+						package-name="game" is-write="true">
+						<query-body>
+							<value>
+<![CDATA[
+	call create_game_participation (?, ?, ?, ?, ?, ?, ?)
+	]]>
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="participant_web_path" is-mandatory="true" type="string"
+								sample="'win'">
+							</query-param>
+							<query-param name="team_web_path" is-mandatory="true" type="string"
+								sample="'team1'">
+							</query-param>
+							<query-param name="game_web_path" is-mandatory="true" type="string"
+								sample="'game1'">
+							</query-param>
+							<query-param name="activity_type_web_path" is-mandatory="true" type="string"
+								sample="'game1'">
+							</query-param>
+							<query-param name="participation_type_web_path" is-mandatory="true" type="string"
+								sample="'game1'">
+							</query-param>
+							<query-param name="ranking" is-mandatory="true" type="int"
+								sample="1">
+							</query-param>
+							<query-param name="reward_web_paths" is-mandatory="true" type="string"
+								sample="'win,reward2'"></query-param>
+						</query-params>
+					</query>
+
+					<!-- vote -->
+					<query name="first_vote_against" id="first_vote_against"
+						package-name="vote" is-write="true">
+						<query-body>
+							<value>
+<![CDATA[
+	call first_vote_against (?, ?, ?, ?, ?)
+	]]>
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="voter_web_path" is-mandatory="true" type="string"
+								sample="'win'">
+							</query-param>
+							<query-param name="voter_target_web_path" is-mandatory="true" type="string"
+								sample="'team1'">
+							</query-param>
+							<query-param name="team_web_path" is-mandatory="true" type="string"
+								sample="'game1'">
+							</query-param>
+							<query-param name="time_unit" is-mandatory="true" type="int"
+								sample="1">
+							</query-param>
+							<query-param name="vote_effectiveness_type_web_path" is-mandatory="true" type="string"
+								sample="'effectif'"></query-param>
+						</query-params>
+					</query>
+					
+					<query name="first_vote_against" id="first_vote_against"
+						package-name="vote" is-write="true">
+						<query-body>
+							<value>
+<![CDATA[
+	call first_vote_against (?, ?, ?, ?, ?)
+	]]>
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="voter_web_path" is-mandatory="true" type="string"
+								sample="'win'">
+							</query-param>
+							<query-param name="voter_target_web_path" is-mandatory="true" type="string"
+								sample="'team1'">
+							</query-param>
+							<query-param name="team_web_path" is-mandatory="true" type="string"
+								sample="'game1'">
+							</query-param>
+							<query-param name="time_unit" is-mandatory="true" type="int"
+								sample="1">
+							</query-param>
+							<query-param name="vote_effectiveness_type_web_path" is-mandatory="true" type="string"
+								sample="'effectif'"></query-param>
+						</query-params>
+					</query>
+					
+					<!-- team activity -->
+					<query name="create_participant_entrance" id="create_participant_entrance"
+						package-name="team" is-write="true">
+						<query-body>
+							<value>
+<![CDATA[
+	call create_participant_entrance (?, ?, ?, ?, ?, ?)
+	]]>
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="participant_web_path" is-mandatory="true" type="string"
+								sample="'win'">
+							</query-param>
+							<query-param name="team_web_path" is-mandatory="true" type="string"
+								sample="'team1'">
+							</query-param>
+							<query-param name="from_time" is-mandatory="true" type="int"
+								sample="10">
+							</query-param>
+							<query-param name="entrance_type_web_path" is-mandatory="true" type="string"
+								sample="'game1'">
+							</query-param>
+							<query-param name="new_participant_team_id" is-output-param="true" type="int"
+								sample="10"></query-param>
+						</query-params>
+					</query>
+				</queries>
+			</statement-model>
+
+		</model>
+
+		<targets catalog-entry="Openxava"
+			append-catalog-entry-dir-to-outputdir-root="true" outputdir-root="../../product/game-score-OX">
+			<property name="openxava-enable-hibernate-ehcache" value="true" />
+			<property name="environment" value="remote" />
+			<property name="show-sql" value="false" />
+			<property name="swagger" value="true" />
+			<property name="setter-return-instance" value="true" />
+			<property name="add-named-queries" value="false" />
+		</targets>
+
+
+	</configuration>
+</generator-config>

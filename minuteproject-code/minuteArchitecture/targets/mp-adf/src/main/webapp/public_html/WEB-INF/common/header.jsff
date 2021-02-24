@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich" version="2.1">
+    <div id="header">
+        <img alt="MP logo" id="banner-flag"
+             src="../images/logo/mp.gif"/>    </div>
+    <div id="path">
+        <p class="off-screen">Navigation path</p>
+        <!-- Breadcrumb links -->    
+        <!-- Breadcrumb links -->   
+        <div>
+        <div style="Float:left">		
+        <af:breadCrumbs var="menuInfo" value="#{backingBeanScope.rootMenuUtils!=null? backingBeanScope.rootMenuUtils.model : backingBeanScope.localMenuUtils.model}"
+                        inlineStyle="min-height:10px;" styleClass="reset-list"
+                        varStatus="varSt">            
+            <f:facet name="nodeStamp">
+				<f:facet name="MenuItems">
+					<af:switcher id="swt2" facetName="#{empty menuInfo.children ? 'MenuLink' : 'MenuGroup'}">
+						<f:facet name="MenuGroup">
+							<af:outputText value="#{menuInfo.label}"/>
+						</f:facet>
+						<f:facet name="MenuLink">
+							<af:commandNavigationItem text="#{menuInfo.label}"
+									  action="#{menuInfo.doAction}"
+									  icon="#{menuInfo.icon}"
+									  destination="#{menuInfo.destination}"
+									  visible="#{menuInfo.visible}"
+									  rendered="#{menuInfo.rendered}"/>
+						</f:facet>
+					</af:switcher>
+				</f:facet>
+            </f:facet>
+        </af:breadCrumbs>
+        </div>
+			<div style="Float:right">
+		<!-- <af:outputText id="userId"
+						value="#{viewScope.securityBean.securityUser.userId}"/>&nbsp;
+-->
+		 <af:outputText id="userFirstName"
+						value="#{viewScope.securityBean.securityUser.firstName}"/>&nbsp;
+		 <af:outputText id="userLastName"
+						value="#{viewScope.securityBean.securityUser.lastName}"/>&nbsp;&nbsp;&nbsp;
+<!--     <af:commandLink id="logOut" >Log out</af:commandLink>-->
+			</div>
+        </div>
+    </div>
+
+    
+    
+</jsp:root>

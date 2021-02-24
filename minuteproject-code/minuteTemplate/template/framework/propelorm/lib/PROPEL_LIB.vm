@@ -1,0 +1,3 @@
+#macro(exposePropelModelVariable)
+#set($propelRootPackage="${model.packageRoot}.$model.name")
+#end

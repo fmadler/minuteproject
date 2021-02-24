@@ -1,0 +1,41 @@
+#exposeVariableModelSpecific()
+#addedAreas()
+#set($thisClassName="$className")
+package $packageName;
+
+$!updatedAreaImport
+
+import java.util.List;
+import java.util.ArrayList;
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#exposeJPA2DomainObject($table)
+#exposeSpringBslaDomainObject()
+#if(!$isMany2Many)
+import $importDomainObjectUML;
+#end
+#end
+
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+
+public interface $thisClassName {
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#exposeJPA2DomainObject($table)
+#exposeSpringBslaDomainObject()
+#if(!$isMany2Many)
+	
+    public List<$tableClassName> getList ($tableClassName $tableVariableName) ;
+#end
+#end
+
+$!updatedAreaImplementation
+
+}

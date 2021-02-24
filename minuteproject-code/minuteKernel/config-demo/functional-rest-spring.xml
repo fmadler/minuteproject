@@ -1,0 +1,99 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="../config/mp-config.xsd">
+	<configuration>
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+        </conventions>
+		<model name="functional" version="1.0" package-root="net.sf.mp.demo">
+			<description>
+				<CDATA>
+					Model use for function test
+					BSLA/ BELA / Fitnesse
+				</CDATA>
+			</description>
+			<data-model>
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/functional</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="functional">
+					<condition type="package" startsWith="FILM" result="film"></condition>
+
+				</business-package>
+				<enrichment>
+					<conventions>
+					<!-- 
+						<column-naming-convention type="apply-strip-column-name-suffix"
+							pattern-to-strip="_ID" />
+							 -->
+						<reference-naming-convention
+							type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+						<ordering-convention field-pattern="DISPLAY_ORDER"
+							field-pattern-type="endsWith" ordering="asc" />
+
+						<!-- stereotype email, URL -->
+						<stereotype-convention field-pattern="email"
+							field-pattern-type="contains" stereotype="email" />
+						<stereotype-convention field-pattern="url"
+							field-pattern-type="contains" stereotype="url" />
+						<stereotype-convention field-pattern="password"
+							field-pattern-type="contains" stereotype="password" />
+						<stereotype-convention field-pattern="notes"
+							field-pattern-type="equals" stereotype="text-html" />
+
+						<!-- primary key conv 
+						<column-naming-convention
+							type="apply-fix-primary-key-column-name-when-no-ambiguity-and-not-natural"
+							default-value="ID" />
+-->
+						<!-- strip prefix -->
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+							pattern-to-strip="ADMIN_,SEC_,BUS_" />
+						<!-- semantic reference -->
+						<semantic-entity-convention
+							field-pattern="NAME,NUMBER" field-pattern-type="contains"
+							max-number-of-fields="2" />
+
+						<!-- trigger -->
+						<property-convention scope="field" pattern="CREATION_DATE"
+							tag="trigger-insert-with-current-date" type="start-with" />
+						
+						<view-primary-key-convention 
+						            type="apply-default-primary-key-otherwise-first-one" 
+						            default-primary-key-names="IDENTIFIER,ID" /> 
+					</conventions>
+
+					<entity name="Country" content-type="reference-data">
+						<semantic-reference>
+							<sql-path path="Name" />
+						</semantic-reference>
+					</entity>
+					<entity name="Language" content-type="reference-data">
+						<semantic-reference>
+							<sql-path path="Name" />
+						</semantic-reference>
+					</entity>
+					<!-- batch with SDD -->
+
+				</enrichment>
+			</business-model>
+			<!-- S D D -->
+
+		</model>
+	 	 
+		<targets catalog-entry="REST-CXF-Spring,REST-SpringMVC" />
+		
+	</configuration>
+</generator-config>

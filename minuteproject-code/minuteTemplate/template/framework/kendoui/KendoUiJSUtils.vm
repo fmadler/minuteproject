@@ -1,0 +1,53 @@
+(function($, undefined) {
+	jQuery.extend(jQuery.fn, {
+        busyIndicator: function (c) {
+            b = $(this);
+            var d = b.find(".k-loading-mask");
+            c ? d.length || (d = $("<div class='k-loading-mask'><span class='k-loading-text'>Loading...</span><div class='k-loading-image'/><div class='k-loading-color'/></div>").width(b.outerWidth()).height(b.outerHeight()).prependTo(b)) : d && d.remove()
+        }        
+	});
+})(jQuery);
+
+jQuery.fn.scrollView = function() {
+  return this.each(function() {
+      $('html, body').animate({
+          scrollTop: $(this).offset().top
+      }, 1000);
+  });
+}
+
+jQuery.fn.enable = function() {
+	$(this).removeAttr("disabled");
+	$(this).removeClass("k-state-disabled");
+}
+
+jQuery.fn.disable = function() {
+	$(this).attr("disabled", "disabled");
+	$(this).addClass("k-state-disabled");
+}
+
+function resizeKendoDropDownList(e) {
+	var dropDown = $(e.sender.element),
+				dataWidth = dropDown.data("kendoDropDownList").list.width(),
+				listWidth = dataWidth - 10,
+				containerWidth = listWidth + 10;
+	dropDown.data("kendoDropDownList").list.width(listWidth);
+	dropDown.data("kendoDropDownList").list.css("white-space", "nowrap");
+	dropDown.closest(".k-widget").width(containerWidth);
+}
+
+function adviseAndDisable(zone, message) {
+	$(zone).kendoTooltip({
+		content: message,
+		position: "top"
+	});
+	$(zone).addClass('k-state-disabled');
+	$(zone).removeAttr("onclick");
+}
+
+function enableAndRemoveAdvise(zone, onclick) {
+	$(zone).data("kendoTooltip").destroy();
+	$(zone).removeClass('k-state-disabled');
+	$(zone).attr("onclick", onclick);
+}
+

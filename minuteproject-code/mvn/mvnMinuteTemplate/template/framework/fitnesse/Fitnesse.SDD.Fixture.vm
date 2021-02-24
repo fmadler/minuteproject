@@ -1,0 +1,90 @@
+#exposeQuerySpecific()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
+
+import scriptella.util.StringUtils;
+
+import net.sf.minuteproject.fitnesse.fixture.DbSddFixture;
+import net.sf.minuteproject.utils.database.DatabaseUtils;
+import fit.ColumnFixture;
+import fitnesse.fixtures.TableFixture;
+
+public class ${className} extends DbSddFixture{
+
+#set ($fullQuery = $queryUtils.getFullQueryQuestionMark($query))
+	public static final String QUERY_NATIVE = "$fullQuery";
+#set ($nbInputColumn = 0)
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+	public $columnType $formatUtils.getUppercaseUnderscore($column.name); //$columnVar; // 
+#set ($nbInputColumn = $velocityCount)
+#end
+
+#set ($nbColumn = 0)
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+	public $columnType ${formatUtils.getUppercaseUnderscore($column.name)}_; //$columnVar; // 
+#set ($nbColumn = $velocityCount)
+#end
+	public static int NB_COLUMN = $nbColumn;
+	public static int NB_INPUT_COLUMN = $nbInputColumn;
+	
+	protected int getNumberOfColumn() {
+		return NB_COLUMN;
+	}
+
+	protected int getInputNumberOfColumn() {
+		return NB_INPUT_COLUMN;
+	}
+	@Override
+	protected void doStaticTable(int arg0) {
+		try {
+			resultSet = getResultSet(executeQuery());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		checkCount(resultSet.length+"");
+		checkResultSet();
+	}
+
+	private ResultSet executeQuery() throws SQLException {
+		Connection connection = DatabaseUtils.getConnection();
+		PreparedStatement pstmt = connection.prepareStatement(QUERY_NATIVE);
+		Map<String, String> map = getColumnValue();
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+#set($column_name = ${formatUtils.getUppercaseUnderscore($column.name)})
+#if ($columnUtils.isString($column))
+        $column_name = map.get("$column_name");
+#else
+        String ${column_name}_string = map.get("$column_name");
+#if ($columnUtils.isInteger($column))
+        $column_name = (!StringUtils.isEmpty(${column_name}_string))?Integer.valueOf(${column_name}_string):null;
+#elseif($columnUtils.isLong($column))
+        $column_name = (!StringUtils.isEmpty(${column_name}_string))?Long.valueOf(${column_name}_string):null;
+#end
+#end
+        if ($column_name==null) {
+            pstmt.setNull($velocityCount, java.sql.Types.${column.type});
+        } else {
+            pstmt.set$columnType($velocityCount, $column_name);
+        }
+#end
+		return pstmt.executeQuery();
+	}
+	
+	@Override
+	protected String getTable() {
+		return "$query.name";
+	}
+}

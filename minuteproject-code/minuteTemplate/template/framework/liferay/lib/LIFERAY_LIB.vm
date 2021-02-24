@@ -1,0 +1,21 @@
+#macro(putLiferayPortletXmlModelSecurity)
+#foreach($role in $entitySecurityUtils.getDistinctRole($model))
+	<role-mapper>
+		<role-name>$role</role-name>
+		<role-link>$role</role-link>
+	</role-mapper>
+#end
+#end
+#macro(putPortletXmlEntitySecurity)
+#foreach($role in $entitySecurityUtils.getEntitySecuredRoles($table))
+		<security-role-ref>
+			<role-name>$role</role-name>
+		</security-role-ref>
+#end
+#end
+
+#macro(exposePortletTechnology)
+#set($isVaadin=$template.getPropertyValue("portlet-technology","none")=="vaadin")
+#set($isPrimefaces=$template.getPropertyValue("portlet-technology","none")=="primefaces")
+#set($isOpenxava=$template.getPropertyValue("portlet-technology","none")=="openxava")
+#end

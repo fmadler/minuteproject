@@ -1,0 +1,58 @@
+#exposeVariableModelSpecific()
+#exposeBackendTechnology()
+#set($thisClassName=$className)
+#set($thisDomainVariableName=$classVariable)
+package $packageName;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Date;
+import java.util.ArrayList;
+import  java.io.Serializable;
+#if($isSpringBackend)
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+#elseif($isEJBBackend)
+import javax.ejb.EJB;
+#end
+
+import javax.faces.model.SelectItem;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#if(!$isMany2Many)
+import $beanSpringServiceImport;
+#end
+#end
+#if($isSpringBackend)
+@Service ("${thisDomainVariableName}")
+#elseif($isEJBBackend)
+@javax.ejb.Stateless (name="${thisDomainVariableName}")	
+#end
+##@ApplicationScoped
+public class $thisClassName implements Serializable{
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#if(!$isMany2Many)
+#if($isSpringBackend)
+    @Autowired 
+	@Qualifier("${beanSpringServiceVariable}")
+#elseif($isEJBBackend)
+    @EJB
+#end
+    private $beanSpringServiceClass $beanSpringServiceVariable;
+#end
+#end
+
+#putSpringModelLookup("JSF")
+
+}

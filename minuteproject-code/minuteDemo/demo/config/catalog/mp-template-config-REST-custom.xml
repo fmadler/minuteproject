@@ -1,0 +1,95 @@
+<target name="REST-custom">		
+	<architecture-target name="custom" description="custom implementation on top of rest">
+	</architecture-target>	
+   	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"/>
+   	<plugin name="kendoUiUtils" className="net.sf.minuteProject.plugin.kendoui.KendoUiUtils"/>
+
+	<template-target 
+    	name="REST custom xml config"
+		outputdir="src/main/webapp/WEB-INF"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="WebXmlRESTCustom" templateFileName="WebXmlRESTKendoUiClient.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="web" 
+			has-updatable-nature="true"
+			application-specific="true" add-model-name="false" >
+		</template>
+			 
+		<template name="CustomApplicationContextXml" templateFileName="SpringApplicationContextXml-template.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="application-context" 
+			has-updatable-nature="true"
+			application-specific="true" add-model-name="false" >
+			<property name="template-to-scan" value="RESTDbAPIEntityResource"></property>
+			<property name="template-to-scan-2" value="SpringServiceImpl"></property>
+			<property name="template-to-scan-scheduler" value="SpringScheduler"></property>
+		</template>
+
+    </template-target>
+
+  	<template-target 
+    	name="default webapp instructions"
+		outputdir="src/main/webapp"
+		package-root="">
+
+		<template
+			name="README.REST.custom" templateFileName="README.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="false" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="txt" file-prefix="" file-suffix="README" 
+			application-specific="true">
+			<property name="readme" value="put your webapp (html,css,js) implementations here"></property>
+		</template>	
+		
+	</template-target>				
+   	
+   	<template-target 
+    	name="default webapp java dev"
+		outputdir="src/main/java">
+
+		<template
+			name="README.REST.custom" templateFileName="README.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="false" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="txt" file-prefix="" file-suffix="README" 
+			application-specific="true">
+			<property name="readme" value="put your java implementations here"></property>
+		</template>	
+		       
+	</template-target>
+
+  	<template-target 
+    	name="Maven pom"
+		outputdir=""
+		package-root=""
+		libdir="">
+		<!-- TODO change  -->
+		<template name="PomXml.custom" templateFileName="MavenDefaultPomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+			<property name="jar-maven-template" value="PomXml.REST-2" />
+			<property name="maven-artifact-finalName-suffix" value="Web" />
+			<property name="maven-packaging" value="war" />
+		</template>
+		
+	</template-target>	
+	
+	<!-- ensure master pom takes into account previous pom -->
+	<template-target 
+	    templatedir = "template" 
+		tool="velocity"
+		outputdir="../"
+		package-root=""
+		belongToPackage="true">
+		<template name="MavenMasterPomXml" templateFileName="MavenMasterPomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+			<property name="maven-artifact-finalName-suffix" value="App" />
+		</template>				
+	</template-target>			
+	
+</target>

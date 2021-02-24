@@ -1,0 +1,65 @@
+<!DOCTYPE root>
+<generator-config>
+    <configuration>
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+        </conventions>       
+        <model name="liferay" version="1.0" package-root="net.sf.mp.demo">
+            <data-model>
+                <driver name="mysql" version="5.1.16" groupId="mysql" artifactId="mysql-connector-java"></driver>
+                <dataSource>
+                    <driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+                    <url>jdbc:mysql://127.0.0.1:3306/lportal</url>
+                    <username>root</username>
+                    <password>mysql</password>
+                </dataSource>
+                <primaryKeyPolicy oneGlobal="true">
+                    <primaryKeyPolicyPattern name="none"></primaryKeyPolicyPattern>
+                </primaryKeyPolicy>
+            </data-model>
+            <business-model>   
+                    <generation-condition>
+                    <condition type="exclude" startsWith="QUARTZ"></condition>
+                    </generation-condition>
+                <business-package default="liferay">
+                    <condition type="package" startsWith="social" result="social"></condition>
+                    <condition type="package" startsWith="user" result="user"></condition>
+                    <condition type="package" startsWith="journal" result="journal"></condition>               
+                </business-package>
+                <enrichment>
+                    <conventions>
+                        <!-- manipulate the structure and entities BEFORE manipulating the entities -->
+                        <foreign-key-convention type="autodetect-foreign-key-based-on-similarity-and-map"
+                            column-ending="id" column-starting="" />
+                        <column-naming-convention type="apply-strip-column-name-suffix" pattern-to-strip="ID" />
+                        <reference-naming-convention type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />       
+                    </conventions>
+                    <entity name="user_" alias="user"></entity>
+                    <entity name="role_" alias="role"></entity>
+                    <entity name="group_" alias="group"></entity>
+                    <entity name="permission_" alias="permission"></entity>
+                    <entity name="organization_" alias="organization"></entity>
+                    <entity name="classname_" alias="classname"></entity>
+                    <entity name="contact_" alias="contact"></entity>
+                </enrichment>
+            </business-model>
+        </model>
+        <targets>
+            <target refname="JPA2"
+               fileName="mp-template-config-JPA2.xml"
+               outputdir-root="../../dev/liferay/output/JPA2"
+               templatedir-root="../../minuteTemplate/template/framework/jpa">
+               <property name="add-querydsl" value="2.1.2"></property>
+               <property name="add-jpa2-implementation" value="hibernate"></property>
+            </target>                        
+            <target refname="SQL misc"
+               fileName="mp-template-config-sqlutils.xml"
+               outputdir-root="../../dev/liferay/output/SQL"
+               templatedir-root="../../minuteTemplate/template/utils/db">
+            </target>                        
+            <target refname="LIB" fileName="mp-template-config-bsla-LIB-features.xml"
+                templatedir-root="../../minuteTemplate/template/framework/bsla">
+            </target>
+        </targets>
+    </configuration>
+</generator-config>

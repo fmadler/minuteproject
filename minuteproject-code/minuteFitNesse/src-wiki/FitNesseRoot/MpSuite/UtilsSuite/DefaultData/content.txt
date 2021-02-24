@@ -1,0 +1,11 @@
+!contents -R2 -g -p -f -h
+
+!define tableAPrefixT {T_TABLE_A}
+!define tableASuffixT {TABLE_A_T}
+!define include {include}
+!define exclude {exclude}
+!define regex {regex}
+!define startsWith {startsWith}
+!define endsWith {endsWith}
+!define prefixT {T_}
+!define suffixT {_T}

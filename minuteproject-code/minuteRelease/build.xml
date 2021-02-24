@@ -1,0 +1,1012 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="release" basedir="." name="release">
+	<description>This build file will build all the minuteKernel modules</description>
+	<!-- ===================================================================== -->
+	<!-- import files -->
+	<!-- ===================================================================== -->
+	<property file="build.properties" />
+	<!-- ===================================================================== -->
+	<!-- properties definitions -->
+	<!-- ===================================================================== -->
+	<!-- LOCAL PROPERTIES 	-->
+	<property environment="env"/>
+	<property name="maven.home" value="${env.MAVEN_HOME}" />
+	<property name="project.name" value="minuteProject" />
+	<property name="dburl" value="jdbc:hsqldb:hsql://localhost:9001/${db.name}" />
+
+	<target name="prepare-structure">
+		<delete dir="${release.dir}" />
+		<delete file="${release.dir}.zip" />
+		<mkdir dir="${application.dir}" />
+		<mkdir dir="${application.lib.dir}" />
+		<mkdir dir="${config.dir}" />
+		<!--<mkdir dir="${config.template.dir}"/>-->
+		<mkdir dir="${template.dir}" />
+		<mkdir dir="${target.dir}" />
+		<mkdir dir="${sample.dir}" />
+	</target>
+
+	<target name="build-minuteFoundation">
+		<ant dir="${minute.foundation.dev.relpath}" target="distribute">
+			<property name="project.name" value="${minuteFoundation}">
+			</property>
+			<property name="distribute.dir" value="${release.del.relpath}/${application.dir}/lib">
+			</property>
+		</ant>
+		<!---->
+		<ant dir="${minute.foundation.dev.relpath}" target="distribute">
+			<property name="project.name" value="${minuteFoundation}">
+			</property>
+			<property name="distribute.dir" value="${release.del.relpath}/${target.dir}/${fitnesse}">
+			</property>
+		</ant>
+	</target>
+
+	<target name="distribute-minuteFoundation">
+		<copy todir="${target.dir}/mp-foundation" overwrite="true">
+			<fileset dir="${minute.foundation.dev.relpath}/dist">
+				<include name="**/*.jar" />
+				<include name="**/*.zip" />
+			</fileset>
+		</copy>
+		<copy todir="${application.dir}" overwrite="true">
+			<fileset dir="${minute.foundation.dev.relpath}/dist">
+				<include name="**/*.jar" />
+				<include name="**/*.zip" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="copy-install-maven-minuteFoundation">
+		<copy todir="${target.dir}/mp-foundation" overwrite="true">
+			<fileset dir="${minute.foundation.dev.relpath}/script">
+				<include name="*.*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release-minuteFoundation" depends="build-minuteFoundation, copy-install-maven-minuteFoundation, distribute-minuteFoundation">
+	</target>
+
+	<target name="build-architecture-bsla">
+		<ant dir="${architecture.bsla.dev.relpath}" target="distribute">
+			<property name="project.name" value="${bsla}">
+			</property>
+			<property name="distribute.dir" value="../../${release.del.relpath}/${target.dir}/${bsla}">
+			</property>
+		</ant>
+	</target>
+	<target name="copy-install-maven">
+		<copy todir="${target.dir}/${bsla}" overwrite="true">
+			<fileset dir="${architecture.bsla.dev.relpath}/script">
+				<include name="*.*" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="copy-architecture-bsla-dependencies">
+		<copy todir="${target.dir}/${bsla}/${dependencies.lib.dir}" overwrite="true">
+			<fileset dir="${architecture.bsla.dev.relpath}/lib">
+				<include name="**/README.txt" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release-architecture-bsla" depends="build-architecture-bsla,copy-install-maven,copy-architecture-bsla-dependencies">
+	</target>
+
+	<target name="build-architecture-adf">
+		<ant dir="${architecture.adf.dev.relpath}" target="distribute">
+			<property name="project.name" value="${adf}">
+			</property>
+			<property name="distribute.dir" value="../../${release.del.relpath}/${target.dir}/${adf}">
+			</property>
+		</ant>
+	</target>
+
+	<target name="release-architecture-adf" depends="build-architecture-adf">
+	</target>
+
+	<target name="build-architecture-openxava">
+		<ant dir="${architecture.openxava.dev.relpath}" target="distribute">
+			<property name="project.name" value="${openxava}">
+			</property>
+			<property name="distribute.dir" value="../../${release.del.relpath}/${target.dir}/${openxava}">
+			</property>
+		</ant>
+	</target>
+
+	<target name="release-architecture-openxava" depends="build-architecture-openxava">
+	</target>
+
+	<target name="build-architecture-fitnesse">
+		<!--<ant dir="${architecture.dev.relpath}" antfile="build-architecture-package.xml" target="distribute" >
+	  	<property name="src.dir" value="src-architecture-mp-fitnesse"></property>
+	  	<property name="project.name" value="${fitnesse}"></property>
+	  	<property name="distribute.dir" value="../${release.del.relpath}/${target.dir}/${fitnesse}"></property>	  	
+	  </ant>-->
+		<ant dir="${architecture.fitnesse.dev.relpath}" target="distribute">
+			<property name="project.name" value="${fitnesse}">
+			</property>
+			<property name="distribute.dir" value="../../${release.del.relpath}/${target.dir}/${fitnesse}">
+			</property>
+		</ant>
+	</target>
+	<target name="copy-architecture-fitnesse-dependencies">
+		<copy todir="${target.dir}/${fitnesse}/${dependencies.lib.dir}" overwrite="true">
+			<fileset dir="${architecture.fitnesse.dev.relpath}/lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="copy-install-maven-fitnesse">
+		<copy todir="${target.dir}/${fitnesse}" overwrite="true">
+			<fileset dir="${architecture.fitnesse.dev.relpath}/script">
+				<include name="*.*" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="release-architecture-fitnesse" depends="build-architecture-fitnesse,copy-install-maven-fitnesse,copy-architecture-fitnesse-dependencies">
+	</target>
+
+	<target name="copy-kernel-dependencies">
+		<copy todir="${application.lib.dir}" overwrite="true">
+			<fileset dir="${kernel.dev.relpath}/lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${application.lib.dir}" overwrite="true">
+			<fileset dir="${kernel.dev.relpath}/application/java/lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="distribute-kernel">
+		<copy todir="${application.dir}" overwrite="true">
+			<fileset dir="${kernel.dev.relpath}/application/java/lib">
+				<include name="**/*.jar" />
+				<include name="**/*.zip" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build-kernel-dependencies">
+		<ant dir="${kernel.dev.relpath}" target="archive">
+			<property name="application.dir" value="./application">
+			</property>
+			<property name="project.name" value="minuteKernel">
+			</property>
+		</ant>
+	</target>
+
+	<target name="release-kernel" depends="build-kernel-dependencies, distribute-kernel, copy-kernel-dependencies">
+	</target>
+
+
+	<target name="copy-console-dependencies">
+		<copy todir="${application.lib.dir}" overwrite="true">
+			<fileset dir="${console.dev.relpath}/lib">
+				<include name="miglayout-3.7.3.1.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="distribute-console">
+		<copy todir="${application.lib.dir}" overwrite="true">
+			<fileset dir="${console.dev.relpath}/dist">
+				<include name="**/*.jar" />
+				<include name="**/*.zip" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build-console-dependencies">
+		<ant dir="${console.dev.relpath}" target="archive">
+			<property name="application.dir" value="./application">
+			</property>
+			<property name="project.name" value="minuteConsole">
+			</property>
+		</ant>
+	</target>
+
+	<target name="release-console" depends="build-console-dependencies, distribute-console, copy-console-dependencies">
+	</target>
+
+	<target name="test-console-localy">
+		<copy todir="${catalog.dev.relpath}" overwrite="true">
+			<fileset dir="${demo.config.dev.relpath}">
+				<include name="mp-template-config-*.xml" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="copy-template-dependencies">
+		<filter token="templateRoot" value="${templateRoot}" />
+		<!--
+		<copy todir="${catalog.dir}" overwrite="true" filtering="true">
+			<fileset dir="${catalog.dev.relpath}">
+				<include name="**/*-catalog.xml" />
+			</fileset>
+		</copy>
+		-->
+		<mkdir dir="${catalog.dir}"/>
+		<copy todir="${catalog.dir}" overwrite="true" filtering="true">
+			<!--	 	<fileset dir="${demo.config.dev.relpath}">
+	 		<include name="mp-template-config*.*"/>
+	 	</fileset>	 -->
+			<fileset dir="${demo.config.dev.relpath}/catalog">
+				<include name="*.*" />
+			</fileset>
+		</copy>
+		<copy todir="${template.framework.dir}" overwrite="true">
+			<fileset dir="${template2.dev.relpath.framework}">
+				<include name="**/*.vm" />
+			</fileset>
+		</copy>
+		<copy todir="${template.utils.dir}" overwrite="true">
+			<fileset dir="${template2.dev.relpath.utils}">
+				<include name="**/*.vm" />
+			</fileset>
+		</copy>
+		<copy todir="${template.soa.dir}" overwrite="true">
+			<fileset dir="${template2.dev.relpath.soa}">
+				<include name="**/*.vm" />
+			</fileset>
+		</copy>
+		<copy todir="${template.server.dir}" overwrite="true">
+			<fileset dir="${template2.dev.relpath.server}">
+				<include name="**/*.vm" />
+			</fileset>
+		</copy>
+		<copy todir="${template.cloud.dir}" overwrite="true">
+			<fileset dir="${template2.dev.relpath.cloud}">
+				<include name="**/*.vm" />
+			</fileset>
+		</copy>
+		<copy todir="${template.tutorial.dir}" overwrite="true">
+			<fileset dir="${template2.dev.relpath.tutorial}">
+				<include name="**/*.vm" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="release-template" depends="copy-template-dependencies">
+	</target>
+
+	<target name="copy-sample-dependencies">
+		<copy todir="${sample.dir}" overwrite="true">
+			<fileset dir="${sample.dev.relpath}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="release-sample" depends="copy-sample-dependencies">
+	</target>
+
+	<target name="copy-resource-dependencies">
+		<copy todir="${resources.dir}" overwrite="true">
+			<fileset dir="${resources.dev.relpath}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="release-resource" depends="copy-resource-dependencies">
+	</target>
+
+	<target name="copy-demo-dependencies">
+		<copy todir="${demo.dir}" overwrite="true">
+			<fileset dir="${demo.dev.relpath}/demo">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		<chmod dir="${demo.dir}" perm="777" includes="**/*.sh" />
+	</target>
+
+	<target name="release-demo" depends="copy-demo-dependencies">
+	</target>
+
+	<target name="copy-release-installation">
+		<copy todir="${release.dir}" overwrite="true">
+			<fileset dir="${installation.dir}">
+				<include name="**/README.txt" />
+			</fileset>
+		</copy>
+		<copy todir="${release.dir}/mywork/config" overwrite="true">
+			<fileset dir="${demo.config.dev.relpath}">
+				<include name="catalog/*.*" />
+				<include name="mp-template-config*" />
+				<include name="model-generation*" />
+				<include name="application-generation*" />
+				<include name="*.xsd" />
+				<include name="lcp*" />
+				<include name="mp-config-sample*" />
+			</fileset>
+		</copy>
+		<copy todir="${release.dir}/bin" overwrite="true">
+			<fileset dir="${installation.dir}/bin">
+				<include name="*.*" />
+			</fileset>
+		</copy>
+		<chmod dir="${release.dir}/mywork/config" perm="777" includes="**/*.sh" />
+		<chmod dir="${release.dir}/bin" perm="777" includes="**/*.sh" />
+	</target>
+
+	<target name="release-installation" depends="copy-release-installation">
+	</target>
+
+	<target name="release-all" depends="prepare-structure">
+		<antcall target="release-minuteFoundation">
+		</antcall>
+		<antcall target="release-template">
+		</antcall>
+		<antcall target="release-kernel">
+		</antcall>
+		<antcall target="release-console">
+		</antcall>
+		<antcall target="release-architecture-bsla">
+		</antcall>
+		<antcall target="release-architecture-openxava">
+		</antcall>
+		<antcall target="release-architecture-adf">
+		</antcall>
+		<antcall target="release-architecture-fitnesse">
+		</antcall>
+		<antcall target="release-sample">
+		</antcall>
+		<antcall target="release-resource">
+		</antcall>
+		<antcall target="release-demo">
+		</antcall>
+		<antcall target="release-installation">
+		</antcall>
+	</target>
+
+
+	<!--
+	    
+	-->
+	<!-- ===================================================================== -->
+	<!-- macro definitions -->
+	<!-- ===================================================================== -->
+	<macrodef name="macro_generate_and_build_application">
+		<attribute name="config" />
+		<attribute name="display" />
+		<attribute name="maven.basedir"  />
+		<attribute name="maven.goal" default="package"  />
+		<sequential>
+			<!--<delete dir="${demo.output.dir}/@{maven.basedir}"></delete>-->
+			<macro_generate_application display="@{display}" config="@{config}"/>
+			<macro_build maven.basedir="@{maven.basedir}" maven.goal="@{maven.goal}"/>
+			<maven basedir="${demo.output.dir}/@{maven.basedir}" options="" goal="@{maven.goal}" resultproperty="maven.build.result" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="macro_generate_and_build">
+		<attribute name="config" />
+		<attribute name="display" />
+		<attribute name="maven.basedir"  />
+		<attribute name="maven.goal" default="package"  />
+		<sequential>
+			<!--<delete dir="${demo.output.dir}/@{maven.basedir}"></delete>-->
+			<macro_generate display="@{display}" config="@{config}"/>
+			<macro_build maven.basedir="@{maven.basedir}" maven.goal="@{maven.goal}"/>
+			<maven basedir="${demo.output.dir}/@{maven.basedir}" options="" goal="@{maven.goal}" resultproperty="maven.build.result" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="macro_build">
+		<attribute name="maven.basedir"  />
+		<attribute name="maven.goal" default="package"  />
+		<sequential>
+			<maven basedir="${demo.output.dir}/@{maven.basedir}" options="" goal="@{maven.goal}" resultproperty="maven.build.result" />
+		</sequential>
+	</macrodef>
+				
+	<macrodef name="macro_generate">
+		<attribute name="config" />
+		<attribute name="display" />
+		<sequential>
+			<echo message="@{display}" />
+			<delete file="${hsqldb-sample}/petshop.lck" failonerror="false">
+			</delete>
+			<java fork="true" dir="${demo.dir}/config" classname="net.sf.minuteProject.application.ModelViewGenerator">
+				<classpath>
+					<path refid="mp.library.path" />
+				</classpath>
+				<arg line="@{config}" />
+			</java>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="macro_generate_application">
+		<attribute name="config" />
+		<attribute name="display" />
+		<sequential>
+			<echo message="@{display}" />
+			<delete file="${hsqldb-sample}/petshop.lck" failonerror="false">
+			</delete>
+			<java fork="true" dir="${demo.dir}/config" classname="net.sf.minuteProject.application.ApplicationGenerator">
+				<classpath>
+					<path refid="mp.library.path" />
+				</classpath>
+				<arg line="@{config}" />
+			</java>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="macro_build_and_deploy">
+		
+		<attribute name="maven.basedir"  />
+		<attribute name="project" default="" />
+		<attribute name="artifact" />
+		<attribute name="model.name" default="" />
+		<sequential>
+			<maven basedir="${demo.output.dir}/@{maven.basedir}" options="" goal="package" resultproperty="maven.build.result" />
+			<macro_deploy-on-tomcat basedir="./${demo.output.dir}/@{maven.basedir}/@{project}/target" artifact="@{artifact}.war"/>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="maven">
+		<attribute name="options" default="" />
+		<attribute name="goal" />
+		<attribute name="basedir" />
+		<attribute name="resultproperty" default="maven.result" />
+		<element name="args" implicit="true" optional="true" />
+		<sequential>
+			<fail message="MAVEN_HOME not set.">
+			    <condition>
+			        <isset property="${env.MAVEN_HOME}"/>
+			    </condition>
+			</fail>
+			<java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" resultproperty="@{resultproperty}">
+				<jvmarg value="-Xmx512m" />
+				<classpath>
+					<fileset dir="${maven.home}/boot">
+						<include name="*.jar" />
+					</fileset>
+					<fileset dir="${maven.home}/lib">
+						<include name="*.jar" />
+					</fileset>
+				</classpath>
+				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
+				<sysproperty key="maven.home" value="${maven.home}" />
+				<arg line="--batch-mode @{options} @{goal}" />
+			</java>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="macro_deploy-on-tomcat">
+		<attribute name="artifact" />
+		<attribute name="basedir" />
+		<sequential>
+			<fail message="TOMCAT_HOME not set.">
+			    <condition>
+			        <isset property="${env.TOMCAT_HOME}"/>
+			    </condition>
+			</fail>
+			<echo>@{basedir}  -- @{artifact}  -- ${env.TOMCAT_HOME}</echo>
+			<copy file="@{basedir}/@{artifact}" todir="${env.TOMCAT_HOME}/webapps" overwrite="true" />
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="application_compliance_transformer">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="styledir" default="" />
+		<attribute name="transformer" />
+		<sequential>
+			<xslt
+				in="${basedir}/@{input}.xml" 
+				out="${basedir}/out/@{input}-no-namespace.xml"
+			    style="@{styledir}/remove-namespace.xsl"/>
+			<xslt 
+				in="${basedir}/out/@{input}-no-namespace.xml" 
+				out="${basedir}/@{output}.xml"
+			    style="@{styledir}/@{transformer}.xsl"/>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="application_compliance_one_model">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="dir" default="" />
+		<sequential>
+			<application_compliance_transformer 
+				input="@{dir}/@{input}"
+				output="@{dir}/@{output}"
+				styledir="${basedir}/@{dir}/xsl"
+				transformer="model-to-application-one-db"
+			/>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="application_compliance_two_models">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="dir" default="" />
+		<attribute name="transformer" />
+		<sequential>
+			<application_compliance_transformer 
+				input="@{dir}/@{input}"
+				output="@{dir}/@{output}"
+				styledir="${basedir}/@{dir}/xsl"
+				transformer="@{transformer}"
+			/>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="application_compliance_two_models_devops">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="dir" default="" />
+		<sequential>
+			<application_compliance_two_models 
+				input="@{input}"
+				output="@{output}"
+				dir="@{dir}"
+				transformer="model-to-application-two-dbs-devops"
+			/>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="application_compliance_two_models_porphyry">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="dir" default="" />
+		<sequential>
+			<application_compliance_two_models 
+				input="@{input}"
+				output="@{output}"
+				dir="@{dir}"
+				transformer="model-to-application-two-dbs-porphyry"
+			/>
+		</sequential>
+	</macrodef>
+
+	<!-- ===================================================================== -->
+	<!-- classpath definitions -->
+	<!-- ===================================================================== -->
+
+
+
+	<path id="hsqldb.library.path">
+		<fileset dir="${sample.dir}/hsql">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<path id="mp.library.path">
+		<pathelement location="${demo.dir}/config" />
+		<fileset dir="${application.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	
+	<!-- ===================================================================== -->
+	<!-- hsqldb def -->
+	<!-- ===================================================================== -->
+    <target name="startdb" description="Run HSQL database server with clean DB">
+        <!-- Delete database files 
+        <delete dir="${database.dir}" />-->
+        <java classname="org.hsqldb.Server" fork="yes" classpathref="hsqldb.library.path" failonerror="true">
+            <arg value="-database.0" />
+            <arg value="./hsql/petshop" />
+            <arg value="-dbname.0" />  
+            <arg value="petshop" />  
+        </java>
+    </target>
+	
+    <target name="stopdb" description="Stop HSQL database server">
+        <sql driver="org.hsqldb.jdbcDriver" url="${dburl}" userid="sa" password="" onerror="continue">
+            <classpath refid="hsqldb.library.path" />
+            SHUTDOWN;
+        </sql>
+    </target>
+	
+	<!-- ===================================================================== -->
+	<!-- ant generation tasks definitions -->
+	<!-- ===================================================================== -->
+
+	<!-- for ad-hoc test -->
+	<target name="generation-build-sample" depends="release-application" >
+		<macro_generate_and_build display="Hibernate-BSLA" config="mp-config-bsla-hibernate-last-features.xml" maven.basedir="MavenSpringHibernate/petshop"/>
+		<macro_generate_and_build display="JPA-BSLA" config="mp-config-bsla-jpa-last-features.xml" maven.basedir="MavenSpringJPA/petshop"/>
+		<!--		
+		<macro_generate_and_build display="iBatis-BSLA" config="mp-config-ibatis.xml" maven.basedir="MavenSpringIbatis/petshop"/>
+		
+		<macro_generate_and_build display="JPA2" config="mp-config-JPA2.xml" maven.basedir="JPA2/petshop/JPA2" />
+		<echo>${maven.build.result}</echo>
+		-->
+	</target>
+
+
+	<!-- for generation and packaging all tracks -->
+	
+	<target name="generation-demo" depends="release-application">
+		<parallel threadcount="1">
+	        <macro_generate display="SAKILA-SDD" config="sakila-SDD-KendoUi.xml" />
+	        <macro_generate display="JPA2" config="mp-config-JPA2.xml" />
+	        <macro_generate display="JPA2-groovy" config="mp-config-JPA2-groovy.xml" />
+			<macro_generate display="ADF" config="mp-config-ADF.xml" />
+			<macro_generate display="Hibernate" config="mp-config-hibernate.xml" />
+			<macro_generate display="FitNesse" config="mp-config-fitnesse.xml" />
+			
+			<macro_generate display="JOOQ" config="mp-config-JOOQ.xml" />
+			<macro_generate display="JPA" config="mp-config-jpa.xml" />
+			<macro_generate display="JPA2-bsla" config="mp-config-JPA2-BSLA.xml" />
+			<macro_generate display="Primefaces-JEE" config="mp-config-JSF-EJB3.xml" />
+			<macro_generate display="Primefaces-Spring" config="mp-config-JSF-Spring.xml" />
+			<macro_generate display="Grails" config="mp-config-grails-last-features.xml" />
+			<macro_generate display="Openxava" config="mp-config-openxava-last-features.xml" />
+			<macro_generate display="Play" config="mp-config-play-last-features.xml" />
+			<macro_generate display="Roo" config="mp-config-roo-last-features.xml" />
+			<macro_generate display="REST-CXF-JEE" config="mp-config-REST-CXF-JEE.xml" />
+			<macro_generate display="REST-CXF-Spring" config="mp-config-REST-CXF-Spring.xml" />
+			<macro_generate display="REST-JEE" config="mp-config-REST.xml" />
+			<macro_generate display="REST-SpringMVC" config="mp-config-REST-SpringMVC.xml" />
+			<macro_generate display="Vaadin" config="mp-config-vaadin.xml" />
+			<macro_generate display="WS-JEE" config="mp-config-WS-JEE.xml" />
+			<macro_generate display="Solr" config="mp-config-solr.xml" />
+	
+			<macro_generate display="Liferay SB" config="mp-config-Liferay.xml" />
+			<macro_generate display="PHP-doctrine" config="mp-config-doctrine.xml" />
+			<macro_generate display="PHP-propel" config="mp-config-propel.xml" />
+
+			<macro_generate display="Hibernate-BSLA" config="mp-config-bsla-hibernate-last-features.xml" />
+			<macro_generate display="JPA-BSLA" config="mp-config-bsla-jpa-last-features.xml" />
+			<macro_generate display="iBatis-BSLA" config="mp-config-ibatis.xml" />
+		</parallel>
+	</target>
+
+	<!-- for generation and packaging all MAVEN tracks -->
+	<!-- ===================================================================== -->
+	<!-- generation demo delivery petshop-->
+	<!-- ===================================================================== -->
+		
+	<target name="generation-demo-test">
+
+		<!-- TODO add db start + modify config -->
+		
+		<macro_generate_and_build display="JPA2" config="mp-config-JPA2.xml" maven.basedir="JPA2/petshop/JPA2" />
+		<macro_generate_and_build display="JPA2-bsla" config="mp-config-JPA2-BSLA.xml" maven.basedir="BSLA-JPA2/petshop"/>
+		<macro_generate_and_build display="Primefaces-JEE" config="mp-config-JSF-EJB3.xml" maven.basedir="Primefaces-JEE/petshop"/>
+		<macro_generate_and_build display="Primefaces-Spring" config="mp-config-JSF-Spring.xml" maven.basedir="Primefaces-Spring/petshop"/>
+		<macro_generate_and_build display="REST-CXF-JEE" config="mp-config-REST-CXF-JEE.xml" maven.basedir="REST-CXF-JEE/petshop"/>
+		<macro_generate_and_build display="REST-CXF-Spring" config="mp-config-REST-CXF-Spring.xml" maven.basedir="REST-CXF-Spring/petshop"/>
+		<macro_generate_and_build display="REST-JEE" config="mp-config-REST.xml" maven.basedir="REST-JEE/petshop"/>
+		<macro_generate_and_build display="REST-SpringMVC" config="mp-config-REST-SpringMVC.xml" maven.basedir="REST-SpringMVC/petshop"/>
+		<macro_generate_and_build display="Vaadin" config="mp-config-vaadin.xml" maven.basedir="Vaadin/petshop"/>
+		<macro_generate_and_build display="WS-JEE" config="mp-config-WS-JEE.xml" maven.basedir="WS-JEE/petshop"/>
+		<macro_generate_and_build display="Hibernate-BSLA" config="mp-config-bsla-hibernate-last-features.xml" maven.basedir="MavenSpringHibernate/petshop"/>
+		<macro_generate_and_build display="JPA-BSLA" config="mp-config-bsla-jpa-last-features.xml" maven.basedir="MavenSpringJPA/petshop"/>
+
+	</target>
+	
+
+	<!-- ===================================================================== -->
+	<!-- generation demo SDD -->
+	<!-- ===================================================================== -->
+	<!-- for generation + build + deploy of webapps depends on MAVEN and TOMCAT environment vars -->
+	<target name="generation-build-SDD" depends="release-application" >
+		<parallel threadcount="2">
+			<macro_generate_and_build_application display="SDD-kendoui-sakila-porphyry" config="porphyry-sakila-KendoUi.xml" maven.basedir="REST-KendoUi/sakiporphy" />
+			<macro_generate_and_build display="sakila-SDD-KendoUi" config="sakila-SDD-KendoUi.xml" maven.basedir="REST-KendoUi/sakila" />
+		</parallel>
+		<!--
+			<antcall target="generation-build-northwind"/>			
+		 -->
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- generation demo webapp + rest + ws -->
+	<!-- ===================================================================== -->
+	<!-- for generation + build + deploy of webapps depends on MAVEN and TOMCAT environment vars -->
+	<target name="generation-build-webapps" depends="release-application" >
+		<parallel threadcount="3">
+			<antcall target="generation-build-porphyry"/>
+			<antcall target="generation-build-sakila"/>
+			<antcall target="generation-build-buslogic_intro"/>
+			<antcall target="generation-build-tranxy"/>
+			<antcall target="generation-build-joomla"/>
+			<antcall target="generation-build-groovy"/>
+			<antcall target="generation-build-technical"/>
+			<antcall target="generation-build-liferay"/>
+			<antcall target="generation-build-lazuly"/>
+			<antcall target="generation-build-petshop"/>
+			<!--<antcall target="generation-build-openmrs"/>-->
+		</parallel>
+		<!--
+			<antcall target="generation-build-northwind"/>			
+		 -->
+	</target>
+	
+	<target name="openmrs" depends="release-application" >
+		<antcall target="generation-build-openmrs"/>
+	</target>
+	
+	<target name="generation-build-groovy" >
+		<macro_generate_and_build display="JPA2-groovy" config="mp-config-JPA2-groovy.xml" maven.basedir="JPA2-groovy/petshopgroovy/JPA2"/>
+	</target>
+	
+	<target name="generation-build-technical" >
+		<macro_generate_and_build display="technical data patterns" config="mp-config-mp-technical.xml" maven.basedir="JPA2/mptechnical/JPA2" />
+	</target>
+
+	<target name="generation-build-liferay">
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-liferay.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/liferay" project="WS" artifact="liferayWebServiceApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-CXF-JEE/liferay" project="REST" artifact="liferayRestCxfJeeApp" />-->
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/liferay" project="REST" artifact="liferayRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/liferay" project="REST-JEE" artifact="liferayRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/liferay" project="REST" artifact="liferayRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/liferay" project="vaadin" artifact="liferayVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/liferay" project="JSF-primefaces" artifact="liferayApp" />
+
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+	
+	<target name="generation-build-buslogic_intro">
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-buslogic_intro.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/busintro" project="WS" artifact="busintroWebServiceApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-CXF-JEE/busintro" project="REST" artifact="busintroRestCxfJeeApp" />-->
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/busintro" project="REST" artifact="busintroRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/busintro" project="REST-JEE" artifact="busintroRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/busintro" project="REST" artifact="busintroRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/busintro" project="vaadin" artifact="busintroVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/busintro" project="JSF-primefaces" artifact="busintroApp" />
+
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>	
+	
+	<target name="generation-build-petshop" >
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-webapps.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/petshop" project="WS" artifact="petshopWebServiceApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-CXF-JEE/petshop" project="REST" artifact="petshopRestCxfJeeApp" />-->
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/petshop" project="REST" artifact="petshopRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/petshop" project="REST-JEE" artifact="petshopRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/petshop" project="REST" artifact="petshopRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/petshop" project="vaadin" artifact="petshopVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/petshop" project="JSF-primefaces" artifact="petshopApp" />
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+	
+	<target name="generation-build-porphyry" >
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-porphyry.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/porphyry" project="WS" artifact="porphyryWebServiceApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-CXF-JEE/porphyry" project="REST" artifact="porphyryRestCxfJeeApp" />-->
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/porphyry" project="REST" artifact="porphyryRestCxfApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-JEE/porphyry" project="REST-JEE" artifact="porphyryRESTApp" />-->
+		<!--<macro_build_and_deploy maven.basedir="REST-SpringMVC/porphyry" project="REST" artifact="porphyryRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/porphyry" project="vaadin" artifact="porphyryVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/porphyry" project="JSF-primefaces" artifact="porphyryApp" />-->
+
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+	
+	<target name="generation-build-sakila" >
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-sakila.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/sakila" project="WS" artifact="sakilaWebServiceApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-CXF-JEE/sakila" project="REST" artifact="sakilaRestCxfJeeApp" />-->
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/sakila" project="REST" artifact="sakilaRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/sakila" project="REST-JEE" artifact="sakilaRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/sakila" project="REST" artifact="sakilaRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/sakila" project="vaadin" artifact="sakilaVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/sakila" project="JSF-primefaces" artifact="sakilaApp" />
+
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+	
+	<target name="generation-build-lazuly" >
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-lazuly.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/lazuly" project="WS" artifact="lazulyWebServiceApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-CXF-JEE/lazuly" project="REST" artifact="lazulyRestCxfJeeApp" />-->
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/lazuly" project="REST" artifact="lazulyRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/lazuly" project="REST-JEE" artifact="lazulyRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/lazuly" project="REST" artifact="lazulyRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/lazuly" project="vaadin" artifact="lazulyVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/lazuly" project="JSF-primefaces" artifact="lazulyApp" />
+
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+	
+
+	<target name="generation-build-openmrs">
+		<macro_generate display="Openmrs REST-custom, OX" config="mp-config-openmrs.xml" />
+		<macro_build_and_deploy maven.basedir="REST-Custom/openmrs" project="REST-Custom" artifact="northwindRestCxfJeeApp" />
+	</target>
+
+	<target name="generation-build-northwind">
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-northwind.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/northwind" project="WS" artifact="northwindWebServiceApp" />
+		<macro_build_and_deploy maven.basedir="REST-CXF-JEE/northwind" project="REST" artifact="northwindRestCxfJeeApp" />
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/northwind" project="REST" artifact="northwindRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/northwind" project="REST-JEE" artifact="northwindRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/northwind" project="REST" artifact="northwindRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/northwind" project="vaadin" artifact="northwindVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/northwind" project="JSF-primefaces" artifact="northwindApp" />
+
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+	
+	<target name="generation-build-tranxy">
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-tranxy.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/tranxy" project="WS" artifact="tranxyWebServiceApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-CXF-JEE/tranxy" project="REST" artifact="tranxyRestCxfJeeApp" />-->
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/tranxy" project="REST" artifact="tranxyRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/tranxy" project="REST-JEE" artifact="tranxyRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/tranxy" project="REST" artifact="tranxyRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/tranxy" project="vaadin" artifact="tranxyVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/tranxy" project="JSF-primefaces" artifact="tranxyApp" />
+
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+	
+	<target name="generation-build-joomla">
+		<macro_generate display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-joomla.xml" />
+		<macro_build_and_deploy maven.basedir="WS-JEE/joomla" project="WS" artifact="joomlaWebServiceApp" />
+		<!--<macro_build_and_deploy maven.basedir="REST-CXF-JEE/joomla" project="REST" artifact="joomlaRestCxfJeeApp" />-->
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/joomla" project="REST" artifact="joomlaRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/joomla" project="REST-JEE" artifact="joomlaRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/joomla" project="REST" artifact="joomlaRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/joomla" project="vaadin" artifact="joomlaVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/joomla" project="JSF-primefaces" artifact="joomlaApp" />
+
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- multimodel compatibility: one model -->
+	<!-- ===================================================================== -->
+	
+	<!-- for generation + build + deploy of webapps depends on MAVEN and TOMCAT environment vars -->
+	<target name="generation-single-model-application-compatibility" depends="release-application" >
+		<parallel threadcount="3">
+			<antcall target="generation-build-tranxy-model-compatibility"/>
+		</parallel>
+	</target>
+				
+	<target name="generation-build-tranxy-model-compatibility">
+		<application_compliance_one_model dir="./${demo.dir}/config" input="mp-config-sample-tranxy" output="mp-config-sample-tranxy-application-1-model"/>
+
+		<macro_generate_application display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-tranxy-application-1-model.xml" />
+
+		<macro_build_and_deploy maven.basedir="WS-JEE/tranxy" project="WS" artifact="tranxyWebServiceApp" />
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/tranxy" project="REST" artifact="tranxyRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/tranxy" project="REST-JEE" artifact="tranxyRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/tranxy" project="REST" artifact="tranxyRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/tranxy" project="vaadin" artifact="tranxyVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/tranxy" project="JSF-primefaces" artifact="tranxyApp" />
+	
+		<!-- primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- multimodel compatibility: two models -->
+	<!-- ===================================================================== -->
+	
+	<!-- for generation + build + deploy of webapps depends on MAVEN and TOMCAT environment vars -->
+	<target name="generation-multiple-model-application-compatibility" depends="release-application" >
+		<parallel threadcount="3">
+			<antcall target="generation-build-tranxy-devops-model-compatibility"/>
+		</parallel>
+	</target>
+				
+	<target name="generation-build-tranxy-devops-model-compatibility">
+		<application_compliance_two_models_devops dir="./${demo.dir}/config" input="mp-config-sample-tranxy" output="mp-config-sample-tranxy-application-2-model"/>
+
+		<macro_generate_application display="WEB-apps (RESTs, WS-JEE, OX, Vaadin, PFs)" config="mp-config-sample-tranxy-application-2-model.xml" />
+		
+		<macro_build_and_deploy maven.basedir="WS-JEE/appli" project="WS" artifact="appliWebServiceApp" />
+		<macro_build_and_deploy maven.basedir="REST-CXF-Spring/appli" project="REST" artifact="appliRestCxfApp" />
+		<macro_build_and_deploy maven.basedir="REST-JEE/appli" project="REST-JEE" artifact="appliRESTApp" />
+		<macro_build_and_deploy maven.basedir="REST-SpringMVC/appli" project="REST" artifact="appliRestSpringMVCApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/appli" project="vaadin" artifact="appliVaadinApp" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/appli" project="JSF-primefaces" artifact="appliApp" />
+	
+		<!--primefaces-JEE and OX are deployed manually -->
+		
+	</target>
+
+	
+	<!-- ===================================================================== -->
+	<!-- CI: custom delivery -->
+	<!-- ===================================================================== -->
+
+	<target name="custom" depends="release-application" >
+		<antcall target="REST-Custom"/>
+	</target>
+		
+	<target name="REST-Custom" >
+		<macro_generate display="sakila REST custom" config="custom-REST.xml" />
+		<macro_build_and_deploy maven.basedir="REST-Custom/sakila" project="Business-Impl" artifact="sakilaWeb" />
+	</target>
+	
+	<!-- ===================================================================== -->
+	<!-- CI: cloud sample delivery -->
+	<!-- ===================================================================== -->
+
+	<target name="cloud-samples" depends="release-application" >
+		<antcall target="cloudfoundry-sakila-sdd"/>
+		<antcall target="cloudbees-petshop-porphyry"/>
+		<antcall target="cloudbees-samples"/>
+	</target>
+		
+	<target name="cloudfoundry-sakila-sdd" >
+		<macro_generate display="sakila kendoui" config="sakila-SDD-KendoUi.xml" />
+		<macro_build_and_deploy maven.basedir="REST-KendoUi/sakila" project="REST" artifact="sakilaKendoUiApp" />
+	</target>
+		
+	<target name="cloudbees-samples" >
+		<macro_generate display="petshop PF cloudbees" config="mp-config-sample-petshop-cloudbees.xml" />
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/petshop" project="JSF-primefaces" artifact="petshopApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/petshop" project="vaadin" artifact="petshopVaadinApp" />
+
+		<!-- openxava -->
+	</target>	
+	
+	<target name="cloudbees-petshop-porphyry">
+		<antcall target="prepare-petshop-porphyry"/>
+
+		<macro_generate_application display="WEB-apps OX, Vaadin, PFs" config="mp-config-sample-petshop-porphyry-cloudbees.xml" />
+
+		<macro_build_and_deploy maven.basedir="Primefaces-Spring/appli" project="JSF-primefaces" artifact="appliApp" />
+		<macro_build_and_deploy maven.basedir="Vaadin/appli" project="vaadin" artifact="appliVaadinApp" />
+
+		<!-- openxava -->
+		<macro_generate display="WEB-apps cloudbees openxava petshop" config="mp-config-sample-petshop-cloudbees-openxava.xml" />
+		
+	</target>
+		
+	<target name="prepare-petshop-porphyry">
+		<application_compliance_two_models_porphyry dir="./${demo.dir}/config" input="mp-config-sample-petshop-cloudbees" output="mp-config-sample-petshop-porphyry-cloudbees"/>
+	</target>
+		
+	<!-- ===================================================================== -->
+	<!-- functional delivery -->
+	<!-- ===================================================================== -->
+
+	<target name="functional-testing" depends="functional-test" >
+	</target>
+		
+	<target name="functional-test" depends="release-application" >
+		<macro_generate display="functional testing" config="functional.xml" />
+		<macro_build maven.basedir="BSLA-JPA2/functional" maven.goal="clean package -o site" />
+		<macro_build maven.basedir="BELA-JPA2/functional" maven.goal="clean package -o site" />
+	</target>
+	
+	<!-- ===================================================================== -->
+	<!-- REST test -->
+	<!-- ===================================================================== -->
+
+	<target name="rest-testing" depends="rest-test" />
+		
+	<target name="rest-test" depends="release-application" >
+		<macro_generate display="functional testing" config="functional-rest-spring.xml" />
+		<macro_build maven.basedir="BSLA-JPA2/functional" maven.goal="clean package site" />
+		<macro_build maven.basedir="BELA-JPA2/functional" maven.goal="clean package site" />
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- release -->
+	<!-- ===================================================================== -->
+
+	<target name="release-application" depends="release-all">
+		<zip destfile="${release.dir}.zip" basedir="${release.dir}">
+		</zip>
+	</target>
+	<target name="build-demo" depends="generation-demo">
+		<zip destfile="${release.demo.dir}.zip" basedir="${demo.output.dir}">
+		</zip>
+	</target>
+	<target name="release" depends="release-application,build-demo">
+		<zip destfile="${release.dir}.zip" basedir="${release.dir}">
+		</zip>
+	</target>
+</project>

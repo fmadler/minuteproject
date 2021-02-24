@@ -1,0 +1,52 @@
+<!DOCTYPE root>
+<generator-config>
+ <configuration>
+  <conventions>
+   <target-convention type="enable-updatable-code-feature" />
+  </conventions>
+  <model name="liferay" version="1.0" package-root="net.sf.mp.demo">
+   <data-model>
+    <driver name="mysql" version="5.1.16" groupId="mysql"
+     artifactId="mysql-connector-java"></driver>
+    <dataSource>
+     <driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+     <url>jdbc:mysql://127.0.0.1:3306/lportal</url>
+     <username>root</username>
+     <password>mysql</password>
+    </dataSource>
+    <schema>lportal</schema>
+    <primaryKeyPolicy>
+     <primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+    </primaryKeyPolicy>
+   </data-model>
+   <business-model>
+    <generation-condition>
+     <condition type="exclude" startsWith="QUARTZ"></condition>
+     <!-- todo add packaging for admin and other -->
+    </generation-condition>
+    <enrichment>
+     <conventions>
+        <!-- add semantic reference on username -->
+     	<!-- add convention on views default pk -->
+     
+      <entity-naming-convention type="apply-strip-table-name-suffix"
+       pattern-to-strip="_" />
+      <!-- manipulate the structure and entities BEFORE manipulating the 
+       entities 
+      <foreign-key-convention
+         type="autodetect-foreign-key-based-on-similarity-and-map"
+         column-ending="id" column-starting="" />
+         
+         -->
+      <column-naming-convention type="apply-strip-column-name-suffix"
+       pattern-to-strip="ID" />
+      <reference-naming-convention
+       type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+
+     </conventions>
+    </enrichment>
+   </business-model>
+  </model>
+  <targets catalog-entry="Liferay,SqlUtils" />
+ </configuration>
+</generator-config>

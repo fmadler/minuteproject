@@ -1,0 +1,7 @@
+<tools>
+    <toolbox scope="application">
+        <tool key="date" class="org.apache.velocity.tools.generic.DateTool" />        
+        <tool key="number" class="org.apache.velocity.tools.generic.NumberTool" />
+        <tool key="null" class="com.winy.velocity.tools.NullTool" />
+    </toolbox>
+</tools>

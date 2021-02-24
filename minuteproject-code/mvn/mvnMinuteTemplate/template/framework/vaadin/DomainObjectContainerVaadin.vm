@@ -1,0 +1,153 @@
+#exposeVaadinConfig()
+#exposeVariableEntitySpecific()
+#if($isSpringBackend)
+#exposeSpringConfig()
+#exposeSpringDomainObjectSpecific()
+#exposeSpringServiceDomainObject()
+#set ($EJBDaoImplClass = $SpringServiceInterfaceClass)
+#set ($EJBDaoImplVariable = $SpringServiceInterfaceVariable)
+#exposeSpringModelSpecific()
+#elseif($isEJBBackend)
+#exposeEJBDomainObjectSpecific()
+#end
+#putImportParamsUML()
+package ${packageName};
+
+import java.io.Serializable;
+import java.util.Random;
+import java.util.List;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.vaadin.data.util.BeanItemContainer;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import net.sf.minuteProject.model.data.criteria.EntityCriteria;
+import net.sf.minuteProject.model.data.criteria.EntitySort;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+
+##import $lookupBeanImport;
+import $beanSpringModelServiceImport;
+import $SpringServiceInterfaceImport;
+##import $modelJSFUtilsImport;
+##import $modelSemanticReferenceUtilsJSFImport;
+
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ViewScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import $EJBDaoImplImport;
+
+#end
+import ${importDomainObjectUML};
+import ${importDaoInterfaceUML};
+
+@SuppressWarnings("serial")
+public class ${className} extends BeanItemContainer<${domainClassName}> implements Serializable {
+
+    private $daoInterfaceClassNameUML $daoInterfaceVariableNameUML;
+	private ${EJBDaoImplClass} $EJBDaoImplVariable;
+
+	public ${className}() {
+	//TODO put CDI
+		super(${domainClassName}.class);
+##		ClassPathXmlApplicationContext bf = new ClassPathXmlApplicationContext("classpath:$springMainHibernatePath");
+		ClassPathXmlApplicationContext bf = new ClassPathXmlApplicationContext("classpath:$pathSpringApplicationContextConfig");
+		$daoInterfaceVariableNameUML = ($daoInterfaceClassNameUML)bf.getBean("$daoInterfaceVariableNameUML");
+		$EJBDaoImplVariable =(${EJBDaoImplClass})bf.getBean("$EJBDaoImplVariable");
+	}    
+	
+	/**
+	 * Natural property order for Person bean. Used in tables and forms.
+	 */
+	public static final Object[] NATURAL_COL_ORDER = new Object[] {
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey && $columnUtils.isPkUserProvided($column))
+       "$columnVar",
+#end
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+	   "$columnVar"#if ($velocityHasNext), 
+#end
+#end
+	};	 
+
+	/**
+	 * "Human readable" captions for properties in same order as in
+	 * NATURAL_COL_ORDER.
+	 */
+	public static final String[] COL_HEADERS_ENGLISH = new String[] {
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey && $columnUtils.isPkUserProvided($column))
+#set($columnLabel=$i18nUtils.getI18nFromDBObject($column))
+       "$columnLabel",
+#end
+#end
+#foreach($column in $table.attributes)
+#putColumnParams()
+#set($columnLabel=$i18nUtils.getI18nFromDBObject($column))
+       "$columnLabel"#if ($velocityHasNext), 
+#end
+#end
+	};
+
+	public ${className} getAll(Integer size) {
+		${className} ${variableName} = new ${className}();
+##		PaginationCriteria pc = new PaginationCriteria();
+##		pc.setPageNumber(size);		
+		List<${domainClassName}> list = ${EJBDaoImplVariable}.findAll(new ${domainClassName}());
+		// search${domainClassName}OnCriteria (DOCriteria, orderCriteria, limitCriteria);
+		/*
+		  orderCriteria within DOCriteria, asc/desc(position by default next)
+		
+		  handle projection query
+		   => convert projection into hql and not criteria api.
+		
+		  generation sp & 4 sp / trigger & 4 trigger (creation date field, update field, track user)
+		*/
+		for (${domainClassName} ${domainVariableName} : list) {
+		   ${variableName}.addItem(${domainVariableName});
+		}
+		return ${variableName};
+	}
+	
+	public void saveAndUpdateList (${importDomainObjectUML} $domainVariableName) {
+	   save ($domainVariableName);
+	   getAll(100);
+	}
+	
+	public void save (${importDomainObjectUML} $domainVariableName) {
+#if (!$tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    	if (${domainVariableName}.get$primaryKeyJavaNameClass() == null) {
+    		${EJBDaoImplVariable}.create(${domainVariableName});
+##            ${modelJSFUtilsClass}.addSuccessMessage(ResourceBundle.getBundle("${modelI18nJSFImport}").getString("entityCreated"), ${modelSemanticReferenceUtilsJSFClass}.getSemanticReference(selected${tableClassName}));
+    	} else {
+    		${EJBDaoImplVariable}.update(${domainVariableName});
+##            ${modelJSFUtilsClass}.addSuccessMessage(ResourceBundle.getBundle("${modelI18nJSFImport}").getString("entityUpdated"), ${modelSemanticReferenceUtilsJSFClass}.getSemanticReference(selected${tableClassName}));
+    	}
+#end
+##	   ${EJBDaoImplVariable}.save ($domainVariableName);
+	}
+
+	public void delete (${importDomainObjectUML} $domainVariableName) {
+	   ${EJBDaoImplVariable}.delete ($domainVariableName);
+	}
+		
+#parse("PARSER_daoInterfaceUMLGetterSetter.vm")
+    
+}

@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    
+    <div id="NavLeft">
+        <ul>
+            <af:forEach items="#{backingBeanScope.rootMenuUtils!=null? backingBeanScope.rootMenuUtils.treeList : backingBeanScope.localMenuUtils.treeList}" var="treeItem">
+                <li class="li_accordion_toggler_1">
+                    <af:switcher id="s1" facetName="#{treeItem.hasChildren ? 'parentNode' : 'leafNode'}">
+                        <f:facet name="parentNode">
+                            <af:group>
+                                <div class="accordion_toggler_1"><a href="javascript:void(0)">
+                                        <span><af:outputText value="#{treeItem.node.label}"/></span></a>
+                                </div>
+                                <div class="accordion_content_1">
+                                    <ul class="sublev">                                    
+                                        <af:forEach items="#{treeItem.children}" var="treeItem2"> 
+                                                    <af:switcher id="s2"  facetName="#{treeItem2.hasChildren ? 'parentNode2' : 'leafNode2'}">
+                                                    <f:facet name="parentNode2">                                                        
+                                                        <af:group>
+                                                            <li class="li_accordion_toggler_2">
+                                                                <div class="accordion_toggler_2 ">
+                                                                    <a href="javascript:void(0)"> <span><af:outputText value="#{treeItem2.node.label}" id="ot2"/></span></a>
+                                                                </div>
+                                                                <div class="accordion_content_2">                                                                    
+                                                                            <af:panelList id="pl1"  styleClass="thirdlev">
+                                                                        <af:forEach items="#{treeItem2.children}" var="treeItem3">
+                                                                            <af:commandImageLink 
+                                                                                                 text="#{treeItem3.label}"
+                                                                                                 action="#{treeItem3.doAction}"
+                                                                                                 visible="#{treeItem3.visible}"
+                                                                                                 styleClass="#{fn:contains(treeItem3.focusViewId, '*') and fn:startsWith(controllerContext.currentViewPort.viewId,fn:replace(treeItem3.focusViewId,'*','')) or controllerContext.currentViewPort.viewId eq treeItem3.focusViewId?'on' : ''}"                 
+                                                                                                 inlineStyle="background-image: none;"
+                                                                                                 immediate="true">
+                                                                                </af:commandImageLink>
+                                                                    </af:forEach>
+                                                                    </af:panelList>
+                                                                </div>
+                                                            </li>
+                                                    </af:group>                                                        
+                                                    </f:facet>
+                                                    <f:facet name="leafNode2">
+                                                        <af:commandImageLink text="#{treeItem2.node.label}"
+                                                                             action="#{treeItem2.node.doAction}"
+                                                                             visible="#{treeItem2.node.visible}"
+                                                                             styleClass="#{fn:contains(treeItem2.node.focusViewId, '*') and fn:startsWith(controllerContext.currentViewPort.viewId,fn:replace(treeItem2.node.focusViewId,'*','')) or controllerContext.currentViewPort.viewId eq treeItem2.node.focusViewId?'on' : ''}"                 
+                                                                             inlineStyle="background-image: none;"
+                                                                             immediate="true"></af:commandImageLink>
+                                                        
+                                                    </f:facet>
+                                                </af:switcher>
+
+                                        </af:forEach>
+                                    </ul>
+                                </div>
+                            </af:group>
+                        </f:facet>
+                        <f:facet name="leafNode">
+                            <af:group id="g1">
+                                <af:commandImageLink text="#{treeItem.node.label}"
+                                                     action="#{treeItem.node.doAction}"
+                                                     visible="#{treeItem.node.visible}"
+                                                     styleClass="#{fn:startsWith(controllerContext.currentViewPort.viewId,treeItem.node.focusViewId)?'on' : ''}"
+                                                     id="cil1"
+                                                     immediate="true"/>
+                            </af:group>
+                        </f:facet>
+                    </af:switcher>
+                </li>
+            </af:forEach>
+        </ul>
+    </div>
+    
+    <af:resource type="javascript" source="/javascript/accordion_menu.js"/>
+    <af:resource type="css" source="/stylesheets/accordion_menu.css"/>
+
+</jsp:root>

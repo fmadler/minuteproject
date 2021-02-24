@@ -1,0 +1,13 @@
+<target name="PHP LIB">		
+	<architecture-target name="PHP lib" description="PHP commons">
+	</architecture-target>	
+    <plugin name="phpUtils" className="net.sf.minuteProject.plugin.php.PhpUtils"></plugin>
+
+	<template-target 
+    	name="PHP lib"
+		libdir="lib/PHP_LIB.vm"
+		outputdir=""
+		belongToPackage="true">
+	</template-target>
+  	         		
+</target>

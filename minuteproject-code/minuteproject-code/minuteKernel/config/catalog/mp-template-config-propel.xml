@@ -1,0 +1,54 @@
+<target name="Propel ORM">		
+	<architecture-target name="propel"></architecture-target>	
+	<plugin name="propelUtils" className="net.sf.minuteProject.plugin.propel.PropelUtils"></plugin>
+	
+  	<template-target 
+    	name="Propel config"
+		outputdir=""
+		libdir="lib/PROPEL_LIB.vm"
+		>
+			 
+		<template name="Propel.orm.xml" templateFileName="Propel.orm.xml.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="false"	has-updatable-nature="true"		
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="schema" 
+			model-specific="true">
+		</template>
+		
+		<template name="Propel.build.properties" templateFileName="Propel.build.properties.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="false"	has-updatable-nature="true"		
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="properties" file-prefix="build" 
+			model-specific="true">
+		</template>
+		
+		<template name="Propel.build.cmd" templateFileName="Propel.build.cmd.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="false"	has-updatable-nature="true"		
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="cmd" file-prefix="build" 
+			model-specific="true">
+		</template>
+		
+		<template name="Propel.runtime.conf.xml" templateFileName="Propel.runtime.conf.xml.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="false"	has-updatable-nature="true"		
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="runtime-conf" 
+			model-specific="true">
+		</template>
+		
+		<template name="Propel.setup.php" templateFileName="Propel.setup.php.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="false" has-updatable-nature="true"		
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="php" file-prefix="setup" 
+			model-specific="true">
+		</template>
+
+										
+	</template-target>	
+
+</target>

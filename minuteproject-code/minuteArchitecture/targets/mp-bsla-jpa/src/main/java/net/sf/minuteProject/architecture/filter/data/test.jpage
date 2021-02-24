@@ -1,0 +1,4 @@
+expression is made of expressions
+
+addClauseCriteria (ClauseCriteria cc, LogicalWord lw)
+addAndWrapExpression (Ex ex

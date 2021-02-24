@@ -1,0 +1,37 @@
+#exposeQuerySpecific()
+#putImportQuerySDDBean()
+#addedAreas()
+#exposeJdbc()
+#set ($datasource = $model.dataModel.basicDataSource)
+#set ($templateFitnesseSDDTableFixture = "Fitnesse.SDD.Fixture")
+#set ($querySDDFixtureImport=$commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateFitnesseSDDTableFixture))
+!contents -R2 -g -p -f -h
+
+
+!3 Datasource connection information
+
+!|net.sf.minuteproject.fitnesse.fixture.DbConnectionFixture|
+|username| password| url| driverClassName|
+|$datasource.username| $datasource.password| $datasource.url | $datasource.driverClassName|
+
+
+!3 Select $query.name snippet
+
+Field row represents the columns to search on.
+Expression contains for each columns the search filter operand. ('=','>','<','>=','<=','contains','startWith' are supported)
+
+!|${querySDDFixtureImport}|
+|General Info Input|statement|$query.name|
+|Fields |#foreach ($column in $inputBean.columns) #putColumnParams() $column.name | #end 
+
+|Value |#foreach ($column in $inputBean.columns) | #end 
+
+|general Info Output|numberOfRow|3| 
+|Fields |#foreach ($column in $outputBean.columns) #putColumnParams() $column.name | #end 
+
+|row#1 |#foreach ($column in ${outputBean.columns}) | #end 
+
+|row#2 |#foreach ($column in ${outputBean.columns}) | #end 
+
+|row#3 |#foreach ($column in ${outputBean.columns}) | #end 
+

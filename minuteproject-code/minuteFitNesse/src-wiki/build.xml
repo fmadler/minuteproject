@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="minuteFitnesse" basedir="." name="fitnesse run">
+	  <target name="minuteFitnesse">
+	    <java jar="fitnesse.jar" failonerror="true" fork="true">
+	      <arg value="-c"/>
+	      <arg value="MpSuite?suite&amp;format=xml"/>
+	    </java>
+	  </target>
+</project>

@@ -1,0 +1,223 @@
+#exposeQueryPivotSpecific()
+#set($tree-node = "${query.name}-tree")
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>$query.name jstree sample</title>
+
+
+<style type=''>
+	html { margin:0; padding:0; font-size:62.5%; }
+	body { max-width:800px; min-width:300px; margin:0 auto; padding:20px 10px; font-size:14px; font-size:1.4em; }
+	h1 { font-size:1.2em; }
+	.block_1 { display: inline-block}
+	.toolbar { width: 80%;
+	          background-color: rgb(223,223,223);
+	}
+	
+	.demo {     background-color: rgb(252,252,252);
+                width: 300px;
+				min-height: 300px;
+				padding: 1px;
+                margin: 5px; }
+    .bttn_blue {background-color: rgb(80,148,207);
+                border:1px solid #369;
+                color:  #f2f2f2;
+                font-weight: 300;
+                border-radius: 4px;
+		margin: 5px;
+                }
+    
+    .no_checkbox>i.jstree-checkbox { display:none }
+    
+    .rght {
+    text-align: right !important;
+    }
+	
+	.lft {
+    text-align: left !important;
+    }
+    
+</style>
+	        
+    <link rel="stylesheet" href="dist/themes/default/style.min.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/jstree/3.0.9/themes/default/style.min.css" />
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jstree/3.0.9/jstree.min.js"></script>
+
+   <script type="text/javascript">
+	
+    $(document).ready(function(){
+	
+	//var keywords=[{"id":"11","text":"Child node 11"},{"id":"12","text":"Child node 12"},{"id":"21","text":"Child node 21"}]; 
+	
+    var keywords = null;    //  JSON string to hold selected keywords
+	
+	// render 'All keywords'
+    // load from file "./data/tree.json"
+	$('#$tree-node').jstree({
+		'core': {
+			   'data': {
+				"url": "./data/treeSpeciality.json",
+				"dataType": "json" // needed only if you do not supply JSON headers
+                }
+         },
+         'plugins': [ "themes", "types", "checkbox", "sort", "ui" ],
+         'checkbox': {
+                    "three_state":false
+          },
+          'types':{ // 'types' can be used in JSON file to specify different node icons
+                    "default":{
+					    "icon":"icons/gif/2.gif"},
+                    "english":{
+                        "icon":"icons/en.gif"
+                    },
+                    "french":{
+                        "icon":"icons/fr.gif"
+                    }
+         }
+ });
+ 
+ 
+	 
+      // 1.Load   JSON string 'keywords' from file "./data/keywords.json"
+	  
+      jQuery.getJSON("./data/keywords.json", function(data) {
+        keywords=data;
+		// Refresh tree to display keywords read from json (file)
+		$('#${query.name}selected').jstree(true).settings.core.data = keywords;
+        $('#${query.name}selected').jstree(true).refresh();
+		
+	}); 
+   
+	 
+	 
+      // 2.Render 'Selected keywords' from JSON string 'keywords'
+	$('#${query.name}selected').jstree({
+		'core': {
+			   'data': keywords
+         },
+         'plugins': [ "themes", "types", "checkbox", "sort", "ui" ],
+         'checkbox': {
+                    "three_state":false
+          },
+          'types':{
+                    "default":{
+					    "icon":"icons/gif/72.gif"},
+                    "english":{
+                        "icon":"icons/en.gif"
+                    },
+                    "french":{
+                        "icon":"icons/fr.gif"
+                    }
+         }
+ });
+ 
+  
+   // Get checked nodes in a jsTree v.3
+   $("#getKeywords").click(function () {
+        var selectedId = null;
+		var kwJson=null;
+		var found;
+		var newObject=null;
+        // Get checked nodes as JSON
+        var selectedElms = $('#$tree-node').jstree("get_checked", true);
+        //alert(JSON.stringify(selectedElms));
+        jQuery.each(selectedElms, function() {
+		    found=false;
+            selectedId= this.id;
+			kwJson=this;
+            // Iterate through JSON object:
+		    jQuery.each(keywords, function(idx, obj) {
+			   if (selectedId==obj.id) {
+			      found=true;
+		          return (false); // exit each() loop
+			   } 
+			});
+			if (!found) {
+				//alert('Not found -> ' +kwJson.text);
+				newObject = {id:kwJson.id, text:kwJson.text}; 
+				// array.splice(index, howMany, [element1][, ..., elementN]);
+				keywords.splice(0,0,newObject) ; // ADD new element
+			}
+       }); 
+	   // refresh keywords tree
+	   $('#${query.name}selected').jstree(true).settings.core.data = keywords;
+       $('#${query.name}selected').jstree(true).refresh();
+   });
+   
+    // Get checked nodes in a jsTree v.3
+   $("#delKeywords").click(function () {
+		var selectedId = null;
+		// create copy of JSON variable
+		// var keywordsCopy = (JSON.parse(JSON.stringify(keywords)));
+        // Get checked nodes as JSON
+        var selectedElms = $('#${query.name}selected').jstree("get_checked", true);
+        // Iterate through checked nodes JSON object:
+        jQuery.each(selectedElms, function(index, object) {
+		    selectedId= this.id;
+			// Iterate through keywords tree JSON object
+			jQuery.each(keywords, function(idx, obj) {
+			   if (selectedId==obj.id) {
+			     // Remove the checked node   
+			     keywords.splice(idx,1); // REMOVE 1 element at array[idx]
+				 return (false); // exit each() loop
+			   }
+            });			   
+       }); 
+	   // refresh keywords tree
+	   $('#${query.name}selected').jstree(true).settings.core.data = keywords;
+       $('#${query.name}selected').jstree(true).refresh();
+   });
+   
+ 
+});
+  
+	
+</script>
+</head>
+
+<body>
+	
+<div id="pageContainer">
+ <div id="all_keywords" class="block_1">
+   <section>
+     <header> <h1>List of ${query.name}</h1></header>
+     
+	 <div id="$tree-node" class="demo">
+	   <!-- Tree goes here -->
+     </div>  
+  
+     <footer>
+        <div> 
+	       <button type="button" id="getKeywords" class="bttn_blue">Add </button>
+	    </div>
+     </footer>	
+  </section>
+ </div>
+ <div id="selection" class="block_1">
+   <section>
+     <header> <h1>Selected ${query.name} </h1></header>
+     
+	 <div id="${query.name}selected" class="demo">
+	   <!-- Tree goes here -->
+     </div>  
+  
+     <footer>
+        <div > 
+	       <button type="button" id="delKeywords" class="bttn_blue">Remove</button>
+	 </div>
+     </footer>	
+   </section>  
+ </div>
+
+<footer id="pageFooter" >
+    <div class="toolbar rght"> 
+		   <button type="button" id="cnclKeywords" class="bttn_blue" >Cancel</button>
+	       <button type="button" id="saveKeywords" class="bttn_blue" >Close</button>
+	</div>
+</footer>	 
+</div> 
+	
+</body>
+</html>

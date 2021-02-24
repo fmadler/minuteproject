@@ -1,0 +1,59 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="../config/mp-config.xsd">
+    <configuration>
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+        </conventions>
+        <model name="tranxy" version="1.0" package-root="net.sf.mp.demo">
+            <data-model>
+                <driver name="mysql" version="5.1.16" groupId="mysql"
+                    artifactId="mysql-connector-java"></driver>
+                <dataSource>
+                    <driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+                    <url>jdbc:mysql://127.0.0.1:3306/tranxy</url>
+                    <username>root</username>
+                    <password>mysql</password>
+                </dataSource>
+                <primaryKeyPolicy oneGlobal="false" >
+                    <primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+                </primaryKeyPolicy>
+            </data-model>
+            <business-model>
+                <business-package default="tranxy">
+                    <condition type="package" startsWith="trans" result="translation"></condition>
+                </business-package>
+                <enrichment>
+                    <conventions>
+                        <!-- manipulate the structure and entities BEFORE manipulating the 
+                            entities -->
+                        <column-naming-convention type="apply-strip-column-name-suffix"
+                            pattern-to-strip="ID" />
+                        <reference-naming-convention
+                            type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+                         <reference-naming-convention type="apply-many-to-many-aliasing" is-to-plurialize="true"/>
+                    </conventions>
+                    <entity name="language_x_translator">
+                        <field name="language_id" linkReferenceAlias="translating_language" linkToTargetEntity="LANGUAGE"/>
+                        <field name="user_id" linkReferenceAlias="translator" linkToTargetEntity="USER"/>
+                    </entity>
+                    <entity name="LANGUAGE_X_SPEAKER">
+                        <field name="LANGUAGE_ID" linkToTargetEntity="LANGUAGE"
+                            linkToTargetField="IDLANGUAGE" linkReferenceAlias="spoken_language" />
+                        <field name="user_id" linkReferenceAlias="speaker" linkToTargetEntity="USER"/>
+                    </entity>
+                    <entity name="APPLICATION">
+                        <field name="TYPE">
+                            <property tag="checkconstraint" alias="application_type">
+                                <property name="OPENSOURCE"/>
+                                <property name="COPYRIGHT" />
+                            </property>
+                        </field>
+                    </entity>
+                </enrichment>
+            </business-model>
+        </model>
+        <targets catalog-entry="Primefaces-Spring,Vaadin,JPA2"/>
+    </configuration>
+</generator-config>

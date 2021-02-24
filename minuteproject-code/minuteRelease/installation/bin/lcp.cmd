@@ -1,0 +1,2 @@
+@echo off
+set LOCALCLASSPATH=%LOCALCLASSPATH%;%1

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="distribute" basedir="." name="minute-architecture">
+    <description>This build file will build the target architecture</description>
+    <!-- ===================================================================== -->
+    <!-- import files -->
+    <!-- ===================================================================== -->
+	<property file="build.properties"/>
+    <!-- ===================================================================== -->
+    <!-- properties definitions -->
+    <!-- ===================================================================== -->
+    <!-- LOCAL PROPERTIES -->
+	
+    <property name="home.dir" value="."/>
+    <property name="application.dir" value="${home.dir}/application"/>
+	<property name="application.name" value="${project.name}-${project.version}"/>	
+	
+	<property name="lib.dir" value="${home.dir}/lib"/>
+    <property name="dist.dir" value="${application.dir}/dist"/>	
+	<property name="archive.name" value="${application.name}.jar"/>
+	<property name="archive.src.name" value="${application.name}-src.zip"/>
+	<property name="release.code.dir" value="release-code"/>
+	
+	<property name="classes.dir" value="${home.dir}/classes"/>
+
+	
+	<!-- ===================================================================== -->
+    <!-- classpath definitions -->
+    <!-- ===================================================================== -->
+    <path id="compile.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>	
+    </path>
+    <!-- ===================================================================== -->
+    <!-- specific macros definition -->
+    <!-- ===================================================================== -->
+    <macrodef name="macro_compile">
+        <attribute name="debug"/>
+        <attribute name="optimize"/>
+    	<attribute name="src"/>
+    	<attribute name="targetjvm"/>
+        <sequential>
+            <javac 
+            	debug="@{debug}" 
+            	optimize="@{optimize}" 
+            	target="@{targetjvm}"
+            	source="@{targetjvm}"
+            	deprecation="false" 
+            	destdir="${classes.dir}" 
+            	nowarn="false">
+                <classpath refid="compile.classpath"/>
+                <src path="@{src}"/>
+                <include name="**/*.java"/>
+            </javac>
+        </sequential>
+    </macrodef>
+    	
+    <macrodef name="macro_copy_resource">
+        <attribute name="todir"/>
+        <attribute name="filesetDir"/>
+        <sequential>
+            <copy todir="@{todir}">
+                <fileset dir="@{filesetDir}">
+                    <include name="**/*.xml"/>
+                    <include name="**/*.properties"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+	
+    <macrodef name="macro_archive">
+        <attribute name="compress"/>
+        <attribute name="destdir"/>
+        <attribute name="destfile"/>
+    	<attribute name="classesdir"/>
+        <sequential>
+            <jar compress="@{compress}" destfile="@{destdir}/@{destfile}">
+                <fileset dir="@{classesdir}">
+                    <include name="**/*.*"/>
+                </fileset>
+            </jar>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="title">
+        <attribute name="title"/>
+        <attribute name="projectname"/>
+        <attribute name="projectdir"/>
+        <sequential>
+			<echo>***************************</echo>
+			<echo>* task @{title}</echo>
+			<echo>* on project @{projectname}</echo>
+        	<echo>***************************</echo>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="macro_copy_code">
+        <attribute name="todir"/>
+        <attribute name="filesetDir"/>
+        <sequential>
+        	<mkdir dir="@{filesetDir}"/>
+            <copy todir="@{todir}">
+                <fileset dir="@{filesetDir}">
+                	<include name="**/*.java"/>
+                    <include name="**/*.xml"/>
+                    <include name="**/*.properties"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+    <!-- ===================================================================== -->
+    <!-- target definitions -->
+    <!-- ===================================================================== -->
+    
+	<!-- target clean -->
+    <target name="clean">
+        <title title="TASK clean" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Clean the business project</description>
+        <delete failonerror="false" file="${generatorBusiness.dist.dir}/${archive.name}"/>
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="${classes.dir}"/>
+        </delete>
+        <delete failonerror="false" dir="${reports.dir}"/>
+    </target>	
+	
+    <!-- target prepare -->
+    <target name="prepare">
+        <title title="TASK prepare" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Creates the directories necessary for building the business</description>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>	
+
+    <!-- target compile -->
+    <target name="compile" depends="prepare">
+        <title title="TASK compile" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Compile the migration project</description>
+        <macro_compile debug="true" optimize="false" src="${src.dir}" targetjvm="${targetJvm}"/>
+    </target>	
+
+    <!-- target resource -->
+    <target name="resource">
+        <title title="TASK resource" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Copy all the properties and xml files to the working directory (classes.dir).</description>
+    	<macro_copy_resource todir="${classes.dir}" filesetDir="${src.dir}"/>
+    </target>	
+
+    <!-- target archive -->
+    <target name="archive" depends="clean,compile,resource">
+        <title title="TASK archive" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Create an archive containing all the classes of the ${project.name}</description>
+        <macro_archive compress="true" destdir="${dist.dir}" destfile="${archive.name}" classesdir="${classes.dir}"/>
+    </target>	
+
+    <!-- target distribute -->
+    <target name="distribute" >
+        <title title="TASK distribute" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Create an archive containing all the classes of the ${project.name}</description>
+        <copy todir="${distribute.dir}\src" >
+            <fileset dir="${src.dir}">
+            </fileset>
+        </copy>    
+        <copy todir="${distribute.dir}" >
+            <fileset dir="${src.webapp.dir}">
+            </fileset>
+        </copy>    
+    </target>	
+		
+    <!-- target copy code -->
+    <target name="archive-code">
+        <title title="TASK copy code" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Copy all the code.</description>
+    	<delete dir="${release.code.dir}" ></delete>
+    	<macro_copy_code filesetDir="${src.dir}" todir="${release.code.dir}"/>
+    	<zip basedir="${release.code.dir}" destfile="${dist.dir}/${archive.src.name}"></zip>
+    	<delete dir="${release.code.dir}" ></delete>
+    </target>		
+</project>

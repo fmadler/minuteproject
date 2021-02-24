@@ -1,0 +1,349 @@
+#generatorSpecific()
+#exposeSeparator()
+#putImportQuerySDDBean()
+#putImportSDDInputBean()
+#exposeQuerySpecific()
+#exposeKendoUIGeneratorBeanSpecific()
+#set($table=$inputBean)
+#asUML($table)
+#set ($inputClass = $commonUtils.getTemplateClassName($inputBean, $model, $templateSDDInputBean))
+#set ($tableVariableName = $commonUtils.getJavaNameVariableFirstLetter($inputClass))
+#set($tableDB = $inputBean)
+#exposeVariableEntitySpecific()
+#set($isChart = $queryUtils.isChart($query))
+#if($isChart)
+#exposeChartSpecific()
+#end
+#addedAreas()
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+
+#putKendoUIJSImport("../../../")
+
+</head>
+
+<body>
+    
+<div id="menu"></div>
+
+#putKendoUIHtmlInputSnippet()
+
+            <!-- button action -->
+            <p>
+                <button id="action" class="k-button" data-bind="click: searchSdd">${presentationUtils.getQueryExecuteLabel($query)}</button>
+                <button id="clear"  class="k-button" data-bind="click: clearInput">Clear</button>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+#if ($isChart)
+<div id="ssd-output-chart"></div>
+<div id="ssd-output-chart-grid"></div>
+#end
+<div id="ssd-output-grid"></div>
+
+<div id="ssd-output-grid-popup"></div>
+
+<div id="basicPopup" class="popup"></div>
+
+#exposeKendoUIPopupYesNoTpl()
+
+#foreach ($action in $query.actions)
+##exposeKendoUISDDActions
+#exposeKendoUIPopupTpl("$formatUtils.getInUnderscore($action.name)", $action.getPopupFields())
+#end
+		
+#if ($query.isWrite())
+<div id="sdd-info" ></div>
+#else
+<div id="details" ></div>
+#end
+<div id="${model.name}-store" hidden="true" ></div>
+
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+#if($columnUtils.isLink($column))
+#set($queryId =$column.queryParamLink.queryName)
+#set($fieldKey =$column.queryParamLink.fieldKey)
+#set($fieldName =$column.queryParamLink.fieldName)
+#exposeQueryTarget()
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldName))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+#set($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if ($isAutocompletion)
+<!-- autocomplete 2 -->
+<script id="${columnVar}WithFunctionListTpl" type="text/x-kendo-template">
+	<div display="table-row">
+#foreach($column in $queryParamLinkUtils.getSemanticReferenceColumns($column.queryParamLink, $targetQuery))
+#set ($columnSemRefVar = $commonUtils.getColumnVariableName($column))
+		#: data.$columnSemRefVar #
+#end
+	</div>
+</script>
+#end
+#end
+#end
+
+<!-- kendo js scripts -->
+<script type="text/javascript">
+    $(document).ready(function () {
+		var validator = $("#form-${tableVariableName}").kendoValidator().data("kendoValidator");
+	  // menu
+#putKendoUIMenu()
+
+#if ($inputBean.columns.size()==0 && $query.getQueryChunks().size()==0)
+		searchSdd(); //perform directly the query
+## TODO also when have some default mandatory query-param
+#end
+
+	  //fields
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+#if($columnUtils.isLink($column))
+#set($queryId =$column.queryParamLink.queryName)
+#set($fieldKey =$column.queryParamLink.fieldKey)
+#set($fieldName =$column.queryParamLink.fieldName)
+#exposeQueryTarget()
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldName))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+#set($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if ($isAutocompletion)
+#set ($sddTargetOutputBeanClass = $formatUtils.getJavaName(${targetQuery.getInputBean().getName()}))
+<!-- autocomplete 3 -->
+		var ds = new kendo.data.DataSource ({
+			transport: {
+				read: {
+					url: contextPath+"/data/sdd/${sddTargetOutputBeanClass}In",
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					cache: false
+				},
+				parameterMap: function() {
+					return { 
+#foreach($inputBeanCols in $targetQuery.getInputBean().getColumns())
+#set ($inputBeanColVar = $commonUtils.getColumnVariableName($inputBeanCols))
+					#if($velocityCount!=1)// not supported yet, #end ${inputBeanColVar}: $("#field-${columnVar}").data("kendoAutoComplete").value() 
+#end					
+					};
+				}
+			},
+#if($targetQuery.getInputBean().getColumns().size()==1)
+			serverFiltering: true,
+#end
+			schema: {
+				data: "${sddTargetOutputBeanClass}Out"
+			},
+			pageSize : 30
+		});
+#set($autocompletefilter = $queryParamLinkUtils.getAutoCompleteFilter($column.queryParamLink))
+		$("#field-${columnVar}").kendoAutoComplete({
+			dataSource: ds,
+			filter: "${autocompletefilter}",
+			delay: 200,
+			dataTextField: "$columnText", // kendo.template($("${columnVar}WithFunctionListTpl").html()), 
+			minLength: 1,
+			template: kendo.template($("#${columnVar}WithFunctionListTpl").html()),
+			select: function(e) {
+				var item = this.dataItem(e.item.index());
+				$("#field-${columnVar}Selected").val(item.${columnValue});
+			},
+			open: function(e) {
+			},
+			close: function(e) {
+			},
+			change: function(e) {
+			}
+		}).focus(function() {
+			$(this).next("span").addClass("k-loading");
+		}).blur(function() {
+			$(this).next("span").removeClass("k-loading");
+		});
+#end
+#end
+#end
+
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+#putKendoJsColumnSnippet($tableVariableName $tableVariableName)
+#end
+#end
+
+## inspired by http://demos.telerik.com/kendo-ui/grid/custom-command
+#exposeKendoUIDetailWindowTemplate()
+		
+        popup = $("#ssd-output-grid-popup").kendoWindow({
+            modal: true,
+            visible: false,
+            resizable: true,
+ 			iframe: true
+        }).data("kendoWindow");
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+		var ${chunkName}List = [
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+#set($chunkValue=$formatUtils.performDisplayReadableFirstUpperOnlyName($queryChunkValue.name))
+			#if ($velocityCount>1),#end {
+				name   : "${chunkValueName}",
+				value  : "$chunkValue"
+			}
+#end
+		];
+		$("#field-${chunkName}").kendoDropDownList();
+#end           	
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+#if ($columnUtils.hasCheckConstraint($column))
+#set($checkConstraints= $columnUtils.getCheckConstraintValues($column))
+#set($size= $checkConstraints.size())
+		var ${columnVar}List = [
+#foreach ($property in $checkConstraints)
+			{
+				name : "$property.name",
+				value : "$property.name"
+			}
+#if ($velocityCount!=$size)
+            ,#end 
+#end
+		];
+#end
+#if($columnUtils.isLink($column))
+#set($fieldId="field-$columnVar")
+#set($targetQuery = $model.getStatementModel().getQueryByIdOrName($column.queryParamLink.queryName))
+#set($targetUrl = $commonUtils.getArtifactRelativePathDirAndFullName($targetQuery, $template, $templateKendoUiSddDirectResult))
+#set ($sddTargetOutputBeanClass = $formatUtils.getJavaName(${targetQuery.getInputBean().getName()}))
+#set ($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if($isMasterData && !$isAutocompletion)
+#if($column.isArray())
+        $("#${fieldId}").kendoMultiSelect();
+#else
+#exposeQueryTarget()
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldName))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+		$("#${fieldId}").kendoDropDownList(
+			{
+				optionLabel: {
+					$columnText :  "Choose"
+#if($columnText!=$columnValue)
+					,$columnValue : ""
+#end
+				}
+			}
+		);       
+#end
+		var result${sddTargetOutputBeanClass};
+		jQuery.ajax({
+            type: 'GET',
+			async: false,
+            url: contextPath+"/data/sdd/${sddTargetOutputBeanClass}In",
+            dataType: "json",
+            success: function(data){
+                result${sddTargetOutputBeanClass}= data;
+				${sddTargetOutputBeanClass}DDL=data.${sddTargetOutputBeanClass}Out;
+            }
+        });
+#else
+#if($column.queryParamLink.fieldKey != $column.queryParamLink.fieldName)
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if(!$isAutocompletion)
+#set($fieldId="field-$columnVar")
+		$("#$fieldId").attr('readonly', 'readonly');
+#end
+#end
+#end
+#end
+#end
+
+        var viewModel = kendo.observable({
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+			${chunkName}List : ${chunkName}List,
+			${chunkName}Selected : null,
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
+#if ($velocityCount==1)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+			${chunkName} : "$chunkValueName", //default value
+#end
+#end
+#end
+#foreach ($column in $table.columns)
+#if ($columnUtils.hasCheckConstraint($column))
+#putColumnParamNaming()
+			${columnVar}List : ${columnVar}List,
+			${columnVar}Selected : null,
+#end
+#if($columnUtils.isLink($column))
+#set($queryId =$column.queryParamLink.queryName)
+#exposeQueryTarget()
+#set ($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if($isMasterData && !$isAutocompletion)
+#putColumnParamNaming()
+#set ($sddTargetOutputBeanClass = $formatUtils.getJavaName(${targetQuery.getInputBean().getName()}))
+#set($queryTargetDDL = "${columnVar}DDL")
+			$queryTargetDDL : ${sddTargetOutputBeanClass}DDL, 
+#end
+#end
+#end
+			clearInput:clearInput,
+            searchSdd: function (event) {
+
+				event.preventDefault();
+				if (!validator.validate()) {
+					return;
+				}
+				
+#if ($query.isWrite())
+#exposePerformWriteSDD()
+#else
+#exposeSearchSDD()
+#end
+            }
+
+        });
+
+#foreach ($field in $query.queryFields)
+// is hidden $field.name $field.isHidden() $field.isKey() $field.value
+#end
+        kendo.bind($("#form-${tableVariableName}"), viewModel);
+        
+    });
+
+#exposeClearInput()
+
+#exposeSearchSDDFunction()
+
+#exposeSDDSubUcSearch()
+
+#exposeKendoUISDDActions()
+
+#exposeKendoUIShowDetailsFromListAction()
+
+#if($isChart)
+    function onChartClick(e) {
+       e.preventDefault();
+
+       var dataItem = e.dataItem;
+       wnd.content(detailsTemplate(dataItem));
+       wnd.center().open();
+   }
+#end
+
+</script>
+
+#exposeKendoUIDetailAction()
+
+
+</body>
+</html>

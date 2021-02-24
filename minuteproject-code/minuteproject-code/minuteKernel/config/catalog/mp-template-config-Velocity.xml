@@ -1,0 +1,50 @@
+<target name="Velocity">		
+<plugin name="queryUtils" className="net.sf.minuteProject.utils.sql.QueryUtils"/>	
+<!-- TODO output dir dependent on the caller's technology -->
+	<template-target 
+    	name="Utility class for Velocity"
+		outputdir="REST/src/main/java"
+		>
+		
+		<template name="VelocityUtils" templateFileName="VelocityUtils.java.vm" 
+			subdir="" outputsubdir="" technicalPackage="rendition" has-updatable-nature="true"
+			file-extension="java" file-prefix="VelocityUtils" file-suffix="" 
+			model-specific="true" add-model-name="false">
+		</template>
+		
+	</template-target>	
+
+	<template-target 
+    	name="tooling of velocity framework"
+		outputdir="REST/src/main/webapp/WEB-INF"
+		>
+		
+		<template name="Velocity-tools" templateFileName="Velocity-tools.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="velocity-tools" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>
+		
+	</template-target>	
+
+
+	<template-target 
+    	name="template to inspire custom implementation with the value to use"
+		outputdir="REST/src/main/resources"
+		>
+		
+		<template name="VelocitySampleTemplate.vm" templateFileName="VelocitySampleTemplate.vm.vm" 
+			subdir="" outputsubdir="velocity" technicalPackage="" has-updatable-nature="true"
+			file-extension="vm" file-prefix="sample_" file-suffix="" 
+			add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="model"
+			scope-specific-value="query"
+			check-template-to-generate="true" 
+			is-template-to-generate-method="queryUtils.isToGenerateBasedVelocityRequired"
+			>
+		</template>
+		
+	</template-target>
+	
+</target>

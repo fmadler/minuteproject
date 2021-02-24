@@ -1,0 +1,208 @@
+<target name="BELA">		
+	<architecture-target name="BELA " description="basic enterprise (ejb) layer architecture"/>	
+	<plugin name="hibernate3" className="net.sf.minuteProject.plugin.hibernate.Hibernate3"></plugin>
+	<plugin name="criteriaUtils" className="net.sf.minuteProject.utils.criteria.CriteriaUtils"></plugin>
+	<plugin name="schemaUtils" className="net.sf.minuteProject.plugin.database.SchemaUtils"></plugin>
+	<plugin name="mavenUtils" className="net.sf.minuteProject.plugin.maven.MavenUtils"></plugin>
+	<plugin name="cacheUtils" className="net.sf.minuteProject.utils.cache.CacheUtils"></plugin>
+	<plugin name="referenceDataUtils" className="net.sf.minuteProject.plugin.data.ReferenceDataUtils"></plugin>
+	<plugin name="restrictedCodeUtils" 	className="net.sf.minuteProject.utils.code.RestrictedCodeUtils"></plugin>
+	<plugin name="behaviorUtils" 	className="net.sf.minuteProject.plugin.behavior.BehaviorUtils"></plugin>
+
+	<template-target 
+		libdir="lib/BslaLibrary.vm,lib/Maven_LIB.vm"
+		tool="velocity"
+		outputdir="src/test/java"
+		belongToPackage="true">
+		<template name="TestDaoInterface" templateFileName="BslaDaoInterfaceTest.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="DaoTest" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2ManyAndOnPropertyPresenceValue">
+			<property name="uml" value="true"></property>
+			<property name="property-presence" value="enable-test"></property>
+			<property name="property-presence-value" value="true"></property>			
+		</template>		
+
+		<template name="BslaDaoTestAdapter" templateFileName="BslaDaoTestAdapter.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="Adapter" file-suffix="TestDao" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>
+							
+	</template-target>	
+	
+	<template-target 
+    	name="meta-inf config"
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir="src/test/resources"
+		belongToPackage="true">			
+
+		<template package-root="META-INF"
+			name="Persistence.xml.JPA2" templateFileName="Persistence.xml.JPA2.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="persistence" has-updatable-nature="true"
+			entity-specific="false" package-specific="false" model-specific="true">
+			<property name="environment" value="local"/><!-- for unit test and debug -->
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property>
+		</template>		
+
+  	</template-target>
+
+    
+    <template-target 
+        name="DAO Spring JPA set"
+        libdir=""
+        outputdir="src/main/java"
+        belongToPackage="true">
+
+        <template name="SDDDaoInterface" templateFileName="SDDDaoInterface.vm" 
+            file-extension="java" technicalPackage="dao.sdd.face" file-suffix="DaoFace"
+            add-package-name="false" add-business-package-dir-name="false"  
+            scope-specific-value="query" has-updatable-nature="true" >
+        </template>
+
+        <template name="SDDSpringJPADao" templateFileName="SDDSpringJPADao.vm" 
+            file-extension="java" technicalPackage="dao.sdd.impl" file-suffix="Repository" 
+            add-package-name="false" add-business-package-dir-name="false" model-type="rdbms"
+            scope-specific-value="query" has-updatable-nature="true" >
+        </template>
+
+        <template name="SDDCompositeDaoInterface" templateFileName="SDDCompositeDaoInterface.vm" 
+            file-extension="java" technicalPackage="dao.composite.face" file-suffix="DaoFace" 
+            add-package-name="false" add-business-package-dir-name="false"  
+            scope-specific-value="composite" has-updatable-nature="true" >
+        </template>
+
+        <template name="SDDCompositeSpringJPADao" templateFileName="SDDCompositeSpringJPADao.vm" 
+            file-extension="java" technicalPackage="dao.composite.impl" file-suffix="Repository" 
+            add-package-name="false" add-business-package-dir-name="false" 
+            scope-specific-value="composite" has-updatable-nature="true" >
+        </template>
+
+    </template-target>
+    	
+	
+	<template-target 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2" ></property>         
+		<property name="convertClobToString" value="true" ></property>         
+		
+		<!-- DAO -->
+		<template name="DB.API.ModelGenericDaoJpaImpl" templateFileName="DB.API.ModelGenericDaoJpaImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.impl"
+			file-extension="java" file-prefix="" file-suffix="GenericDaoJpaImpl" 
+			model-specific="true" model-type="rdbms"
+			has-updatable-nature="true">
+		</template>
+				
+		<template name="BslaDaoInterfaceUML" templateFileName="DB.API.DaoInterface.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="Dao" 
+			entity-specific="true" 
+			has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation"></property>
+		</template>
+		
+		<!-- depends BslaDaoInterfaceUML, DomainObjectUML, BslaHibernate architecture		-->
+		<template name="BslaJPADaoImplUML" templateFileName="DB.API.JPA2DaoImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.impl.jpa"
+			file-extension="java" file-prefix="" file-suffix="JPAImpl" 
+			entity-specific="true" 
+			has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation"></property>
+		</template>
+		
+		
+		<!-- no 
+		
+			depends  DomainObjectUML, BslaHibernate architecture 	
+		<template name="BslaDaoInterfaceUML" templateFileName="BslaDaoInterfaceUML.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="Dao" 
+			entity-specific="true" 
+			has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation"></property>
+		</template>
+		
+		    depends BslaDaoInterfaceUML, DomainObjectUML, BslaHibernate architecture		
+		<template name="BslaJPADaoImplUML" templateFileName="BslaJPA2DaoImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.impl.jpa"
+			file-extension="java" file-prefix="" file-suffix="JPAImpl" 
+			entity-specific="true" 
+			has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation"></property>
+		</template>
+			    
+
+		<template name="BslaDaoInterfaceExtendedUML" templateFileName="BslaDaoInterfaceKFUML.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="ExtDao" 
+			entity-specific="true"
+			has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation"></property>
+		</template>	
+			
+	
+		<template name="BslaJPAExtendedDaoImplUML" templateFileName="BslaJPA2KFDaoImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.impl.jpa"
+			file-extension="java" file-prefix="" file-suffix="ExtendedJPAImpl" 
+			entity-specific="true"
+			has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation"></property>
+		</template>		
+		
+		-->	
+		<!-- EXTENDED DAO end -->	
+		<!-- DAO end -->
+
+		<template name="BslaJPA2StoredProcedureDaoImpl" templateFileName="BslaJPA2StoredProcedureDaoImpl.vm" 
+			file-extension="java" technicalPackage="dao.impl" file-suffix="DaoImpl" file-prefix="Procedure"
+			scope-specific-value="function"
+			has-updatable-nature="true">
+		</template>	
+
+	</template-target>	
+
+	<template-target name="config"
+		libdir="lib/BslaLibrary.vm,lib/JPA_LIB.vm"
+		tool="velocity"
+		outputdir="src/main/resources"
+		belongToPackage="true">
+		
+		<template package-root="META-INF"
+			name="EJB.jar.xml" templateFileName="EJB.jar.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="ejb-jar" has-updatable-nature="true"
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+		
+	</template-target>	
+
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		<template name="PomXml.BELA" templateFileName="PomXml.BSLA.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+			<property name="maven-artifact-finalName-suffix" value="Bela"/>
+		</template>		
+				
+	</template-target>		
+	
+</target>	

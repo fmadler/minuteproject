@@ -1,0 +1,82 @@
+#exposeVariableModelSpecific()
+import Adapter from '../adapters/${classVariable}';
+import Service from '@ember/service';
+import { hash } from 'rsvp';
+
+export default Service.extend({
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+	//$package.name
+#foreach ($query in $package.getQueries())
+#if(!$query.isIndirection())
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDInputBean()
+
+    ${tableVariableName} (params) {
+        var adapter = Adapter.create(); 
+        return adapter.${tableVariableName}(params);
+    },
+#end
+#end
+#end 
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($composite in $package.getComposites())
+#exposeCompositeSpecific()
+#putImportCompositeRESTSDDBean()
+#set($functionName = $emberUtils.getComponentClassPath(${classVariableName}))
+#set ($functionVariableName = $formatUtils.firstLowerCase(${functionName}))
+	/** 
+	 * Service to composite $className info 
+	 * @param  {params} made of
+#foreach($column in ${composite.distinctInputColumn})
+#putColumnParamNaming()
+	 *  - $columnVar
+#end
+	 * @returns {*} Promise
+	*/
+    ${functionVariableName} (params) {
+    	var adapter = Adapter.create();
+    	return adapter.${functionName}(params);
+    },
+    
+	/** service to composite $className info in js
+	 * @param  {params} made of
+#foreach($column in ${composite.distinctInputColumn})
+#putColumnParamNaming()
+	 *  - $columnVar
+#end
+	 * @returns {*} Promise
+	*/
+    ${functionVariableName}2 (params) {
+    	var adapter = Adapter.create();
+#foreach($table in ${composite.outputComposite.entities})
+#exposeVariableEntitySpecific()
+#putImportCompositeOutputSDDBean()
+		var ${domainVariableName}Promise = adapter.${domainVariableName}(params)
+		.then(d => {
+			return d.${sddOutputBeanClass};
+		});
+#end
+		var promises = {
+#foreach($table in ${composite.outputComposite.entities})
+#exposeVariableEntitySpecific()
+#putImportCompositeOutputSDDBean()
+			${domainVariableName} : ${domainVariableName}Promise,
+#end
+## add queryparam: when path params are passed they are not available at the route template (not like queryparams)
+## thus add them here
+			params : params,
+		};
+    	return hash(promises);
+#* .then(d => {
+    		return d;
+    	});
+*#
+    },    
+
+#end
+#end
+
+});

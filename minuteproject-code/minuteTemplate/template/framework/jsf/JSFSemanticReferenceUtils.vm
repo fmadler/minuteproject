@@ -1,0 +1,36 @@
+#exposeJSFModelSpecific()
+package $packageName;
+
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import org.apache.commons.lang.StringUtils;
+
+#foreach($table in $entities)
+#if(!$table.isManyToMany())
+#exposeJPA2DomainObject($table)
+import $importDomainObjectUML;
+#end
+#end
+
+@ManagedBean (name="$classVariable")
+@ApplicationScoped
+public class $className {
+
+#foreach($table in $entities)
+#if(!$table.isManyToMany())
+#exposeVariableEntitySpecific()
+   public static String getStrippedSemanticReference$tableClassName ($tableClassName element, int length) {
+      return StringUtils.substring(getSemanticReference(element),0,length);
+   }
+   public static String getSemanticReference$tableClassName ($tableClassName element) {
+      return getSemanticReference(element);
+   }
+   public static String getSemanticReference ($tableClassName element) {
+      if (element==null) return "";
+#putSemanticReference("element")
+   }
+
+#end
+#end
+
+}

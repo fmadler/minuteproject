@@ -1,0 +1,111 @@
+#generatorSpecific()
+#exposeVariableEntitySpecific()
+#addedAreas()
+import DS from 'ember-data';
+
+import attr from 'ember-data/attr';
+
+export default DS.Model.extend({
+#foreach($column in ${table.columns})
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if (!$column.isArray())
+#if($columnUtils.isTimeStampColumn($column))
+##	@JsonSerialize (using=${applicationJsonDateSerializerClass}.class)
+#elseif ($columnUtils.isTimeColumn($column))
+#end
+#putValidationConstraints()
+#putFieldValidation()
+    $columnVar : attr('$columnType'),
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+##    public $columnType get${columnClass}(){
+##    	return $columnVar!=null?$columnVar:$defaultConstant;
+##    }
+#end
+#end
+#end
+#end
+});
+
+#*
+
+#if ($template.hasPropertyValue("direction","in"))
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+#end
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+#putEntityValidationImport()
+
+import org.apache.commons.lang.StringUtils;
+##if ($model.hasCmisModel())
+#set ($applicationJsonDateSerializerImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, "REST.jackson.serializer.date"))
+#set ($applicationJsonDateSerializerClass  = $commonUtils.getTemplateClassName($model, $template, "REST.jackson.serializer.date"))
+import $applicationJsonDateSerializerImport;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+##end
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: ${domainClassName} Java Bean </p>
+ *
+ */
+@Data
+#if ($template.hasPropertyValue("direction","in"))
+@JsonIgnoreProperties(ignoreUnknown = true)
+#end
+public class ${className} {
+#putEntityValidation()
+
+#foreach($column in ${table.columns})
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+    private final $columnType $defaultConstant = $defaultValue;
+#end
+#end
+#end
+#foreach($column in ${table.columns})
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if (!$column.isArray())
+#if($columnUtils.isTimeStampColumn($column))
+	@JsonSerialize (using=${applicationJsonDateSerializerClass}.class)
+#elseif ($columnUtils.isTimeColumn($column))
+#end
+#putValidationConstraints()
+#putFieldValidation()
+    private $columnType $columnVar;
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+    public $columnType get${columnClass}(){
+    	return $columnVar!=null?$columnVar:$defaultConstant;
+    }
+#end
+#else
+    private List<$columnType> $columnVar;
+
+    public List<${columnType}> get${columnClass} () {
+        if (${columnVar}==null)
+            ${columnVar} = new ArrayList<$columnType>();
+        return ${columnVar};
+    }
+    
+    public void set$columnClass (String $columnVar) {
+    	if ($columnVar!=null) {
+    		for (String element : StringUtils.split($columnVar, ",")) {
+#set($key=$convertUtils.getJavaTypeMaskExpressionFromStringInput($column, "element", true))
+        		get${columnClass}().add ($key);
+        	}
+        }
+    }
+#end
+#end
+#end
+$!updatedAreaImplementation
+}
+ *#

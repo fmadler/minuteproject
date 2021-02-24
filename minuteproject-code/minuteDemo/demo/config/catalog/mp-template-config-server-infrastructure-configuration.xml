@@ -1,0 +1,67 @@
+<target name="server framework"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="./mp-template-config.xsd">	
+	<architecture-target name="Server" description="Server artifacts">
+	</architecture-target>	
+
+    <plugin name="weblogicUtils" className="net.sf.minuteProject.plugin.server.wls.WeblogicUtils"></plugin>
+
+	<template-target 
+    	name="WEBLOGIC"
+		libdir="weblogic/lib/WEBLOGIC_LIB.vm"
+		outputdir="server/weblogic">
+
+        <!-- build commands -->
+		<template name="WLS.Build.DS.cmd" templateFileName="WLS.Build.DS.cmd.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="cmd" file-prefix="build-datasource" file-suffix="" 
+			application-specific="true" package-root=""
+			add-model-name="false" 
+			check-template-to-generate="true" 
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue" >
+			<property name="property-presence" value="server" ></property>			
+			<property name="property-presence-value" value="weblogic" ></property>			
+		</template>	
+
+		<template name="WLS.Build.DS.cmd" templateFileName="WLS.Build.DS.cmd.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="sh" file-prefix="build-datasource" file-suffix="" 
+			application-specific="true" package-root=""
+			add-model-name="false" 
+			check-template-to-generate="true" 
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue" >
+			<property name="property-presence" value="server" ></property>			
+			<property name="property-presence-value" value="weblogic" ></property>			
+		</template>	
+
+        <!-- build commands end -->
+        
+        <!-- datasource properties -->
+		<template name="WLS.DS.properties" templateFileName="WLS.DS.properties.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="properties" file-prefix="datasource" file-suffix="" 
+			application-specific="true" package-root=""
+			add-model-name="false" 
+			check-template-to-generate="true" 
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue" >
+			<property name="property-presence" value="server" ></property>			
+			<property name="property-presence-value" value="weblogic" ></property>			
+		</template>	
+		
+		
+        <!-- build commands end -->
+		<template name="WLS.DS.Create.py" templateFileName="WLS.DS.Create.py.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="py" file-prefix="datasource-create" file-suffix="" 
+			application-specific="true" package-root=""
+			add-model-name="false" 
+			check-template-to-generate="true" 
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue" >
+			<property name="property-presence" value="server" ></property>			
+			<property name="property-presence-value" value="weblogic" ></property>			
+		</template>	
+		
+    </template-target>
+
+</target>

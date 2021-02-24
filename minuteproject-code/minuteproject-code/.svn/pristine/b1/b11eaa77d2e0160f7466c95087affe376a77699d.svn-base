@@ -1,0 +1,29 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="../config/mp-config.xsd">
+	<configuration>
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+        </conventions>
+		<model name="sakila" version="1.0" package-root="org.minutproject.sample">
+			<data-model database-type="MYSQL">
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/sakila</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+		</model>
+		<targets catalog-entry="Primefaces-JEE" >
+			<property name="target-server" value="tomcat"></property>
+		</targets>
+	</configuration>
+</generator-config>

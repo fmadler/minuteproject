@@ -1,0 +1,42 @@
+!contents -R2 -g -p -f -h
+
+For default type include: include everything safe matching exclude
+-> check only exclude
+--> if table belongs to one exclude condition=> exclude
+
+
+!include DefaultData
+
+!|net.sf.minuteProject.utils.ModelUtilsFixture                                                   |
+|tableName       |defaultGenerationType|type      |startsWith|endsWith|regex|isView|isToGenerate?|
+|${tableAPrefixT}|${include}           |${include}|${prefixT}|null    |null |false |true         |
+|${tableAPrefixT}|${include}           |${exclude}|${prefixT}|null    |null |false |false        |
+|${tableASuffixT}|${include}           |${include}|${suffixT}|null    |null |false |true         |
+|${tableASuffixT}|${include}           |${exclude}|${suffixT}|null    |null |false |true|
+|${tableASuffixT}|${include}           |${exclude}|null|${suffixT}|null |false |false|
+|${tableASuffixT}|${include}           |${exclude}|${prefixT}|${suffixT}|null |false |false|
+
+!|net.sf.minuteProject.utils.ModelUtilsFixture                                                   |
+|tableName       |defaultGenerationType|type      |startsWith|endsWith|regex|isView|isToGenerate?|
+|${tableASuffixT}|${exclude}           |${include}|null    |${suffixT}|null |false |true|
+|${tableAPrefixT}|${exclude}           |${include}|${suffixT}|null    |null |false |false|
+|${tableAPrefixT}|${exclude}           |${exclude}|${suffixT}|null    |null |false |false|
+|${tableASuffixT}|${exclude}           |${include}|${prefixT}|null    |null |false |false|
+|${tableASuffixT}|${exclude}           |${exclude}|${prefixT}|null    |null |false |false|
+|${tableASuffixT}|${exclude}           |${exclude}|null    |${suffixT}|null |false |false|
+|${tableASuffixT}|${exclude}           |${include}|null    |${suffixT}|null |false |true|
+
+!|net.sf.minuteProject.utils.ModelUtilsFixture                                                   |
+|tableName       |defaultGenerationType|type      |startsWith|endsWith|regex|isView|isToGenerate?|
+|${tableAPrefixT}|${exclude}           |${include}|${prefixT}|null    |null |false |true|
+|${tableAPrefixT}|${exclude}           |${exclude}|${prefixT}|null    |null |false |false|
+|${tableASuffixT}|${exclude}           |${include}|${suffixT}|null    |null |false |false|
+|${tableASuffixT}|${exclude}           |${exclude}|${suffixT}|null    |null |false |false|
+
+!|net.sf.minuteProject.utils.ModelUtilsFixture                                                   |
+|tableName       |defaultGenerationType|type      |startsWith|endsWith|regex|isView|isToGenerate?|
+|${tableAPrefixT}|${include}           |${include}|${suffixT}|null    |null |false |true         |
+|${tableAPrefixT}|${include}           |${exclude}|${suffixT}|null    |null |false |true|
+|${tableASuffixT}|${include}           |${include}|${prefixT}|null    |null |false |true         |
+|${tableASuffixT}|${include}           |${exclude}|${prefixT}|null    |null |false |true|
+

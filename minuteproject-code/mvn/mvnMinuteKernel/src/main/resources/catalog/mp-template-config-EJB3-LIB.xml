@@ -1,0 +1,13 @@
+<target name="EJB lib">		
+	<architecture-target name="ejb" description="ejb architecture">
+	</architecture-target>	
+
+	<template-target 
+    	name="EJB set"
+		libdir="lib/EJB_LIB.vm"
+		outputdir="src"
+		belongToPackage="true">
+	
+    </template-target>		
+         		
+</target>

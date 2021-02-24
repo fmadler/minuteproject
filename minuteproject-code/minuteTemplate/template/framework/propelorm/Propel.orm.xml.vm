@@ -1,0 +1,82 @@
+#exposeVariableModelSpecific()
+##TODO phpname (conversion of reserved words 
+##http://propelorm.org/reference/schema.html
+##http://propelorm.org/documentation/02-buildtime.html
+##http://propelorm.org/cookbook/working-with-existing-databases.html
+<database name="$model.name" defaultIdMethod="native"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd" >
+#foreach($table in ${entities})
+#asUML($table)
+#exposeVariableEntitySpecific()
+#exposePHPVariableEntitySpecific()
+   <table name="$table.name" phpName="$domainClassName"
+#if($isMany2Many)
+       isCrossRef="true"
+#end
+#if($isView)
+       readOnly="true"
+       skipSql="true"
+#end
+	>
+#foreach($column in ${table.columns})
+#putColumnParams()
+	 <column name="$column.name" 
+		phpName="$columnVar"
+		type="$propelUtils.getType($column)"
+##  [scale = "/DigitsAfterDecimalPlace/"]
+##  [defaultValue = "/AnyDefaultValueMatchingType/"]		
+#if($isLengthPrecisionColumn)
+	    size="$column.size"
+		scale="$column.scale"
+#end
+#if($hasDefaultValue)
+        defaultValue = "$column.defaultValue"
+#end
+#if($isPrimaryKey)
+        primaryKey="true"	
+#if($isAutoincrement)
+        idMethod = "native"
+##	    autoIncrement="true"
+#end
+#if($isView)
+        skipSql = "true"
+		readOnly = "true"
+#end
+#end
+#if($isMandatory)
+        required="true"	
+#end
+		/>
+#if($isIndex)
+     <index>
+       <index-column />
+     </index>
+#end
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+        <id-method-parameter value="$sequenceName"/>
+#end
+#end
+#end
+#if($isUnique)
+	<!-- unique todo 
+     <unique>
+       <unique-column />
+     </unique>
+	 -->
+#end
+##     <id-method-parameter/>
+#end
+#foreach ($reference in ${table.parents})
+#putReferenceParams2()
+     <foreign-key foreignTable="$linkedTableName">
+        <reference local="${localColumnName}" foreign="${linkedColumnDBName}"/>
+     </foreign-key>
+#end
+   </table>
+##   <external-schema />
+#end
+</database>

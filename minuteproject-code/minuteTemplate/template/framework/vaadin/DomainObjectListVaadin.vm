@@ -1,0 +1,80 @@
+#putVaadinClassObjectAndPackage()
+
+import $domainObjectContainerImport;
+import $domainObjectApplicationImport;
+import ${importDomainObjectUML};
+import $domainObjectFormImport;
+import ${importDomainObjectUML};
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Table;
+import com.vaadin.data.Property;
+import com.vaadin.data.Item;
+
+@SuppressWarnings("serial")
+public class ${className} extends Table {
+
+	$domainObjectContainerClass container = new $domainObjectContainerClass();
+
+	public ${className} ($domainObjectApplicationClass app) {
+		setSizeFull();
+		setContainerDataSource(app.getElements(100));
+
+		setVisibleColumns(${domainObjectContainerClass}.NATURAL_COL_ORDER);
+		setColumnHeaders(${domainObjectContainerClass}.COL_HEADERS_ENGLISH);
+
+		setColumnCollapsingAllowed(true);
+		setColumnReorderingAllowed(true);
+
+		/*
+		 * Make table selectable, react immediatedly to user events, and pass
+		 * events to the controller (our main application)
+		 */
+		setSelectable(true);
+		setImmediate(true);
+		addListener((ValueChangeListener) app);
+		/* We don't want to allow users to de-select a row */
+		setNullSelectionAllowed(false);
+
+	}
+	
+    public ${className} (final $domainObjectFormClass form) { 
+	    form.setList(this);
+        setSizeFull();
+##        $domainObjectContainerClass container = new $domainObjectContainerClass();
+        loadData();
+#*		setContainerDataSource(container.getAll(100));
+        setVisibleColumns(${domainObjectContainerClass}.NATURAL_COL_ORDER);
+        setColumnHeaders(${domainObjectContainerClass}.COL_HEADERS_ENGLISH);
+*#
+        setColumnCollapsingAllowed(true);
+        setColumnReorderingAllowed(true);
+
+		/*
+		 * Make table selectable, react immediatedly to user events, and pass
+		 * events to the controller (our main application)
+		 */
+        setSelectable(true);
+        setImmediate(true);
+        addValueChangeListener (new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(
+                com.vaadin.data.Property.ValueChangeEvent event) {
+                Item item = getItem(event.getProperty().getValue());
+                if (item != form.getItemDataSource()) {
+                    form.setItemDataSource(item);
+                }
+            }
+        });
+		/* We don't want to allow users to de-select a row */
+        setNullSelectionAllowed(false);
+
+    }
+
+    public void loadData() {
+        setContainerDataSource(container.getAll(100));
+        setVisibleColumns(${domainObjectContainerClass}.NATURAL_COL_ORDER);
+        setColumnHeaders(${domainObjectContainerClass}.COL_HEADERS_ENGLISH);
+    }
+}

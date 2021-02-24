@@ -1,0 +1,10 @@
+cf login -a api.run.pivotal.io
+
+@Rem check db service up cf create-service cleardb spark $cloudUtils.getDatabaseName($template)
+@Rem inject your db structure
+@Rem retrieve db info
+
+mvn clean package
+
+push $cloudUtils.getApplicationName($template)
+

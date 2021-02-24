@@ -1,0 +1,168 @@
+#macro (putJSFColumnSnippet $tableVariableName $internat)
+<label>#{i18n.$internat$separator$columnVar}#if($column.isRequired()) *#end</label>
+#if($columnUtils.isTimeColumn($column))
+    <p:calendar value="#{${entityControllerJSFVariable}.${tableVariableName}.${columnVar}}"
+       id="lbl${columnClass}-#{idValue}" ##converter="dateTsConverter"
+       converterMessage="Invalid Date" required="$column.isRequired()"
+       pattern="dd/MM/yyyy">
+    </p:calendar>
+	<p:message for="lbl${columnClass}-#{idValue}" />
+#else
+#if($presentationUtils.isTextArea($column))
+	<p:inputTextarea rows="$presentationUtils.getDisplayRows($column)" cols="$presentationUtils.getDisplayColumns($column)" maxlength="$column.sizeAsInt" 
+        counterTemplate="{0} characters remaining." autoResize="false"
+#elseif($presentationUtils.isRichText($column))
+	<p:editor 
+#else
+	<p:inputText 
+#end
+		label="${columnClass}" id="lbl${columnClass}-#{idValue}" value="#{${entityControllerJSFVariable}.${tableVariableName}.${columnVar}}" required="$column.isRequired()" />
+	<p:message for="lbl${columnClass}-#{idValue}"/>
+#end
+#end
+#macro (putJSFColumnSnippet2)
+#putJSFColumnSnippet("selected${tableClassName}" ${tableVariableName})
+#end
+
+#macro (putJSFParentDropDownListSnippet)
+<label>#{i18n.$tableVariableName$separator$columnVar}#if($column.isRequired()) *#end</label>
+<h:selectOneMenu id="lbl${columnClass}-#{idValue}" value="#{${entityControllerJSFVariable}.selected${tableClassName}.${columnVar}_}" required="$column.isRequired()">
+#if(!$column.isRequired())
+    <f:selectItem noSelectionOption="true" itemLabel="Please Select"/>
+#end
+	<f:selectItems value="#{${entityControllerJSFVariable}.${columnVar}List}" id="${columnVar}Items"/>
+</h:selectOneMenu>
+<p:message for="lbl${columnClass}-#{idValue}" />
+#end
+
+#macro (putJSFParentAffectationSnippet $cpt)
+<label>#{i18n.$tableVariableName$separator$columnVar}#if($column.isRequired()) *#end</label>
+<p:row>
+<p:inputText id="lbl${columnClass}-#{idValue}" value="#{${modelSemanticReferenceUtilsJSFVariable}.getSemanticReference${linkedTableClass}(${entityControllerJSFVariable}.selected${tableClassName}.${columnVar})}" required="$column.isRequired()" disabled="true" />
+##TODO change childrenListClass is normally for children unique but not unique for parent lookup
+#set ($childrenListClass = $childrenListClass+$cpt)
+<p:commandButton type="button" title="Search" icon="ui-icon-search" onclick="suc${childrenListClass}Dialog.show()"/>
+</p:row>
+<p:message for="lbl${columnClass}-#{idValue}" />
+#end
+
+#macro(exposeSeparator)
+#exposeJSFTemplate()
+#set($separator=$i18nUtils.getSeparator($template, $templateModelI18nJSF))
+#end
+
+#macro (exposeJSFEntitySpecific)
+#exposeVariableEntitySpecific()
+#exposeJSFTemplate()
+#exposeJSFConfig()
+#set ($entityCreateJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityCreateJSF))
+#set ($entityCreateJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityCreateJSF))
+#set ($entityCreateJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityCreateJSF))	
+#set ($entityCreateJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityCreateJSF))
+#set ($entityListJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityListJSF))
+#set ($entityListJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityListJSFClass))
+#set ($entityListJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityListJSF))	
+#set ($entityControllerJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityControllerJSF))
+#set ($entityControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityControllerJSFClass))
+#set ($entityControllerJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityControllerJSF))	
+#set ($entityListLazyJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityListLazyJSF))
+#set ($entityEditJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityEditJSF))
+#set ($entityListRowJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityListRowJSF))
+#end
+
+#macro (exposeJSFModelSpecific)
+#exposeVariableModelSpecific()
+#exposeJSFConfig()
+#exposeJSFTemplate()
+#set ($modelJSFUtilsClass = $commonUtils.getTemplateClassName($model, $template, $templateModelJSFUtils))
+#set ($modelJSFUtilsImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelJSFUtils))
+#set ($modelI18nJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelI18nJSF))
+#set ($modelI18nJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelI18nJSFClass))
+#set ($modelI18nJSFImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelI18nJSF))
+#set ($modelBeanManagerMenuJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelBeanManagerMenuJSF))
+#set ($modelBeanManagerMenuJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelBeanManagerMenuJSFClass))
+#set ($modelBeanManagerMenuJSFImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelBeanManagerMenuJSF))
+#set ($modelDecoratorJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateModelXhtmlDecoratorJSF))
+#set ($modelSemanticReferenceUtilsJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateModelJSFSemanticReferenceUtils))
+#set ($modelSemanticReferenceUtilsJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelJSFSemanticReferenceUtils))
+#set ($modelSemanticReferenceUtilsJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelSemanticReferenceUtilsJSFClass))
+#set ($modelMenuJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateModelXhtmlMenuJSF))
+#set ($modelIndexJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateIndexXhtmlMenuJSF))
+#set ($modelCssDefaultJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateCssDefaultJSF))
+#set ($controllerBeanPackageName=$commonUtils.getPackageName($model, $template, $templateEntityControllerJSF))
+#set ($controllerBeanMenuPackageName=$commonUtils.getPackageName($model, $template, $templateModelBeanManagerMenuJSF))
+#set ($lookupBeanImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateLookupBean))
+#set ($lookupBeanClass=$commonUtils.getTemplateClassName($model, $template, $templateLookupBean))
+#set ($lookupBeanVar=$commonUtils.getJavaNameVariableFirstLetter($lookupBeanClass))
+#set ($lookupPackageName=$commonUtils.getPackageName($model, $template, $templateLookupBean))
+#end
+
+#macro (exposeJSFAppFwkSpecific)
+#exposeVariableModelSpecific()
+#set ($dateTsConverterImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateJSFFwkDateTsConverter))
+#set ($modelCssDefaultJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateCssDefaultJSF))
+#end
+
+#macro (exposeJSFTemplate)
+#set ($templateEntityCreateJSF = "JSFXhtmlCreateEntity")
+#set ($templateEntityListJSF = "JSFXhtmlListEntity")
+#set ($templateEntityListLazyJSF = "JSFXhtmlListLazyEntity")
+#set ($templateEntityEditJSF = "JSFXhtmlEditEntity")
+#set ($templateEntityListRowJSF = "JSFXhtmlListRowEntity")
+#set ($templateSDDJSF = "JSFXhtmlSDDInput")
+#set ($templateEntityControllerJSF = "JSFBeanManagerController")
+#set ($templateModelI18nJSF = "JSFI18nProperties")
+#set ($templateModelXhtmlDecoratorJSF = "JSFXhtmlDecorator")
+#set ($templateModelXhtmlMenuJSF = "JSFXhtmlMenu")
+#set ($templateIndexXhtmlMenuJSF = "JSFPrimefacesIndexXhtml")
+#set ($templateCssDefaultJSF = "JSFCssDefault")
+#set ($templateModelBeanManagerMenuJSF = "JSFBeanManagerMenu")
+#set ($templateJSFFwkDateTsConverter = "JSFFwkDateTsConverter")
+#set ($templateModelJSFUtils = "JSFUtils")
+#set ($templateModelJSFSemanticReferenceUtils = "JSFSemanticReferenceUtils")
+#set ($templateChartJSF = "JSFXhtmlChart")
+#set ($templateLookupBean = "JSF.Spring.Lookup.Service")
+#end
+
+#macro(exposeJSFConfig)
+#set ($isSpringBackend=$template.hasPropertyValue("add-backend-implementation","spring"))
+#set ($isEJBBackend=$template.hasPropertyValue("add-backend-implementation","ejb"))
+#end
+
+#macro(exposePrimefacesConfig)
+#set ($primefacesVersion=$template.getPropertyValue("primefaces-version","3.5"))
+#set ($primefacesNamespace=$template.getPropertyValue("primefaces-namespace","http://primefaces.org/ui"))
+#end
+
+#macro(putPrimefacesEntityRowExpansion)
+		<p:rowExpansion>  
+			<p:fieldset legend="${domainVariableName} Details">  
+				 <p:toolbar>  
+					<p:toolbarGroup align="left"> 
+						<p:commandButton type="button" title="Edit" icon="ui-icon-folder-open"/>  
+						<p:separator />          
+						<p:commandButton type="button" title="Save" icon="ui-icon-disk"/>  
+						<p:separator />  
+						<p:commandButton type="button" title="Cancel" icon="ui-icon-trash"/> 
+					</p:toolbarGroup>  
+				</p:toolbar>
+				<h:panelGrid columns="2" cellpadding="5"  styleClass="list_display_table_TR_even">
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+#end  
+#foreach ($column in $table.attributes)
+#putColumnParams()
+#columnJavaNaming()	
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+				</h:panelGrid>
+			</p:fieldset> 
+
+		</p:rowExpansion>  
+#end

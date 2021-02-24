@@ -1,0 +1,106 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="../config/mp-config.xsd">
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>
+		<model name="openmrs" version="1.0" package-root="mp.sample">
+			<description>
+				<CDATA>
+					Webean model
+				</CDATA>
+			</description>
+			<data-model>
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/openmrs</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="core">
+					<condition type="package" startsWith="ref" result="reference"></condition>
+					<condition type="package" startsWith="view" result="view"></condition>
+				</business-package>
+				<enrichment>
+					<conventions>
+					<!-- add drop down list on master data -->
+						<primary-key-convention
+							type="apply-primary-key-on-entity-with-two-columns-only-and-foreign-key-otherwise-specified" />
+						<reference-naming-convention
+							type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+
+						<!-- -->
+						<reference-naming-convention type="apply-many-to-many-aliasing"
+							is-to-plurialize="true" />
+
+						<table-default-primary-key-convention
+							type="apply-default-primary-key-otherwise-first-one"
+							default-primary-key-names="ID" />
+						<view-primary-key-convention
+							type="apply-default-primary-key-otherwise-first-one"
+							default-primary-key-names="ID">
+						</view-primary-key-convention>
+<!-- -->
+						<column-naming-convention type="apply-strip-column-name-suffix"
+							pattern-to-strip="ID" />
+							 
+							<!-- 
+						<version-convention pattern="version" />
+						 -->
+						<entity name="NOTIFICATION_TEMPLATES" alias="notification" />
+
+
+						<!-- -->
+						<entity-content-type-convention type="apply-content-type-to-entity-belonging-to-package" 
+							pattern="reference" content-type="reference-data"/>
+
+						<semantic-reference-convention content-type="reference-data"
+						    field-pattern="value,code" field-pattern-type="endsWith" 
+						    max-number-of-fields="5" />
+
+						<stereotype-convention field-pattern="amount,salary"
+							field-pattern-type="endsWith" stereotype="currency" />
+						<stereotype-convention field-pattern="price,credit"
+							field-pattern-type="contains" stereotype="currency" />
+						<stereotype-convention field-pattern="email"
+							field-pattern-type="contains" stereotype="email" />
+							
+							<!-- 
+						<stereotype-convention field-pattern="start_date,end_date"
+							field-pattern-type="contains" stereotype="datetime" />
+							 -->
+						
+						<stereotype-convention field-pattern="password"
+							field-pattern-type="contains" stereotype="password" />
+						<stereotype-convention field-pattern="notes"
+							field-pattern-type="equals" stereotype="text-html" />
+ 						<!-- -->
+					</conventions>
+					<entity name="Concept">
+						<field name="class_id" alias="CLAZZ"></field>
+					</entity>
+					<!-- views -->
+				</enrichment>
+			</business-model>
+			<!-- S D D -->
+
+		</model>
+
+		<targets catalog-entry="REST-Custom,Openxava" >
+		 	<property name="enable-test" value="true" />
+		 	<property name="openxava-disable-sdd" value="true" />
+		 	<property name="openxava-disable-hibernate-ehcache" value="true" />
+		</targets>
+		
+	</configuration>
+</generator-config>

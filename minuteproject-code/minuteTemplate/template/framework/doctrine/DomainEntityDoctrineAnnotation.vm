@@ -1,0 +1,184 @@
+##http://docs.doctrine-project.org/en/2.0.x/reference/basic-mapping.html
+#exposeVariableEntitySpecific()
+#exposePHPVariableEntitySpecific()
+##putJPA2TemplateDefinition()
+#exposeEntityCache()
+#exposeEnvironmentParams()
+##exposeJPA2Specifics()
+#addedAreas()
+<php?
+/** 
+* experimental track based on the phpization of JPA2 track 4 doctrine 
+*/
+namespace $packageName;
+
+$!updatedAreaImport
+
+#exposePHPImport()
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ *
+ * @Entity (name="${className}")
+ * @Table (name="${table.name}")
+ */
+#set($domainVariableName = $formatUtils.getJavaNameVariableConvertReservedWord($domainVariableName))
+
+#addArea("custom-annotations")
+class ${className} {
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    /** @Id */
+    private ${embeddedIdClass} $embeddedIdVariable;
+#foreach($column in ${table.primaryKeyColumns})
+#putPHPColumnParamNaming()
+#if(!$isForeignKey)
+    /** @Column(type="$columnType", name="$column.name" #if($isLengthPrecisionColumn), length=$column.size#end #if($column.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true#else, unique=false#end , insertable=false, updatable=false)
+    private ${columnVar}_;
+#end
+#end
+#else
+#foreach($column in ${table.primaryKeyColumns})
+#putPHPColumnParamNaming()
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    /**@SequenceGenerator(sequenceName ="$sequenceName", initialValue=1, allocationSize=100 )*/
+#end
+#end
+    /**@Id @Column(type="$columnType", name="$column.name" #if($isLengthPrecisionColumn),length=$column.size#end)*/
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    /**@GeneratedValue(strategy = "SEQUENCE") */
+#elseif ($databaseUtils.isPrimaryKeyPolicyIncrement($table))
+    /**@GeneratedValue(strategy = "AUTO")*/
+#elseif ($databaseUtils.isPrimaryKeyPolicyIdentity($table))
+    /**@GeneratedValue(strategy = "IDENTITY")*/
+#else
+    /**@GeneratedValue(strategy = "NONE")*/
+#end
+#end
+#end
+#end
+    private $columnVar;
+
+#end
+#end
+#foreach ($column in ${table.attributes})
+#fieldAnnotationAddedAreas()
+#updatedColumnAttributeAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+#putPHPColumnParamNaming()
+#if ($isView)
+    /**@Column(type="$columnType", name="$column.name"  #if($isLengthPrecisionColumn), length=$column.size#end #if($column.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true#else, unique=false#end , insertable=false, updatable=false)*/
+#else
+    /**@Column(type="$columnType", name="$column.name"  #if($isLengthPrecisionColumn), length=$column.size#end #if($column.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true#else, unique=false#end)*/
+#end
+    private $columnVar; 
+#end
+$!updatedAreaEnd
+
+#end
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#if($isFieldRelationshipPersistence)
+#set($insertableUpdatableRelationship=", insertable=false, updatable=false")
+#set($insertableUpdatableField=", insertable=true, updatable=true")
+#else
+#set($insertableUpdatableRelationship=", insertable=true, updatable=true")
+#set($insertableUpdatableField=", insertable=false, updatable=false")
+#end
+#if ($referenceUtils.isReferenceInPrimaryKey($reference) && $tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+#set($insertableUpdatableRelationship=", insertable=true, updatable=true")
+#set($insertableUpdatableField=", insertable=false, updatable=false")
+    @MapsId ("$localColumnName")
+#end
+#set($fetchType=$jpa2Utils.getFetchType($template, $reference))
+    /**
+	 *  @ManyToOne (targetEntity="$linkedTableClass")//, inversedBy="TODO")// (fetch=FetchType.$fetchType #if ($isMandatory && !$table.isLinkEntity()), optional=false#end)
+     *  @JoinColumn(name="$localColumnName", referencedColumnName = "$reference.foreignColumnName" #if($localColumn.isRequired()), nullable=false#else, nullable=true#end)// #if($isColumnUnique), unique=true #else, unique=false#end $insertableUpdatableRelationship)
+	 */
+#exposeRelationship($table, $reference)
+#set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
+#set($colVar = "$"+$colVar)
+    private ${colVar};  
+
+#end	
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#exposeEntityUpdatedAreas("${childrenListVariable}-field")
+#if(!$linktableDB.isManyToMany())
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#set ($importDomainObjectForeignTable = $commonUtils.getEntityLevelTemplateFullPath($model, $linktableDB, $template, $templateDoctrineDomainObject))
+#set ($targetEntityClass = $commonUtils.getTemplateClassName($linktableDB, $template, $templateDoctrineDomainObject))
+#set ($targetEntityClassImport="${importDomainObjectForeignTable}")
+#exposeEnrichedPk(${reference.column})
+#if (!$isEnrichedPk)
+#set ($foreignColumnVar = $formatUtils.getJavaNameVariable($columnDB.name))
+#else
+#set ($foreignColumnVar = $domainVariableName)
+#end
+    /**
+	 *  @OneToMany (targetEntity="$targetEntityClass", mappedBy="$linkedColumnVariable"#if (!$reference.column.isRequired() || $reference.table.isLinkEntity()))#end)//, fetch=FetchType.LAZY, cascade=CascadeType.ALL )
+     */
+#set($childrenListVariable="$"+$childrenListVariable)
+	private $childrenListVariable; 
+
+#end
+#end
+#if(!$linktableDB.isManyToMany())
+$!updatedAreaEnd
+#end
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeEntityUpdatedAreas("m2m-$childrenListVariable")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+    /**
+	 *  @ManyToMany
+     *  @JoinTable(name="$linkedTableDBName", 
+     *   joinColumns={@JoinColumn(name="$targetColumn.name", referencedColumnName="$localColumn.name")}, 
+     *   inverseJoinColumns={@JoinColumn(name="$linkReference.localColumnName", referencedColumnName="$linkReference.ForeignColumnName")} 
+     *   )
+	 */
+#set($childrenListVariable="$"+$childrenListVariable)
+    private $childrenListVariable;
+
+#end
+#updatedAreaEnd()
+#end
+    /**
+     *  Default constructor
+     */
+    public function __construct() {
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+        $this->$childrenListVariable = new \Doctrine\Common\Collections\ArrayCollection();
+#end
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+        $this->$childrenListVariable = new \Doctrine\Common\Collections\ArrayCollection();
+#end
+    }
+
+$!updatedAreaImplementation
+}

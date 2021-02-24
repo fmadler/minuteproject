@@ -1,0 +1,38 @@
+<html>
+<body>
+<h1>
+$page.name
+</h1>
+<h1>
+$page.id
+</h1>
+#foreach($window in $page.windowByRefsArray)
+<h2>
+window $window.name
+</h2>
+#foreach($block in $window.blocksArray)
+#if ($block.isForm())
+<form>
+#end
+<table>
+#foreach($component in $block.componentsArray)
+<tr>
+<td>
+#populateComponentLabelSnippet($component) #populateMandatorySnippet ($component)
+</td>
+<td>
+#populateComponentSnippet ($component)
+</td>  
+</tr>
+#end
+</table>
+#if ($block.isForm())
+</form>
+#end
+
+#end
+#end
+
+</body>
+</html>
+

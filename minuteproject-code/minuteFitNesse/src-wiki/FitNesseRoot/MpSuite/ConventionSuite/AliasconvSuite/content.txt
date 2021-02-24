@@ -1,0 +1,40 @@
+!contents -R2 -g -p -f -h
+
+define COMMAND_PATTERN {java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 -cp %p %m}
+
+!2 Load model
+Liferay model load
+!| net.sf.minuteProject.model.NavigateModelSequenceFixture                                                                         |
+|load |mp-config-LIFERAY-JPA2.xml                                                                                                  |
+|check|alias java variable of primary key from primary key set|users_orgs     |userId                                 |user        |
+|check|alias java variable of primary key from primary key set|users_orgs     |organizationId                         |organization|
+|check|alias java variable of primary key from primary key set|assetvocabulary|vocabulary                                          |
+|check|alias java variable of primary key from column set     |assetvocabulary|vocabulary                                          |
+|check|alias java variable of primary key from foreign key set|users_orgs     |organization                                        |
+|check|alias java variable of first relationship between      |users_orgs     |user_                                  |user        |
+|check|name java variable of first relationship between       |users_orgs     |user_                                  |userid      |
+|check|alias java variable of first relationship between      |portletitem    |group_                                 |group       |
+|check|name java variable of first relationship between       |portletitem    |group_                                 |groupid     |
+|check|number of parents for entity                           |cyrususer      |0                                                   |
+|check|names of parents entity for entity                     |portletitem    |Group_, Company, User_, ClassName_     |true        |
+|check|names of parents entity for entity                     |user_          |Contact_, Company                      |true        |
+|check|number of parents for entity                           |user_          |2                                                   |
+|check|names of parents entity for entity                     |contact_       |User_, Company, ClassName_             |true        |
+|check|alias of column of table                               |smallImageId   |journalarticle                         |SMALLIMAGEID|
+|check|alias of column of table                               |smallImage     |journalarticle                         |SMALLIMAGE  |
+|check|alias of column of table                               |groupId        |group_                                 |group       |
+|check|alias of column of table new                           |groupId        |Group_                                 |group       |
+|check|names of local fk columns for entity                   |portletitem    |groupId, companyId, userId, classNameId|true        |
+|check|column class name of first relationship between        |assettag       |group_                                 |Group       |
+|check|alias of column of table new                           |contactId      |Contact_                               |contact     |
+
+
+!| net.sf.minuteProject.model.NavigateModelSequenceFixture                                                                                |
+|check|number of parents for entity                     |portletitem|4                                                                    |
+|check|aliases of local fk columns for entity           |portletitem|group, company, user, classname|true                                 |
+
+
+There is no link between portletitem and portlet although portletitem as a field portletid.
+But portletid is not of the same type as portlet primary key
+ net.sf.minuteProject.model.NavigateModelSequenceFixture     TOFIX                                                                           
+check,alias java variable of first relationship between,portletitem,portlet,errorMissingReferenceLocalcolumnAlias

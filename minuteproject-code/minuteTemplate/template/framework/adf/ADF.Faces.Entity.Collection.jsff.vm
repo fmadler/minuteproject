@@ -1,0 +1,125 @@
+#exposeADFFacesEntitySpecific()
+#set($separator=$i18nUtils.getSeparator($template))
+## parameter  $linktableDB "${childrenListClass}$velocityCount" $linkedTableVariable ${childrenListVariable} true)
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich" version="2.1">
+    <af:componentDef var="attrs">
+        <af:xmlContent>
+            <component xmlns="http://xmlns.oracle.com/adf/faces/rich/component">
+                <description>$table.name collection fragment</description>
+                <attribute>
+                    <attribute-name>backingBean</attribute-name>
+                    <attribute-class>java.lang.String</attribute-class>
+                    <required>true</required>
+                </attribute>
+                <attribute>
+                    <attribute-name>tableVariableName</attribute-name>
+                    <attribute-class>java.lang.String</attribute-class>
+                    <required>true</required>
+                </attribute>
+                <attribute>
+                    <attribute-name>adfIdAppender</attribute-name>
+                    <attribute-class>java.lang.String</attribute-class>
+                    <required>true</required>
+                </attribute>
+                <attribute>
+                    <attribute-name>isChild</attribute-name>
+                    <attribute-class>java.lang.Boolean</attribute-class>
+                    <required>true</required>
+                </attribute>
+            </component>
+        </af:xmlContent>
+
+              <af:showDetailItem text="#{viewcontrollerBundle['$tableVariableName$separator$listVariable']}"
+                                 id="sdChildren$adfIdAppender">
+                 <af:panelGroupLayout layout="horizontal" halign="left"
+                        rendered="#{viewScope.${entityADFVariable}BackingBean.displayResults}">
+                    <af:panelBox id="${entityADFVariable}__pb_${adfIdAppender}" showDisclosure="false"
+                                 showHeader="always" ramp="core"
+                                 styleClass="section">
+                      <af:pageTemplate viewId="/WEB-INF/common/tablePaginationTemplate.jspx"
+                                       id="tableTmpl_${adfIdAppender}">
+                        <f:facet name="table">
+                        <af:table id="table_${adfIdAppender}"
+#if(!$isChild)
+                                    value="#{bindings.${domainVariableName}DTOs.collectionModel}"
+                                    emptyText="#{bindings.${domainVariableName}DTOs.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                    filterModel="#{bindings.${domainVariableName}DTOsQuery.queryDescriptor}"
+                                    rows="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table.rangeSize}"
+                                    fetchSize="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table.rangeSize}"
+                                    queryListener="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table.queryListener}"
+                                    binding="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table.tableUIComp}"
+#else
+                                    value="#{viewScope.${entityADFVariable}BackingBean.${listVariable}Children}"
+#end
+                                    var="row"
+                                    rowBandingInterval="1"
+                                    filterVisible="true"
+                                    columnResizing="disabled" autoHeightRows="0"
+                                    varStatus="vs" rowSelection="none"
+                                    width="${resultListWidth}" contentDelivery="immediate"
+                                    immediate="true"
+                                    >
+##pk
+#exposeModelUpdatedAreas("list-node")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+##foreach ($column in $table.columns)  
+#foreach ($column in $presentationUtils.getPotentialDisplayableColumns($table))  
+#putColumnParamNaming()
+#if($isPrimaryKey)
+                            <af:column sortProperty="${columnVar}" sortable="true"
+                                       filterable="true"
+#if($columnUtils.isNaturalPk($column))
+                                       headerText="#{viewcontrollerBundle['$tableVariableName$separator$columnVar']}"
+#else
+                                       headerText="Reference"	
+#end
+                                       id="${columnVar}_id_${adfIdAppender}" width="$adfUtils.getDisplayColumnWithHeader($column)">
+                              <af:commandLink id="${columnVar}_${adfIdAppender}"
+#if($columnUtils.isNaturalPk($column))
+                                              text="#{row.${columnVar}}" 
+#else
+                                              text="view" 
+#end
+                                              action="details" immediate="true"
+                                              partialSubmit="true"
+                                              useWindow="true"
+                                              windowEmbedStyle="inlineDocument"
+                                              windowModalityType="applicationModal"
+                                              windowHeight="$windowHeight"
+                                              windowWidth="$windowWidth"
+                                              launchListener="#{viewScope.${entityADFVariable}BackingBean.handleLaunchEdit${entityADFClass}Dlg}">
+##works for one pk only
+                                <f:attribute name="${entityADFVariable}Reference" value="#{row.${columnVar}}"/>
+                              </af:commandLink>
+                            </af:column>
+#else
+                            <af:column sortProperty="${columnVar}" sortable="true"
+                                       filterable="true"
+                                       headerText="#{viewcontrollerBundle['$tableVariableName$separator$columnVar']}"
+                                       id="${columnVar}_col_${adfIdAppender}" width="$adfUtils.getDisplayColumnWithHeader($column)">
+#if($isForeignKey)
+#set($columnVar = "${columnVar}_")
+#end
+                              <af:outputText value="#{row.${columnVar}}" id="${columnVar}_ot_${adfIdAppender}"/>
+                            </af:column>
+#end
+#end
+#end
+$updatedAreaEnd
+                          </af:table>
+                      </f:facet>
+                        <f:attribute name="paginationUtils"
+                                     value="#{viewScope.${entityADFVariable}BackingBean.${entityADFVariable}Table}"/>
+                      </af:pageTemplate>
+                    </af:panelBox>
+                  </af:panelGroupLayout>
+              </af:showDetailItem>
+
+			  
+    </af:componentDef>
+</jsp:root>

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.1.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_1_0.dtd">
+<liferay-portlet-app>
+#if($hasBusinessPackages)
+#foreach($table in $businessPackages)
+#if(!$table.isMany2Many)
+#exposeVariableEntitySpecific()	
+    <portlet>
+        <portlet-name>$domainClassName</portlet-name>
+        <instanceable>true</instanceable>
+	</portlet>
+#end
+#end
+#end
+#if($hasBusinessPackageViews)
+#foreach($table in $businessPackageViews)
+#if(!$table.isMany2Many)
+#exposeVariableEntitySpecific()	
+    <portlet>
+        <portlet-name>$domainClassName</portlet-name>
+        <instanceable>true</instanceable>
+	</portlet>
+#end
+#end
+#end
+#if($hasBusinessPackageTransferEntities)
+#foreach ($table in $businessPackageTranferEntities)
+#exposeVariableEntitySpecific()
+    <portlet>
+        <portlet-name>$domainClassName</portlet-name>
+        <instanceable>true</instanceable>
+	</portlet>
+#end
+#end
+
+#if($hasStatements)
+#foreach ($query in $statements)
+#set($table=$query.inputBean)
+#set($inputBean=$query.inputBean)
+#exposeSDDOX()
+#set($domainClassName=$tableClassName)
+    <portlet>
+        <portlet-name>$domainClassName</portlet-name>
+        <instanceable>true</instanceable>
+	</portlet>
+#end
+#end
+
+    <role-mapper>
+        <role-name>administrator</role-name>
+        <role-link>Administrator</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>guest</role-name>
+        <role-link>Guest</role-link>
+    </role-mapper>
+	<role-mapper>
+        <role-name>power-user</role-name>
+        <role-link>Power User</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>user</role-name>
+        <role-link>User</role-link>
+    </role-mapper>
+</liferay-portlet-app>

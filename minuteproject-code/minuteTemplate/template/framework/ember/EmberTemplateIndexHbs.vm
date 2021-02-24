@@ -1,0 +1,18 @@
+import BaseRoute from '$pathToEmberBaseRoute';//'../../base'
+
+import Ember from 'ember';
+
+import BaseRoute from '../base';
+
+import _ from 'lodash';
+import {toDisplay,setDisplayCount, convertComposition} from '../../utils/business-utils';
+import config from '../../config/environment';
+export default BaseRoute.extend({
+	titleToken: ['field.appellations'],
+	//TODO queryParams
+	
+	${model}Service : Ember.inject.service("${model}"),
+	model(params) {
+        return this.get('${model}Service').${function}(params);
+    },
+});

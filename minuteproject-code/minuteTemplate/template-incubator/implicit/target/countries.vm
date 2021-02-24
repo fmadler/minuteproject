@@ -1,0 +1,45 @@
+document.name = $document.name
+$basestructure.name
+$file.exists()
+
+$fileUtils.readFirstLine( $file )
+
+#set($lines = $fileUtils.getLines( $file, $basestructure.separator ))
+
+$lines
+
+#foreach ($line in $lines.lines)
+##line = $line - !$line.getPropertyValue("Country")
+##
+#end
+
+package com.vaadin.ext.util.geo;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+
+public class GeoMapCountry {
+	
+	private Map<String, GeoCountry> countries;
+	
+	public GeoMapCountry() {
+		countries = new HashMap<String, GeoCountry>();
+#foreach ($line in $lines.lines)
+#set($code="")
+##$line.getPropertyValue("Code"))
+#if($code=="")
+#set($code=$stringUtils.upperCase($stringUtils.substring($line.getPropertyValue("Country"),0,2)))
+#end
+#set($code=$line.getPropertyValue("Code"))
+		countries.put("$code", new GeoCountry("$geoUtils.getXCoord($line.getPropertyValue("Longitude"))", "$geoUtils.getYCoord($line.getPropertyValue("Latitude"))", "$line.getPropertyValue("Country")"));
+#end		
+	}
+	
+	public GeoCountry getCountry (String code) {
+		return countries.get(code);
+	}	
+
+}

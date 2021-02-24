@@ -1,0 +1,227 @@
+#NavLeft {
+        background-color: #F0F7FD;
+        background-image: url("../afr/fusionFx-v1/pabbgt.png");
+        background-position: center top;
+        background-repeat: repeat-x;
+        border-color: #D0DAE6;
+        border-style: solid;
+        border-width: 0 1px;
+        color: #333333;
+        left: 0;
+        overflow: hidden;
+        padding-top: 1px;
+        position: relative;
+        right: 0;
+        width: auto;
+}
+
+
+
+#NavLeft ul
+	{
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	/*position:relative;
+	width:200px;*/
+	font-family:Arial, Helvetica, sans-serif;
+	}
+
+/*#NavLeft ul li.hp
+	{
+	height:29px;
+	margin:0;
+	padding:0;
+	width:200px;
+	}*/	
+
+#NavLeft ul li
+	{
+	background-image:none;
+	border:medium none;
+	margin:0;
+	padding:0;
+	}
+
+/*#NavLeftul li.hp a
+	{
+	background:transparent url(../images/menu-bord1.gif) no-repeat scroll center bottom;
+	display:block;
+	margin:0;
+	padding:5px 0 5px 18px;
+	text-decoration:none;
+        white-space: normal;
+	}*/
+
+div.accordion_toggler_1 a span, div.accordion_toggler_2 a span
+        {
+        background-image:url("../afr/fusion/disclcol.png");
+        padding-left: 20px;
+        display:block;
+        background-repeat:no-repeat;
+        background-position:left center;
+        cursor:default;
+        }
+        
+div.accordion_toggler_1 a span:hover, div.accordion_toggler_2 a span:hover
+        {
+        background-image:url("../afr/fusion/disclcol_hover.png");
+        }
+
+
+#NavLeft ul li a
+	{
+        background-image: url("../afr/fusionFx-v1/pahcm.png");
+        background-repeat: repeat-x;
+        
+        /*background:transparent url(../images/menu-bord1.gif) no-repeat scroll center bottom;*/
+	display:block;
+	font-weight:bold;
+	margin:0;
+	padding:5px 0 5px 5px;
+	text-decoration:none;
+	width:auto;
+	font-size:1.1em;
+	line-height:1.1em;
+        white-space: normal;
+	}
+
+div.accordion_content_1_open ul.sublev a
+        {
+        background-image: none;
+        }
+
+#NavLeft ul li a span
+	{
+	padding-left: 17px;
+        color:#333333 !important;
+        margin-left: 0 !important;
+	}
+
+#NavLeft ul ul.sublev
+	{
+	margin:0;
+	padding:0;
+	}
+
+#NavLeft ul ul.sublev li a
+	{
+	/*background:transparent url(../images/menu-bord2.gif) no-repeat scroll center bottom;
+	font-weight:bold;*/
+        background-image: url("../afr/fusionFx-v1/pahem.png");
+        background-repeat: repeat-x;
+	margin:0;
+	padding:5px 0 5px 15px;
+        white-space: normal;
+	}	
+
+/*#NavLeft a:hover
+	{
+	color:#2373BA;
+	text-decoration:underline;
+	}*/
+
+#NavLeft ul ul.sublev li
+	{
+	/*background-image:url(../images/bkg-menu.gif);
+	background-repeat:repeat-y;*/
+	margin:0;
+	padding:0;
+	}
+
+#NavLeft ul ul.sublev li .thirdlev ul
+	{
+	margin:0;
+	padding:0;
+	}
+
+#NavLeft ul ul.sublev li .thirdlev ul li
+	{
+	/*background-image:url(../images/bkg-menu2.gif);
+	background-repeat:repeat-y;*/
+	margin:0;
+	padding:0;
+	}
+
+#NavLeft ul ul.sublev li .thirdlev ul li a
+	{
+	/*background:transparent url(../images/menu-bord3.gif) no-repeat scroll center bottom;
+	font-weight:bold;*/
+	margin:0;
+	padding:5px 0 5px 30px;
+	}
+#NavLeft ul ul.sublev a
+	{
+	/*background:transparent url(../images/menu-bord3.gif) no-repeat scroll center bottom;
+	font-weight:bold;*/
+	margin:0;
+	padding:5px 0 5px 15px;
+	}
+
+div.thirdlev ul li a span
+        {
+        color: #333333;
+        margin-left: 0;
+        }
+
+#NavLeft ul li a.on
+	{
+	color:#2373BA;
+	}
+
+#NavLeft ul li a.on span
+	{
+	background-image:url(../images/bullet-arrow.gif);
+	background-repeat:no-repeat;
+	/*background-position:0 2px;*/
+        color: #2373BA !important;
+	padding-left: 17px;
+	display:block;
+	}
+
+#NavLeft li .open a span
+	{
+	/*background-image:url(../images/bullet-arrow.gif);
+        background-repeat:no-repeat;*/
+	background-image:url("../afr/fusion/disclexp.png");
+	/*background-position:0 2px;*/
+	padding-left: 17px;
+	/*width:6px;
+	height:11px;*/
+	color:#2373BA !important;
+	}
+
+#NavLeft li .open a span:hover
+	{
+	background-image:url("../afr/fusion/disclexp_hover.png");
+	}
+#NavLeft li .open_on_init a span:hover
+	{
+	background-image:url("../afr/fusion/disclexp.png");
+	}
+	
+#NavLeft li .open a
+	{
+	color:#2373BA;
+	}
+
+/*#NavLeftImg
+	{
+	background-image: url("../images/img-nav.jpg");
+	background-position: center bottom;
+	background-repeat: no-repeat;
+	height: 125px;
+	padding-top:0px;
+	
+	padding-top:15px;
+	padding-top:0px;*/
+	
+	/*margin-bottom: 50px;*/
+	/*width: 200px;
+	}*/
+        
+
+	
+	

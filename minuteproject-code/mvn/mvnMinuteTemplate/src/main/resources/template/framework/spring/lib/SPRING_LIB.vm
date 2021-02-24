@@ -1,0 +1,139 @@
+#macro (exposeSpringDomainObjectSpecific)
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#exposeJPA2DomainObject($tableDB)
+#exposeSpringBslaDomainObject()
+#set($implementInterface=$template.getPropertyValue("implement-interface",false))
+#end
+
+#macro (exposeSpringBslaDomainObject)
+#exposeSpringTemplate()
+#set ($BslaDaoInterfaceClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectBslaDaoInterface))
+#set ($BslaDaoInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($BslaDaoInterfaceClass))
+#set ($BslaDaoInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectBslaDaoInterface))
+#set ($BslaDaoExtInterfaceClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectBslaDaoExtInterface))
+#set ($BslaDaoExtInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($BslaDaoExtInterfaceClass))
+#set ($BslaDaoExtInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectBslaDaoExtInterface))
+#end
+
+#macro (exposeSpringServiceDomainObject)
+#exposeSpringTemplate()
+#set ($SpringServiceInterfaceClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateSpringServiceInterface))
+#set ($SpringServiceInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($SpringServiceInterfaceClass))
+#set ($SpringServiceInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateSpringServiceInterface))
+#end
+
+#macro (exposeSDDSpring)
+#exposeSDDSpringTemplate()
+#set ($sddServiceInterfaceClass = $commonUtils.getTemplateClassName($query, $template, $templateSDDServiceInterface))
+#set ($sddServiceInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddServiceInterfaceClass))
+#set ($sddServiceInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateSDDServiceInterface))
+#set ($sddDaoInterfaceClass = $commonUtils.getTemplateClassName($query, $template, $templateSDDDaoInterface))
+#set ($sddDaoInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddDaoInterfaceClass))
+#set ($sddDaoInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateSDDDaoInterface))
+#set ($sddSpringJPADaoInterfaceClass = $commonUtils.getTemplateClassName($query, $template, $templateSDDSpringJPADaoClass))
+#set ($sddSpringJPADaoInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddSpringJPADaoInterfaceClass))
+#set ($sddSpringJPADaoInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateSDDSpringJPADaoClass))
+#end
+
+#macro (exposeSDDCompositeSpring)
+#exposeSDDSpringTemplate()
+#set ($sddCompositeDaoInterfaceClass = $commonUtils.getTemplateClassName($composite, $template, $templateSDDCompositeDaoInterface))
+#set ($sddCompositeDaoInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddCompositeDaoInterfaceClass))
+#set ($sddCompositeDaoInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($composite, $template, $templateSDDCompositeDaoInterface))
+#end
+
+#macro (exposeSpringTemplate)
+#set ($templateDomainObjectBslaDaoInterface = "BslaDaoInterfaceUML")
+#set ($templateDomainObjectBslaDaoExtInterface = "BslaDaoInterfaceExtendedUML")
+#set ($templateRestController = "SpringMVCRestController")
+#set ($templateSpringBackendConfig="BslaSpringConfigMainBackend")
+#set ($templateSpringServiceInterface="SpringServiceInterface")
+#set ($templateSpringServiceClass="SpringServiceImpl")
+#set ($templateSpringModelServiceInterface="SpringModelServiceInterface")
+#set ($templateSpringModelServiceClass="SpringModelServiceImpl")
+#end
+
+#macro (exposeSDDSpringTemplate)
+#set ($templateSDDDaoInterface = "SDDDaoInterface")
+#set ($templateSDDServiceInterface = "SDDServiceInterface")
+#set ($templateSDDCompositeDaoInterface = "SDDCompositeDaoInterface")
+#set ($templateSDDSpringJPADaoClass = "SDDSpringJPADao")
+#end
+
+#macro (exposeSpringModelSpecific)
+#exposeSpringTemplate()
+#exposeSDDSpringTemplate()
+#set($controllerPackageName=$commonUtils.getPackageName($model, $template, $templateRestController))
+#set($pathSpringBackendConfig=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateSpringBackendConfig))
+#set($controllerDaoPackageName=$commonUtils.getPackageName($model, $template, $templateSDDSpringJPADaoClass))
+#set($springServicePackageName=$commonUtils.getPackageName($model, $template, $templateSpringServiceClass))
+#set($beanSpringModelServiceClass=$commonUtils.getTemplateClassName($model, $template, $templateSpringModelServiceInterface))
+#set($beanSpringModelServiceVariable=$commonUtils.getJavaNameVariableFirstLetter($beanSpringModelServiceClass))
+#set($beanSpringModelServiceImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringModelServiceInterface))  
+#end
+
+#macro (exposeSpringdataModelSpecific)
+#exposeSpringdataTemplate()
+#set ($modelRepositoryClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringdataRepository))
+#set ($modelRepositoryImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringdataRepository))
+#end
+
+#macro (exposeSpringdataTemplate)
+#set ($templateSpringdataRepository = "SpringDataModelRepository")
+#end
+
+### front end client
+
+#macro(exposeSpringServiceBindingSpecific)
+#exposeSpringTemplate()
+#set($beanSpringServiceClass=$commonUtils.getTemplateClassName($table, $templateSpringServiceInterface))
+#set($beanSpringServiceVariable=$commonUtils.getJavaNameVariableFirstLetter($beanSpringServiceClass))
+#set($beanSpringServiceImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSpringServiceInterface))  
+##set($beanSpringModelServiceClass=$commonUtils.getTemplateClassName($table, $templateSpringModelServiceInterface))
+##set($beanSpringModelServiceVariable=$commonUtils.getJavaNameVariableFirstLetter($beanSpringServiceClass))
+##set($beanSpringModelServiceImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSpringModelServiceInterface))  
+#set($domainClassImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, "DomainEntityJPA2Annotation"))   
+#end
+
+#macro(exposeSpringServiceBindingSpecific4Entity $table)
+#exposeSpringTemplate()
+#set($beanSpringServiceClass=$commonUtils.getTemplateClassName($table, $templateSpringServiceInterface))
+#set($beanSpringServiceVariable=$commonUtils.getJavaNameVariableFirstLetter($beanSpringServiceClass))
+#set($beanSpringServiceImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSpringServiceInterface))  
+#set($domainClassImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, "DomainEntityJPA2Annotation"))   
+##set($domainClass=$commonUtils.getTemplateClassName($table, "DomainEntityJPA2Annotation")) 
+##set($domainVar=$commonUtils.getJavaNameVariableFirstLetter($domainClass)) 
+#end
+
+#macro (putSpringJSFModelLookup)
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#if(!$isMany2Many)
+##exposeSpringServiceBindingSpecific4Entity($table)
+#set($ordering=$orderingUtils.getFirstOrdering($table))
+#set($column=$ordering.column)
+#putColumnParamNaming()
+#putOrmForeignKeyColumn()
+#if($columnUtils.isForeignKey($primaryKeyFirstColumn) || $columnUtils.isPartOfCompositePrimaryKey($column))
+//here $columnUtils.isForeignKey($primaryKeyFirstColumn) || $columnUtils.isPartOfCompositePrimaryKey($column)
+#set($primaryKeyJavaNameClass = "${primaryKeyJavaNameClass}_")
+##elseif($column.isPrimaryKey())
+##set($primaryKeyJavaNameClass="${primaryKeyJavaNameClass}_")
+#end
+#if($columnUtils.isStringColumn($column))
+#set($setToString="")
+#else
+#set($setToString=".toString()")
+#end
+    public List<SelectItem> get${domainClassName}List() {
+        List<SelectItem> list = new ArrayList<SelectItem>();
+        for ($domainClassImport element : ${beanSpringServiceVariable}.getList()) {
+            list.add(new SelectItem(element.get$primaryKeyJavaNameClass(),element.get$columnClass()$setToString));
+        }
+        return list;
+    }
+#end
+#end
+#end

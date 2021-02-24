@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="src-patch"/>
+	<classpathentry kind="src" path="config2"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="src" path="src-plugin"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-bean-collections-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-core-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/commons-betwixt-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbcp-1.2.1.jar" sourcepath="C:/Documents and Settings/adlerfl/.m2/repository/commons-dbcp/commons-dbcp/1.2.1/commons-dbcp-1.2.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbutils-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-digester-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-api-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/commons-pool-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/DdlUtils-1.0.jar" sourcepath="lib/DdlUtils-1.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.12.jar"/>
+	<classpathentry kind="lib" path="lib/xalan-2.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/xerces-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="lib/xmlParserAPIs.jar"/>
+	<classpathentry kind="lib" path="lib/extra/db2jcc_license_cu.jar"/>
+	<classpathentry kind="lib" path="lib/extra/db2jcc.jar"/>
+	<classpathentry kind="lib" path="lib/extra/ojdbc14.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/minuteFoundation"/>
+	<classpathentry kind="lib" path="lib/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/junit-dep-4.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/extra/hsqldb-1.8.0.7.jar"/>
+	<classpathentry kind="lib" path="libc/ant.jar"/>
+	<classpathentry kind="lib" path="lib/extra/mysql.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.6.4-dep.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.6.4.jar"/>
+	<classpathentry kind="lib" path="lib/extra/sqlitejdbc-v056.jar"/>
+	<classpathentry kind="lib" path="lib/extra/derbyclient.jar"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry kind="lib" path="lib/activation.jar"/>
+	<classpathentry kind="lib" path="lib/FastInfoset.jar"/>
+	<classpathentry kind="lib" path="lib/gmbal-api-only.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-all-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/http.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="lib/jaxws-api.jar"/>
+	<classpathentry kind="lib" path="lib/jaxws-rt.jar"/>
+	<classpathentry kind="lib" path="lib/jaxws-tools.jar"/>
+	<classpathentry kind="lib" path="lib/jsr173_api.jar"/>
+	<classpathentry kind="lib" path="lib/jsr181-api.jar"/>
+	<classpathentry kind="lib" path="lib/jsr250-api.jar"/>
+	<classpathentry kind="lib" path="lib/management-api.jar"/>
+	<classpathentry kind="lib" path="lib/mimepull.jar"/>
+	<classpathentry kind="lib" path="lib/policy.jar"/>
+	<classpathentry kind="lib" path="lib/resolver.jar"/>
+	<classpathentry kind="lib" path="lib/saaj-api.jar"/>
+	<classpathentry kind="lib" path="lib/saaj-impl.jar"/>
+	<classpathentry kind="lib" path="lib/servlet.jar"/>
+	<classpathentry kind="lib" path="lib/stax-ex.jar"/>
+	<classpathentry kind="lib" path="lib/streambuffer.jar"/>
+	<classpathentry kind="lib" path="lib/woodstox.jar"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

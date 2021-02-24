@@ -1,0 +1,103 @@
+#macro (exposeRESTURL $techno)
+#exposeRESTURLServer($techno)
+#exposeRESTURLClient($techno)
+#end
+
+#macro(exposeRESTSDDURLServer)
+#set($isFormatXml=$template.hasPropertyValue("add-format","xml"))
+#set($isFormatJson=$template.hasPropertyValue("add-format","json"))
+#set ($restXmlServerUrl = $restUtils.getRestUrlServerXml($query, $techno))
+#set ($restJsonServerUrl = $restUtils.getRestUrlServerJson($query, $techno))
+#end
+
+#macro (exposeRESTURLClient $techno)
+#set ($restXmlClientUrl = $restUtils.getRestUrlClientXml($table, $techno))
+#set ($restJsonClientUrl = $restUtils.getRestUrlClientJson($table, $techno))
+#end
+
+#macro (exposeRESTURLServer $techno)
+#set ($restXmlServerUrl = $restUtils.getRestUrlServerXml($table, $techno))
+#set ($restJsonServerUrl = $restUtils.getRestUrlServerJson($table, $techno))
+#end
+
+#macro (exposeRESTModelSpecific)
+#exposeVariableModelSpecific()
+#exposeRESTTemplate()
+#set ($modelWadlGeneratorJerseyImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelWadlGeneratorJersey))	
+#set ($modelResourceJerseyImport = $commonUtils.getRootAndTechnicalPackageName($model, $templateEntityResourceJersey))	
+#end
+
+#macro (exposeRESTModelCache)
+#exposeRESTTemplate()
+#set ($modelRestCacheableImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelCacheable))	
+#set ($modelRestCacheableClass = $commonUtils.getTemplateClassName($model, $template, $templateModelCacheable))
+#end
+
+#macro (exposeRESTModelCompress)
+#exposeRESTTemplate()
+#set ($modelRestCompressImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelCompress))	
+#set ($modelRestCompressClass = $commonUtils.getTemplateClassName($model, $template, $templateModelCompress))
+#end
+
+#macro (exposeRESTModelJWTUtils)
+#exposeRESTTemplate()
+#set ($modelRestJWTUtilsImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelJWtUtils))	
+#set ($modelRestJWTUtilsClass = $commonUtils.getTemplateClassName($model, $template, $templateModelJWtUtils))
+#end
+
+#macro (exposeRESTTemplate)
+#set ($templateModelWadlGeneratorJersey = "JerseyWadlGenerator")
+#set ($templateModelCacheable = "REST.Cache.Annotation")
+#set ($templateModelCompress = "REST.Compress.Annotation")
+#set ($templateModelJWtTokenNeeded = "REST.JWTTokenNeeded.Annotation")##TODO set at application level
+#set ($templateModelJWtUtils = "REST.JWTUtils")##TODO set at application level
+#set ($templateEntityResourceJersey = "EJB3ResourceREST")
+#end
+
+#macro (exposeMavenJersey)
+#set($guavaVersion=$template.getPropertyValue("add-guava-version","24.1-jre"))
+#set($jerseyVersion=$template.getPropertyValue("add-rest-implementation-jersey-version","2.25"))
+#set($jacksonVersion=$template.getPropertyValue("add-rest-implementation-jackson-version","2.8.6"))
+#set($sunjerseyVersion=$template.getPropertyValue("add-rest-implementation-sun-jersey-version","1.18.1"))
+#set($atmosphereVersion=$template.getPropertyValue("add-rest-implementation-atmosphere-version","2.4.12"))
+#exposeMavenJavaEeApi()
+#end
+
+#macro (exposeMavenCommonDependencies)
+#set($junitVersion=$template.getPropertyValue("add-junit-version","4.12"))
+#set($powerMockitoVersion=$template.getPropertyValue("add-powermockito-version","1.7.4"))
+#set($lombokVersion=$template.getPropertyValue("add-lombok-version","1.16.16"))
+#set($jjwtVersion=$template.getPropertyValue("add-jjwt-version","0.10.5"))
+#end
+
+#macro (putRESTDependencyVersions)
+        <junit.version>${junitVersion}</junit.version>
+		<lombok.version>${lombokVersion}</lombok.version>
+		<powermock.version>${powerMockitoVersion}</powermock.version>
+		<jjwt.version>${jjwtVersion}</jjwt.version>
+		<slf4j.version>2.0.0-alpha1</slf4j.version>
+		<logbackclassic.version>1.3.0-alpha5</logbackclassic.version>
+#end
+
+#macro (putEnvironmentProperties)
+    public static String getEnvironment(Properties props) {
+		String environment = System.getProperty("environment");
+		if (environment == null) {
+			environment = System.getProperty("env");
+		}
+		if (environment == null) {
+			environment = System.getProperty("spring.profiles.active");
+		}
+		if (environment == null) {
+			environment = props.getProperty("environment");
+			if (environment.equals("${environment}")) {					
+				environment = null;
+			}
+		}
+		if (environment == null) {
+			environment = "TBD";
+		}
+		return environment;
+	}
+#end
+

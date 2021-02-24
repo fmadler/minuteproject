@@ -1,0 +1,365 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="../config/mp-config.xsd">
+	<configuration>
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+            <target-convention type="disable-business-model-generation" />
+        </conventions>
+		<model name="sakila" version="1.0" package-root="org.minutproject.sample">
+			<data-model database-type="MYSQL">
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/sakila</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+
+			<statement-model>
+				<queries>
+					<!-- generic queries -->
+					<query name="distinct city" id="sakilacity" package-name="masterdata">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select distinct city from city]]>
+                            </value>
+						</query-body>
+					</query>
+					<query name="countries" id="distinct-countries" package-name="masterdata" content-type="master-data">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select distinct country from country order by country asc]]>
+                            </value>
+						</query-body>
+					</query>
+					<query name="category" id="distinct-categories" package-name="masterdata" content-type="master-data">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select distinct name from category order by name asc]]>
+                            </value>
+						</query-body>
+					</query>
+					
+					<!-- customer queries -->
+					<query name="customer" id="customer-details" package-name="customerdata">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[
+select customer_id, store_id, first_name, last_name, email, address, city, postal_code, country 
+ from customer cu, address a, city ci, country co
+ where cu.address_id = a.address_id and a.city_id = ci.city_id and ci.country_id = co.country_id
+]]>
+                            </value>
+						</query-body>
+						<query-display result-row-display="first_name, last_name, email, address, postal_code, city, country">
+						</query-display>
+					</query>
+					
+					<query name="customer and store" id="customer-and-store-details" package-name="customerdata">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[
+select customer_id, first_name, last_name, email, a.address, ci.city, a.postal_code, co.country, a2.address as store_address 
+ from customer cu, address a, city ci, country co, store st, address a2
+ where cu.address_id = a.address_id and a.city_id = ci.city_id and ci.country_id = co.country_id and cu.store_id = st.store_id and st.address_id = a2.address_id
+$wherefirstname $wherelastname
+]]>
+                            </value>
+						</query-body>
+						<query-display result-row-display="first_name, last_name, email, address, postal_code, city, store_address, country">
+						</query-display>
+						<query-filters>
+							<query-filter name="wherefirstname" and-where-connection="and">
+								<value>
+		<![CDATA[first_name like ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="first_name" type="string" size="20" sample="'xxx'">
+										<property name="like-mode" value="startsWith"></property>
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="wherelastname" and-where-connection="and">
+								<value>
+		<![CDATA[last_name like ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="last_name" type="string" size="20" sample="'xxx'">
+										<property name="like-mode" value="startsWith"></property>
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					
+					<query name="customer and store by country" id="customer-and-store-by-country-details" package-name="customerdata">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[
+select customer_id, concat_ws (' ',first_name, last_name) full_name, email, a.address, ci.city, a.postal_code, co.country, a2.address as store_address 
+ from customer cu, address a, city ci, country co, store st, address a2
+ where cu.address_id = a.address_id and a.city_id = ci.city_id and ci.country_id = co.country_id and cu.store_id = st.store_id and st.address_id = a2.address_id
+$wherefirstname $wherelastname $wherecountry
+]]>
+                            </value>
+						</query-body>
+						<query-display result-row-display="full_name, email, address, postal_code, city, store_address, country">
+						</query-display>
+						<query-filters>
+							<query-filter name="wherefirstname" and-where-connection="and">
+								<value>
+		<![CDATA[first_name like ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="first_name" type="string" size="20" sample="'xxx'">
+										<property name="like-mode" value="startsWith"></property>
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="wherelastname" and-where-connection="and">
+								<value>
+		<![CDATA[last_name like ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="last_name" type="string" size="20" sample="'xxx'">
+										<property name="like-mode" value="startsWith"></property>
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="wherecountry" and-where-connection="and">
+								<value>
+		<![CDATA[co.country = ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="country" type="string" size="20" sample="'xxx'">
+										<query-param-link sdd-query-name="countries" field-name="country" field-key="country"/>
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					
+					<!-- film -->
+					<query name="Film list simple" id="film_list" package-name="film">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select * from film_list $wheretitle $wherecategory order by title asc]]>
+                            </value>
+						</query-body>
+						<query-display result-row-display="title, category, description, length, rating, price"/>
+						<actions>
+							<action name="details" default-implementation="showDetails"></action>
+							<action name="actors" query-id="actor-film">
+	                       		<action-field-map>
+	                       			<!-- java convention like field name not sql -->
+	                       			<action-field-map-entry output-field="fid" to-action-field="filmId" />
+	                       		</action-field-map>
+                       		</action>
+						</actions>
+						<query-filters>
+							<query-filter name="wheretitle" and-where-connection="where">
+								<value>
+		<![CDATA[title like ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="title" type="string" size="20" sample="'xxx'">
+										<property name="like-mode" value="startsWith"></property>
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="wherecategory" and-where-connection="where">
+								<value>
+		<![CDATA[category = ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="category" type="string" size="20" sample="'xxx'">
+										<query-param-link sdd-query-name="distinct-categories" field-name="name" field-key="name"/>
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					
+					<!-- actor -->
+					<query name="actor film" id="actor-film" package-name="technical">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select ai.first_name, ai.last_name, ai.film_info from actor_info ai, film_actor fa where ai.actor_id = fa.actor_id and fa.film_id = ?]]>
+                            </value>
+						</query-body>
+						<query-params>
+							<query-param name = "film_id" type="int" sample="1"/>
+						</query-params>
+						<query-display result-row-display="first_name, last_name"/>
+						<actions>
+							<action name="details" default-implementation="showDetails"></action>
+						</actions>
+					</query>
+					
+					<!-- rental -->
+					<query name="rental" id="rental-by-customers" package-name="rental">
+						<query-body> 
+							<value>
+<![CDATA[
+select count(*) number from rental
+$wherecustomer
+]]>
+                            </value>
+						</query-body>
+						<query-filters>
+							<query-filter name="wherecustomer" and-where-connection="where">
+								<value>
+		<![CDATA[customer_id = ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="customer" type="int" size="20" sample="1">
+										<query-param-link sdd-query-name="customer-and-store-by-country-details" field-name="full_name" field-key="customer_id"/>
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					
+					<!-- dashboard queries -->
+					
+					<query name="sales_by_store" id="sales_by_store" package-name="dashboard">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select * from sales_by_store order by store asc]]>
+                            </value>
+						</query-body>
+					</query>
+					
+					<query name="sales_by_film_category" id="sales_by_film_category" package-name="dashboard"
+						category="bar-chart">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select * from sales_by_film_category order by category asc]]>
+                            </value>
+						</query-body>
+						<actions>
+							<action name="sales info" query-id="sales_by_film_and_film_category">
+								<action-field-map>
+									<action-field-map-entry output-field="category" to-action-field="category"></action-field-map-entry>
+								</action-field-map>
+							</action>
+						</actions>
+					</query>
+					
+					<query name="sales_by_film_category_filter" id="sales_by_film_category" package-name="dashboard"
+						category="column-chart">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select * from sales_by_film_category order by $orderby $sort]]>
+                            </value>
+						</query-body>
+						<query-chunks>
+							<query-chunk name="orderby" sample-value="category">
+								<query-chunk-value name="category" value="category"/>
+								<query-chunk-value name="total_sales" value="total_sales"/>
+							</query-chunk>
+							<query-chunk name="sort" sample-value="asc">
+								<query-chunk-value name="ascending" value="asc"/>
+								<query-chunk-value name="descending" value="desc"/>
+							</query-chunk>
+						</query-chunks>
+						<actions>
+							<action name="sales info" query-id="sales_by_film_and_film_category">
+								<action-field-map>
+									<action-field-map-entry output-field="category" to-action-field="category"></action-field-map-entry>
+								</action-field-map>
+							</action>
+						</actions>
+					</query>
+					
+					<query name="sales_by_film_among_category" id="sales_by_film_among_category" package-name="dashboard"
+						category="pie-chart">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select category, total_sales from sales_by_film_category where category in (?...) order by category]]>
+                            </value>
+						</query-body>
+						<query-params>
+							<query-param name="categories" type="string" is-in-clause="true" sample="'hx','tx'">
+								<property tag="checkconstraint">
+									<property name="Action" />
+									<property name="Children" />
+									<property name="Drama" />
+								</property>
+							</query-param>
+						</query-params>
+					</query>
+					
+					<query name="sales_by_film_among_category_list" id="sales_by_film_among_category_list" package-name="dashboard"
+						category="pie-chart">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select category, total_sales from sales_by_film_category where category in (?...) order by category]]>
+                            </value>
+						</query-body>
+						<query-params>
+							<query-param name="categories" type="string" is-in-clause="true" sample="'hx','tx'">
+								<query-param-link sdd-query-name="distinct-categories" field-name="name" field-key="name"/>
+							</query-param>
+						</query-params>
+					</query>
+					
+					<query name="sales_by_film_and_film_category" id="sales_by_film_category" package-name="dashboard">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[
+SELECT 
+f.title as film_name, f.film_id, SUM(p.amount) AS total_sales
+FROM payment AS p
+INNER JOIN rental AS r ON p.rental_id = r.rental_id
+INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id
+INNER JOIN film AS f ON i.film_id = f.film_id
+INNER JOIN film_category AS fc ON f.film_id = fc.film_id
+INNER JOIN category AS c ON fc.category_id = c.category_id
+$wherecategory
+GROUP BY f.title
+ORDER BY total_sales DESC
+]]>
+                            </value>
+						</query-body>
+						<query-display result-row-display="film_name, total_sales"></query-display>
+						<query-filters>
+							<query-filter name="wherecategory" and-where-connection="where">
+								<value>
+		<![CDATA[c.name = ? ]]>
+		                        </value>
+								<query-params>
+									<query-param name="category" type="string" size="20" sample="'xxx'">
+										<query-param-link sdd-query-name="distinct-categories" field-name="name" field-key="name"/>
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+						<actions>
+							<action name="actors" query-id="actor-film">
+	                       		<action-field-map>
+	                       			<!-- java convention like field name not sql -->
+	                       			<action-field-map-entry output-field="filmId" to-action-field="filmId" />
+	                       		</action-field-map>
+                       		</action>
+						</actions>
+					</query>
+
+				</queries>
+			</statement-model>
+		</model>
+		<targets catalog-entry="REST-Custom" >
+			<property name="target-server" value="tomcat"></property>
+			<property name="auto-complete-sdd-on-like-min-char" value="3"></property>
+			<property name="auto-complete-sdd-on-like-max-record-display" value="10"></property>
+		</targets>
+	</configuration>
+</generator-config>

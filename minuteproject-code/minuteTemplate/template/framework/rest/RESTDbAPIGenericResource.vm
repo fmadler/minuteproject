@@ -1,0 +1,111 @@
+#exposeBackendTechnology()
+#exposeVariableModelSpecific()
+package $packageName;
+
+$!updatedAreaImport
+
+import io.swagger.annotations.*;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import net.sf.minuteProject.model.dao.GenericDao;
+import net.sf.minuteProject.model.data.criteria.EntityCriteria;
+import net.sf.minuteProject.model.data.criteria.EntitySort;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ejb.EJB;
+#end
+
+import net.sf.minuteProject.model.service.GenericService;
+import net.sf.minuteProject.architecture.bsla.domain.AbstractDomainObject;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Generic controller ${className} </p>
+ *
+ */
+public abstract class ${className} <T extends AbstractDomainObject, S extends GenericDao<T>> implements java.io.Serializable{
+
+	protected abstract S getService();
+	protected abstract T getInstance();
+	protected abstract T getElement(T t);
+
+    @GET
+    @Path("/find")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value="Find entity with pagination")
+	public QueryData<T> find(@QueryParam("sortOrder") String sortOrder, ##sort[0][dir]
+                             @QueryParam("sortField") String sortField, ##sort[0][field]
+                             @QueryParam("take") int take, //kendoui specific
+                             @QueryParam("skip") int skip, //kendoui specific
+                             @QueryParam("first") int first,
+                             @QueryParam("pageSize") int pageSize) throws Exception {
+        //kendoui specific
+        if (take!=0 && skip!=0) {
+            first = skip;
+        }
+        QuerySortOrder order = QuerySortOrder.ASC;
+        if (QuerySortOrder.DESC.toString().equals(sortOrder)) {
+            order = QuerySortOrder.DESC;
+        }
+
+        T esMask = getInstance();
+        esMask.mask(sortField);
+        EntitySort<T> es = new EntitySort<T>(esMask, order);
+
+        T ecMask = getInstance();
+        //ecMask.mask(filters);
+        EntityCriteria<T> ec = new EntityCriteria<T>(ecMask, EntityMatchType.ALL, OperandType.CONTAINS, false);
+
+        QueryData<T> data = new QueryData<T>(first, pageSize, es, ec);
+        getService().find(data);
+        List<T> list = data.getResult();
+        List<T> listDetached = new ArrayList<T>();
+        for (T element : list) {
+            listDetached.add(getElement(element));
+        }
+        data.setResult(listDetached);
+        int count = data.getTotalResultCount().intValue();
+        return data;
+    }
+
+
+$!updatedAreaImplementation
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>
+		<model name="joomla" version="1.0" package-root="net.sf.mp.demo">
+			<description>
+				<CDATA>
+					This model illustrates:
+					Reverse-engineering on tables, views
+					SDD
+					Add ad-hoc forms and actions
+				</CDATA>
+			</description>
+			<data-model>
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/joomla</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="joom">
+					<condition type="package" startsWith="#__menu" result="menu"></condition>
+					<condition type="package" startsWith="#__find" result="finder"></condition>
+					<condition type="package" startsWith="#__up" result="update"></condition>
+				</business-package>
+				<enrichment>
+					<conventions>
+						<!-- add semantic reference on username -->
+						<!-- add convention on views default pk -->
+						<table-default-primary-key-convention
+							type="apply-default-primary-key-otherwise-first-one"
+							default-primary-key-names="ID" />
+						<view-primary-key-convention
+							type="apply-default-primary-key-otherwise-first-one"
+							default-primary-key-names="ID">
+						</view-primary-key-convention>
+						
+
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+							pattern-to-strip="#__" />
+							
+						<entity-naming-convention type="apply-singular" />
+						<!-- manipulate the structure and entities BEFORE manipulating the 
+							entities -->
+						<foreign-key-convention type="autodetect-foreign-key-based-on-similarity-and-map" 
+							column-ending="_id" /> 
+						<foreign-key-convention type="autodetect-foreign-key-based-on-similarity-and-map" 
+							column-ending="id" /> 
+						<foreign-key-convention type="autodetect-self-reference-foreign-key-based-on-column-name" 
+							column-ending="parent_id" /> 
+							
+						<column-naming-convention type="apply-strip-column-name-suffix"
+							pattern-to-strip="ID" />
+						<reference-naming-convention
+							type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+
+					</conventions>
+				</enrichment>
+			</business-model>
+			<!-- S D D -->
+
+		</model>
+
+        <targets catalog-entry="WS-JEE,REST-CXF-Spring,REST-JEE,REST-SpringMVC,Vaadin,Primefaces-Spring,OpenXava"/>
+
+	</configuration>
+</generator-config>

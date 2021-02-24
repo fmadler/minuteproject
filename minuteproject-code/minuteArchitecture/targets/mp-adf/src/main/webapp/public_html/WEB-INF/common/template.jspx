@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  <af:pageTemplateDef var="attrs">
+    <af:xmlContent>
+      <component xmlns="http://xmlns.oracle.com/adf/faces/rich/component">
+        <display-name>template</display-name>
+        <facet>
+          <facet-name>PageTitle</facet-name>
+        </facet>
+        <facet>
+          <facet-name>PageSubtitle</facet-name>
+        </facet> 
+        <facet>
+          <facet-name>PageContent</facet-name>
+        </facet>        
+      </component>
+    </af:xmlContent>
+    
+    <af:resource type="css" source="/stylesheets/customs.css"/>
+    <af:resource type="css" source="/stylesheets/form.css"/>
+    
+    <af:resource type="javascript" source="/javascript/mootools-core-1.3.1-full-compat.js"/>
+    <af:resource type="javascript" source="/javascript/mootools-1.2.2.1-more.js"/>
+    <af:resource type="javascript" source="/wel/template-2012/scripts/ec.js"/>
+   
+   <af:decorativeBox theme="dark" id="pt_db2" topHeight="auto">
+      <f:facet name="center">
+      <af:group>
+       <div style="text-align:center;">
+        <af:decorativeBox theme="light" id="pt_db3"
+                          inlineStyle="max-width: 984px;min-width: 770px;margin:0 auto;width:auto;"
+                          topHeight="auto" dimensionsFrom="children">
+          <f:facet name="center">
+            <af:panelStretchLayout topHeight="165px" id="pt_ps21"
+                                   bottomHeight="25px"
+                                   dimensionsFrom="children">
+              <!--<f:facet name="top">
+                <af:group>
+                   The auxiliary area for toolbar links 
+                  <jsp:include page="/WEB-INF/common/header.jsff"/>
+                </af:group>
+              </f:facet>-->
+              <f:facet name="center">
+                <af:group>
+                    <div class="layout-wrapper">
+                        <div class="layout-wrapper-reset">
+                        <af:panelSplitter orientation="horizontal"
+                                          splitterPosition="179" id="pt_ps1"
+                                          dimensionsFrom="children">
+                          <f:facet name="first">
+                            <af:group>
+                              <!-- The auxiliary area for left menu -->
+                              <jsp:include page="/WEB-INF/common/navigators.jsff"/>
+                            </af:group>
+                          </f:facet>
+                          <f:facet name="second">
+                                    <af:group>
+                                      <!-- The auxiliary area for additional tools -->
+                                      <jsp:include page="/WEB-INF/common/additionalTools.jsff"/>
+                                      
+                                      <div id="sitecontent">
+                                            <h1>
+                                                <af:facetRef facetName="PageTitle"/>
+                                            </h1>
+                                            <span style="font-size:medium; color:Blue;">
+                                                <af:facetRef facetName="PageSubtitle"/>
+                                            </span>
+                                            <br/>
+                                            <af:facetRef facetName="PageContent"/>
+                                      </div>
+                                    </af:group>
+                                      
+                                  </f:facet>
+                        </af:panelSplitter>
+                    </div>
+                    </div>
+                </af:group>
+              </f:facet>
+              <f:facet name="bottom">
+                <af:group>
+                  <!-- The auxiliary area for toolbar links -->
+                  <jsp:include page="/WEB-INF/common/footer.jsff"/>
+                </af:group>
+              </f:facet>
+            </af:panelStretchLayout>
+          </f:facet>
+        </af:decorativeBox>
+        </div>
+        </af:group>
+      </f:facet>
+    </af:decorativeBox>
+    
+  </af:pageTemplateDef>
+</jsp:root>

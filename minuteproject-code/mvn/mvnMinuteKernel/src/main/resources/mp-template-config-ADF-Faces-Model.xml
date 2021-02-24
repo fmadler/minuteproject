@@ -1,0 +1,557 @@
+<target name="ABL framework"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="../config/mp-template-config.xsd">	
+	<architecture-target name="ABL" description="ADF Faces architecture">
+	</architecture-target>	
+
+    <plugin name="adfUtils" className="net.sf.minuteProject.plugin.oracle.AdfUtils"></plugin>
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="presentationUtils" className="net.sf.minuteProject.plugin.presentation.PresentationUtils"></plugin>
+
+    <!-- ADF project specific -->
+    <template-target 
+        name="ADF Model project"
+        libdir="lib/ADF_LIB.vm"
+        package-root=""
+        outputdir="ViewController">
+        <property name="target-techno-type" value="front-end"></property>   
+        
+      <template name="ADF.ViewController.jpr" templateFileName="ADF.Faces.ViewController.jpr.vm" 
+            subdir="" outputsubdir="" technicalPackage=""
+            file-extension="jpr" file-prefix="" file-suffix="ViewController" 
+            has-updatable-nature="true" add-package-name-dir="false" add-model-name="false"
+            scope-specific-value="application" file-name-format="FORMAT_UPPER_CASE_FIRST_LETTER" 
+            >           
+        </template>        
+        
+        <!-- build scripts -->
+        
+        <template name="ADF.Build.ViewController.ant.script" templateFileName="ADF.Build.ViewController.ant.script.vm" 
+            subdir="" outputsubdir="" technicalPackage=""
+            file-extension="xml" file-prefix="" file-suffix="build" 
+            has-updatable-nature="true" add-package-name-dir="false" add-model-name="false"
+            scope-specific-value="application"
+            >           
+        </template>             
+        
+    </template-target>
+    
+<!--     <template-target 
+        name="ADF View Controller project"
+        libdir="lib/ADF_LIB.vm"
+        package-root=""
+        outputdir="ViewController">
+
+        <template name="ADF.ViewController.jpr" templateFileName="ADF.ViewController.jpr.vm" 
+            subdir="" outputsubdir="" technicalPackage=""
+            file-extension="jpr" file-prefix="" file-suffix="ViewController" 
+            has-updatable-nature="true" add-package-name-dir="false" add-model-name="false"
+            scope-specific-value="application" file-name-format="FORMAT_UPPER_CASE_FIRST_LETTER" 
+            >
+        </template>
+
+    </template-target> -->
+    <!-- ADF project specific -->
+    <template-target 
+        name="ADF Model project"
+        libdir="lib/ADF_LIB.vm"
+        package-root=""
+        outputdir="Model">
+        
+        <template name="ADF.Model.jpr" templateFileName="ADF.Model.jpr.vm" 
+            subdir="" outputsubdir="" technicalPackage=""
+            file-extension="jpr" file-prefix="" file-suffix="Model" 
+            has-updatable-nature="true" add-package-name-dir="false" add-model-name="false"
+            scope-specific-value="application" file-name-format="FORMAT_UPPER_CASE_FIRST_LETTER" 
+            >           
+        </template>         
+        
+        <!-- build scripts -->
+        
+        <template name="ADF.Build.Model.ant.script" templateFileName="ADF.Build.Model.ant.script.vm" 
+            subdir="" outputsubdir="" technicalPackage=""
+            file-extension="xml" file-prefix="" file-suffix="build" 
+            has-updatable-nature="true" add-package-name-dir="false" add-model-name="false"
+            scope-specific-value="application"
+            >           
+        </template>      
+        
+    </template-target>
+    <template-target 
+        name="ADF Model src"
+        libdir="lib/ADF_LIB.vm"
+        outputdir="Model/src">
+
+        <!-- ABL beans -->  
+        <template name="ADF.Model.AppModule" templateFileName="ADF.Model.AppModule.vm" 
+            subdir="" outputsubdir="" technicalPackage="model"
+            file-extension="xml" file-prefix="" file-suffix="AppModule" 
+            has-updatable-nature="true" add-model-name="false"
+            scope-specific-value="model"
+            >           
+        </template> 
+        
+        <template name="ADF.Model.jpx" templateFileName="ADF.Model.jpx.vm" 
+            subdir="" outputsubdir="" technicalPackage="model"
+            file-extension="jpx" file-prefix="" file-suffix="Model" 
+            has-updatable-nature="true"                         add-model-name="false"
+            scope-specific-value="model"
+            >
+        </template> 
+<!-- 
+        <template name="ADF.Model.jpx" templateFileName="ADF.Model.jpx.vm" 
+            subdir="" outputsubdir="" technicalPackage="view"
+            file-extension="jpx" file-prefix="" file-suffix="Model" 
+            has-updatable-nature="true"
+            scope-specific-value="model"
+            >
+        </template>  -->
+                        
+        <template name="ADF.Model.Entity" templateFileName="ADF.Model.Entity.vm" 
+            subdir="" outputsubdir="" technicalPackage="model"
+            file-extension="xml" file-prefix="" file-suffix="" 
+            has-updatable-nature="true" add-package-name-dir="false"
+            scope-specific-value="entity" 
+            add-business-package-dir-name="false"
+            >           
+        </template> 
+        
+        <template name="ADF.Model.View" templateFileName="ADF.Model.View.vm" 
+            subdir="" outputsubdir="" technicalPackage="model"
+            file-extension="xml" file-prefix="" file-suffix="View" 
+            has-updatable-nature="true"
+            scope-specific-value="entity"
+            add-business-package-dir-name="false"
+            >           
+        </template> 
+        
+        <template name="ADF.Model.FkAssoc" templateFileName="ADF.Model.FkAssoc.vm" 
+            subdir="" outputsubdir="" technicalPackage="model"
+            file-extension="xml" file-prefix="" file-suffix="Assoc" 
+            has-updatable-nature="true"
+            scope-specific-value="foreignkey"
+            add-business-package-dir-name="false"
+            >
+        </template> 
+        
+        <template name="ADF.Model.FkLink" templateFileName="ADF.Model.FkLink.vm" 
+            subdir="" outputsubdir="" technicalPackage="model"
+            file-extension="xml" file-prefix="" file-suffix="Link" 
+            has-updatable-nature="true"
+            scope-specific-value="foreignkey"
+            add-business-package-dir-name="false"
+            >           
+        </template> 
+
+
+        <template name="ADF.Model.bc4j" templateFileName="ADF.Model.bc4j.vm" 
+            subdir="" outputsubdir="" technicalPackage="model.common"
+            file-extension="xcfg" file-prefix="" file-suffix="bc4j" 
+            has-updatable-nature="true"                     add-model-name="false"
+            scope-specific-value="model"
+            >       
+        </template> 
+        
+	</template-target>
+	
+  	<template-target 
+    	name="i18n set"
+		outputdir="ViewController/src"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="ADFI18nProperties" templateFileName="I18nProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="view.I18N"
+			file-extension="properties" file-prefix="viewBundle" file-suffix="" 
+			model-specific="true" has-updatable-nature="true" add-model-dir-name="false" 
+			add-model-name="false"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="separator" value="_"/>
+		</template>
+
+	</template-target>
+	
+<!-- 	<template-target 
+    	name="ADF Model META-INF"
+		libdir="lib/ADF_LIB.vm"
+		outputdir="ViewController/src">  
+		
+		<template name="ADF.Faces.Entity.BackingBean" templateFileName="ADF.Faces.Entity.BackingBean.vm" 
+		    technicalPackage="bean"
+			file-extension="java" file-prefix="" file-suffix="BackingBean"
+			has-updatable-nature="true" 
+			scope-specific-value="entity"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.Entity.ViewEditBean" templateFileName="ADF.Faces.Entity.ViewEditBean.vm" 
+		    technicalPackage="bean"
+			file-extension="java" file-prefix="" file-suffix="ViewEditBean" 
+			has-updatable-nature="true" 
+			scope-specific-value="entity"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.Entity.Bean" templateFileName="ADF.Faces.Entity.Bean.vm" 
+		    technicalPackage="bean"
+			file-extension="java" file-prefix="" file-suffix="" 
+			has-updatable-nature="true" 
+			scope-specific-value="entity"
+			>			
+			<property name="DomainEntityUMLTemplate" value="ADF.Faces.Entity.Bean" ></property>
+		</template>	
+		
+    </template-target>   -->
+    
+	<template-target 
+    	name="ADF ViewController src"
+		libdir="lib/ADF_LIB.vm,lib/ADF_FACES_LIB.vm"
+		outputdir="ViewController/public_html"
+		package-root=""
+		>
+		<property name="separator" value="_"/>
+		<!-- jspx pages -->	
+		<template name="ADF.Faces.Entity.jspx" templateFileName="ADF.Faces.Entity.jspx.vm" 
+			subdir="" outputsubdir="" technicalPackage="pages" add-entity-dir-name="true" 
+			file-extension="jspx" file-prefix="" file-suffix="" 
+			has-updatable-nature="true" add-model-dir-name="false"
+			scope-specific-value="entity"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.EntityDetail.jspx" templateFileName="ADF.Faces.EntityDetail.jspx.vm" 
+			subdir="" outputsubdir="" technicalPackage="pages" add-entity-dir-name="true" 
+			file-extension="jspx" file-prefix="detail" file-suffix="" 
+			has-updatable-nature="true" add-model-dir-name="false"
+			scope-specific-value="entity"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.EntityEdit.jspx" templateFileName="ADF.Faces.EntityEdit.jspx.vm" 
+			subdir="" outputsubdir="" technicalPackage="pages" add-entity-dir-name="true" 
+			file-extension="jspx" file-prefix="edit" file-suffix="" 
+			has-updatable-nature="true" add-model-dir-name="false"
+			scope-specific-value="entity"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.EntityQuery.jspx" templateFileName="ADF.Faces.EntityQuery.jspx.vm" 
+			subdir="" outputsubdir="" technicalPackage="pages" add-entity-dir-name="true" 
+			file-extension="jspx" file-prefix="query" file-suffix="" 
+			has-updatable-nature="true" add-model-dir-name="false"
+			scope-specific-value="entity"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.viewEditEntity-flow.xml" templateFileName="ADF.Faces.viewEditEntity-flow.xml.vm" 
+			subdir="" outputsubdir="WEB-INF/taskflows" technicalPackage="flows"
+			file-extension="xml" file-prefix="viewEdit" file-suffix="-flow" 
+			has-updatable-nature="true" 
+			scope-specific-value="entity"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.ViewController.main-flow.xml" templateFileName="ADF.Faces.ViewController.main-flow.xml.vm" 
+			subdir="" outputsubdir="WEB-INF/taskflows" technicalPackage="" add-model-dir-name="false"
+			file-extension="xml" file-prefix="main-" file-suffix="-flow" add-package-name-dir="false"
+			has-updatable-nature="true" 
+			scope-specific-value="application"
+			>			
+		</template>	
+    </template-target>
+    
+
+	<template-target 
+    	name="ADF Model META-INF"
+		libdir="lib/ADF_LIB.vm"
+		package-root=""
+		outputdir="ViewController/adfmsrc">
+	    <!-- package -->	
+		<template name="ADF.Faces.DataControls.PageDef.xml" templateFileName="ADF.Faces.DataControls.PageDef.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="pages" add-entity-dir-name="true" 
+			file-extension="xml" file-prefix="" file-suffix="PageDef" 
+			has-updatable-nature="true" add-model-dir-name="false"
+			scope-specific-value="entity"
+			>			
+		</template>	
+		<template name="ADF.Faces.DataControls.EditPageDef.xml" templateFileName="ADF.Faces.DataControls.EditPageDef.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="pages" add-entity-dir-name="true" 
+			file-extension="xml" file-prefix="" file-suffix="EditPageDef" 
+			has-updatable-nature="true" add-model-dir-name="false"
+			scope-specific-value="entity"
+			>			
+		</template>	
+		<template name="ADF.Faces.DataControls.QueryPageDef.xml" templateFileName="ADF.Faces.DataControls.QueryPageDef.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="pages" add-entity-dir-name="true" 
+			file-extension="xml" file-prefix="" file-suffix="QueryPageDef" 
+			has-updatable-nature="true" add-model-dir-name="false"
+			scope-specific-value="entity"
+			>			
+		</template>	
+	</template-target>
+	
+	<template-target 
+    	name="ADF Model META-INF"
+		libdir="lib/ADF_LIB.vm"
+		package-root=""
+		outputdir="ViewController/adfmsrc">
+	    <!-- package -->	
+		<template name="ADF.Faces.adfm" templateFileName="ADF.Faces.adfm.vm" 
+			subdir="" outputsubdir="META-INF" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="adfm" 
+			has-updatable-nature="true" add-model-name="false"
+			scope-specific-value="application"
+			>
+		</template>	
+	</template-target>
+	
+	<template-target 
+    	name="ADF Model META-INF"
+		libdir="lib/ADF_LIB.vm"
+		outputdir="ViewController/adfmsrc">
+
+		<template name="ADF.Faces.ViewController.DataBindings.cpx" templateFileName="ADF.Faces.ViewController.DataBindings.cpx.vm" 
+			subdir="" technicalPackage="view" 
+			file-extension="cpx" file-prefix="" file-suffix="DataBindings" 
+			has-updatable-nature="true" add-model-name="false"
+			scope-specific-value="model"
+			>
+		</template>	
+<!-- 		
+		<template name="ADF.Faces.ViewController.DataControls.dcx" templateFileName="ADF.Faces.ViewController.DataControls.dcx.vm" 
+			subdir="" technicalPackage="view"
+			file-extension="dcx" file-prefix="" file-suffix="DataControls" 
+			has-updatable-nature="true" add-model-name="false"
+			scope-specific-value="model"
+			>
+		</template>	
+ -->
+		<!-- Data control xml -->
+		<template name="ADF.Faces.Entity.BeanXml" templateFileName="ADF.Faces.Entity.BeanXml.vm" 
+		    technicalPackage="bean"
+			file-extension="xml" file-prefix="" file-suffix="" 
+			has-updatable-nature="true" 
+			scope-specific-value="entity"
+			>			
+			<property name="DomainEntityUMLTemplate" value="ADF.Faces.Entity.Bean" ></property>
+		</template>	
+
+		<template name="ADF.Faces.Entity.QueryRequest.BeanXml" templateFileName="ADF.Faces.Entity.QueryRequest.BeanXml.vm" 
+		    technicalPackage="bean"
+			file-extension="xml" file-prefix="" file-suffix="QueryRequest" 
+			has-updatable-nature="true" 
+			scope-specific-value="entity"
+			>			
+			<property name="DomainEntityUMLTemplate" value="ADF.Faces.Entity.Bean" ></property>
+		</template>	
+		
+		<template name="ADF.Faces.Entity.QueryResponse.BeanXml" templateFileName="ADF.Faces.Entity.QueryResponse.BeanXml.vm" 
+		    technicalPackage="bean"
+			file-extension="xml" file-prefix="" file-suffix="QueryResponse" 
+			has-updatable-nature="true" 
+			scope-specific-value="entity"
+			>			
+			<property name="DomainEntityUMLTemplate" value="ADF.Faces.Entity.Bean" ></property>
+		</template>	
+		
+	</template-target>
+	
+	<template-target 
+    	name="ADF Front end misc config"
+		libdir="lib/ADF_LIB.vm"
+		package-root=""
+		outputdir="ViewController/public_html/WEB-INF">
+		<property name="target-techno-type" value="front-end"></property>	
+<!-- 		<template name="ADF.Faces.ViewController.MenuNavigator.jsff" templateFileName="ADF.Faces.ViewController.MenuNavigator.jsff.vm" 
+			subdir="" outputsubdir="common" technicalPackage=""
+			file-extension="jsff" file-prefix="" file-suffix="navigators" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false"
+			>			
+		</template>	 -->	
+		
+		<template name="ADF.BC.web-FE" templateFileName="ADF.BC.web.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="web" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false"
+			>			
+		</template>		
+		
+		<template name="ADF.Faces.ViewController.weblogic" templateFileName="ADF.Faces.ViewController.weblogic.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="weblogic" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false"
+			>			
+		</template>		
+
+		<template name="ADF.BC.trinidad-config" templateFileName="ADF.BC.trinidad-config.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="trinidad-config" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false"
+			>			
+		</template>	
+
+		<template name="ADF.Faces.ViewController.faces-config" templateFileName="ADF.Faces.ViewController.faces-config.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="faces-config" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false"
+			>			
+		</template>	
+				
+		<template name="ADF.Faces.ViewController.adfc-config.xml" templateFileName="ADF.Faces.ViewController.adfc-config.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="adfc-config" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false"
+			>			
+		</template>	
+		
+		<!-- model artefacts -->
+		<template name="ADF.Faces.ViewController.admin-config.xml" templateFileName="ADF.Faces.ViewController.admin-config.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-package-name-dir="false"
+			file-extension="xml" file-prefix="administration-config" file-suffix="" 
+			has-updatable-nature="true" add-model-name="false"
+			scope-specific-value="application"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.ViewController.site-menu.xml" templateFileName="ADF.Faces.ViewController.site-menu.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-package-name-dir="false"
+			file-extension="xml" file-prefix="site-menu" file-suffix="" 
+			has-updatable-nature="true" add-model-name="false"
+			scope-specific-value="application"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.ViewController.Menu.xml" templateFileName="ADF.Faces.ViewController.Menu.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-package-name-dir="false"
+			file-extension="xml" file-prefix="administration_menu_model" file-suffix="" 
+			has-updatable-nature="true" add-model-name="false"
+			scope-specific-value="application"
+			>			
+		</template>	
+		
+		<template name="ADF.Faces.ViewController.RootMenu.xml" templateFileName="ADF.Faces.ViewController.RootMenu.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-package-name-dir="false"
+			file-extension="xml" file-prefix="root_menu_model" file-suffix="" 
+			has-updatable-nature="true" add-model-name="false"
+			scope-specific-value="application"
+			>			
+		</template>	
+						
+	</template-target>
+
+
+
+	<template-target 
+    	name="ADF .adf config"
+		libdir="lib/ADF_LIB.vm"
+		package-root=""
+		outputdir=".adf/META-INF">
+		
+		<template name="ADF.adf.adf-config" templateFileName="ADF.adf.adf-config.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="adf-config" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false">			
+		</template>			
+		
+		<template name="ADF.adf.connections" templateFileName="ADF.adf.connections.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="connections" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false">			
+		</template>			
+		
+	</template-target>
+		
+	<template-target 
+    	name="ADF meta config"
+		libdir="lib/ADF_LIB.vm"
+		package-root=""
+		outputdir="src/META-INF">
+		
+		<template name="ADF.meta.jps-config" templateFileName="ADF.meta.jps-config.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="jps-config" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false">			
+		</template>			
+		
+		<template name="ADF.meta.weblogic-application" templateFileName="ADF.meta.weblogic-application.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="weblogic-application" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application" add-model-name="false">			
+		</template>			
+		
+	</template-target>
+		
+	<template-target 
+    	name="ADF workspace"
+		libdir="lib/ADF_LIB.vm"
+		package-root=""
+		outputdir="">
+		<property name="target-techno-type" value="front-end"></property>	
+		<template name="ADF.Faces.jws" templateFileName="ADF.jws.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="jws" file-prefix="" file-suffix="WorkspaceUI" 
+			has-updatable-nature="true" file-name-format="FORMAT_UPPER_CASE_FIRST_LETTER" 
+			scope-specific-value="application">	
+				
+		</template>			
+		
+		<!-- build scripts -->
+		
+		<template name="ADF.Build.ant.script" templateFileName="ADF.Build.ant.script.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="build" 
+			has-updatable-nature="true" add-package-name-dir="false" add-model-name="false"
+			scope-specific-value="application"
+			>			
+		</template>				
+		
+		<template name="ADF.Build.ant.properties" templateFileName="ADF.Build.ant.properties.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="properties" file-prefix="" file-suffix="build" 
+			has-updatable-nature="true" add-package-name-dir="false" add-model-name="false"
+			scope-specific-value="application"
+			>
+
+		</template>	
+		
+		<template name="ADF.Build.command.cmd" templateFileName="ADF.Build.command.cmd.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="bat" file-prefix="" file-suffix="-release" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application"
+			>			
+		</template>	
+		
+		<template name="ADF.Build.command.cmd" templateFileName="ADF.Build.command.cmd.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="bat" file-prefix="" file-suffix="-deliver" 
+			has-updatable-nature="true" add-package-name-dir="false"
+			scope-specific-value="application"
+			>		
+			<property name="build-target-type" value="deliver"></property>	
+		</template>	
+		
+		<template name="ADF.Build.deploy-to-ear.ojdeploy" templateFileName="ADF.Build.deploy-to-ear.ojdeploy.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="" file-suffix="deploy_to_ear.ojdeploy" 
+			has-updatable-nature="true" add-package-name-dir="false" add-model-name="false"
+			scope-specific-value="application"
+			>			
+		</template>	
+					
+	</template-target>
+	
+</target>
