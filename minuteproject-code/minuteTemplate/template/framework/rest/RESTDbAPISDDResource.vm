@@ -9,15 +9,18 @@
 #end
 #exposeRESTModelCache()
 #exposeRESTModelCompress()
+#exposeRESTModelJWTUtils()
 #addedAreas()
 #if (!$query.isIndirection())
 #set ($sizeColumn = $inputBean.columns.size())
 #set ($sizeChunk = $query.getQueryChunks().size())
 #set ($size = $sizeColumn + $sizeChunk)
+#set ($useTemporal = true)
 #set ($inputBeanAtLeastOneVisibleColumn=$queryUtils.hasInputBeanAtLeastOneVisibleColumn($inputBean))
+###
 #macro(resourceSignature $param $showType $addValidation)
-#foreach($column in $inputBean.columns)
-#if (!$column.hasBeenDuplicated() && !$column.isImplicit())
+#foreach($column in $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
+##if (!$column.hasBeenDuplicated() && !$column.isImplicit())
 #putColumnParamNaming()
 #if($columnUtils.isTime($column))
 #set($columnType=$dateParamImport)
@@ -26,44 +29,47 @@
 #set($columnType="java.lang.Boolean")
 #end
 #if($velocityCount>1)        ,#end        #if($addValidation)@javax.validation.Valid#end#if($param != "")@ApiParam(value = "$columnVar", required = ${column.isRequired()}) @${param} ("$columnVar") #end #if($showType)#if(!$column.isArray())$columnType#else String#end #end$columnVar
-#end
+##end
 #end
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
-#if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1)        ,#end        #if($param != "")@ApiParam(value = "$chunkName", required=true, allowableValues = "$queryChunk.getDistinctValues()" #if($queryChunk.hasDefault()), defaultValue = "${queryChunk.getDefaultValue().getName()}"#end) @${param} ("$chunkName") #end #if($showType)String #end$chunkName 
+#if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1)        ,#end        #if($param != "")@ApiParam(value = "$chunkName", required=true, allowableValues = "$queryChunk.getDistinctValues()" #if($queryChunk.hasDefault()), defaultValue = "${queryChunk.getDefaultValue().getName()}"#end) @${param} ("$chunkName") #end #if($showType)String #end$chunkName
 #foreach($queryParams in $queryChunk.getQueryChunkParams())
         ,#if($param != "")@ApiParam(value = "${chunkName}_${queryParams.name}", required=true) @${param} ("${chunkName}_${queryParams.name}") #end #if($showType)String #end${chunkName}_${queryParams.name}
 #end
 #end
 #end
+###
 #macro (daoParameters)
         	${sddInputBeanVariable}
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
-#if($sizeColumn>0 || $velocityCount>1)           ,#else           #end$chunkName 
+#if($sizeColumn>0 || $velocityCount>1)           ,#else           #end$chunkName
 #foreach($queryParams in $queryChunk.getQueryChunkParams())
            ,${chunkName}_${queryParams.name}
 #end
 #end
 #end
+###
 #macro (resourceParameters)
-#foreach($column in $inputBean.columns)
-#if (!$column.hasBeenDuplicated() && !$column.isImplicit())
+#foreach($column in $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
+##if (!$column.hasBeenDuplicated() && !$column.isImplicit())
 #putColumnParamNaming()
 #if($columnUtils.isTimeStampColumn($column))
 #set($columnType=$timestampParamImport)
 #elseif($columnUtils.isTime($column))
 #set($columnType=$dateParamImport)
 #end
-#if($velocityCount>1),#end $columnVar 
-#end
+#if($velocityCount>1),#end $columnVar
+##end
 #end
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
-#if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1),#end $chunkName 
+#if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1),#end $chunkName
 #end
 #end
-#set ($useTemporal = true)
+
+###
 #macro (executeSddImplementation)
 #if($isNotVoidInput)
         $sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass ();
@@ -78,7 +84,16 @@
 		${sddInputBeanVariable}.set$columnClass ($columnVar);
 #end
 #elseif ($column.isImplicit()) ##TODO check if sessionParam
-#if ($column.defaultValue)
+#if ($column.useJwtSubject())
+        //Jwtsubject
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.isNotEmpty(authorizationHeader)) {
+            String token = authorizationHeader.substring("Bearer".length()).trim();
+            ${sddInputBeanVariable}.set$columnClass (JWTUtils.getSubjectFromToken(token));
+        } else {
+            //TODO throw exception
+        }
+#elseif ($column.defaultValue)
 		${columnType} ${columnClass}_DEFAULT = "$column.defaultValue"; ##TODO with other column type
 		Object ${columnClass}_SESSION = request.getSession().getAttribute("${column.sessionParamName}");
 		${columnType} ${columnClass}_VALUE = ${columnClass}_SESSION!=null?(${columnType})${columnClass}_SESSION:${columnClass}_DEFAULT;
@@ -96,7 +111,7 @@
         return ${sddDaoInterfaceVariable}.execute(
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
-            #if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1),#end $chunkName 
+            #if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1),#end $chunkName
 #foreach($queryParams in $queryChunk.getQueryChunkParams())
            ,${chunkName}_${queryParams.name}
 #end
@@ -149,7 +164,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.HttpHeaders;
 import javax.xml.bind.JAXBElement;
+
+import ${modelRestJWTUtilsImport};
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.security.RolesAllowed;
 import $sddOutputBeanCollectionImport;
@@ -176,7 +195,7 @@ import $modelRestCompressImport;
 @RolesAllowed("$tableUtils.securityColorRoles($inputBean)")
 #end
 public class ${className} {
-#if ($tableUtils.hasSessionParam($inputBean))
+#if ($tableUtils.needsRequest($inputBean))
 
 	@Context
 	private HttpServletRequest request;

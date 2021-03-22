@@ -82,7 +82,15 @@
 #exposeLobProperties()
 #end
 #if($useTemporal && $isTimeColumn)
+##instead of sql Date
 #set($columnType="java.util.Date")
+#end
+#end
+
+#macro(simpleDateClass)
+#if($useTemporal && $isTimeColumn)
+##instead of sql Date or util Date
+#set($columnType="Date")
 #end
 #end
 

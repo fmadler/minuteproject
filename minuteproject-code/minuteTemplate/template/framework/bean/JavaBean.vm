@@ -41,6 +41,7 @@ public class ${className} {
 #foreach($column in ${table.columns})
 #if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
+#simpleDateClass()
 #if($hasDefaultValue)
 #set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
     private final $columnType $defaultConstant = $defaultValue;
@@ -50,6 +51,7 @@ public class ${className} {
 #foreach($column in ${table.columns})
 #if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
+#simpleDateClass()
 #if (!$column.isArray())
 #if($columnUtils.isTimeStampColumn($column))
 	@JsonSerialize (using=${applicationJsonDateSerializerClass}.class)

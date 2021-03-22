@@ -82,4 +82,8 @@ public class $className {
         return claims;
     }
 
+    public static String getSubjectFromToken(String token) {
+        return decodeJWT(token).getSubject();
+    }
+
 }

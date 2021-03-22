@@ -196,7 +196,7 @@
 
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest</artifactId>
+            <artifactId>hamcrest-all</artifactId>
         </dependency>
 
 #if($botdetect)
