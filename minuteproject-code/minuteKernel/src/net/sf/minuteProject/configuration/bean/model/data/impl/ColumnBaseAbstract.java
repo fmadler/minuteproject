@@ -24,6 +24,7 @@ public abstract class ColumnBaseAbstract extends AbstractConfiguration implement
 	private boolean isContext=false, isImplicit=false, hasBeenDuplicated=false, isArray = false, isStructuredArray=false, isOutputParam=false;
 	private String filterName, sessionParamName, separatorCharacters, arrayColumns, arrayColumnsType;
 	private QueryParamLink queryParamLink;
+	private boolean useJwtSubject = false;
 
 	private List<FieldValidation> fieldValidations = new ArrayList<>();
 	
@@ -85,7 +86,7 @@ public abstract class ColumnBaseAbstract extends AbstractConfiguration implement
 	}
 
 	public boolean isImplicit() {
-		return isImplicit || !StringUtils.isEmpty(sessionParamName);
+		return isImplicit || useJwtSubject || !StringUtils.isEmpty(sessionParamName) ;
 	}
 
 	public void setImplicit(boolean isImplicit) {
@@ -143,6 +144,14 @@ public abstract class ColumnBaseAbstract extends AbstractConfiguration implement
 
 	public void setSessionParamName(String sessionParamName) {
 		this.sessionParamName = sessionParamName;
+	}
+
+	public void setUseJwtSubject(boolean useJwtSubject) {
+		this.useJwtSubject = useJwtSubject;
+	}
+
+	public boolean useJwtSubject() {
+		return this.useJwtSubject;
 	}
 	
 	public void setValidations(List<FieldValidation> fieldValidations) {

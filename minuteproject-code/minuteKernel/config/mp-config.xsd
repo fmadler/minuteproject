@@ -988,6 +988,7 @@
 		<xs:attribute name="id" type="xs:int" />
 		<xs:attribute name="refid" type="xs:int" />
 		<xs:attribute name="session-param-name" type="xs:string" /><!-- session param name for implicit parameters -->
+		<xs:attribute name="use-jwt-subject" type="xs:boolean" /><!-- session param name for implicit parameters -->
 		<xs:attribute name="is-implicit" type="xs:boolean" /><!-- relative context bound -->
 		<xs:attribute name="is-context" type="xs:boolean" /><!-- global context bound -->
 		<xs:attribute name="is-output-param" type="xs:boolean" default="false"/>

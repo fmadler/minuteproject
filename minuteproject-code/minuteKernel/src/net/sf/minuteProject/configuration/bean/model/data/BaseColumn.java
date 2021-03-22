@@ -230,7 +230,11 @@ public interface BaseColumn extends GeneratorBean{
 	
 	public void setSessionParamName(String sessionParamName);
 
+	public void setUseJwtSubject(boolean useJwtSubject);
+
 	public String getSessionParamName();
+
+	public boolean useJwtSubject();
 	
 	public String getFilterName ();
 	

@@ -19,6 +19,7 @@ public class QueryParam extends Field {
 	private boolean hasBeenDuplicated   =false;
 	private String sample;
 	private String sessionParamName;
+	private boolean useJwtSubject=false;
 	private String defaultValueWhenNull;
 	private String refname;
 	private int size, scale;
@@ -189,6 +190,15 @@ public class QueryParam extends Field {
 	public void setSessionParamName(String sessionParamName) {
 		this.sessionParamName = sessionParamName;
 	}
+
+	public boolean isUseJwtSubject() {
+		return useJwtSubject;
+	}
+
+	public void setUseJwtSubject(boolean useJwtSubject) {
+		this.useJwtSubject = useJwtSubject;
+	}
+
 	public String getDefaultValueWhenNull() {
 		return defaultValueWhenNull;
 	}

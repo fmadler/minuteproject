@@ -42,10 +42,10 @@
 					<conventions>
 						<!-- no yet finished <sdd-pagination-convention pattern="_list" type="apply-pagination-only-to-query-ending-with" 
 							add-param-default="false"/> -->
-						<sdd-content-type-convention pattern="winery,badge,purchase"
+						<sdd-content-type-convention pattern="winery,badge,purchase,security"
 													 type="apply-content-type-to-entity-not-belonging-to-package"
 													 content-type="master-data" />
-						<sdd-content-type-convention pattern="pay_plan,appellation,image,product,winery,badge,purchase"
+						<sdd-content-type-convention pattern="pay_plan,appellation,image,product,winery,badge,purchase,security"
 													 type="apply-content-type-to-entity-not-belonging-to-package"
 													 content-type="reference-data" />
 						<sdd-cache-convention pattern="master-data"
@@ -84,7 +84,7 @@
 						</query-schedulers>
 					</query>
 
-					<!-- event -->
+					<!-- event todo put in security idem has_winery_ownership -->
 					<query name="has_event_ownership" id="has_event_ownership"
 						   package-name="event">
 						<query-body>
@@ -131,6 +131,95 @@
 							</query-filter>
 						</query-filters>
 					</query>
+<!--	as copy dont use				<query name="match_user_winery" id="security_match_user_winery"
+						   package-name="security" scope="backend">&lt;!&ndash; no REST /upto service level &ndash;&gt;
+						<query-body>
+							<value>
+								<![CDATA[
+select 1 is_present
+from
+user u, user_winery_profile uwp, winery w, profile_pay_plan ppp
+where uwp.user_id = u.id and
+uwp.winery_id = w.id and
+uwp.profile_pay_plan_id = ppp.id and
+w.active = true and
+uwp.active = true and
+u.active = true and
+u.id = ?  and
+w.id = ?
+]]>
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="user_id" is-mandatory="true" type="int"
+										 sample="-1"></query-param>
+							<query-param name="winery_id" is-mandatory="true"
+										 type="int" sample="-1"></query-param>
+						</query-params>
+					</query>-->
+					<query name="has_winery_ownership" id="has_winery_ownership"
+						   package-name="security">
+						<query-body>
+							<value>
+								select exists(
+								select u.email,
+								w.web_path
+								from
+								winery w,
+								user_winery_profile uwp,
+								profile_pay_plan ppp,
+								user u
+								where
+								 uwp.winery_id = w.id and
+								 uwp.profile_pay_plan_id = ppp.id and
+								 uwp.user_id = u.id and
+								 w.active = true and
+								 uwp.active = true and
+								 u.active = true and
+								 u.email = ?  and
+								 w.web_path = ?
+								)
+								as has_winery_ownership
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="user_email" is-mandatory="true" type="string"
+										 sample="'hi@hi.com'"
+										 use-jwt-subject="true"
+										 is-implicit="true" />
+							<query-param name="winery_web_path" is-mandatory="true"
+										 type="string" sample="'test'" />
+						</query-params>
+					</query>
+
+					<query name="get_winery_ownership" id="get_winery_ownership"
+						   package-name="security">
+						<query-body>
+							<value>
+select
+	w.web_path winery_web_path
+from
+	winery w,
+	user_winery_profile uwp,
+	profile_pay_plan ppp,
+	user u
+	where
+	uwp.winery_id = w.id and
+	uwp.profile_pay_plan_id = ppp.id and
+	uwp.user_id = u.id and
+	w.active = true and
+	uwp.active = true and
+	u.active = true and
+	u.email = ?
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="user_email" is-mandatory="true" type="string"
+										 sample="'hi@hi.com'" session-param-name="user_email"
+										 is-implicit="true" />
+						</query-params>
+					</query>
+<!-- TODO remove in code
 					<query name="has_winery_event_ownership" id="has_winery_event_ownership"
 						   package-name="event">
 						<query-body>
@@ -189,6 +278,7 @@
 							</query-filter>
 						</query-filters>
 					</query>
+-->
 					<!-- event info, winery participation, partner, wine -->
 
 					<!-- todo add logo, images -->
@@ -925,6 +1015,7 @@ select
 	booth ewp_booth, 
 	registration_date ewp_registration_date,
 	ewp.nb_of_day_presale_before_event,
+	e.from_date - INTERVAL ifnull(ewp.nb_of_day_presale_before_event,10) DAY time_still_in_presale,
 	e.from_date - INTERVAL ifnull(ewp.nb_of_day_presale_before_event,10) DAY > now() is_presale,
 	e.TO_DATE + INTERVAL 1 DAY > now() is_under_event_price,
 	w.name domain, 
@@ -1087,6 +1178,46 @@ call store_purchase_order (?, ?, ?, ?, ?, ?, ?)
 						<query-params>
 							<query-param name="login" is-mandatory="true" type="string"
 										 sample="'win'">
+								<validations>
+									<validation-pattern type="email" regex="" />
+								</validations>
+							</query-param>
+							<query-param name="gender" is-mandatory="true" type="string"
+										 sample="'MALE'">
+							</query-param>
+							<query-param name="first_name" is-mandatory="true" type="string"
+										 sample="'test'">
+							</query-param>
+							<query-param name="last_name" is-mandatory="true" type="string"
+										 sample="'test'">
+							</query-param>
+							<query-param name="language_code" is-mandatory="true" type="string"
+										 sample="'FR'">
+							</query-param>
+							<query-param name="json" is-mandatory="true" type="string"
+										 sample="'win'">
+							</query-param>
+							<query-param name="key" is-mandatory="true" type="string"
+										 is-output-param="true" sample="'win'"></query-param>
+						</query-params>
+					</query>
+
+					<!-- invoice -->
+					<query name="store_event_winery_invoice" id="store_event_winery_invoice"
+						   package-name="purchase" is-write="true">
+						<query-body>
+							<value>
+								<![CDATA[
+call store_event_winery_invoice (?, ?, ?, ?, ?, ?, ?)
+	]]>
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="login" is-mandatory="true" type="string"
+										 sample="'win'"
+										 session-param-name="user_email"
+										 use-jwt-subject="true"
+										 is-implicit="true" >
 								<validations>
 									<validation-pattern type="email" regex="" />
 								</validations>
@@ -1692,7 +1823,7 @@ select * from post_entity where status = 'TO_PROCESS'
 								from picture_entity_value
 								pev where pev.entity='ref_appelation' and
 								pev.display_order = 1
-								AND (sub_type is null or sub_type = 'image')
+								AND (sub_type is null or sub_type in ('image','default'))
 								) zzz on a.id =
 								zzz.entity_id
 
@@ -1932,6 +2063,7 @@ contact_post_code,
 co.city contact_city,
 co.mail contact_mail,
 co.telephone contact_phone,
+co.vat_number contact_vat_number,
 GROUP_CONCAT(ce.name) cepage_names,
 GROUP_CONCAT(ce.web_path) cepage_web_paths,
 GROUP_CONCAT(wxc.cepage_id) cepage_ids,
@@ -2114,8 +2246,7 @@ pev.extension
 FROM
 picture_entity_value pev
 WHERE
-pev.entity = 'winery' AND pev.display_order = 1 AND (sub_type is null or
-sub_type = 'image')
+pev.entity = 'winery' AND pev.display_order = 1 AND (sub_type is null or sub_type in ('image','default'))
 ) zzz ON w.id = zzz.entity_id
 LEFT OUTER JOIN (
 SELECT min(entity_id) logo_id
@@ -2789,31 +2920,31 @@ order by pev.DISPLAY_ORDER
 													   type="string" sample="'merlot'"></query-chunk-param>
 								</query-chunk-params>
 								<query-chunk-value name="cepage"
-												   value=", cepage c where pev.entity_id = c.id and entity = 'cepage' and c.web_path = ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", cepage c where pev.entity_id = c.id and entity = 'cepage' and c.web_path = ? and sub_type in ('image','default')"
 												   params="web_path" />
 								<query-chunk-value name="lieu_id"
-												   value=", lieu_dit ld where pev.entity_id = ld.id and entity = 'lieu_dit' and ld.web_path = ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", lieu_dit ld where pev.entity_id = ld.id and entity = 'lieu_dit' and ld.web_path = ? and sub_type in ('image','default')"
 												   params="web_path" />
 								<query-chunk-value name="region"
-												   value=", region r where pev.entity_id = r.id and entity = 'region' and r.web_path = ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", region r where pev.entity_id = r.id and entity = 'region' and r.web_path = ? and sub_type in ('image','default')"
 												   params="web_path" />
 								<query-chunk-value name="region_lieu_dits"
-												   value=", region r, lieu_dit ld where pev.entity_id = ld.id and entity = 'lieu_dit' and ld.region_id = r.id and r.web_path = ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", region r, lieu_dit ld where pev.entity_id = ld.id and entity = 'lieu_dit' and ld.region_id = r.id and r.web_path = ? and sub_type in ('image','default')"
 												   params="web_path" />
 								<query-chunk-value name="country"
-												   value=", country c where pev.entity_id = c.id and entity = 'country' and c.web_path = ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", country c where pev.entity_id = c.id and entity = 'country' and c.web_path = ? and sub_type in ('image','default')"
 												   params="web_path" />
 								<query-chunk-value name="country_regions"
-												   value=", region r, country c where pev.entity_id = r.id and entity = 'region' and r.country_id = c.id and c.web_path =  ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", region r, country c where pev.entity_id = r.id and entity = 'region' and r.country_id = c.id and c.web_path =  ? and sub_type in ('image','default')"
 												   params="web_path" />
 								<query-chunk-value name="winery"
-												   value=", winery w where w.active = 1 and pev.entity_id = w.id and entity = 'winery' and w.web_path = ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", winery w where w.active = 1 and pev.entity_id = w.id and entity = 'winery' and w.web_path = ? and sub_type in ('image','default')"
 												   params="web_path" />
 								<query-chunk-value name="winery_products"
-												   value=", product p, winery w where pev.entity_id = p.id and and entity = 'product' and p.winery_id = w.id and w.web_path = ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", product p, winery w where pev.entity_id = p.id and and entity = 'product' and p.winery_id = w.id and w.web_path = ? and sub_type in ('image','default')"
 												   params="web_path" />
 								<query-chunk-value name="product"
-												   value=", product p where p.active=1 and pev.entity_id = p.id and entity = 'product' and p.web_path = ? and extension = 'jpg' and sub_type = 'default'"
+												   value=", product p where p.active=1 and pev.entity_id = p.id and entity = 'product' and p.web_path = ? and sub_type in ('image','default')"
 												   params="web_path" />
 							</query-chunk>
 						</query-chunks>
@@ -2915,7 +3046,7 @@ pev.DOMINANT_COLOR_RGB,
 concat_ws('_', pev.short_url, entity_id) PICTURE_SYMLINK_CORE,
 concat_ws('.MED.',concat_ws('_', pev.short_url, entity_id), pev.extension)  PICTURE_MEDIUM_SYMLINK,
 concat_ws('.SML.',concat_ws('_', pev.short_url, entity_id), pev.extension)  PICTURE_SMALL_SYMLINK
-from picture_entity_value pev where pev.entity='cepage' and pev.display_order = 1 AND (sub_type is null or sub_type = 'image')
+from picture_entity_value pev where pev.entity='cepage' and pev.display_order = 1 AND (sub_type is null or sub_type in ('image','default'))
 ) zzz on c.id = zzz.entity_id 
 
 left outer join 
@@ -3359,7 +3490,7 @@ pev.DOMINANT_COLOR_RGB,
 concat_ws('_', pev.short_url, entity_id) PICTURE_SYMLINK_CORE,
 concat_ws('.MED.',concat_ws('_', pev.short_url, entity_id), pev.extension)  PICTURE_MEDIUM_SYMLINK,
 concat_ws('.SML.',concat_ws('_', pev.short_url, entity_id), pev.extension)  PICTURE_SMALL_SYMLINK
-from picture_entity_value pev where pev.entity='region' and pev.display_order = 1 AND (sub_type is null or sub_type = 'image')
+from picture_entity_value pev where pev.entity='region' and pev.display_order = 1 AND (sub_type is null or sub_type in ('image','default'))
 ) zzz on r.id = zzz.entity_id 
 
 left outer join (
@@ -3600,7 +3731,7 @@ pev.DOMINANT_COLOR_RGB,
 concat_ws('_', pev.short_url, entity_id) PICTURE_SYMLINK_CORE,
 concat_ws('.MED.',concat_ws('_', pev.short_url, entity_id), pev.extension)  PICTURE_MEDIUM_SYMLINK,
 concat_ws('.SML.',concat_ws('_', pev.short_url, entity_id), pev.extension)  PICTURE_SMALL_SYMLINK
-from picture_entity_value pev where pev.entity='lieu_dit' and pev.display_order = 1 AND (sub_type is null or sub_type = 'image')
+from picture_entity_value pev where pev.entity='lieu_dit' and pev.display_order = 1 AND (sub_type is null or sub_type in ('image','default'))
 ) zzz on ld.id = zzz.entity_id 
 , region r, country c  
 where 
@@ -3792,6 +3923,7 @@ select * from
 		zzz.AUTHOR_LAST_NAME,
 		zzz.AUTHOR_ALIAS,
 		zzz.AUTHOR_DATE,
+		zzz.extension,
 		zzz.DOMINANT_COLOR_RGB,
 		zzz.PICTURE_SYMLINK_CORE,
 		zzz.PICTURE_MEDIUM_SYMLINK,
@@ -3822,10 +3954,11 @@ select * from
 				pev.AUTHOR_ALIAS,
 				pev.AUTHOR_DATE,
 				pev.DOMINANT_COLOR_RGB,
+				pev.extension,
 				concat_ws('_', pev.short_url, entity_id) PICTURE_SYMLINK_CORE,
 				concat_ws('.MED.',concat_ws('_', pev.short_url, entity_id), pev.extension)  PICTURE_MEDIUM_SYMLINK,
 				concat_ws('.SML.',concat_ws('_', pev.short_url, entity_id), pev.extension)  PICTURE_SMALL_SYMLINK
-				from picture_entity_value pev where pev.entity='product' and pev.display_order = 1 AND (sub_type is null or sub_type = 'image')
+				from picture_entity_value pev where pev.entity='product' and pev.display_order = 1 AND (sub_type is null or sub_type in ('image','default'))
 				) zzz on p.id = zzz.entity_id 
 			
 			left outer join

@@ -472,7 +472,8 @@
 											<alias attr-name="refid" prop-name="refid" />
 											<alias attr-name="refname" prop-name="refname" />
 											<alias attr-name="session-param-name" prop-name="sessionParamName" />
-											<alias attr-name="is-implicit" prop-name="isImplicit" /><!-- 
+											<alias attr-name="use-jwt-subject" prop-name="useJwtSubject" />
+											<alias attr-name="is-implicit" prop-name="isImplicit" /><!--
 												relative context bound -->
 											<alias attr-name="is-context" prop-name="isContext" /><!-- 
 												global context bound -->
@@ -606,6 +607,7 @@
 										<alias attr-name="refid" prop-name="refid" />
 										<alias attr-name="id" prop-name="id" />
 										<alias attr-name="session-param-name" prop-name="sessionParamName" />
+										<alias attr-name="use-jwt-subject" prop-name="useJwtSubject" />
 										<alias attr-name="is-implicit" prop-name="isImplicit" /><!-- 
 											relative context bound -->
 										<alias attr-name="is-context" prop-name="isContext" /><!-- 
@@ -2346,6 +2348,7 @@
 										<alias attr-name="refid" prop-name="refid" />
 										<alias attr-name="refname" prop-name="refname" />
 										<alias attr-name="session-param-name" prop-name="sessionParamName" />
+										<alias attr-name="use-jwt-subject" prop-name="useJwtSubject" />
 										<alias attr-name="is-implicit" prop-name="isImplicit" /><!-- 
 											relative context bound -->
 										<alias attr-name="is-context" prop-name="isContext" /><!-- 
@@ -2472,6 +2475,7 @@
 									<alias attr-name="refid" prop-name="refid" />
 									<alias attr-name="refname" prop-name="refname" />
 									<alias attr-name="session-param-name" prop-name="sessionParamName" />
+									<alias attr-name="use-jwt-subject" prop-name="useJwtSubject" />
 									<alias attr-name="is-implicit" prop-name="isImplicit" /><!-- 
 										relative context bound -->
 									<alias attr-name="is-context" prop-name="isContext" /><!-- 

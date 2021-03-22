@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import net.sf.minuteProject.configuration.bean.BusinessModel;
 import net.sf.minuteProject.configuration.bean.GeneratorBean;
@@ -694,12 +695,22 @@ public class TableUtils {
 		return columns;
 	}
 
-	public static boolean hasSessionParam(Table table) {
+/*	public static boolean hasSessionParam(Table table) {
 		for (Column column : table.getColumns()) {
 			if (!StringUtils.isEmpty(column.getSessionParamName())) return true;
 		}
 		return false;
+	}*/
+	public static boolean needsRequest(Table table) {
+		for (Column column : table.getColumns()) {
+			if (
+					!StringUtils.isEmpty(column.getSessionParamName())
+					|| column.useJwtSubject()
+			) return true;
+		}
+		return false;
 	}
+
 	
 	public static boolean hasSecurityColorRole(Table table) {
 		return securityColorRole(table) != "";
@@ -712,5 +723,11 @@ public class TableUtils {
 			return table.getPackage().getSecurityColor().getRoles();
 		}
 		return "";
+	}
+
+	public static List<Column> getColumnsNotDuplicatedNorImplicit(Table table) {
+		return Arrays.stream(table.getColumns())
+				.filter(u -> !u.hasBeenDuplicated() && !u.isImplicit())
+				.collect(Collectors.toList());
 	}
 }
