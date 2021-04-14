@@ -55,6 +55,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+import java.nio.file.*;
+
 import lombok.extern.slf4j.Slf4j;
 
 #foreach($query in $schedulerUtils.getQueryWithSchedulers($model))
@@ -136,7 +138,7 @@ public class $thisClassName {
 #foreach($cron in $schedulerUtils.getCrons($queryScheduler))
     @Scheduled(cron="$cron")
 #end
-    public void ${schedulerAlias}() {
+    public void ${schedulerAlias}() throws IOException {
     	String reportFileName = "${queryScheduler.name}"; 
 
         $sddOutputBeanCollectionClass list = 
@@ -174,18 +176,49 @@ public class $thisClassName {
         	${sddServiceInterfaceVariable}.execute(input);
         }
 #end
-#set ($processorCall = "performReportAndMailSend${schedulerAlias} (reportFileName, list)")
 #end
 #if($queryScheduler.hasThresholdMinRecord())
 		if (list.get${sddOutputBeanClass}s().size()>=$queryScheduler.reportThresholdMinRecord) {
 			log.info("Report ${schedulerAlias} in preparation with "+list.get${sddOutputBeanClass}s().size()+" records");
-			$processorCall;
+            performReportActions_${schedulerAlias}(reportFileName, list);
+##$processorCall;
 		}
 #else
-		$processorCall;
+        performReportActions_${schedulerAlias}(reportFileName, list);
+##$processorCall;
 #end
 	}
 
+    private void performReportActions_${schedulerAlias} (String reportFileName, $sddOutputBeanCollectionClass list) throws IOException {
+#if ($schedulerUtils.isFileCopyTo($queryScheduler))
+        performReportAndCopy${schedulerAlias} (reportFileName, list);
+#end
+#if ($schedulerUtils.isFileCopyTo($queryScheduler))
+        performReportAndCopyToDir${schedulerAlias} (reportFileName, list);
+#end
+#if ($schedulerUtils.isSendByMail($queryScheduler))
+        performReportAndMailSend${schedulerAlias} (reportFileName, list);
+#end
+    }
+
+#if ($schedulerUtils.isFileCopy($queryScheduler))
+#if ($schedulerUtils.isFileCopyTo($queryScheduler))
+    private void performReportAndCopy${schedulerAlias} (String reportFileName, $sddOutputBeanCollectionClass list) throws IOException {
+        writeReport${schedulerAlias}(reportFileName, list);
+        String filename = getReportPath(reportFileName+reportFileExt);
+        copyFile(filename, "$queryScheduler.reportCopyFileTo");
+    }
+#end
+#if ($schedulerUtils.isFileCopyToDir($queryScheduler))
+    private void performReportAndCopyToDir${schedulerAlias} (String reportFileName, $sddOutputBeanCollectionClass list) throws IOException {
+        writeReport${schedulerAlias}(reportFileName, list);
+        String filename = getReportPath(reportFileName+reportFileExt);
+        copyFile(filename, "$queryScheduler.reportCopyFileToDir");
+    }
+#end
+#end
+
+#if ($schedulerUtils.isSendByMail($queryScheduler))
 	private void performReportAndMailSend${schedulerAlias} (String reportFileName, $sddOutputBeanCollectionClass list) {
         writeReport${schedulerAlias} (reportFileName, list);
         String from = "$queryScheduler.reportFrom";
@@ -200,7 +233,7 @@ public class $thisClassName {
 #if ($mailProperties)        
         //custom mail server
         properties.put("mail.smtps.auth", "$smtpAuth");
-        properties.put("mail.smtp.socketFactory.class", "$smtpSocketFactoryClass");
+##        properties.put("mail.smtp.socketFactory.class", "$smtpSocketFactoryClass");
         properties.put("mail.smtp.starttls.enable","$smtpStartTlsEnable");
         properties.put("mail.smtp.ssl.trust", "$smtpHost");
 #end        
@@ -351,10 +384,6 @@ $!updatedAreaImplementation
     private String getReportPathServlet () {
         return servletContext.getRealPath("/");
     }
-
-    private String getReportPath (String name) {
-        return System.getProperty("java.io.tmpdir")+"/"+name;
-    }
     
     private WritableCellFormat getHeaderFont () throws WriteException {
         WritableFont cellFont = new WritableFont(WritableFont.COURIER, 12);
@@ -405,6 +434,17 @@ $!updatedAreaImplementation
             sheet.setColumnView(i, cv);
         }
     }
-    
+#end
+
+    private static String getReportPath (String name) {
+        return System.getProperty("java.io.tmpdir")+"/"+name;
+    }
+
+    private static void copyFile(String from, String to) throws IOException {
+        Path src = Paths.get(from);
+        Path dest = Paths.get(to);
+        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+    }
+
 #putEnvironmentProperties()
 }

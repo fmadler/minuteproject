@@ -14,7 +14,7 @@ public class QueryScheduler extends QueryAdapter {
 
 	private QueryParams queryParams;
 	private Query query;
-	private String reportChannel, reportFrom, reportTo, reportCc, reportBcc, reportScalarColumn, cron;
+	private String reportCopyFileTo, reportCopyFileToDir, reportChannel, reportFrom, reportTo, reportCc, reportBcc, reportScalarColumn, cron;
 	private String processorClass, processorName;
 	private int reportThresholdMinRecord;
 	private String reportImportance;

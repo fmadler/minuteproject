@@ -174,4 +174,20 @@ public class SchedulerUtils {
 	public static List<String> getReportTos(QueryScheduler queryScheduler) {
 		return ParserUtils.getList(queryScheduler.getReportTo());
 	}
+
+	public static boolean isFileCopy(QueryScheduler queryScheduler) {
+		return isFileCopyTo(queryScheduler) || isFileCopyToDir(queryScheduler);
+	}
+
+	public static boolean isFileCopyTo(QueryScheduler queryScheduler) {
+		return !StringUtils.isEmpty(queryScheduler.getReportCopyFileTo());
+	}
+
+	public static boolean isFileCopyToDir(QueryScheduler queryScheduler) {
+		return !StringUtils.isEmpty(queryScheduler.getReportCopyFileToDir());
+	}
+
+	public static boolean isSendByMail(QueryScheduler queryScheduler) {
+		return !StringUtils.isEmpty(queryScheduler.getReportChannel());
+	}
 }

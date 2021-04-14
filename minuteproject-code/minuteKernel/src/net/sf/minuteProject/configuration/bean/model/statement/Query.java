@@ -383,7 +383,10 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 					column.setQueryParamLink(queryParam.getQueryParamLink());
 					column.setIsArray(queryParam.isArray());
 					column.setScope(queryParam.getScope());
-					column.setValidations(queryParam.getFieldValidations());		
+					column.setValidations(queryParam.getFieldValidations());
+
+					column.setImplicit(queryParam.isImplicit());
+					column.setUseJwtSubject(queryParam.isUseJwtSubject());
 				}
 			}
 		}

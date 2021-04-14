@@ -372,6 +372,8 @@
 								<set-next-rule methodname="addQueryScheduler"
 									paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryScheduler" />
 								<set-properties-rule>
+									<alias attr-name="report-copy-file-to" prop-name="reportCopyFileTo" />
+									<alias attr-name="report-copy-file-to-dir" prop-name="reportCopyFileToDir" />
 									<alias attr-name="report-channel" prop-name="reportChannel" />
 									<alias attr-name="report-from" prop-name="reportFrom" />
 									<alias attr-name="processor-class" prop-name="processorClass" />
@@ -2247,6 +2249,8 @@
 							<set-next-rule methodname="addQueryScheduler"
 								paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryScheduler" />
 							<set-properties-rule>
+								<alias attr-name="report-copy-file-to" prop-name="reportCopyFileTo" />
+								<alias attr-name="report-copy-file-to-dir" prop-name="reportCopyFileToDir" />
 								<alias attr-name="report-channel" prop-name="reportChannel" />
 								<alias attr-name="report-from" prop-name="reportFrom" />
 								<alias attr-name="report-to" prop-name="reportTo" />

@@ -65,7 +65,7 @@
 						</query-body>
 						<query-schedulers><!-- schedulers are actions + scheduling and reporting 
 								=> extends action -->
-							<!--
+<!--
 * "0 0 * * * *" = the top of every hour of every day.
 * "*/10 * * * * *" = every ten seconds.
 * "0 0 8-10 * * *" = 8, 9 and 10 o'clock of every day.
@@ -77,6 +77,8 @@
 							<query-scheduler name="process_sitemap"
 											 cron="0 1 1 * * ?" report-channel="mailgun" report-from="thewineryproject@gmail.com"
 											 report-to="thewineryproject@gmail.com"
+											 report-copy-file-to="/var/www/ember/sitemap.xml"
+											 report-copy-file-to-dir="/opt/tomcat/myapp/winy/sitemaps"
 											 report-threshold-min-record="1"
 											 report-template-type="velocity"
 											 report-template-name="sitemap.xml.vm">
@@ -219,67 +221,6 @@ from
 										 is-implicit="true" />
 						</query-params>
 					</query>
-<!-- TODO remove in code
-					<query name="has_winery_event_ownership" id="has_winery_event_ownership"
-						   package-name="event">
-						<query-body>
-							<value>
-								select exists(
-								select u.email,
-								w.web_path,
-								e.web_path
-								from
-								event_winery_participation evp,
-								event e,
-								winery w,
-								user_winery_profile uwp,
-								profile_pay_plan ppp,
-								user u
-								where
-								evp.winery_id = w.id
-								and evp.event_id = e.id
-								and uwp.winery_id = w.id
-								and uwp.profile_pay_plan_id = ppp.id
-								and uwp.user_id = u.id
-								$whereEventWebPath
-								$whereWineryWebPath
-								$whereUserEmail
-								)
-								as has_winery_event_ownership
-							</value>
-						</query-body>
-						<query-filters>
-							<query-filter name="whereEventWebPath"
-										  and-where-connection="and">
-								<value><![CDATA[ e.WEB_PATH = ? ]]></value>
-								<query-params>
-									<query-param name="event_web_path" type="string"
-												 sample="'-1'" mandatory="true">
-									</query-param>
-								</query-params>
-							</query-filter>
-							<query-filter name="whereWineryWebPath"
-										  and-where-connection="and">
-								<value><![CDATA[ w.WEB_PATH = ? ]]></value>
-								<query-params>
-									<query-param name="winery_web_path" type="string"
-												 sample="'-1'" mandatory="true">
-									</query-param>
-								</query-params>
-							</query-filter>
-							<query-filter name="whereUserEmail"
-										  and-where-connection="and">
-								<value><![CDATA[ u.email = ? ]]></value>
-								<query-params>
-									<query-param name="user_email" type="string"
-												 sample="'-1'" mandatory="true" scope="backend">
-									</query-param>
-								</query-params>
-							</query-filter>
-						</query-filters>
-					</query>
--->
-					<!-- event info, winery participation, partner, wine -->
 
 					<!-- todo add logo, images -->
 					<query name="event_summary" id="event_summary" package-name="event">
@@ -844,6 +785,7 @@ from
 								$whereWineryWebPath
 								$whereWineryId
 								$whereProductItemPriceId
+								$validPriceDate
 							</value>
 						</query-body>
 						<query-filters>
@@ -868,7 +810,13 @@ from
 									</query-param>
 								</query-params>
 							</query-filter>
-
+							<query-filter name="validPriceDate" and-where-connection="where">
+								<value><![CDATA[ (now() between price_valid_from and price_valid_until and true = ?) ]]></value>
+								<query-params>
+									<query-param name="valid_price_date" type="boolean" sample="false">
+									</query-param>
+								</query-params>
+							</query-filter>
 						</query-filters>
 					</query>
 
@@ -5142,25 +5090,6 @@ order by c.name
 					</query>
 
 					<!-- SDD for public -->
-					<!-- search type wine/region/country ex: cabernet // try content search 
-						on tags / grades / region / country / (domain) =>list of wines + domains -->
-
-					<!-- pay plan display TODO remove generated code <query name="pivot 
-						chosen pay plan condition" id="pivot-chosen-pay-plan-condition" package-name="pay_plan"> 
-						<query-body> <value> <![CDATA[ select ppp.pay_plan_name, ppp.pay_plan_description, 
-						ppp.pay_plan_price price, ppp.register_date register_date, ppp.activation_date, 
-						ppp.end_activation_date, concat('payplan.',pppc.name) pay_plan_condition_i18n_entry, 
-						pppc.name, pppc.condition_description, pppc.display_number, pppc.quantity 
-						from profile_pay_plan ppp, profile_pay_plan_condition pppc, user_winery_profile 
-						uwp where uwp.PROFILE_PAY_PLAN_ID = ppp.ID and pppc.PROFILE_PAY_PLAN_ID = 
-						ppp.ID and uwp.winery_id = ? order by pppc.DISPLAY_NUMBER ]]> </value> </query-body> 
-						<query-pivots> <query-pivot name="profilePayPlan" columns="pay_plan_name, 
-						pay_plan_description, price, register_date, activation_date, end_activation_date" 
-						pivot="pay_plan_name"></query-pivot> <query-pivot name="profilecondition" 
-						columns="name, condition_description, quantity, pay_plan_condition_i18n_entry" 
-						pivot="name"></query-pivot> </query-pivots> <query-params> <query-param name="winery_id" 
-						is-mandatory="true" type="int" sample="-1" from-profile-session-property="winery_id"></query-param> 
-						</query-params> </query> -->
 					<query name="pivot pay plan condition" id="pivot-pay-plan-condition"
 						   package-name="pay_plan">
 						<query-body>

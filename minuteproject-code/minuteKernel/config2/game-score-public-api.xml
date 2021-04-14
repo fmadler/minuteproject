@@ -48,7 +48,91 @@
 					</conventions>
 				</enrichment>
 				<queries>
+					<!-- sitemap queries -->
+					<query name="sitemap" id="sitemap"
+						   package-name="sitemap">
+						<query-body>
+							<value>
+								select * from v_sitemap order by score
+							</value>
+						</query-body>
+						<query-schedulers><!-- schedulers are actions + scheduling and reporting
+								=> extends action -->
+							<!--
+                            * "0 0 * * * *" = the top of every hour of every day.
+                            * "*/10 * * * * *" = every ten seconds.
+                            * "0 0 8-10 * * *" = 8, 9 and 10 o'clock of every day.
+                            * "0 0 8,10 * * *" = 8 and 10 o'clock of every day.
+                            * "0 0/30 8-10 * * *" = 8:00, 8:30, 9:00, 9:30 and 10 o'clock every day.
+                            * "0 0 9-17 * * MON-FRI" = on the hour nine-to-five weekdays
+                            * "0 0 0 25 12 ?" = every Christmas Day at midnight
+                            -->
+							<query-scheduler name="process_sitemap"
+											 cron="0 1 1 * * ?" report-channel="mailgun" report-from="thewineryproject@gmail.com"
+											 report-to="thewineryproject@gmail.com"
+											 report-copy-file-to="/opt/tomcat/myapp/kls/sitemaps/sitemap.xml"
+											 report-copy-file-to-dir="/opt/tomcat/kls/winy/sitemaps"
+											 report-threshold-min-record="1"
+											 report-template-type="velocity"
+											 report-template-name="sitemap.xml.vm">
+							</query-scheduler>
+						</query-schedulers>
+					</query>
 				<!--  info queries -->
+					<query name="team_info" id="team_info"
+						   package-name="info" content-type="master-data">
+						<query-body>
+							<value>
+<![CDATA[
+select p.name program_name, p.web_path program_web_path,
+	t.name, t.web_path, t.alias, td.from_time_unit, td.to_time_unit,
+	beginners.nb nb_of_beginners,
+	enders.nb nb_of_enders
+ from
+ 	gs_program p,
+ 	gs_team_duration td,
+ 	gs_team t left outer join (
+ 		select count(*) nb, pt.gs_team_id team_id
+ 		from gs_participant_team pt, gs_team t, gs_team_duration td
+ 		where pt.gs_team_id = t.id
+ 			and t.gs_team_duration_id = td.id
+ 			and pt.from_time_unit = td.from_time_unit
+ 		group by pt.gs_team_id
+ 	) beginners on beginners.team_id = t.id
+ 	left outer join (
+ 		select count(*) nb, pt.gs_team_id team_id
+ 		from gs_participant_team pt, gs_team t, gs_team_duration td
+ 		where pt.gs_team_id = t.id
+ 			and t.gs_team_duration_id = td.id
+ 			and pt.to_time_unit = td.to_time_unit
+ 		group by pt.gs_team_id
+ 	) enders on enders.team_id = t.id
+where
+	t.GS_PROGRAM_ID = p.ID and t.gs_team_duration_id = td.id
+$whereProgramWebPath
+$whereTeamWebPath
+ORDER by edition_number asc
+]]>
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ p.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereTeamWebPath" and-where-connection="and">
+								<value><![CDATA[ t.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="team_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+
 					<query name="program_info" id="program_info"
 						package-name="info" content-type="master-data">
 						<query-body>
@@ -64,35 +148,40 @@ select p.name, p.web_path, p.year,
     l.LONGITUDE,
     winner.name winner_name,
     winner.WEB_PATH winner_web_path,
-    participants.nb nb_of_participants
- from gs_program p, gs_location l,
+    participants.nb nb_of_participants,
+    games.nb nb_of_games
+ from gs_location l, gs_program p left outer join
  (
 select max(nb), name, web_path, program_web_path from (
-select
-	count(*) nb,
-    pl.name name,
-    pl.web_path web_path,
-	pg.WEB_PATH program_web_path
-from gs_vote v, gs_vote_type vt, gs_participant pa, gs_player pl, gs_program pg
-where
-v.GS_VOTE_TYPE_ID = vt.ID and
-v.gs_voter_target_participant_id = pa.id and
-pa.GS_PLAYER_ID = pl.id and
-pa.GS_PROGRAM_ID = pg.ID and
-vt.web_path = 'vote-pour'
-group by pg.web_path, pl.web_path
-) yy group by program_web_path
-) winner,
+	select
+		count(*) nb,
+		pl.name name,
+		pl.web_path web_path,
+		pg.WEB_PATH program_web_path
+	from gs_vote v, gs_vote_type vt, gs_participant pa, gs_player pl, gs_program pg
+	where
+	v.GS_VOTE_TYPE_ID = vt.ID and
+	v.gs_voter_target_participant_id = pa.id and
+	pa.GS_PLAYER_ID = pl.id and
+	pa.GS_PROGRAM_ID = pg.ID and
+	vt.web_path = 'vote-pour'
+	group by pg.web_path, pl.web_path
+	) yy group by program_web_path
+) winner on p.web_path = winner.program_web_path,
 (
-
-select count(*) nb, pg.WEB_PATH program_web_path from gs_participant pa, gs_program pg
-where pa.GS_PROGRAM_ID = pg.ID
-group by pg.web_path
-)participants
+	select count(*) nb, pg.WEB_PATH program_web_path from gs_participant pa, gs_program pg
+	where pa.GS_PROGRAM_ID = pg.ID
+	group by pg.web_path
+) participants,
+(
+	select count(*) nb, pg.WEB_PATH program_web_path from gs_game g, gs_program pg
+	where g.GS_PROGRAM_ID = pg.ID
+	group by pg.web_path
+) games
 where
 	p.GS_LOCATION_ID = l.ID and
-    p.web_path = winner.program_web_path and
-    p.web_path = participants.program_web_path
+    p.web_path = participants.program_web_path and
+    p.web_path = games.program_web_path
 $whereProgramWebPath
 ORDER by edition_number asc
 ]]>
@@ -290,7 +379,7 @@ ORDER by p.EDITION_NUMBER, pl.name asc
 						<query-body>
 							<value>
 								<![CDATA[
-select pg.web_path program_web_path, pa.age, pl.name, pl.web_path, pl.family_name, pl.sex, pl.BIRTH_date, pa.final_position, xx.nb_victories, yy.max_time
+select pg.web_path program_web_path, pg.name program_name, pg.EDITION_NUMBER program_EDITION_NUMBER, pa.age, pl.name, pl.web_path, pl.family_name, pl.sex, pl.BIRTH_date, pa.final_position, xx.nb_victories, yy.max_time
 from  gs_program pg, gs_player pl, gs_participant pa
 left join (
 select GS_PARTICIPANT_ID, count(*) nb_victories from gs_participant_x_game pxg where ranking = 1
@@ -327,17 +416,6 @@ $wherePlayerWebPath
 								</query-params>
 							</query-filter>
 						</query-filters>
-					</query>
-
-
-					<!-- sitemap queries -->
-					<query name="sitemap" id="sitemap" package-name="sitemap">
-					<!-- to replace by select * from v_sitemap order by score -->
-						<query-body>
-							<value>
-select * from v_sitemap order by score
-							</value>
-						</query-body>
 					</query>
 
 					<query name="get_properties" id="get_properties" package-name="property">
@@ -1361,6 +1439,7 @@ ranking_1 desc, ranking_2 desc, ranking_3 desc
 							<query refid="participant_game_activity" result-cardinality="one" holder="false"></query>
 							<query refid="distinct_games" result-cardinality="one" holder="false"></query>
 							<query refid="game_stats" result-cardinality="many" holder="false"></query>
+							<query refid="program_info" result-cardinality="one" holder="false"></query>
 							<!-- 
 							<query refid="similar_game_for_other_program" name="similar_game_for_other_program" result-cardinality="one" holder="false"></query>
 							 -->
@@ -1372,7 +1451,6 @@ ranking_1 desc, ranking_2 desc, ranking_3 desc
 						</composite-params>
 						<!-- TODO group by program_web_path -->
 					</composite>
-
 
 					<composite name="team_detail" id="team_detail" package-name="team">
 						<queries>						 
@@ -1386,6 +1464,8 @@ ranking_1 desc, ranking_2 desc, ranking_3 desc
 							<query refid="team_participant_timeline" result-cardinality="many" holder="false"></query>
 							<query refid="team_game_timeline" result-cardinality="many" holder="false"></query>
 							<query refid="game_stats" result-cardinality="many" holder="false"></query>
+							<query refid="team_info" result-cardinality="one"></query>
+							<query refid="program_info" result-cardinality="one" holder="false"></query>
 
 						</queries>
 						<composite-params>
@@ -1474,6 +1554,7 @@ ranking_1 desc, ranking_2 desc, ranking_3 desc
 			</property>
 
 			<property name="disable-sass-maven-plugin" value="true" />
+			<property name="maven-artifact-finalName-suffix" value="PublicApi" />
 
 		</targets>
 
