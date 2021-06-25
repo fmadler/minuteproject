@@ -1,0 +1,214 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<conventions>
+			<!-- <target-convention type="enable-updatable-code-feature" /> -->
+			<target-convention type="disable-timestamp-comment-marker" />
+			<target-convention type="disable-business-model-generation" />
+		</conventions>
+		<model name="quizz" version="${version}" package-root="org.minuteproject.ms">
+			<description>
+				<CDATA>
+					The quizz model illustrates query API to retrieve quizz tenant data
+				</CDATA>
+			</description>
+			<data-model database-type="MYSQL">
+				<driver name="mysql" version="8.0.19" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
+					 
+					<url>${jdbcUrl}</url>
+					<username>${username}</username>
+					<password>${password}</password>
+
+				</dataSource>
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<statement-model>
+				<enrichment>
+					<conventions>
+						<sdd-content-type-convention pattern=""
+							type="apply-content-type-to-entity-not-belonging-to-package"
+							content-type="master-data" />					
+ 						<sdd-cache-convention pattern="master-data"
+							type="apply-cache-to-content-type" />
+						<sdd-cache-convention pattern="reference-data"
+							type="apply-cache-to-content-type" />
+					</conventions>
+				</enrichment>
+				<queries>
+					<query name="distinct_questions" id="distinct_questions"
+						   package-name="question">
+						<query-body>
+							<value>
+								select distinct
+									t.WEB_PATH tenant_web_path,
+									q.generic_name question_generic_name,
+									q.web_path question_web_path,
+									q.name question_name,
+									q.answer_options_sub_url question_answer_options_sub_url,
+									q.answer_options_assertion_sub_url question_answer_options_assertion_sub_url,
+									q.filter_matrix_sub_url question_filter_matrix_sub_url
+								from
+									qz_tenant t,
+									qz_question q
+								where
+									q.QZ_TENANT_ID = t.ID
+									$whereTenantWebPath
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereTenantWebPath" and-where-connection="and">
+								<value><![CDATA[ t.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="tenant_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					<query name="question_detail" id="question_detail"
+						   package-name="question">
+						<query-body>
+							<value>
+								<![CDATA[
+select
+	t.web_path tenant_web_path,
+	t.api_root_url tenant_api_root_url,
+	q.generic_name question_generic_name,
+	q.web_path question_web_path,
+	q.name question_name,
+	q.answer_options_sub_url question_answer_options_sub_url,
+	q.answer_options_assertion_sub_url question_answer_options_assertion_sub_url,
+	q.filter_matrix_sub_url question_filter_matrix_sub_url,
+	qt.name question_type_name,
+	qt.web_path question_type_web_path,
+    group_concat(
+		distinct concat_ws(
+			'|',
+			qp.name,
+			qp.query_param,
+			qp.key,
+			qp.map_key,
+			qxqp.display_order
+		) order by qxqp.display_order
+    ) query_params
+from
+	qz_tenant t,
+	qz_question q
+		left outer join qz_question_x_question_params qxqp on qxqp.QZ_QUESTION_ID = q.ID
+		left outer join qz_question_param qp on qxqp.QZ_QUESTION_PARAM_ID = qp.ID,
+	qz_question_type qt
+where
+	q.QZ_TENANT_ID = t.ID and
+	q.QZ_QUESTION_TYPE_ID = qt.ID
+$whereTenantWebPath
+$whereQuestionWebPath
+    group by t.web_path,q.web_path
+]]>
+							</value>
+						</query-body>
+						<query-fields>
+							<query-field name="query_params"
+										 is-structured-array="true"
+										 separator-characters=",|"
+										 array-columns="name,query_param,key,map_key,display_order"
+										 array-columns-type="string,string,string,string,int">
+							</query-field>
+						</query-fields>
+						<query-filters>
+							<query-filter name="whereTenantWebPath" and-where-connection="and">
+								<value><![CDATA[ t.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="tenant_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereQuestionWebPath" and-where-connection="and">
+								<value><![CDATA[ q.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="question_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+						<query-groupings>
+							<query-grouping name="tenant"
+											column_pattern="starts_with"
+											column_pattern_value ="tenant_"></query-grouping>
+							<query-grouping name="question"
+											column_pattern="remaing_columns"></query-grouping>
+							<query-grouping name="param"
+											column_pattern="starts_with"
+											column_pattern_value ="question_param"></query-grouping>
+						</query-groupings>
+					</query>
+				</queries>
+			</statement-model>
+		</model>
+
+		<targets catalog-entry="REST-Kendoui, Ember, Flyway"
+			append-catalog-entry-dir-to-outputdir-root="true"
+			outputdir-root="../../product/quizz-public-api">
+
+			<property name="openxava-disable-sdd" value="true" />
+			<property name="environment" value="remote" />
+			<property name="show-sql" value="false" />
+
+			<property name="filter-cors" value="apache" />
+			<property name="swagger" value="true" />
+			<property name="botdetect" value="true" />
+			<property name="setter-return-instance" value="true" />
+			<property name="add-named-queries" value="false" />
+
+			<property name="target-server" value="tomcat" />
+
+			<property name="embedded-datasource" value="docker">
+				<property name="jdbcUrl" value="jdbc:mysql://db:3306/quizz?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true"/>
+				<property name="username" value="root"/>
+				<property name="password" value="P@ssw0rd"/>
+			</property>
+			<!-- -->
+			<property name="mail-server" value="mailgun">
+				<property name="mail.smtps.host" value="smtp.mailgun.org" />
+				<property name="mail.smtps.auth" value="true" />
+				<property name="mail.smtp.socketFactory.class" value="javax.net.ssl.SSLSocketFactory" />
+				<property name="mail.smtp.starttls.enable" value="true" />
+				<property name="mail.smtp.ssl.trust" value="smtp.mailgun.org" />
+
+				<property name="username" value="postmaster@winerylabs.com" />
+				<property name="password" value="5155c8411cb29829e715462bbd3cf878" />
+				<property name="url" value="smtp.mailgun.com" />
+			</property>
+
+			<property name="maven-dependencies">
+				<property name="gson"
+					value="group: 'com.google.code.gson', name: 'gson', version: '2.2.4'" />
+				<property name="jbcrypt"
+					value="group: 'org.mindrot', name: 'jbcrypt', version: '0.4'" />
+				<property name="velocity"
+					value="group: 'org.apache.velocity', name: 'velocity', version: '1.7'" />
+				<property name="velocity-tools"
+					value="group: 'org.apache.velocity', name: 'velocity-tools', version: '2.0'" />
+				<property name="velocity-tools"
+					value="group: 'org.json', name: 'json', version: '20190722'" />
+				<property name="itextpdf"
+					value="group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'" />
+				<property name="itextpdf-xmlworker"
+					value="group: 'com.itextpdf.tool', name: 'xmlworker', version: '5.5.13'" />
+				<!-- <property name="javax.mail" value="group: 'javax.mail', name: 'mail', 
+					version: '1.5.0-b01'"/> -->
+			</property>
+
+			<property name="disable-sass-maven-plugin" value="true" />
+			<property name="maven-artifact-finalName-suffix" value="PublicApi" />
+
+		</targets>
+
+
+	</configuration>
+</generator-config>
+

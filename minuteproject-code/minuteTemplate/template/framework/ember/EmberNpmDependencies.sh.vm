@@ -29,3 +29,15 @@ ember install ember-power-select
 
 ## how to use fa icon directlty ?
 ## npm install --save @fortawesome/fontawesome-free
+
+ember install ember-router-scroll
+
+ember install @ember/render-modifiers
+
+ember install ember-composable-helpers
+
+ember install tracked-built-ins
+
+ember install ember-concurrency
+
+ember install ember-cli-fastboot

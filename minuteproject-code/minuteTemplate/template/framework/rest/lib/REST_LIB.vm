@@ -66,7 +66,7 @@
 #macro (exposeMavenCommonDependencies)
 #set($junitVersion=$template.getPropertyValue("add-junit-version","4.12"))
 #set($powerMockitoVersion=$template.getPropertyValue("add-powermockito-version","1.7.4"))
-#set($lombokVersion=$template.getPropertyValue("add-lombok-version","1.16.16"))
+#set($lombokVersion=$template.getPropertyValue("add-lombok-version","1.18.2"))
 #set($jjwtVersion=$template.getPropertyValue("add-jjwt-version","0.10.5"))
 #end
 
@@ -77,6 +77,8 @@
 		<jjwt.version>${jjwtVersion}</jjwt.version>
 		<slf4j.version>2.0.0-alpha1</slf4j.version>
 		<logbackclassic.version>1.3.0-alpha5</logbackclassic.version>
+		<jakarta.xml.bind-api.version>2.3.2</jakarta.xml.bind-api.version>
+		<jaxb-runtime.version>2.3.2</jaxb-runtime.version>
 #end
 
 #macro (putEnvironmentProperties)

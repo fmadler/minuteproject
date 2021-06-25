@@ -39,8 +39,7 @@
 			add-package-name="false" 
 			file-extension="txt" file-prefix="" file-suffix="README" 
 			application-specific="true">
-			<property name="readme" value="put your webapp (html,css,js) implementations here"></property>
-		</template>	
+		</template>
 		
 	</template-target>				
    	
@@ -58,6 +57,23 @@
 			<property name="readme" value="put your java implementations here"></property>
 		</template>	
 		       
+	</template-target>
+
+	<template-target
+			name="tomcat embedded jndi context"
+			outputdir="src/tomcat/resources">
+
+		<template
+				name="TomcatContextXml" templateFileName="TomcatContextXml.vm"
+				subdir="" outputsubdir="META-INF" technicalPackage="" add-model-name="false"
+				add-model-dir-name="false"
+				file-extension="xml" file-prefix="" file-suffix="context"
+				application-specific="true"
+				is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotPropertyPresenceValue" >
+			<property name="property-presence" value="target-server" ></property>
+			<property name="property-presence-value" value="tomcat" ></property>
+		</template>
+
 	</template-target>
 
   	<template-target 

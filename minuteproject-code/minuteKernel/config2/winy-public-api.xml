@@ -433,6 +433,7 @@ from
 								c.web_path country_web_path,
 								c.flag_icon country_flag_icon,
 								w.web_path winery_web_path,
+								w.purchase_order_min_amount,
 								p.web_path product_web_path
 								,p.id product_id
 								,p.name product_name
@@ -758,6 +759,7 @@ from
 								has_winery_logo,
 								has_product_technical_sheet,
 								winery_id,
+								purchase_order_min_amount,
 								product_id,
 								product_name,
 								is_bio,
@@ -957,25 +959,39 @@ order by partnership_level desc
 						<query-body>
 							<value>
 								<![CDATA[
-select 
-	ewp.id ewp_Id, 
-	participation_level ewp_participation_level, 
-	booth ewp_booth, 
+select
+	ewp.id ewp_Id,
+	participation_level ewp_participation_level,
+	booth ewp_booth,
 	registration_date ewp_registration_date,
 	ewp.nb_of_day_presale_before_event,
 	e.from_date - INTERVAL ifnull(ewp.nb_of_day_presale_before_event,10) DAY time_still_in_presale,
 	e.from_date - INTERVAL ifnull(ewp.nb_of_day_presale_before_event,10) DAY > now() is_presale,
 	e.TO_DATE + INTERVAL 1 DAY > now() is_under_event_price,
-	w.name domain, 
+	w.name domain,
 	w.web_path winery_web_path,
 	e.name event,
-	e.web_path event_web_path
-from 
-	event_winery_participation ewp, 
-	winery w, 
-	event e
-where 
-	ewp.event_id = e.id 
+	e.web_path event_web_path,
+    COALESCE(xxx.nb_products_for_event,0) nb_products_for_event,
+    case when xxx.nb_products_for_event > 0 then 1 else 0 end has_products_for_event
+from
+
+	winery w,
+	event e,
+    event_winery_participation ewp
+ 	left join
+    (
+        select count(*) nb_products_for_event, pipe.event_id, p.WINERY_ID
+        from
+        product_item_price_x_event pipe,
+        product_item_price pip,
+        product p
+        where
+        	pip.PRODUCT_ID = p.id and pipe.PRODUCT_ITEM_PRICE_ID = pip.ID
+        group by pipe.event_id, p.WINERY_ID
+        ) xxx on xxx.winery_id = ewp.winery_id and xxx.event_id = ewp.event_id
+where
+	ewp.event_id = e.id
 	and ewp.winery_id = w.id
 	and ewp.active = 1
 $whereeventactive 
@@ -1929,9 +1945,6 @@ select * from post_entity where status = 'TO_PROCESS'
 							</query-filter>
 						</query-filters>
 					</query>
-
-					<!-- public for winery abstract -->
-					<!-- TODO extends for lieu_dit filter (left join outer lieu_dit) -->
 					<query name="winery_public" id="winery_public" package-name="winery">
 						<query-body>
 							<value>
@@ -1958,6 +1971,7 @@ w.purchase_url,
 w.PURCHASE_ORDER_EMAIL,
 w.PURCHASE_ORDER_ENABLED,
 w.PURCHASE_ORDER_LANGUAGE_CODE,
+w.PURCHASE_ORDER_MIN_AMOUNT,
 w.purchase_order_payment_in_advance,
 w.HECTOLITERS_PER_HECTAR,
 w.ALTITUDE_MIN,
@@ -5527,7 +5541,7 @@ limit 1
 						  value="group: 'org.apache.velocity', name: 'velocity', version: '1.7'" />
 				<property name="velocity-tools"
 						  value="group: 'org.apache.velocity', name: 'velocity-tools', version: '2.0'" />
-				<property name="velocity-tools"
+				<property name="org-json"
 						  value="group: 'org.json', name: 'json', version: '20190722'" />
 				<property name="itextpdf"
 						  value="group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'" />

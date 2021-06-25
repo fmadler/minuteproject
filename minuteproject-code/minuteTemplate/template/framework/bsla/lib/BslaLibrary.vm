@@ -505,7 +505,6 @@
 #set ($jdbcJNDI = "${jdbc}.jndi")
 #end
 
-
 #macro (exposeCheckConstraintProperties $property)
 #set($checkConstraintPropertyValue = $propertyUtils.getConstraintPropertyValue($property))
 #end

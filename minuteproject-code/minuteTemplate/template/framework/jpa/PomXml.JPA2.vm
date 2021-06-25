@@ -52,7 +52,19 @@
 			<scope>provided</scope>
 		</dependency>
 
-	    <!-- Logging -->
+        <!--jdk 11 ee removed packages-->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+
+        <!--jdk 11 ee removed packages-->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+
+        <!-- Logging -->
         <!-- add slf4j interfaces to classpath -->
         <dependency>
             <groupId>org.slf4j</groupId>

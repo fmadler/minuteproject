@@ -1,4 +1,10 @@
 <!DOCTYPE root>
+<!--
+TODO MP improvements:
+- injected queries (ex with distinct <- injectee)
+- POST matrix => as a sql with ( ) xx table
+- groupby in java lambda to have nested objects OTB
+-->
 <generator-config>
 	<configuration>
 		<conventions>
@@ -16,7 +22,7 @@
 				</CDATA>
 			</description>
 			<data-model database-type="MYSQL">
-				<driver name="mysql" version="5.1.44" groupId="mysql"
+				<driver name="mysql" version="8.0.19" groupId="mysql"
 					artifactId="mysql-connector-java"></driver>
 				<dataSource>
 					<driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
@@ -78,6 +84,730 @@
 							</query-scheduler>
 						</query-schedulers>
 					</query>
+					<query name="sitemap_param" id="sitemap_param"
+						   package-name="sitemap">
+						<query-body>
+							<value>
+								select
+									entity_id,
+									entity_path,
+									business_entity_path,
+									business_path,
+									name,
+									root_entity_path,
+									root_path
+								from v_sitemap_param_core
+									$whereBusinessEntityPath
+									$whereRootEntityPath
+									$whereName
+								order by score
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereBusinessEntityPath" and-where-connection="where">
+								<value><![CDATA[ business_entity_path = ? ]]></value>
+								<query-params>
+									<query-param name="business_entity_path" type="string" sample="'game'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereRootEntityPath" and-where-connection="where">
+								<value><![CDATA[ root_entity_path = ? ]]></value>
+								<query-params>
+									<query-param name="root_entity_path" type="string" sample="'programme'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereName" and-where-connection="where">
+								<value><![CDATA[ name like ? ]]></value>
+								<query-params>
+									<query-param name="name" type="string" sample="'a'" >
+										<property name="like-mode" value="contains"></property>
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					<query name="distinct_sitemap_type" id="distinct_sitemap_type"
+						   package-name="sitemap">
+						<query-body>
+							<value>
+								select distinct
+									root_entity_path,
+									business_entity_path
+								from v_sitemap_param
+							</value>
+						</query-body>
+					</query>
+<!-- duplicate to remove
+					<query name="sitemap_param" id="sitemap_param"
+						   package-name="sitemap">
+						<query-body>
+							<value>
+								select
+								entity_id,
+								entity_path,
+								business_entity_path,
+								business_path,
+								name,
+								root_entity_path,
+								root_path
+								from v_sitemap_param_core
+								$whereBusinessEntityPath
+								$whereRootEntityPath
+								$whereName
+								order by score
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereBusinessEntityPath" and-where-connection="where">
+								<value><![CDATA[ business_entity_path = ? ]]></value>
+								<query-params>
+									<query-param name="business_entity_path" type="string" sample="'game'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereRootEntityPath" and-where-connection="where">
+								<value><![CDATA[ root_entity_path = ? ]]></value>
+								<query-params>
+									<query-param name="root_entity_path" type="string" sample="'programme'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereName" and-where-connection="where">
+								<value><![CDATA[ name like ? ]]></value>
+								<query-params>
+									<query-param name="name" type="string" sample="'a'" >
+										<property name="like-mode" value="contains"></property>
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+-->
+
+					<!-- quizz -->
+					<query name="quizz_participation_filter_matrix" id="quizz_participation_filter_matrix"
+						   package-name="quizz">
+						<query-body>
+							<!-- add a random value to sort -->
+							<!-- side effect error when nb of winner > 3 to fix by limiting via chunks 'and not exists' -->
+							<value>
+								select
+									distinct
+									pg.edition_number,
+									pg.name program_name,
+									pg.web_path program_web_path,
+									g.time_position,
+									g.name game_name,
+									g.web_path game_web_path
+								from
+									gs_program pg,
+									gs_game g,
+									gs_participant_x_game pxg,
+									gs_game_participation_type gpt
+								where
+									g.gs_program_id = pg.id and
+									pxg.GS_GAME_ID = g.ID and
+									pxg.gs_game_participation_type_id = gpt.id
+									$whereProgramWebPath
+									$whereGameTypeWebPath
+									$whereParticipationTypeWebPath
+								order by pg.edition_number desc, g.time_position asc
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ pg.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameTypeWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereParticipationTypeWebPath" and-where-connection="and">
+								<value><![CDATA[ gpt.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="participation_type_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					<query name="quizz_winner_team_matrix" id="quizz_winner_team_matrix"
+						   package-name="quizz">
+						<query-body>
+							<value>
+							select
+								p.name program_name,
+								p.web_path program_web_path,
+								g.name game_name,
+								g.web_path game_web_path
+							from
+								gs_game g, gs_program p
+							where
+								g.GS_PROGRAM_ID = p.ID
+								and exists (
+									select txg.GS_GAME_ID, count(*) from gs_team t, gs_team_x_game txg
+									where t.ID = txg.GS_TEAM_ID and g.ID = txg.GS_GAME_ID
+									group by txg.GS_GAME_ID
+									having count(*) > 1
+								)
+							$whereProgramWebPath
+							order by program_name, game_name
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ p.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+						<query-pagination max-result-param="limit"
+										  offset-param="offset"></query-pagination>
+					</query>
+					<query name="quizz_winner_team_option" id="quizz_winner_team_option"
+						   package-name="quizz">
+						<query-body>
+							<value>
+							select
+								p.name program_name,
+								p.web_path program_web_path,
+								g.name game_name,
+								g.web_path game_web_path,
+								t.name team_name,
+								t.web_path team_web_path,
+								ranking,
+								case when ranking = 1 then 1 else RAND(6) end as score
+							from
+								gs_game g, gs_team t, gs_team_x_game txg, gs_program p
+							where
+								t.ID = txg.GS_TEAM_ID and g.ID = txg.GS_GAME_ID and g.GS_PROGRAM_ID = p.ID
+								and exists (
+									select txg.GS_GAME_ID, count(*) from gs_team t, gs_team_x_game txg
+									where t.ID = txg.GS_TEAM_ID and g.ID = txg.GS_GAME_ID
+									group by txg.GS_GAME_ID
+									having count(*) > 1
+								)
+								$whereProgramWebPath
+								$whereGameWebPath
+								$whereRanking
+								order by program_name, game_name, score desc
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ p.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereRanking" and-where-connection="and">
+								<value><![CDATA[ ranking = ? ]]></value>
+								<query-params>
+									<query-param name="ranking" type="int" sample="1">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+						<query-pagination max-result-param="limit"
+										  offset-param="offset"></query-pagination>
+					</query>
+					<query name="quizz_participation_option" id="quizz_participation_option"
+						   package-name="quizz">
+						<query-body>
+							<!-- add a random value to sort -->
+							<value>
+								select
+									pl.name participant_name,
+									pl.web_path participant_web_path,
+									g.name game_name,
+									g.web_path game_web_path,
+									pg.name program_name,
+									pg.web_path program_web_path,
+									ranking,
+									case when ranking = 1 then 1 else RAND(6) end as score
+								from
+									gs_player pl,
+									gs_participant pa,
+									gs_program pg,
+									(
+									 	select g.*, count(*) nb_of_winners from gs_game g, gs_participant_x_game pxg
+										where pxg.GS_GAME_ID = g.ID and pxg.ranking = 1
+										group by g.ID
+									) g,
+									gs_team t,
+									gs_participant_x_game pxg,
+									gs_game_participation_type gpt
+								where
+									pa.gs_player_id = pl.id and
+									pa.gs_program_id = pg.id and
+									pxg.gs_team_id = t.id and
+									pxg.GS_GAME_ID = g.ID and
+									pxg.GS_PARTICIPANT_ID = pa.ID and
+									g.gs_program_id = pg.id and
+									pxg.gs_game_participation_type_id = gpt.id
+
+								$whereMaxWinners
+								$whereProgramWebPath
+								$whereGameWebPath
+								$whereParticipationTypeWebPath
+								$whereParticipantWebPathIn
+								$whereRanking
+								order by score desc
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereMaxWinners" and-where-connection="and">
+								<value><![CDATA[ g.nb_of_winners <= ? ]]></value>
+								<query-params>
+									<query-param name="max_winners" type="int" sample="1">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ pg.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+
+							<query-filter name="whereParticipationTypeWebPath" and-where-connection="and">
+								<value><![CDATA[ gpt.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="participation_type_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereParticipantWebPathIn" and-where-connection="and">
+								<value><![CDATA[ pl.web_path in (?...) ]]></value>
+								<query-params>
+									<query-param name="participant_web_paths" type="string" sample="'test'" is-in-clause="true">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereRanking" and-where-connection="and">
+								<value><![CDATA[ ranking = ? ]]></value>
+								<query-params>
+									<query-param name="ranking" type="int" sample="1">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+						<query-pagination max-result-param="limit"
+										  offset-param="offset"></query-pagination>
+					</query>
+
+					<query name="quizz_winner_participant_order_filter_matrix" id="quizz_winner_participant_order_filter_matrix"
+						   package-name="quizz">
+						<query-body>
+							<!-- TODO MP : for distinct add concept of injected query -->
+							<value>
+								<![CDATA[
+select distinct
+game_name,
+game_web_path,
+program_name,
+program_web_path
+from
+	(
+	select
+		g.name game_name,
+		g.web_path game_web_path,
+		pg.name program_name,
+		pg.web_path program_web_path,
+		pg.edition_number,
+		g.time_position,
+		pl.name participant_name,
+		pl.web_path participant_web_path
+
+	from
+		gs_participant_x_game pxg,
+		gs_game g,
+		gs_program pg,
+		gs_participant p,
+		gs_player pl,
+		gs_game_participation_type gpt
+	where
+		pxg.gs_game_id = g.ID and
+		pxg.GS_PARTICIPANT_ID = p.ID and
+		g.gs_program_id = pg.ID and
+		p.GS_PLAYER_ID = pl.ID and
+		g.GS_GAME_PARTICIPATION_TYPE_ID = gpt.ID and
+		gpt.WEB_PATH = 'individuel' and
+		pxg.RANKING between 1 and 3
+		and g.ID in (select g.ID from gs_participant_x_game pxg, gs_game g
+			where pxg.GS_GAME_ID = g.ID and pxg.RANKING < 4 and pxg.RANKING > 0
+			group by g.id
+			having count(*) between 2 and 3
+		)
+		$whereProgramWebPath
+		$whereGameWebPath
+	) xx
+order by edition_number desc, time_position asc
+]]>
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ pg.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					<query name="quizz_winner_team_order_filter_matrix"
+						   package-name="quizz">
+						<query-body>
+							<!-- TODO MP : for distinct add concept of injected query: injectee -->
+							<value>
+								<![CDATA[
+select distinct
+	program_name,
+	program_web_path,
+	game_name,
+    game_web_path
+from (
+select
+	pg.name program_name,
+    pg.web_path program_web_path,
+    pg.EDITION_NUMBER,
+	g.name game_name,
+    g.web_path game_web_path,
+    g.TIME_POSITION,
+	t.name team_name,
+    t.web_path team_web_path,
+    txg.ranking ranking
+ from
+gs_team_x_game txg,
+gs_game g,
+gs_team t,
+gs_program pg,
+gs_game_participation_type gpt
+where
+txg.gs_game_id = g.ID and
+txg.GS_TEAM_ID = t.ID and
+g.gs_program_id = pg.ID and
+g.GS_GAME_PARTICIPATION_TYPE_ID = gpt.ID and
+gpt.WEB_PATH = 'collectif' and
+txg.RANKING between 1 and 3
+and g.ID in (select g.ID from gs_team_x_game txg, gs_game g
+ 	where txg.GS_GAME_ID = g.ID and txg.RANKING < 4 and txg.RANKING > 0
+    group by g.id
+    having count(*) between 2 and 3
+ )
+$whereProgramWebPath
+$whereGameWebPath
+) xx
+order by edition_number desc, time_position asc
+								]]>
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ pg.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					<query name="quizz_sort_team_member_filter_matrix"
+						   package-name="quizz">
+						<query-body>
+							<!-- TODO MP : for distinct add concept of injected query: injectee -->
+							<value>
+								<![CDATA[
+select distinct
+	program_name,
+	program_web_path,
+	game_name,
+    game_web_path
+from (
+select
+	pg.name program_name,
+    pg.web_path program_web_path,
+    pg.EDITION_NUMBER,
+	g.name game_name,
+    g.web_path game_web_path,
+    g.TIME_POSITION,
+	t.name team_name,
+    t.web_path team_web_path,
+    pl.name participant_name,
+    pl.web_path participant_web_path,
+    gat.WEB_PATH game_activity_type_web_path
+ from
+	gs_participant_x_game pxg,
+	gs_game g,
+	gs_team t,
+	gs_program pg,
+	gs_game_participation_type gpt,
+	gs_game_activity_type gat,
+	gs_participant pa,
+	gs_player pl
+where
+	pxg.gs_game_id = g.ID and
+	pxg.gs_team_id = t.ID and
+	pxg.GS_PARTICIPANT_ID = pa.ID and
+	pxg.GS_GAME_ACTIVITY_TYPE_ID = gat.ID and
+	pa.GS_PLAYER_ID = pl.ID and
+	g.gs_program_id = pg.ID and
+	g.GS_GAME_PARTICIPATION_TYPE_ID = gpt.ID and
+	gpt.WEB_PATH = 'collectif'
+$whereProgramWebPath
+$whereGameWebPath
+) xx
+order by edition_number desc, time_position asc
+								]]>
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ pg.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					<!-- quizz matrix end -->
+					<query name="quizz_sort_team_member_option" id="sort_team_member_option"
+						   package-name="quizz">
+						<query-body>
+							<value>
+								<![CDATA[
+select
+	pg.name program_name,
+    pg.web_path program_web_path,
+    pg.EDITION_NUMBER,
+	g.name game_name,
+    g.web_path game_web_path,
+    g.TIME_POSITION,
+	t.name team_name,
+    t.web_path team_web_path,
+    pl.name participant_name,
+    pl.web_path participant_web_path,
+    gat.WEB_PATH game_activity_type_web_path
+ from
+	gs_participant_x_game pxg,
+	gs_game g,
+	gs_team t,
+	gs_program pg,
+	gs_game_participation_type gpt,
+	gs_game_activity_type gat,
+	gs_participant pa,
+	gs_player pl
+where
+	pxg.gs_game_id = g.ID and
+	pxg.gs_team_id = t.ID and
+	pxg.GS_PARTICIPANT_ID = pa.ID and
+	pxg.GS_GAME_ACTIVITY_TYPE_ID = gat.ID and
+	pa.GS_PLAYER_ID = pl.ID and
+	g.gs_program_id = pg.ID and
+	g.GS_GAME_PARTICIPATION_TYPE_ID = gpt.ID and
+	gpt.WEB_PATH = 'collectif'
+$whereProgramWebPath
+$whereGameWebPath
+$whereTeamWebPath
+$whereParticipantWebPath
+								]]>
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ pg.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereTeamWebPath" and-where-connection="and">
+								<value><![CDATA[ t.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="team_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereParticipantWebPath" and-where-connection="and">
+								<value><![CDATA[ pl.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="participant_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+					<query name="quizz_winner_participant_order_option" id="quizz_winner_participant_order_option"
+						   package-name="quizz">
+						<query-body>
+							<!-- TODO MP : for distinct add concept of injected query: injectee -->
+							<value>
+								<![CDATA[
+								select
+									g.name game_name,
+									g.web_path game_web_path,
+									pg.name program_name,
+									pg.web_path program_web_path,
+									pl.name participant_name,
+									pl.web_path participant_web_path,
+									pxg.ranking ranking
+								from
+									gs_participant_x_game pxg,
+									gs_game g,
+									gs_program pg,
+									gs_participant p,
+									gs_player pl,
+									gs_game_participation_type gpt
+								where
+									pxg.gs_game_id = g.ID and
+									pxg.GS_PARTICIPANT_ID = p.ID and
+									g.gs_program_id = pg.ID and
+									p.GS_PLAYER_ID = pl.ID and
+									g.GS_GAME_PARTICIPATION_TYPE_ID = gpt.ID and
+									gpt.WEB_PATH = 'individuel' and
+									pxg.RANKING between 1 and 3
+									and g.ID in (select g.ID from gs_participant_x_game pxg, gs_game g
+										where pxg.GS_GAME_ID = g.ID and pxg.RANKING < 4 and pxg.RANKING > 0
+										group by g.id
+										having count(*) between 2 and 3
+									)
+									$whereProgramWebPath
+									$whereGameWebPath
+								]]>
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ pg.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+
+					<query name="quizz_winner_team_order_option"
+						   package-name="quizz">
+						<query-body>
+							<!-- TODO MP : for distinct add concept of injected query: injectee -->
+							<value>
+								<![CDATA[
+select
+	pg.name program_name,
+    pg.web_path program_web_path,
+    pg.EDITION_NUMBER,
+	g.name game_name,
+    g.web_path game_web_path,
+    g.TIME_POSITION,
+	t.name team_name,
+    t.web_path team_web_path,
+    txg.ranking ranking
+ from
+gs_team_x_game txg,
+gs_game g,
+gs_team t,
+gs_program pg,
+gs_game_participation_type gpt
+where
+txg.gs_game_id = g.ID and
+txg.GS_TEAM_ID = t.ID and
+g.gs_program_id = pg.ID and
+g.GS_GAME_PARTICIPATION_TYPE_ID = gpt.ID and
+gpt.WEB_PATH = 'collectif' and
+txg.RANKING between 1 and 3
+and g.ID in (select g.ID from gs_team_x_game txg, gs_game g
+ 	where txg.GS_GAME_ID = g.ID and txg.RANKING < 4 and txg.RANKING > 0
+    group by g.id
+    having count(*) between 2 and 3
+ )
+$whereProgramWebPath
+$whereGameWebPath
+								]]>
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereProgramWebPath" and-where-connection="and">
+								<value><![CDATA[ pg.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="program_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereGameWebPath" and-where-connection="and">
+								<value><![CDATA[ g.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="game_web_path" type="string" sample="'test'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
+
 				<!--  info queries -->
 					<query name="team_info" id="team_info"
 						   package-name="info" content-type="master-data">
@@ -423,11 +1153,12 @@ $wherePlayerWebPath
 							<value>
 select 
     sp.PROPERTY property,
-    sp.ICON icon,
     sp.UNIT unit,
-    s.VALUE property_value
+    s.VALUE property_value,
+	s.ENTITY_TYPE entity_type,
+	s.ENTITY_WEB_PATH entity_web_path
 from 
-	gs_ev_store s, 
+	gs_ev_store s,
     gs_ev_store_property sp
 where
 	s.PROPERTY_ID = sp.ID and
@@ -461,11 +1192,13 @@ where
 							</query-filter>
 						</query-filters>
 					</query>
+
 					<query name="participant_game_activity" id="participant_game_activity" package-name="participant">
 					<!-- to replace by select * from v_sitemap order by score -->
 						<query-body>
 							<value>
-select 
+select * from (
+select
 	pl.name player_name, 
     pl.web_path player_web_path,
     g.name game_name,
@@ -477,6 +1210,7 @@ select
     gpt.name participation_type,
     gat.name activity_type,
     pxg.ranking ranking,
+    case when pxg.ranking = 0 then 99 else pxg.ranking end as display_order_asc,
     gt.name game_type_name,
     gt.WEB_PATH game_type_web_path,
     gst.name game_stake_type_name,
@@ -539,7 +1273,8 @@ where
     $wherePlayerWebPath
     $whereGameWebPath
 group by pxg.ID
-order by g.TIME_UNIT_INDEX, pxg.ranking asc
+) xx
+order by TIME_UNIT_INDEX, display_order_asc asc
 
 							</value>
 						</query-body>
@@ -688,7 +1423,6 @@ order by pl.name, td.FROM_TIME_UNIT
 						</query-filters>
 					</query>
 					<query name="vote_detail" id="vote_detail" package-name="vote">
-					<!-- to replace by select * from v_sitemap order by score -->
 						<query-body>
 							<value>
 select 
@@ -783,7 +1517,6 @@ where
 					
 					<!-- timeline -->
 					<query name="team_game_timeline" id="team_game_timeline" package-name="timeline">
-					<!-- to replace by select * from v_sitemap order by score -->
 						<query-body>
 							<value>
 select 
@@ -930,7 +1663,6 @@ select
 					</query>
 					
 					<query name="team_participant_timeline" id="team_participant_timeline" package-name="timeline">
-					<!-- to replace by select * from v_sitemap order by score -->
 						<query-body>
 							<value>
 select 
@@ -1521,6 +2253,12 @@ ranking_1 desc, ranking_2 desc, ranking_3 desc
 			<property name="add-named-queries" value="false" />
 
 			<property name="target-server" value="tomcat" />
+
+			<property name="embedded-datasource" value="docker">
+				<property name="jdbcUrl" value="jdbc:mysql://db:3306/kohlantstats?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true"/>
+				<property name="username" value="root"/>
+				<property name="password" value="P@ssw0rd"/>
+			</property>
 			<!-- -->
 			<property name="mail-server" value="mailgun">
 				<property name="mail.smtps.host" value="smtp.mailgun.org" />

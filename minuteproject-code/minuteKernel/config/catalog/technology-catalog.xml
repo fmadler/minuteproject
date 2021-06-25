@@ -189,7 +189,7 @@
 		<technology name="REST-Kendoui" model-type="rdbms"
 			template-config-file-name="mp-template-config-kendoui.xml"
 			default-outputdir="REST" 
-			depends-on-targets="JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,REST,CloudFoundry-REST,MavenMaster"
+			depends-on-targets="JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,REST,CloudFoundry-REST,tomcat,docker,MavenMaster"
 			template-dir="@templateRoot@/framework/spring" status="released"
 			description="Generates:\REST Spring MVC CRUD app\Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
 			<frameworks>
@@ -809,11 +809,21 @@
 			template-dir="@templateRoot@/framework/php" is-generable="false">
 		</technology>
 
+		<technology name="tomcat" target-name="tomcat"
+					template-config-file-name="mp-template-config-tomcat.xml"
+					template-dir="@templateRoot@/framework/tomcat" is-generable="true">
+		</technology>
+
+		<technology name="docker" target-name="docker"
+					template-config-file-name="mp-template-config-docker.xml"
+					template-dir="@templateRoot@/framework/docker" is-generable="true">
+		</technology>
+
 
 		<!-- TODO move to custom catalog -->
 		<technology name="REST-Custom" model-type="rdbms"
 			template-config-file-name="mp-template-config-REST-custom.xml"
-			default-outputdir="Business-Impl" depends-on-targets="JQueryClient,JPA2,SDD-BEANS,BSLA-JPA2,SpringService,REST,MavenMaster"
+			default-outputdir="Business-Impl" depends-on-targets="JQueryClient,JPA2,SDD-BEANS,BSLA-JPA2,SpringService,REST,tomcat,MavenMaster"
 			template-dir="@templateRoot@/framework/spring" status="released"
 			description="Generates:\REST CRUD\REST SDD \Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
 			<frameworks>

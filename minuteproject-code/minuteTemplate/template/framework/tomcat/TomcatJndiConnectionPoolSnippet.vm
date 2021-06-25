@@ -1,0 +1,23 @@
+#generatorSpecific()
+#foreach ($model in $configuration.models())
+#exposeVariableModelSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+#exposeJdbc()
+#set ($jdbcUrl=$datasource.url)
+#set ($username=$datasource.username)
+#set ($password=$datasource.password)
+#set ($embeddedDatasource=$template.getPropertyByName("embedded-datasource"))
+#if ($embeddedDatasource)
+#set ($jdbcUrl=$formatUtils.escapeXml($embeddedDatasource.getPropertyValue("jdbcUrl")))
+#set ($username=$embeddedDatasource.getPropertyValue("username"))
+#set ($password=$embeddedDatasource.getPropertyValue("password"))
+#end
+#exposeOXSpecific()
+    <Resource name="jdbc/${model.name}DS" auth="Container" type="javax.sql.DataSource"
+       maxActive="20" maxIdle="5" maxWait="10000"
+       username="$username"
+       password="$password"
+       driverClassName="$datasource.driverClassName"
+       url="$jdbcUrl"/>
+#end
+       

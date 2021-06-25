@@ -1,0 +1,27 @@
+<target name="Tomcat">
+	<architecture-target name="docker" description="docker architecture">
+	</architecture-target>
+
+	<template-target
+        name="tomcat embedded artifact"
+		libdir=""
+		tool="velocity"
+		outputdir="REST"
+		package-root=""
+		belongToPackage="true">			
+
+		<template 
+			name="TomcatContextXml" templateFileName="TomcatContextXml.vm" 
+			subdir="" outputsubdir="src/tomcat/resources/META-INF"
+			technicalPackage=""
+			add-model-name="false"
+			add-model-dir-name="false"
+			file-extension="xml"
+			file-prefix=""
+			file-suffix="context"
+			application-specific="true">
+		</template>
+
+  </template-target>
+
+</target>

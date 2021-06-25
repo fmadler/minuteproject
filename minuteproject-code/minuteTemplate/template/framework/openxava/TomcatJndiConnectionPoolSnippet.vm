@@ -1,3 +1,4 @@
+##TODO use the migrated template from /tomcat
 #generatorSpecific()
 #foreach ($model in $configuration.models())
 #exposeVariableModelSpecific()

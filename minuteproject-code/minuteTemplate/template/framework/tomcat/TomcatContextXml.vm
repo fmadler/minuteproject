@@ -1,8 +1,7 @@
-##TODO use the migrated template from /tomcat
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
-
-    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <!-- use embedded context for test only, such as docker-compose build stack -->
+    <!-- <WatchedResource>WEB-INF/web.xml</WatchedResource>-->
 #foreach ($model in $configuration.models())
 #parse("TomcatJndiConnectionPoolSnippet.vm")
 #end

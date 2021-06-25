@@ -61,7 +61,7 @@ public class StatementModel {
 
 	public Query getQueryByIdOrName(String id) {
 		for (Query query : getQueries().getQueries()) {
-			if (query.getId().equals(id))
+			if (query.getId()!=null && query.getId().equals(id))
 				return query;
 		}
 		return getQueryByName(id); // search by name

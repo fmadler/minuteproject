@@ -1,5 +1,8 @@
 package net.sf.minuteProject.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.CharacterIterator;
 import java.text.SimpleDateFormat;
 import java.text.StringCharacterIterator;
@@ -467,5 +470,9 @@ public class FormatUtils {
 	{
 		if (path==null) return "";
 	    return path.replace("\\", "\\\\");
+	}
+
+	public static String escapeXml(String path)  {
+		return StringEscapeUtils.escapeXml(path);
 	}
 }

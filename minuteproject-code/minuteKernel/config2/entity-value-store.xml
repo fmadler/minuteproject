@@ -1,5 +1,4 @@
 <!DOCTYPE root>
-<!DOCTYPE root>
 <generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
 	xs:noNamespaceSchemaLocation="mp-config.xsd">
@@ -13,8 +12,8 @@
 				<context-parameter name="userId" type="int"></context-parameter>
 			</context-parameters>
 		</context>
-		<model name="winy" version="0.9.2" package-root="com">
-		<!--<model name="entityvaluestore" version="0.9.0" package-root="org.minuteproject.ms">-->
+<!--		<model name="winy" version="0.9.3" package-root="com">-->
+		<model name="entityvaluestore" version="0.9.3" package-root="org.minuteproject.ms">
 			<description>
 				<CDATA>
 					This model illustrates:
@@ -41,7 +40,7 @@
 				</dataSource>
 				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
 				<primaryKeyPolicy oneGlobal="true">
-					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+					<primaryKeyPolicyPattern name="identityPattern"></primaryKeyPolicyPattern>
 				</primaryKeyPolicy>
 			</data-model>
 			<business-model>
@@ -422,11 +421,26 @@ $where_entity $where_id_entity $where_web_path_entity $where_language_code $wher
 						</query-filters>
 					</query>
 					<!-- developer -->
-					<!-- <query name="system_info" id="system_info" package-name="developer"> 
-						<query-body> <value> <![CDATA[ select * from conf_Param where param_key in 
-						('SERVER_ROOT_URL','SITE_PUBLIC_API','SITE_PUBLIC_API_SAMPLE_CLIENT') ]]> 
-						</value> </query-body> </query> -->
-
+					<query name="tenant_registry" id="tenant_registry"
+						   package-name="tenant">
+						<query-body>
+							<value>
+								select t.name, t.web_path, tr.category, tr.url
+								from ten_tenant t, ten_tenant_registry tr
+								where tr.tenant_id = t.id
+								$whereTenantWebPath
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereTenantWebPath" and-where-connection="and">
+								<value><![CDATA[ t.web_path = ? ]]></value>
+								<query-params>
+									<query-param name="tenant_web_path" type="string" sample="'programme'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					</query>
 				</queries>
 
 			</statement-model>
@@ -447,6 +461,11 @@ $where_entity $where_id_entity $where_web_path_entity $where_language_code $wher
 			<property name="add-named-queries" value="false" />
 
 			<property name="target-server" value="tomcat" />
+			<property name="embedded-datasource" value="docker">
+				<property name="jdbcUrl" value="jdbc:mysql://db:3306/bin_desc_management?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true"/>
+				<property name="username" value="root"/>
+				<property name="password" value="P@ssw0rd"/>
+			</property>
 			<!-- -->
 			<property name="mail-server" value="mailgun">
 				<property name="mail.smtps.host" value="smtp.mailgun.org" />

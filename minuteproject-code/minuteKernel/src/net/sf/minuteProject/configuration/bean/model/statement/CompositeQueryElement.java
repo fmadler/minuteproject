@@ -24,7 +24,7 @@ public class CompositeQueryElement extends AbstractConfiguration{
 
 	private Query retrieveQuery() {
 		for (Query query : composite.getComposites().getStatementModel().getQueries().getQueries()) {
-			if (query.getId().equals(refid))
+			if (query.getId()!=null && query.getId().equals(refid))
 				return query;
 		}
 		return null;

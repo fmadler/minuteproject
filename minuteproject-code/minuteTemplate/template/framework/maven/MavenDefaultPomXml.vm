@@ -12,11 +12,9 @@
 	<packaging>${packaging}</packaging>
 	<name>${mavenReleaseName} artifact</name>
 
-<!-- Define the versions of your ear components here -->
 	<dependencies>
 	  <dependency>
 	    <groupId>${groupId}</groupId>
-##	    <artifactId>${mavenDependentArtifact}</artifactId>
 	    <artifactId>${dependentJarArtifactName}</artifactId>
 	    <version>${versionId}</version>
 	    <type>jar</type>

@@ -376,6 +376,7 @@ public class $thisClassName {
     }
 	
 #end
+#end
 
 $!updatedAreaImplementation
 
@@ -434,7 +435,7 @@ $!updatedAreaImplementation
             sheet.setColumnView(i, cv);
         }
     }
-#end
+
 
     private static String getReportPath (String name) {
         return System.getProperty("java.io.tmpdir")+"/"+name;
