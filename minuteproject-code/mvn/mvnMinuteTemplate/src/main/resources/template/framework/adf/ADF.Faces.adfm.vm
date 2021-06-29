@@ -1,9 +1,0 @@
-#exposeADFFacesModelSpecific()
-#exposeADFDataBindingControlSpecific()
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<MetadataDirectory xmlns="http://xmlns.oracle.com/adfm/metainf" version="11.1.1.0.0">
-   <DataBindingRegistry path="$modelADFFacesDataBindingsFullPath"/>
-#if($isBindingWsSDO || $isBindingSpring)   
-   <DataControlRegistry path="$modelADFFacesDataControlsFullPath"/>
-#end
-</MetadataDirectory>

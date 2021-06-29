@@ -1,5 +1,0 @@
-#exposeVariableEntitySpecific()	
-#set ($applicationOX=$configuration.name)
-javax.portlet.short-title=$applicationOX
-javax.portlet.title=$applicationOX - $domainClassName
-category.Contractor=$applicationOX

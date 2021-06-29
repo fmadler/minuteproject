@@ -1,4 +1,0 @@
-#macro (exposeEntityCache)
-#set ($hasCache = $cacheUtils.hasCache($table))
-#set ($cacheStrategy = $cacheUtils.getCacheStrategy($table))
-#end

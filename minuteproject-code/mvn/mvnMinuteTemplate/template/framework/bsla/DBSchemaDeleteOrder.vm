@@ -1,5 +1,0 @@
-#exposeVariableModelSpecific()
-#set($tableDeleteOrder=$schemaUtils.getTableDeleteOrder($database))
-#foreach($tableOrder in $tableDeleteOrder)
-delete from $tableOrder.name;
-#end
