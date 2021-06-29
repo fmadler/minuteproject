@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"><!--
+	<parent>
+    <groupId>net.sf.minuteProject.console</groupId>
+    <artifactId>mp-console</artifactId>
+    <version>0.5</version>
+	</parent>
+	-->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.minuteproject</groupId>
+  <artifactId>console</artifactId>
+  <version>0.5</version>
+  <name>minute project console</name>
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.minuteproject</groupId>
+      <artifactId>kernel</artifactId>
+      <version>0.5</version>
+    </dependency> 
+<!--<dependency>
+    <groupId>com.miglayout</groupId>
+    <artifactId>miglayout</artifactId>
+    <version>3.6.3</version>
+</dependency>
+  -->
+  </dependencies>
+</project>

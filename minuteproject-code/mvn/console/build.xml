@@ -12,9 +12,11 @@
 	
     <property name="home.dir" value="."/>
     <property name="application.dir" value="${home.dir}/application"/>
-	<property name="application.name" value="${project.artifact.name}-${project.version}"/>	
+	<property name="application.name" value="${project.name}-${project.version}"/>	
 	
 	<property name="lib.dir" value="${home.dir}/lib"/>
+	<property name="dependent.dir" value="../minuteKernel/lib"/>
+	<property name="kernel.dist.dir" value="../minuteKernel/application/java/lib"/>
     <property name="dist.dir" value="dist"/>	
 	<property name="archive.name" value="${application.name}.jar"/>
 	<property name="archive.src.name" value="${application.name}-src.zip"/>
@@ -30,6 +32,12 @@
         <fileset dir="${lib.dir}">
             <include name="*.jar"/>
         </fileset>	
+        <fileset dir="${dependent.dir}">
+            <include name="*.jar"/>
+        </fileset>	  
+        <fileset dir="${kernel.dist.dir}">
+            <include name="*.jar"/>
+        </fileset>    	
     </path>
     <!-- ===================================================================== -->
     <!-- specific macros definition -->
