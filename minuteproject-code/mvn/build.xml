@@ -78,7 +78,7 @@
 		-->
 		<macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-plugin}" />
 
-		<macro_copy_java todir="${mvn.foundation.src}" filesetDir="${leg.kernel.java.src}" />
+		<macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.foundation.java.src}" />
 	</target>
 
 	<target name="copy-resource">
@@ -343,9 +343,6 @@
 		 - kernel
 		 - template
 	-->
-	<property name="ant.foundation.src" value="../minuteFoundation/src/main/java" />
-	<property name="mvn.foundation.src" value="../mvn/minuteFoundation/src/main/java" />
-
 	<target name="setup-mvn-foundation">
 		<macro_copy_for_mvn fromdir="../minuteFoundation/src/main/java" todir="../mvn/minuteFoundation/src/main/java" />
 	</target>
