@@ -50,7 +50,7 @@
 		<pathelement location="${testclasses.dir}"/>
 	</path>
 
-	<target name="migrate-to-maven" depends="clean,copy-java-code,copy-resource-template,copy-config">
+	<target name="migrate-to-maven" depends="clean,copy-java-code,copy-config,copy-resource,copy-velocity-template">
 		<title title="TASK archive" projectname="${project.name}" projectdir="${home.dir}"/>
 		<description>Perform migration tasks</description>
 	</target>
@@ -72,13 +72,26 @@
 		<title title="copy-java-code" projectname="${project.name}" projectdir="${home.dir}"/>
 		<description>Copy java code mvn project</description>
 		<macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src}" />
+		<macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-patch}" />
+		<!-- TODO check
+		<macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-patch2" />
+		-->
+		<macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-plugin}" />
+
+		<macro_copy_java todir="${mvn.foundation.src}" filesetDir="${leg.kernel.java.src}" />
 	</target>
 
-	<target name="copy-resource-template">
-		<title title="copy-resource-template" projectname="${project.name}" projectdir="${home.dir}"/>
+	<target name="copy-resource">
+		<title title="copy-resource" projectname="${project.name}" projectdir="${home.dir}"/>
 		<description>Copy resources </description>
 		<macro_copy_resource todir="${mvn.kernel.resources}" filesetDir="${leg.kernel.java.src}" />
 		<macro_copy_resource todir="${mvn.kernel.resources}" filesetDir="${leg.kernel.java.src-config}" />
+	</target>
+
+	<target name="copy-velocity-template">
+		<title title="copy-velocity-template" projectname="${project.name}" projectdir="${home.dir}"/>
+		<description>Copy velocity templates </description>
+		<macro_copy_resource todir="${mvn.kernel.templates}" filesetDir="${leg.templates.src}" />
 	</target>
 
 	<target name="copy-config">

@@ -43,8 +43,8 @@
             <javac 
             	debug="@{debug}" 
             	optimize="@{optimize}" 
-            	target="@{targetjvm}"
-            	source="@{targetjvm}"
+            	target="8"
+            	source="8"
             	deprecation="false" 
             	destdir="${classes.dir}" 
             	nowarn="false">

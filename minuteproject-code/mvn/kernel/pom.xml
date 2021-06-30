@@ -5,11 +5,10 @@
 	<groupId>net.sf.minuteproject</groupId>
 	<artifactId>kernel</artifactId>
 	<version>1.0.1</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<description>minuteproject kernel</description>
 	<url>http://minuteproject.sf.net</url>
-	<!-- <repositories> <repository> <id>ibiblio</id> <name>Ibilbio</name> <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url> 
-		</repository> </repositories> -->
+
 	<dependencies>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -51,11 +50,12 @@
 				<exclusion></exclusion>
 			</exclusions>
 		</dependency>
-<dependency>
-	<groupId>org.apache.velocity</groupId>
-	<artifactId>velocity</artifactId>
-	<version>1.7</version>
-</dependency>
+
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
             
 		<dependency>
 			<groupId>junit</groupId>
@@ -81,10 +81,7 @@
 	<properties>
 	</properties>
 
-	<modules>
-<module>mvnMinuteFoundation</module>
-<module>mvnMinuteKernel</module>
-	</modules>
+
 	<scm>
 		<developerConnection>florian adler</developerConnection>
 	</scm>
