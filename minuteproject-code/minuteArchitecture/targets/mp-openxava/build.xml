@@ -42,7 +42,7 @@
 	<property name="archive.src.name" value="${application.name}-src.zip"/>
 	<property name="release.code.dir" value="release-code"/>
 	
-	<property name="classes.dir" value="${home.dir}/classes"/>
+	<property name="classes.dir" value="${home.dir}/target/classes"/>
 
 	
 	<!-- ===================================================================== -->
