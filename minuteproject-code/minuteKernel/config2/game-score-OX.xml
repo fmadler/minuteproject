@@ -30,7 +30,7 @@
 				</primaryKeyPolicy>
 			</data-model>
 			<business-model>
-				<generation-condition>
+				<generation-condition exclude-views="true">
 					<condition type="exclude" startsWith="v_sitemap" />
 				</generation-condition>
 				<business-package default="model">
@@ -38,6 +38,45 @@
 					<condition type="package" startsWith="CONF" result="config"></condition>
 					<condition type="package" startsWith="GS_" result="core"></condition>					
 				</business-package>
+				<enrichment>
+					<conventions>
+						<!-- structure conventions -->
+						<!-- strip prefix -->
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+												  pattern-to-strip="GS_" />
+						<view-primary-key-convention
+								type="apply-default-primary-key-otherwise-first-one"
+								default-primary-key-names="IDENTIFIER,ID" />
+						<column-naming-convention type="apply-strip-column-name-prefix"
+												  pattern-to-strip="GS_" />
+						<column-naming-convention type="apply-strip-column-name-suffix"
+												  pattern-to-strip="_ID" />
+						<reference-naming-convention
+								type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+						<reference-naming-convention type="apply-many-to-many-aliasing"
+													 is-to-plurialize="true" />
+
+						<primary-key-convention type="apply-primary-key-on-entity-with-two-columns-only-and-foreign-key-otherwise-specified" />
+						<primary-key-convention type="apply-default-primary-key-otherwise-first-one" />
+
+						<entity-content-type-convention type="apply-content-type-to-entity-belonging-to-package" pattern="type,config" content-type="reference-data"/>
+						<entity-content-type-convention type="apply-content-type-to-entity-belonging-to-package" pattern="core" content-type="pseudo-static-data"/>
+						<!-- presentation conventions -->
+						<semantic-reference-convention content-type="reference-data"
+													   field-pattern="name,number,amount" field-pattern-type="endsWith"
+													   force-default-semantic-reference-based-on-id-and-first-attribute-if-not-present="true"
+													   max-number-of-fields="5"
+						/>
+						<semantic-reference-convention content-type="pseudo-static-data"
+													   field-pattern="name,web_path" field-pattern-type="endsWith"
+													   force-default-semantic-reference-based-on-id-and-first-attribute-if-not-present="true"
+													   max-number-of-fields="5"
+						/>
+						<ordering-convention field-pattern="DISPLAY_ORDER"
+											 field-pattern-type="endsWith" ordering="asc" />
+
+					</conventions>
+				</enrichment>
 			</business-model>
 			<statement-model>
 				<queries>
@@ -164,12 +203,18 @@
 
 		<targets catalog-entry="Openxava"
 			append-catalog-entry-dir-to-outputdir-root="true" outputdir-root="../../product/game-score-OX">
+			<property name="openxava-disable-sdd" value="true" />
 			<property name="openxava-enable-hibernate-ehcache" value="true" />
 			<property name="environment" value="remote" />
 			<property name="show-sql" value="false" />
 			<property name="swagger" value="true" />
 			<property name="setter-return-instance" value="true" />
 			<property name="add-named-queries" value="false" />
+			<property name="embedded-datasource" value="docker">
+				<property name="jdbcUrl" value="jdbc:mysql://db:3306/kohlantstats?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true"/>
+				<property name="username" value="root"/>
+				<property name="password" value="P@ssw0rd"/>
+			</property>
 		</targets>
 
 

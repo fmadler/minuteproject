@@ -277,12 +277,20 @@
 		</template>		
 		
 		<template 
-			name="TomcatContextXml" templateFileName="TomcatContextXml.vm" 
+			name="TomcatContextXml" templateFileName="TomcatContext.OX.xml.vm"
 			subdir="" outputsubdir="tomcat/snippet" technicalPackage="" add-model-name="false" 
 			add-model-dir-name="false"
 			file-extension="xml" file-prefix="" file-suffix="context" 
 			application-specific="true">
 		</template>	
+
+		<template
+			name="TomcatContextEmbedded" templateFileName="TomcatContextEmbedded.OX.xml.vm"
+			subdir="" outputsubdir="tomcat/embedded" technicalPackage="" add-model-name="false"
+			add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="context"
+			application-specific="true">
+		</template>
 
 		<template name="CheckConstraintSQL" templateFileName="CheckConstraintSQL.vm" 
 			subdir="" outputsubdir="sql" technicalPackage="check"

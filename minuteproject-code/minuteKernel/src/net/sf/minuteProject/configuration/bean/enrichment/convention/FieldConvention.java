@@ -1,5 +1,6 @@
 package net.sf.minuteProject.configuration.bean.enrichment.convention;
 
+import lombok.Data;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.utils.ColumnUtils;
 import net.sf.minuteProject.utils.StringUtils;
@@ -7,10 +8,12 @@ import net.sf.minuteProject.utils.parser.ParserUtils;
 
 import java.util.List;
 
+@Data
 public abstract class FieldConvention extends ModelConvention{
 
-	String fieldPattern, fieldPatternType, fieldType;
-	List<String> fieldPatternList;
+	private String fieldPattern, fieldPatternType, fieldType;
+	private Integer fieldMinLength, fieldMaxLength;
+	private List<String> fieldPatternList;
 	
 	protected boolean match(Column column) {
 		/*if (!column.isRequired()) //for the moment only apply on not nullable column

@@ -1,16 +1,17 @@
 package net.sf.minuteProject.configuration.bean.enrichment.convention;
 
+import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import net.sf.minuteProject.configuration.bean.enumeration.Order;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.configuration.bean.query.Ordering;
-import org.apache.log4j.Logger;
 
+@Data
+@Log4j
 public class OrderingConvention extends StereotypeConvention{
 
 	String ordering;
-	
-	private Logger logger = Logger.getLogger(OrderingConvention.class);
 
 	protected boolean isValid() {
 		return hasOrdering();
@@ -30,7 +31,10 @@ public class OrderingConvention extends StereotypeConvention{
 			}
 		}
 	}
-	
-	
-	
+
+	@Override
+	public String errorMessage() {
+		return "OrderingConvention not valid" + this;
+	}
+
 }

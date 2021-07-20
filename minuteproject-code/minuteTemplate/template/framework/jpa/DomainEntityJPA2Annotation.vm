@@ -219,7 +219,9 @@ $!updatedAreaEnd
 #end
 #set($fetchType=$jpa2Utils.getFetchType($template, $reference))
     @ManyToOne (fetch=FetchType.$fetchType #if ($isMandatory && !$table.isLinkEntity()), optional=false#end)
-    @JoinColumn(name="$localColumnName", referencedColumnName = "\"$reference.foreignColumnName\"" #if($localColumn.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true #else, unique=false#end $insertableUpdatableRelationship) 
+##    referencedColumnName = "\"$reference.foreignColumnName\"" is removed since for some obscure reason it gives a column not found error in some hibernate version...
+##    @JoinColumn(name="$localColumnName", referencedColumnName = "\"$reference.foreignColumnName\"" #if($localColumn.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true #else, unique=false#end $insertableUpdatableRelationship)
+    @JoinColumn(name="$localColumnName" #if($localColumn.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true #else, unique=false#end $insertableUpdatableRelationship)
 #exposeRelationship($table, $reference)
 #set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
 #if($addXmlBinding)

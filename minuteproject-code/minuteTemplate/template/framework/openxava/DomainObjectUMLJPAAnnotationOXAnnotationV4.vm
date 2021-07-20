@@ -22,6 +22,7 @@ import java.util.HashSet;
 import javax.persistence.*;
 import org.openxava.annotations.*;
 import javax.validation.constraints.NotNull;
+import lombok.Data;
 
 #putEntityValidationImport()
 #exposeJPA2Import()
@@ -38,7 +39,7 @@ import javax.validation.constraints.NotNull;
 @Entity (name="${className}")
 #putEntityValidation()
 @Table (name="\"${table.name}\"") ##to tackle reserved key words
-
+@Data
 @Views${annotationListTagBeginning}
 #exposeEntityUpdatedAreas("view-base")
 $!updatedAreaBegin
@@ -438,6 +439,7 @@ $chunk #if ($velocityCount!=$listProperties.size()),#else #end
     }
 #end    
 
+#* LOMBOK instead
 #if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
     public $embeddedIdClass get$embeddedIdClass() {
         return $embeddedIdVariable;
@@ -555,7 +557,7 @@ $!updatedAreaEnd
     }	
 
 #end
-
+*#
 /*
 It seems that while enabling PrePersist and PreUpdate there is a side effect in OX on Timestamp field 
 In MYSQL '' affected to LAST_MODIFICATION timestamp field 

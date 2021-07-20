@@ -11,7 +11,7 @@
 		result-cardinality
 
  -->
-	<xs:element name="generator-config" type="generator-config">
+	<xs:element name="generator-config" type="generator-config" >
 		<xs:annotation>
 			<xs:documentation source="version">1.0</xs:documentation>
 			<xs:documentation source="description">
@@ -34,7 +34,9 @@
      <xs:simpleType name="pattern-assertion-type">
          <xs:restriction base="xs:string">
              <xs:enumeration value="startsWith" />
+             <xs:enumeration value="starts-with" />
              <xs:enumeration value="endsWith" />
+             <xs:enumeration value="ends-with" />
              <xs:enumeration value="equals" />
              <xs:enumeration value="contains" />
              <xs:enumeration value="regex" />
@@ -44,6 +46,7 @@
      <xs:simpleType name="generationConditionDefaultType">
          <xs:restriction base="xs:string">
              <xs:enumeration value="include" />
+             <xs:enumeration value="package" />
              <xs:enumeration value="exclude" />
          </xs:restriction>
      </xs:simpleType>
@@ -208,6 +211,12 @@
 			<xs:enumeration value="apply-field-alias-based-on-camelcase" />
 		</xs:restriction>
 	</xs:simpleType>
+
+	<xs:simpleType name="entity-validation-convention-type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="first-field-less-than-second-field" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:simpleType name="foreign-key-convention-type">
 		<xs:restriction base="xs:string">
@@ -226,6 +235,7 @@
 	<xs:simpleType name="stereotype-type">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="email" />
+			<xs:enumeration value="password" />
 			<xs:enumeration value="text-html" />
 			<xs:enumeration value="text-area" />
 			<xs:enumeration value="url" />
@@ -235,6 +245,7 @@
 			<xs:enumeration value="currency" />
 			<xs:enumeration value="telephone" />
 			<xs:enumeration value="datetime" />
+			<xs:enumeration value="money" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -269,13 +280,28 @@
 			<xs:enumeration value="application" />
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="entity-content-type-convention-type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="apply-content-type-to-entity-belonging-to-package" />
+			<xs:enumeration value="apply-content-type-to-entity-starting-with" />
+			<xs:enumeration value="apply-content-type-to-entity-containing" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<!-- conventions -->
 	<xs:complexType name="column-naming-convention">
 		<xs:attribute name="type" type="column-naming-convention-type" />
+		<xs:attribute name="default-value" type="xs:string" />
 		<xs:attribute name="pattern-to-strip" type="xs:string" />
 	</xs:complexType>
-	
+
+	<xs:complexType name="entity-validation-convention">
+		<xs:attribute name="type" type="entity-validation-convention-type" />
+		<xs:attribute name="first-field-pattern" type="xs:string" />
+		<xs:attribute name="second-field-pattern" type="xs:string" />
+		<xs:attribute name="field-pattern-type" type="xs:string" />
+	</xs:complexType>
+
 	<xs:complexType name="sql-mapping-convention">
 		<xs:attribute name="type" type="sql-mapping-convention-type" />
 	</xs:complexType>
@@ -296,6 +322,14 @@
 		<xs:attribute name="description" type="xs:string" />
 		<xs:attribute name="pattern" type="xs:string" />
 		<xs:attribute name="content-type" type="content-type" />
+		<xs:attribute name="type" type="entity-content-type-convention-type" />
+	</xs:complexType>
+
+	<xs:complexType name="default-value-convention">
+		<xs:attribute name="field-pattern" type="xs:string" />
+		<xs:attribute name="field-pattern-type" type="pattern-assertion-type" />
+		<xs:attribute name="field-type" type="xs:string" />
+		<xs:attribute name="default-value" type="xs:string" />
 	</xs:complexType>
 
 	<xs:complexType name="property-convention">
@@ -309,7 +343,15 @@
 
 	<xs:complexType name="reference-naming-convention">
 		<xs:attribute name="type" type="xs:string" />
-		<xs:attribute name="is-to-plurialize" type="xs:string" />
+		<xs:attribute name="is-to-plurialize" type="xs:boolean" />
+		<xs:attribute name="field-pattern-type" type="pattern-assertion-type" />
+	</xs:complexType>
+
+	<xs:complexType name="check-constraint-convention">
+		<xs:attribute name="field-pattern" type="xs:string" />
+		<xs:attribute name="field-pattern-type" type="xs:string" />
+		<xs:element name="property" type="property" minOccurs="0"
+					maxOccurs="unbounded"></xs:element>
 	</xs:complexType>
 
 	<xs:complexType name="semantic-reference-convention">
@@ -326,6 +368,7 @@
 
 	<xs:complexType name="stereotype-convention">
 		<xs:attribute name="field-type" type="xs:string" />
+		<xs:attribute name="field-min-length" type="xs:int" />
 		<xs:attribute name="field-pattern" type="xs:string" />
 		<xs:attribute name="field-pattern-type" type="pattern-assertion-type" />
 		<xs:attribute name="stereotype" type="stereotype-type" />
@@ -356,6 +399,14 @@
 			<xs:element name="validation-among-values" type="validation-among-values" minOccurs="0" maxOccurs="1" />
 			<xs:element name="validation-exist-unique" type="validation-exist-unique" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="entity-display-convention">
+		<xs:attribute name="type" type="xs:string" />
+		<xs:attribute name="first-field-pattern" type="xs:string" />
+		<xs:attribute name="second-field-pattern" type="xs:string" />
+		<xs:attribute name="third-field-pattern" type="xs:string" />
+		<xs:attribute name="field-pattern-type" type="pattern-assertion-type" />
 	</xs:complexType>
 	
 	<xs:complexType name="ordering-convention">
@@ -425,10 +476,19 @@
 			<xs:element name="entity-content-type-convention" type="entity-content-type-convention"
 				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
+			<xs:element name="default-value-convention" type="default-value-convention"
+				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+			<xs:element name="property-convention" type="property-convention"
+				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
 			<xs:element name="foreign-key-convention" type="foreign-key-convention"
 				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 			<xs:element name="column-naming-convention" type="column-naming-convention"
+				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+			<xs:element name="entity-validation-convention" type="entity-validation-convention"
 				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 			<xs:element name="version-convention" type="version-convention"
@@ -436,6 +496,9 @@
 			</xs:element>
 			<xs:element name="reference-naming-convention" type="reference-naming-convention"
 				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+			<xs:element name="check-constraint-convention" type="check-constraint-convention"
+						minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 			<xs:element name="table-default-primary-key-convention"
 				type="table-default-primary-key-convention" minOccurs="0" maxOccurs="unbounded">
@@ -455,10 +518,16 @@
 			<xs:element name="stereotype-convention" type="stereotype-convention"
 				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
+			<xs:element name="ordering-convention" type="ordering-convention"
+				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
 			<xs:element name="field-attribute-convention" type="field-attribute-convention"
 				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 			<xs:element name="field-validation-convention" type="field-validation-convention"
+				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+			<xs:element name="entity-display-convention" type="entity-display-convention"
 				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
@@ -676,6 +745,12 @@
              <xs:enumeration value="select" />
          </xs:restriction>
    	</xs:simpleType>
+	<xs:simpleType name="and-where-connection">
+         <xs:restriction base="xs:string">
+             <xs:enumeration value="and" />
+             <xs:enumeration value="where" />
+         </xs:restriction>
+   	</xs:simpleType>
 
 	<xs:simpleType name="file-type">
          <xs:restriction base="xs:string">
@@ -856,7 +931,10 @@
 	<xs:complexType name="query-filter">
 		<xs:sequence>
 			<xs:element name="query-params" type="query-params" />
+			<xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="and-where-connection" type="and-where-connection"/>
 	</xs:complexType>
 	
 	<xs:complexType name="query-schedulers">
@@ -994,7 +1072,7 @@
 		<xs:attribute name="is-context" type="xs:boolean" /><!-- global context bound -->
 		<xs:attribute name="is-output-param" type="xs:boolean" default="false"/>
 		<xs:attribute name="default-value-when-null" type="xs:string"/>
-		<xs:attribute name="scope" type="scope" />
+		<xs:attribute name="scope" type="scope-type" />
 		
 
 		<!-- <xs:attribute name="direction" type="xs:string" /> -->
@@ -1044,6 +1122,7 @@
 		<xs:sequence>
 			<xs:element name="data-model" type="data-model"/>
 			<xs:element name="cmis-model" type="cmis-model"/>
+			<xs:element name="description" type="xs:string"/>
 			<xs:element name="business-model" type="business-model"
 				minOccurs="0">
 			</xs:element>
@@ -1077,6 +1156,10 @@
 			<xs:element name="post-generation-action" type="generation-action"
 				minOccurs="0">
 			</xs:element>
+		</xs:sequence>
+		<xs:sequence>
+			<xs:element name="property" type="property" minOccurs="0"
+						maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="outputdir-root" type="xs:string" />
 		<xs:attribute name="templatedir-root" type="xs:string" />

@@ -88,7 +88,7 @@ public class DataModel {
 	}
 
 	public void setSchema(String schema) {
-		this.schema = StringUtils.upperCase(schema);
+		this.schema = StringUtils.upperCase(PropertyUtils.convertValueIfSystemOrEnvironmentVariable(schema));
 	}
 
 	public PrimaryKeyPolicy getPrimaryKeyPolicy() {

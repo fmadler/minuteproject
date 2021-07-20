@@ -20,4 +20,3 @@
        driverClassName="$datasource.driverClassName"
        url="$jdbcUrl"/>
 #end
-       

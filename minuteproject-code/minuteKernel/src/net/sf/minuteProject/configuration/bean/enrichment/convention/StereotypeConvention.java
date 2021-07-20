@@ -1,5 +1,7 @@
 package net.sf.minuteProject.configuration.bean.enrichment.convention;
 
+import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import org.apache.log4j.Logger;
 
 import net.sf.minuteProject.configuration.bean.BusinessModel;
@@ -8,11 +10,12 @@ import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.ColumnUtils;
 
+@Data
+@Log4j
 public class StereotypeConvention extends FieldConvention{
 
-	String stereotype;
-	private Logger logger = Logger.getLogger(StereotypeConvention.class);
-	
+	private String stereotype;
+
 	@Override
 	public void apply(BusinessModel model) {
 		if (isValid()) {
@@ -22,13 +25,17 @@ public class StereotypeConvention extends FieldConvention{
 				}
 			}
 		} else
-			logger.error("StereotypeConvention not valid");
+			log.error(errorMessage());
+	}
+
+	public String errorMessage() {
+		return "StereotypeConvention not valid" + this;
 	}
 
 	public void apply(Table table) {
 		for (Column column : table.getColumns()) {
 			if (match(column)) {
-				logger.debug("applying stereotype "+stereotype+" to column "+column.getName());
+				log.debug("applying stereotype "+stereotype+" to column "+column.getName());
 				String stereotypeToLowerCase = stereotype.toLowerCase();
 				if (stereotypeToLowerCase.equals("money") || stereotypeToLowerCase.equals("currency") ) {
 					if (ColumnUtils.isNumeric(column)) {
