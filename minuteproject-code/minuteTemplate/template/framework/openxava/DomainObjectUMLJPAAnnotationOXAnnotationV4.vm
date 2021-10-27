@@ -36,7 +36,7 @@ import lombok.Data;
  * <p>Description: Domain Object describing a ${className} entity</p>
  *
  */
-@Entity (name="${className}")
+@javax.persistence.Entity (name="${className}")
 #putEntityValidation()
 @Table (name="\"${table.name}\"") ##to tackle reserved key words
 @Data

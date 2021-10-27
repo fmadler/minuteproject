@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.sf.minuteProject.configuration.bean.BusinessModel;
 import net.sf.minuteProject.configuration.bean.GeneratorBean;
@@ -559,7 +560,6 @@ public class TableUtils {
 
 	public static boolean isCompositePrimaryKeyNotMany2Many(Table table) {
 		if (!table.isManyToMany() && (table.getPrimaryKeyColumns().length > 1
-		// )){
 				|| getPrimaryKeyAndForeignKeyColumns(table).size() > 0)) {
 			return true;
 		}
@@ -630,7 +630,7 @@ public class TableUtils {
 			if (index.getColumnCount() > 0)
 				return Arrays.asList(index.getColumns());
 		}
-		return new ArrayList<Column>();
+		return new ArrayList<>();
 	}
 
 	public static List<Column> getColumnWithoutPrimaryKeys(Table table) {
@@ -666,12 +666,6 @@ public class TableUtils {
 		return proposedVariable + "__";
 	}
 
-	//
-	// public static String getEmbeddedClass (Table table, String
-	// proposedVariable) {
-	// return proposedVariable+"__";
-	// }
-
 	public static boolean isPartOfEmbeddedAnNotForeignKey(Column column) {
 		if (isCompositePrimaryKeyNotMany2Many(column.getTable())) {
 			for (Column c : column.getTable().getPrimaryKeyColumns()) {
@@ -695,12 +689,6 @@ public class TableUtils {
 		return columns;
 	}
 
-/*	public static boolean hasSessionParam(Table table) {
-		for (Column column : table.getColumns()) {
-			if (!StringUtils.isEmpty(column.getSessionParamName())) return true;
-		}
-		return false;
-	}*/
 	public static boolean needsRequest(Table table) {
 		for (Column column : table.getColumns()) {
 			if (
@@ -729,5 +717,20 @@ public class TableUtils {
 		return Arrays.stream(table.getColumns())
 				.filter(u -> !u.hasBeenDuplicated() && !u.isImplicit())
 				.collect(Collectors.toList());
+	}
+
+	public static List<Column> getRequiredColumns(Table table) {
+		return getRequiredColumnStream(table)
+				.collect(Collectors.toList());
+	}
+
+	public static boolean hasRequiredColumns(Table table) {
+		return getRequiredColumnStream(table)
+				.findAny().isPresent();
+	}
+
+	private static Stream<Column> getRequiredColumnStream(Table table) {
+		return Arrays.stream(table.getColumns())
+				.filter(Column::isRequired);
 	}
 }

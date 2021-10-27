@@ -12,14 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.minuteProject.configuration.bean.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import net.sf.minuteProject.configuration.bean.Application;
-import net.sf.minuteProject.configuration.bean.DataModel;
-import net.sf.minuteProject.configuration.bean.GeneratorBean;
-import net.sf.minuteProject.configuration.bean.Model;
-import net.sf.minuteProject.configuration.bean.Template;
 import net.sf.minuteProject.configuration.bean.enumeration.Cardinality;
 import net.sf.minuteProject.configuration.bean.enumeration.Scope;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
@@ -526,5 +522,10 @@ public class QueryUtils {
 	public static boolean isCache(Query query) {
 		return query.isCache() ||
 				"reference-data".equals(query.getContentType());
+	}
+
+	public static Table getQueryInputTable(StatementModel statementModel, String name) {
+		final Query query = statementModel.getQueryByName(name);
+		return query.getInputBean();
 	}
 }

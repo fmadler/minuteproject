@@ -36,7 +36,7 @@ public class QueryParams extends AbstractConfiguration {
 	 */
 	public List<QueryParam> getUniqueQueryParams() {
 		if (uniqueQueryParams == null) {
-			uniqueQueryParams = new ArrayList<QueryParam>();
+			uniqueQueryParams = new ArrayList<>();
 			for (QueryParam queryParam : getQueryParams()) {
 				if (StringUtils.isEmpty(queryParam.getRefid()) || StringUtils.isEmpty(queryParam.getRefname())) {
 					uniqueQueryParams.add(queryParam);
@@ -50,11 +50,12 @@ public class QueryParams extends AbstractConfiguration {
 		flatQueryParams=null;
 	}
 	
-	public List<QueryParam> getFlatQueryParams(boolean isMandatory) {
+	public List<QueryParam> getFlatQueryParams(boolean isMandatoryDefault) {
 		if (flatQueryParams == null) {
-			flatQueryParams = new ArrayList<QueryParam>();
+			flatQueryParams = new ArrayList<>();
 			for (QueryParam queryParam : getQueryParams()) {
 				if (!queryParam.isOutputParam()) {
+					boolean isMandatory = (queryParam.isMandatory())?true:isMandatoryDefault;
 					String refidParam = queryParam.getRefid();
 					if (!StringUtils.isEmpty(refidParam)) {
 						QueryParam instance = getReferenceIdQueryParam(refidParam);

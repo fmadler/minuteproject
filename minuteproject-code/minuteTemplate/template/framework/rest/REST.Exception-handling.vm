@@ -11,8 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.SQLException;
 
 @Provider
@@ -25,9 +23,7 @@ public class $className implements ExceptionMapper<Throwable> {
         ErrorMessage errorMessage = new ErrorMessage();
         setHttpStatus(ex, errorMessage);
         errorMessage.setMessage(ex.getMessage());
-        StringWriter errorStackTrace = new StringWriter();
-        //ex.printStackTrace(new PrintWriter(errorStackTrace));
-        //ex.printStackTrace();
+        errorMessage.setCause(ExceptionUtils.getStackTrace(ex));
         log.error(errorMessage.toString());
 
         return Response.status(errorMessage.getStatus())

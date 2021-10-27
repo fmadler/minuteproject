@@ -13,7 +13,6 @@ import net.sf.minuteProject.utils.TableUtils;
 public class QueryParam extends Field {
 
 	private QueryParams queryParams;
-//	private boolean isMandatory =true; TODO set in constructor
 	private boolean isImplicit  =false;
 	private boolean isContext   =false;
 	private boolean hasBeenDuplicated   =false;

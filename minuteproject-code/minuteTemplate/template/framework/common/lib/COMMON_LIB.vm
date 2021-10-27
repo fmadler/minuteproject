@@ -508,11 +508,17 @@ $!updatedAreaEnd
 
 
 #macro (injectPrepareStatementParams)
+		private void injectPrepareStatementParams(
 #if($query.isWrite())
-		private void injectPrepareStatementParams(CallableStatement pstmt#if($isNotVoidInput), $sddInputBeanClass $sddInputBeanVariable#end) throws SQLException {
+			CallableStatement pstmt
 #else
-		private void injectPrepareStatementParams(PreparedStatement pstmt#if($isNotVoidInput), $sddInputBeanClass $sddInputBeanVariable#end) throws SQLException {
+			PreparedStatement pstmt
 #end
+			#if($isNotVoidInput), $sddInputBeanClass $sddInputBeanVariable#end
+			) throws SQLException {
+##		private void injectPrepareStatementParams(
+##			#if($isNotVoidInput), $sddInputBeanClass $sddInputBeanVariable#end
+##			) throws SQLException {
 			int index = 1;
 #foreach($column in $inputBean.columns)
 #if ($column.isOutputParam())
@@ -880,6 +886,8 @@ $!updatedAreaEnd
 			      pstmt.setNull(index, java.sql.Types.${column.type});
 			      index ++;
 			   }
+			   //remove extra element
+			   index --;
 #end
             } else {
 #if(${column.hasProperty("like-mode")})
@@ -907,6 +915,8 @@ $!updatedAreaEnd
 			      pstmt.set$columnType(index, element);
 			      index ++;
 			   }
+			   //remove extra element
+			   index --;
 #end
 #end
 #end

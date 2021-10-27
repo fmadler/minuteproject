@@ -43,7 +43,7 @@ public class Composite extends AbstractConfiguration {
 
 	public List<CompositeQueryElement> getQueries() {
 		if (queries == null)
-			queries = new ArrayList<CompositeQueryElement>();
+			queries = new ArrayList<>();
 		return queries;
 	}
 
@@ -98,7 +98,7 @@ public class Composite extends AbstractConfiguration {
 
 	public List<Table> getEntities() {
 		if (entities == null)
-			entities = new ArrayList<Table>();
+			entities = new ArrayList<>();
 		return entities;
 	}
 

@@ -179,7 +179,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	
 	public List<Field> getQueryFields() {
 		if (queryFields==null) {
-			queryFields = new ArrayList<Field>();
+			queryFields = new ArrayList<>();
 		}
 		return queryFields;
 	}
@@ -409,7 +409,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 
 	public List<QueryParam> getQueryParams(Direction direction) {
 		if (Direction.IN.equals(direction)) {
-			List<QueryParam> list = new ArrayList<QueryParam>();
+			List<QueryParam> list = new ArrayList<>();
 			list.addAll(getInputParams().getFlatQueryParams(true));
 			for (QueryFilter filter : getQueryFilters()) {
 				QueryParams queryParams2 = filter.getQueryParams();

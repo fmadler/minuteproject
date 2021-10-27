@@ -4,18 +4,18 @@ import net.sf.minuteProject.configuration.bean.AbstractConfiguration;
 
 public class CompositeQueryElement extends AbstractConfiguration{
 
-	private String refid;
+	//private String refid;
 	private Query query;
 	private Composite composite;
 
-	public String getRefid() {
+	/*public String getRefid() {
 		return refid;
 	}
 
 	public void setRefid(String refid) {
 		this.refid = refid;
 	}
-
+*/
 	public Query getQuery() {
 		if (query==null)
 			query = retrieveQuery();

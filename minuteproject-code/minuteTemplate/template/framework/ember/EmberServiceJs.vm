@@ -18,6 +18,7 @@ export default Service.extend({
         var adapter = Adapter.create(); 
         return adapter.${tableVariableName}(params);
     },
+
 #end
 #end
 #end 
@@ -54,16 +55,31 @@ export default Service.extend({
 #foreach($table in ${composite.outputComposite.entities})
 #exposeVariableEntitySpecific()
 #putImportCompositeOutputSDDBean()
+#set($inputTable = $queryUtils.getQueryInputTable($model.getStatementModel(), $table.name))
+#if ($tableUtils.hasRequiredColumns($inputTable))
+		if (validate${tableVariableName}(params)) {
+			var ${domainVariableName}Promise = adapter.${domainVariableName}(params)
+			.then(d => {
+				return d.${sddOutputBeanClass};
+			});
+		}
+#else
 		var ${domainVariableName}Promise = adapter.${domainVariableName}(params)
 		.then(d => {
 			return d.${sddOutputBeanClass};
 		});
 #end
+#end
 		var promises = {
 #foreach($table in ${composite.outputComposite.entities})
 #exposeVariableEntitySpecific()
 #putImportCompositeOutputSDDBean()
+#set($inputTable = $queryUtils.getQueryInputTable($model.getStatementModel(), $table.name))
+#if ($tableUtils.hasRequiredColumns($inputTable))
+			${domainVariableName} : validate${tableVariableName}(params) ? ${domainVariableName}Promise : [],
+#else
 			${domainVariableName} : ${domainVariableName}Promise,
+#end
 #end
 ## add queryparam: when path params are passed they are not available at the route template (not like queryparams)
 ## thus add them here
@@ -80,3 +96,24 @@ export default Service.extend({
 #end
 
 });
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($query in $package.getQueries())
+#if(!$query.isIndirection())
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDInputBean()
+#if ($tableUtils.hasRequiredColumns($table))
+	// input validation check for ${tableVariableName}
+export function validate${tableVariableName}(params) {
+#foreach($column in ${tableUtils.getRequiredColumns($table)})
+#putColumnParamNaming()
+	if (!params.$columnVar) return false;
+#end
+	return true;
+}
+#end
+#end
+#end
+#end

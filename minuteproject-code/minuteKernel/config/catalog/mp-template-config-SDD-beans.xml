@@ -16,7 +16,8 @@
 			file-extension="java" file-prefix="" file-suffix="In" has-updatable-nature="true"
 			scope-specific-value="sdd-input-bean" >
 			<property name="direction" value="in"/>
-		</template>	
+			<property name="java-validation" value="true"/>
+		</template>
 
 		<template name="SDDOutputBean" templateFileName="JavaBean.vm" 
 			subdir="" outputsubdir="" technicalPackage="sdd.out"

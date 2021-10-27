@@ -8,6 +8,8 @@ import lombok.Setter;
 import net.sf.minuteProject.configuration.bean.AbstractConfiguration;
 import net.sf.minuteProject.configuration.bean.enrichment.rule.Derivation;
 import net.sf.minuteProject.configuration.bean.enrichment.validation.FieldValidation;
+import net.sf.minuteProject.configuration.bean.enrichment.validation.FieldValidationAmongValue;
+import net.sf.minuteProject.configuration.bean.enrichment.validation.FieldValidationMandatory;
 import net.sf.minuteProject.configuration.bean.enumeration.Order;
 import net.sf.minuteproject.model.db.type.FieldType;
 
@@ -126,11 +128,14 @@ public class Field extends AbstractConfiguration implements CoreElement {
 	}
 
 	public void setMandatory(boolean isMandatory) {
+
 		this.isMandatory = isMandatory;
+		addFieldValidation(new FieldValidationMandatory());
 	}
-	
+
 	public void setIsMandatory(boolean isMandatory) {
 		this.isMandatory = isMandatory;
+		addFieldValidation(new FieldValidationMandatory());
 	}
 
 	public boolean isId() {

@@ -1,6 +1,7 @@
 #generatorSpecific()
 #exposeVariableEntitySpecific()
 #addedAreas()
+#putJPA2TemplateDefinition()
 #set ($useTemporal = true)
 package $packageName;
 
@@ -82,6 +83,9 @@ public class ${className} {
     }
 #end
 #else
+#putValidationConstraints()
+#putFieldValidation()
+    private String ${columnVar}Input;
     private List<$columnType> $columnVar;
 
     public List<${columnType}> get${columnClass} () {
@@ -91,6 +95,7 @@ public class ${className} {
     }
     
     public void set$columnClass (String $columnVar) {
+        this.${columnVar}Input = ${columnVar};
     	if ($columnVar!=null) {
     		for (String element : StringUtils.split($columnVar, ",")) {
 #set($key=$convertUtils.getJavaTypeMaskExpressionFromStringInput($column, "element", true))
