@@ -3,7 +3,10 @@ package net.sf.minuteProject.configuration.bean;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import net.sf.minuteProject.utils.sql.QueryUtils;
 import org.apache.commons.lang.StringUtils;
 
 import net.sf.minuteProject.configuration.bean.enrichment.group.EntityGroup;
@@ -78,6 +81,21 @@ public class Package extends PackageAdapter <Group, GeneratorBean>{
 		if (listOfQueries==null)
 			listOfQueries = new ArrayList<Query>();
 		return listOfQueries;
+	}
+
+	public List<Table> getFullStackInputTable() {
+		return getPureQueries().stream()
+				.map(u -> u.getInputBean())
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList())
+				;
+	}
+	public List<Query> getPureQueries() {
+		return getQueries().stream()
+				.filter(u -> !u.isIndirection() && !QueryUtils.isBackend(u))
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList())
+				;
 	}
 	
 	public List<Composite> getComposites() {

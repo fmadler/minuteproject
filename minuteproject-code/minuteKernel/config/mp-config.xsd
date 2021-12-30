@@ -1051,6 +1051,7 @@
 			<xs:element name="query-chunk-params" type="query-chunk-params"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="sample-value" type="xs:string" use="required" />
 	</xs:complexType>
 	<xs:complexType name="query-chunk-param">
 		<xs:attribute name="id" type="xs:string" use="required" />

@@ -1,0 +1,52 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+package $packageName;
+
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+import $sddDaoInterfaceImport;
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class ${className} implements DataFetcher<List<$sddOutputBeanClass>>{
+
+    @Autowired
+    @Qualifier("$sddDaoInterfaceVariable")
+    $sddDaoInterfaceClass $sddDaoInterfaceVariable;
+
+    @Override
+    public List<$sddOutputBeanClass> get(DataFetchingEnvironment dataFetchingEnvironment) {
+#if($isNotVoidInput)
+        $sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass ();
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+#if (!$column.hasBeenDuplicated())
+#if (!$column.isImplicit())
+        ${sddInputBeanVariable}.set$columnClass (dataFetchingEnvironment.getArgument("${columnVar}"));
+#elseif ($column.isImplicit()) ##TODO check if sessionParam
+#if ($column.useJwtSubject())
+//Jwtsubject TODO
+#elseif ($column.defaultValue)
+        ${columnType} ${columnClass}_DEFAULT = "$column.defaultValue"; ##TODO with other column type
+        ${sddInputBeanVariable}.set$columnClass (dataFetchingEnvironment.getArgument(${columnClass}_VALUE));
+#end
+#end
+#end
+#end
+#end
+        return ${sddDaoInterfaceVariable}.execute (
+#daoParameters()
+            ).get$sddOutputBeanClasses();
+    }
+
+}

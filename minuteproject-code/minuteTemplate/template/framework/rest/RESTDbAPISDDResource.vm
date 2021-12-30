@@ -41,7 +41,9 @@
 #end
 ###
 #macro (daoParameters)
+#if($isNotVoidInput)
         	${sddInputBeanVariable}
+#end
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
 #if($sizeColumn>0 || $velocityCount>1)           ,#else           #end$chunkName
@@ -121,6 +123,7 @@
 #end
 
 package $packageName;
+    //templateModelCompress $templateModelCompress
 $!updatedAreaImport
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.*;

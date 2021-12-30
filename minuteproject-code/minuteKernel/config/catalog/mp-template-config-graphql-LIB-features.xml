@@ -1,0 +1,13 @@
+<target name="graphql lib"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="mp-template-config.xsd">		
+	<architecture-target name="libraries" description="libraries"/>	
+	<template-target
+			libdir="lib/GraphQL_LIB.vm"
+		tool="velocity"
+		outputdir="src/test/java"
+		belongToPackage="true">					
+	</template-target>		
+<!--- 		libdir="lib/GraphQL_LIB.vm" -->
+</target>	

@@ -1,0 +1,25 @@
+<target name="graphql">
+	<architecture-target name="GraphQL" description="GraphQL">
+	</architecture-target>
+    <plugin name="environmentUtils" className="net.sf.minuteProject.plugin.environment.EnvironmentUtils"></plugin>
+    <plugin name="graphqlUtils" className="net.sf.minuteProject.plugin.graphql.GraphQLUtils"></plugin>
+
+	<template-target
+    	name="Graphql file"
+		outputdir="src/main/resources"
+		package-root=""
+		belongToPackage="true">
+
+		<template name="GraphQL" templateFileName="GraphQL.vm"
+			file-extension="graphql"
+			file-prefix="api"
+            add-model-dir-name="false"
+            add-package-name="true" add-business-package-dir-name="false"
+            package-root=""
+            model-specific="true" >
+		</template>
+
+		<!-- 		libdir="GraphQL_LIB.vm" -->
+    </template-target>
+
+</target>

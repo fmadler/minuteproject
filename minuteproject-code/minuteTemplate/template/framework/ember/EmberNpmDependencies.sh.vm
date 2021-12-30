@@ -41,3 +41,12 @@ ember install tracked-built-ins
 ember install ember-concurrency
 
 ember install ember-cli-fastboot
+
+# SEO
+
+ember install ember-cli-head
+ember install ember-page-title
+ember install ember-cli-meta-tags
+
+   # faster rendition
+ember install ember-in-viewport

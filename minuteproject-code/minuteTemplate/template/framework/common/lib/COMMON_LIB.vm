@@ -283,6 +283,7 @@ $readmeUtils.getReadme($template)
 #set($swagger=$template.hasPropertyValue("swagger",false))
 #set($botdetect=$template.hasPropertyValue("botdetect",false))
 #set($isVelocityEnabled=$template.hasPropertyValue("velocity-enabled",false))
+#set($isGraphQLEnabled=$template.hasPropertyValue("graphql-enabled",false))
 #end
 
 #macro(putColumnDefaultValue)

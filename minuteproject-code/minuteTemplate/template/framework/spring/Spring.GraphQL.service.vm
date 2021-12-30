@@ -1,0 +1,76 @@
+#exposeVariableModelSpecific()
+#exposeGraphQLInfo()
+package $packageName;
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($query in $package.getPureQueries())
+#exposeSpringGraphQLQuerySpecific()
+import $sddInputBeanDataFetcherImport;
+#end
+#end
+import graphql.GraphQL;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+
+import graphql.scalars.ExtendedScalars;
+
+@Service
+public class ${className} {
+
+    @Value("classpath:${graphqlSddSchema}")
+    Resource resource;
+
+    private GraphQL graphQL;
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($query in $package.getPureQueries())
+#exposeSpringGraphQLQuerySpecific()
+    @Autowired
+    $sddInputBeanDataFetcherClass $sddInputBeanDataFetcherVariable;
+#end
+#end
+
+    // load schema at application start up
+    @PostConstruct
+    private void loadSchema() throws IOException {
+        // get the schema
+        File schemaFile = resource.getFile();
+        // parse schema
+        TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(schemaFile);
+        RuntimeWiring wiring = buildRuntimeWiring();
+        GraphQLSchema schema = new SchemaGenerator().makeExecutableSchema(typeRegistry, wiring);
+        graphQL = GraphQL.newGraphQL(schema).build();
+    }
+
+    private RuntimeWiring buildRuntimeWiring() {
+        return RuntimeWiring.newRuntimeWiring()
+            .scalar(ExtendedScalars.Date)
+            .type("Root", typeWiring -> typeWiring
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($query in $package.getPureQueries())
+#exposeSpringGraphQLQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+                .dataFetcher("${tableVariableName}",$sddInputBeanDataFetcherVariable)
+#end
+#end
+            )
+            .build();
+    }
+
+    public GraphQL getGraphQL() {
+        return graphQL;
+    }
+
+}

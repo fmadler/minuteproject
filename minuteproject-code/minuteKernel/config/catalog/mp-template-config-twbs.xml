@@ -4,30 +4,6 @@
    	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"/>
    	<plugin name="kendoUiUtils" className="net.sf.minuteProject.plugin.kendoui.KendoUiUtils"/>
 
-	
-	<template-target 
-    	name="REST kendoui client web.xml config"
-		outputdir="src/main/webapp/WEB-INF"
-		package-root=""
-		belongToPackage="true">
-			 
-		<template name="WebXmlRESTKendoUiClient" templateFileName="WebXmlRESTKendoUiClient.vm" 
-			file-extension="xml" technicalPackage="" file-suffix="web" 
-			has-updatable-nature="true"
-			application-specific="true" add-model-name="false" >
-		</template>
-			 
-		<template name="JerseySpringApplicationContextXml" templateFileName="SpringApplicationContextXml-template.vm" 
-			file-extension="xml" technicalPackage="" file-suffix="application-context" 
-			has-updatable-nature="true"
-			application-specific="true" add-model-name="false" >
-			<property name="template-to-scan" value="RESTDbAPIEntityResource"></property>
-			<property name="template-to-scan-2" value="SpringServiceImpl"></property>
-			<property name="template-to-scan-scheduler" value="SpringScheduler"></property>
-		</template>
-
-    </template-target>
- 
 	<template-target 
     	name="REST kendoui client css, js"
 		outputdir="src/main/webapp"

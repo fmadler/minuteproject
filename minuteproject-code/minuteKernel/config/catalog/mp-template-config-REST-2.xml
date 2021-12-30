@@ -97,7 +97,13 @@
 			subdir="" outputsubdir="" technicalPackage="rest"
 			file-extension="java" file-prefix="" file-suffix="ControlDecorator" 
 			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
-		</template>		
+		</template>
+
+		<template name="REST.GraphQL.spring.endpoint" templateFileName="REST.GraphQL.spring.endpoint.vm"
+			subdir="" outputsubdir="" technicalPackage="rest"
+			file-extension="java" file-prefix="" file-suffix="GraphQLRestAPI"
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>
 		
 		<template name="REST.DateParam" templateFileName="REST.DateParam.vm" 
 			subdir="" outputsubdir="" technicalPackage="rest.param"
@@ -164,8 +170,35 @@
 		</template>
 
 	</template-target>
-		
-  	<template-target 
+
+	<template-target
+			name="REST servlet + server integration"
+			outputdir="src/main/webapp/WEB-INF"
+			package-root=""
+			belongToPackage="true">
+
+		<template name="WebXmlRESTKendoUiClient" templateFileName="WebXmlRESTKendoUiClient.vm"
+				  file-extension="xml" technicalPackage="" file-suffix="web"
+				  has-updatable-nature="true"
+				  application-specific="true" add-model-name="false" >
+		</template>
+
+		<template name="JerseySpringApplicationContextXml" templateFileName="SpringApplicationContextXml-template.vm"
+				  file-extension="xml" technicalPackage="" file-suffix="application-context"
+				  application-specific="true" add-model-name="false" >
+			<property name="template-to-scan" value="RESTDbAPIEntityResource"></property>
+			<property name="template-to-scan-2" value="SpringServiceImpl"></property>
+			<property name="template-to-scan-scheduler" value="SpringScheduler"></property>
+		</template>
+
+		<template name="REST.WLS.weblogic.xml" templateFileName="REST.WLS.weblogic.xml.vm"
+				  file-extension="xml" technicalPackage="" file-suffix="weblogic"
+				  application-specific="true" add-model-name="false" >
+		</template>
+
+	</template-target>
+
+	<template-target
     	name="Kendo client Maven"
 		outputdir=""
 		package-root=""

@@ -170,12 +170,7 @@
 			<property name="use-temporal" value="true"></property>
 			<property name="add-backend-implementation" value="spring"></property>
 		</technology>
-		
-		<!-- TODO 
-			 split DBApiRest part only
-			 from kendoui/emberjs/extjs/angular client
-			 -->
-			 
+
 		<technology name="Ember" model-type="rdbms"
 			template-config-file-name="mp-template-config-ember.xml"
 			default-outputdir="Ember" depends-on-targets=""
@@ -185,13 +180,32 @@
 				<framework name="ember" version="3+"></framework>
 			</frameworks>
 		</technology>
-					 
+
+		<technology name="GraphQL" model-type="rdbms"
+			template-config-file-name="mp-template-config-graphql.xml"
+			default-outputdir="REST" depends-on-targets=""
+			template-dir="@templateRoot@/framework/graphql" status="released"
+			description="Generates:\Graphql API">
+			<frameworks>
+			</frameworks>
+		</technology>
+
+		<technology name="SpringGraphQL" model-type="rdbms"
+			template-config-file-name="mp-template-config-SpringGraphQL.xml"
+			default-outputdir="REST" depends-on-targets=""
+			template-dir="@templateRoot@/framework/spring" status="released"
+			description="Generates:\Graphql API spring artifacts">
+			<frameworks>
+			</frameworks>
+		</technology>
+
 		<technology name="REST-Kendoui" model-type="rdbms"
 			template-config-file-name="mp-template-config-kendoui.xml"
 			default-outputdir="REST" 
 			depends-on-targets="JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,REST,CloudFoundry-REST,tomcat,docker,MavenMaster"
 			template-dir="@templateRoot@/framework/spring" status="released"
 			description="Generates:\REST Spring MVC CRUD app\Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
+			<!-- use REST-GRAGHQL API instead -->
 			<frameworks>
 				<framework name="spring" version="4"></framework>
 			</frameworks>
@@ -199,13 +213,31 @@
 			<property name="add-jpa2-implementation" value="hibernate"></property>
 			<property name="add-domain-specific-method" value="true"></property>
 			<property name="add-cache-implementation" value="ehcache"></property>
-			<!-- <property name="add-xmlbinding" value="true"></property>
-			<property name="add-xml-format" value="lowercase-hyphen"></property>
-			 -->
 			<property name="use-temporal" value="true"></property>
 			<property name="add-backend-implementation" value="spring"></property>
 			<property name="maven-artifact-finalName-suffix" value="KendoUiApp" />
 			
+			<property name="rest-pom-maven-artifact-finalName-suffix" value="KendoUiApp" />
+			<property name="rest-pom-maven-packaging" value="war" />
+		</technology>
+
+		<technology name="REST-GRAGHQL_API" model-type="rdbms"
+					template-config-file-name="mp-template-config-rest-graphql-api.xml"
+					default-outputdir="API"
+					depends-on-targets="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,REST,CloudFoundry-REST,tomcat,docker,MavenMaster"
+					template-dir="@templateRoot@/framework/spring" status="released"
+					description="Generates:\REST Spring MVC CRUD app\Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
+			<frameworks>
+				<framework name="spring" version="4"></framework>
+			</frameworks>
+			<property name="add-querydsl" value="2.1.2"></property>
+			<property name="add-jpa2-implementation" value="hibernate"></property>
+			<property name="add-domain-specific-method" value="true"></property>
+			<property name="add-cache-implementation" value="ehcache"></property>
+			<property name="use-temporal" value="true"></property>
+			<property name="add-backend-implementation" value="spring"></property>
+			<property name="maven-artifact-finalName-suffix" value="KendoUiApp" />
+
 			<property name="rest-pom-maven-artifact-finalName-suffix" value="KendoUiApp" />
 			<property name="rest-pom-maven-packaging" value="war" />
 		</technology>
@@ -222,9 +254,6 @@
 			<property name="add-jpa2-implementation" value="hibernate"></property>
 			<property name="add-domain-specific-method" value="true"></property>
 			<property name="add-cache-implementation" value="ehcache"></property>
-			<!-- <property name="add-xmlbinding" value="true"></property>
-			<property name="add-xml-format" value="lowercase-hyphen"></property>
-			 -->
 			<property name="use-temporal" value="true"></property>
 			<property name="add-backend-implementation" value="spring"></property>
 			<property name="maven-artifact-finalName-suffix" value="KendoUiApp" />
@@ -753,6 +782,12 @@
 			template-config-file-name="mp-template-config-bsla-LIB-features.xml"
 			template-dir="@templateRoot@/framework/bsla" is-generable="false">
 		</technology>
+
+<!-- has some side effects on other libs ???
+		<technology name="GRAPHQL_LIB" target-name="GRAPHQL_LIB"
+					template-config-file-name="mp-template-config-graphql-LIB-features.xml"
+					template-dir="@templateRoot@/framework/graphql" is-generable="false">
+		</technology>-->
 
 		<technology name="JQUERY_LIB" target-name="JQUERY_LIB"
 			template-config-file-name="mp-template-config-jquery-features.xml"

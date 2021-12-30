@@ -1,0 +1,28 @@
+#exposeVariableModelSpecific()
+#exposeSpringGraphQLModelSpecific()
+package ${packageName};
+
+import $sddModelSpringGraphQLServiceImport;
+import graphql.ExecutionResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+
+@Path("/graphql/$model.name")
+public class $className {
+
+    @Autowired
+    $sddModelSpringGraphQLServiceClass $sddModelSpringGraphQLServiceVariable;
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response performQuery(String query) {
+        ExecutionResult execute = ${sddModelSpringGraphQLServiceVariable}.getGraphQL().execute(query);
+
+        return Response
+            .status(Response.Status.OK)
+            .entity(execute)
+            .build();
+    }
+
+}

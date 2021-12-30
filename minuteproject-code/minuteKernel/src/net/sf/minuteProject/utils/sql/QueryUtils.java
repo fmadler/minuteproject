@@ -159,6 +159,7 @@ public class QueryUtils {
 	}
 	
 	private static String getQueryBodyQuestionMarkDefaultAndPagination(Query<QueryModel> query) {
+		if (query==null || query.getQueryBody()==null) return "";
 		String queryRaw = query.getQueryBody().getValue();
 		//Decorate with pagination if needed
 		if (query.hasPagination()) {

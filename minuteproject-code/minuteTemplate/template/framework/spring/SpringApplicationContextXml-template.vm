@@ -1,4 +1,5 @@
 #exposeEnabledProperties()
+#exposeSpringTemplate()
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -44,12 +45,17 @@
 #else
 #set ($scanPackageScheduler="")
 #end
+#if($isGraphQLEnabled)
+#set ($scanPackageGraphQL=$commonUtils.getPackageName($model, $template, $templateSpringGraphQLServiceClass))
+#else
+#set ($scanPackageGraphQL="")
+#end
 #exposeVariableModelSpecific()
 #exposeSpringModelSpecific()
 
     <import resource="classpath:${pathSpringBackendConfig}"/>    
  
-	<context:component-scan base-package="$scanPackage,$scanPackage2,$scanPackageScheduler" />
+	<context:component-scan base-package="$scanPackage,$scanPackage2,$scanPackageScheduler,$scanPackageGraphQL" />
 
 #end
 #if ($isVelocityEnabled)
@@ -95,5 +101,5 @@
         <property name="toolBoxConfigLocation" value="/WEB-INF/velocity-tools.xml"/>
     </bean>
 #end
-##TODO add scheduling component
+
 </beans>

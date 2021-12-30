@@ -208,6 +208,20 @@
         </dependency>
 
 #end
+#if($isGraphQLEnabled)
+        <!-- graphql -->
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-tools</artifactId>
+            <version>5.2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-extended-scalars</artifactId>
+            <version>17.0</version>
+        </dependency>
+#end
         <!-- swagger -->
         <dependency>
             <groupId>io.swagger</groupId>

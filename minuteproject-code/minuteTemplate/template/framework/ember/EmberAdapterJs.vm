@@ -34,7 +34,7 @@ export default BaseAdapter.extend({
     //package $package.name
 #foreach ($query in $package.getQueries())
 #if(!$query.isIndirection())
-#if (!$queryUtils.isBackend($query))
+#if(!$queryUtils.isBackend($query))
 #exposeQuerySpecific()
 #set($table=$query.inputBean)
 #exposeVariableEntitySpecific()

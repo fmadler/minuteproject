@@ -60,6 +60,8 @@
 #set ($templateSpringServiceClass="SpringServiceImpl")
 #set ($templateSpringModelServiceInterface="SpringModelServiceInterface")
 #set ($templateSpringModelServiceClass="SpringModelServiceImpl")
+#set ($templateSpringGraphQLDataFetcherClass="Spring.GraphQL.datafetcher")
+#set ($templateSpringGraphQLServiceClass="Spring.GraphQL.service")
 #end
 
 #macro (exposeSDDSpringTemplate)
@@ -102,10 +104,7 @@
 #set($beanSpringServiceClass=$commonUtils.getTemplateClassName($table, $templateSpringServiceInterface))
 #set($beanSpringServiceVariable=$commonUtils.getJavaNameVariableFirstLetter($beanSpringServiceClass))
 #set($beanSpringServiceImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSpringServiceInterface))  
-##set($beanSpringModelServiceClass=$commonUtils.getTemplateClassName($table, $templateSpringModelServiceInterface))
-##set($beanSpringModelServiceVariable=$commonUtils.getJavaNameVariableFirstLetter($beanSpringServiceClass))
-##set($beanSpringModelServiceImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSpringModelServiceInterface))  
-#set($domainClassImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, "DomainEntityJPA2Annotation"))   
+#set($domainClassImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, "DomainEntityJPA2Annotation"))
 #end
 
 #macro(exposeSpringServiceBindingSpecific4Entity $table)
@@ -114,9 +113,22 @@
 #set($beanSpringServiceVariable=$commonUtils.getJavaNameVariableFirstLetter($beanSpringServiceClass))
 #set($beanSpringServiceImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSpringServiceInterface))  
 #set($domainClassImport=$commonUtils.getEntityLevelTemplateFullPath($table, $template, "DomainEntityJPA2Annotation"))   
-##set($domainClass=$commonUtils.getTemplateClassName($table, "DomainEntityJPA2Annotation")) 
-##set($domainVar=$commonUtils.getJavaNameVariableFirstLetter($domainClass)) 
 #end
+
+#macro (exposeSpringGraphQLQuerySpecific)
+#exposeSpringTemplate()
+#set ($sddInputBeanDataFetcherClass = $commonUtils.getTemplateClassName($query, $template, $templateSpringGraphQLDataFetcherClass))
+#set ($sddInputBeanDataFetcherVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanDataFetcherClass))
+#set ($sddInputBeanDataFetcherImport = $commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateSpringGraphQLDataFetcherClass))
+#end
+
+#macro (exposeSpringGraphQLModelSpecific)
+#exposeSpringTemplate()
+#set ($sddModelSpringGraphQLServiceClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringGraphQLServiceClass))
+#set ($sddModelSpringGraphQLServiceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddModelSpringGraphQLServiceClass))
+#set ($sddModelSpringGraphQLServiceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringGraphQLServiceClass))
+#end
+
 
 #macro (putSpringModelLookup $techno)
 #foreach($table in $entities)

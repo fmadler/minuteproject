@@ -102,3 +102,12 @@
 		return environment;
 	}
 #end
+
+#macro (exposeGraphQLTemplate)
+#set ($templateGraphQLSchema="GraphQL")
+#end
+
+#macro (exposeGraphQLInfo)
+#exposeGraphQLTemplate()
+#set($graphqlSddSchema=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateGraphQLSchema))
+#end
