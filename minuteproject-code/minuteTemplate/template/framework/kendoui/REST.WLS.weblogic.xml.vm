@@ -49,8 +49,9 @@ http://xmlns.oracle.com/weblogic/weblogic-web-app/1.2/weblogic-web-app.xsd">
         <filter-dispatched-requests-enabled>true</filter-dispatched-requests-enabled>
         <allow-all-roles>true</allow-all-roles>
     </container-descriptor>
+
     <session-descriptor>
-        <cookie-name>CISNetSESSIONID</cookie-name>
+        <cookie-name>${finalName}_SESSIONID</cookie-name>
         <cookie-path>/$finalName</cookie-path>
         <url-rewriting-enabled>false</url-rewriting-enabled>
     </session-descriptor>

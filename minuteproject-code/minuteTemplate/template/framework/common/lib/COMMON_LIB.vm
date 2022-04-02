@@ -219,15 +219,6 @@ $readmeUtils.getReadme($template)
 #set ($sddInputRestVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
 #end
 
-#*
-#macro (putImportCompositeRESTSDDBean)
-#templateCommonDefinition()
-#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($composite, $template, $templateSDDRestResource))
-#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
-#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($composite, $template, $templateSDDInputBean))
-#end
-*#
-
 #macro (putImportCompositeInputSDDBean)
 #templateCommonDefinition()
 #set ($sddInputBeanClass = $commonUtils.getTemplateClassName($table, $template, $templateSDDInputBean))
@@ -264,6 +255,18 @@ $readmeUtils.getReadme($template)
 #set ($sddInputBeanClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDInputBean))
 #set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
 #set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDInputBean))
+#end
+
+#macro (exposeGraphQLModelSpecific)
+#exposeGraphQLTemplate()
+#set ($graphQLTimestampScalarClass = $commonUtils.getTemplateClassName($model, $template, $templateGraphQLTimestampScalar))
+#set ($graphQLTimestampScalarImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateGraphQLTimestampScalar))
+#end
+
+#macro(exposeGraphQLTemplate)
+#set($templateGraphQLTimestampScalar="GraphQL.TimestampScalar")
+#set ($templateGraphQLSchema="GraphQL.schema")
+#set ($templateGraphQLGraphiql="GraphQL.graphiql")
 #end
 
 #macro(exposeWebXmlSpecific)

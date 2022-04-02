@@ -62,7 +62,6 @@ public class ${className} {
 #putValidationConstraints()
 #putFieldValidation()
 #if ($column.getSeparatorCharacters())
-##// array $column.isHidden() $column.isStructuredArray()	:$column.getSeparatorCharacters(), $column.arrayColumns, $column.arrayColumnsType
 	@Data
 	public class $columnClass {
 #foreach($field in $column.structuredArray)

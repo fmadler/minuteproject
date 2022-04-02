@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import net.sf.minuteProject.utils.sql.QueryUtils;
@@ -67,7 +68,7 @@ public class Package extends PackageAdapter <Group, GeneratorBean>{
 	
 	public void addTable(net.sf.minuteProject.configuration.bean.model.data.Table table) {
 		if (listOfTables==null)
-			listOfTables = new ArrayList<Table>();
+			listOfTables = new ArrayList<>();
 		table.setPackage(this);
 		listOfTables.add(table);
 	}	
@@ -79,23 +80,27 @@ public class Package extends PackageAdapter <Group, GeneratorBean>{
 	
 	public List<Query> getQueries() {
 		if (listOfQueries==null)
-			listOfQueries = new ArrayList<Query>();
+			listOfQueries = new ArrayList<>();
 		return listOfQueries;
 	}
 
-	public List<Table> getFullStackInputTable() {
-		return getPureQueries().stream()
-				.map(u -> u.getInputBean())
+	public List<Query> getPureQueries() {
+		return getPureQueries(u -> true);
+	}
+
+	public List<Query> getPureQueries(Predicate<Query> predicate) {
+		return getQueries().stream()
+				.filter(u -> !u.isIndirection() &&
+							!QueryUtils.isBackend(u) &&
+							u.getOutputBean().getColumnCount()>0)
+				.filter(predicate)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList())
 				;
 	}
-	public List<Query> getPureQueries() {
-		return getQueries().stream()
-				.filter(u -> !u.isIndirection() && !QueryUtils.isBackend(u))
-				.filter(Objects::nonNull)
-				.collect(Collectors.toList())
-				;
+
+	public List<Query> getPureQueries(boolean isMutation) {
+		return getPureQueries(u -> u.isWrite()==isMutation);
 	}
 	
 	public List<Composite> getComposites() {

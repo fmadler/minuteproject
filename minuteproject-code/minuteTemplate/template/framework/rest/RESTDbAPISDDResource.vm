@@ -328,9 +328,6 @@ $!updatedAreaBegin
 #foreach ($column in $pivot.getColumnList())
 #putColumnParamNaming()
 		$columnType $columnVar;
-##    	public $columnType get$columnClass() {
-##        	return $columnVar;
-##    	}
 #end
 
 #foreach ($sibling in $pivot.getSiblings())	
@@ -342,11 +339,6 @@ $!updatedAreaBegin
 		public void add${siblingClass}(${siblingClass} e) {
 			get${siblingClasses}().add(e);
 		}
-## 		public List<${siblingClass}> get${siblingClasses}() {
-## 			if (${siblingName}==null)
-## 				${siblingName} = new ArrayList<${siblingClass}>();
-## 			return ${siblingName};
-## 		}
 #end
 	}
 	

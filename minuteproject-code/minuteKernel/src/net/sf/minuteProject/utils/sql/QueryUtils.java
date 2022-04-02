@@ -223,7 +223,6 @@ public class QueryUtils {
 
 	public static String getFullQuerySample(Query query) {
 		String querySt = getQueryQuestionMark(query);
-		//List<String> samples = getSamples (query);
 
 		List<QueryParam> samples = getQueryParamAndFilters (query);
 		int samplesSize = samples.size();
@@ -305,7 +304,7 @@ public class QueryUtils {
 	}
 
 	public static List<Column> getInputCompositeFull(Composite composite) {
-		List<Column> list = new ArrayList<Column>();
+		List<Column> list = new ArrayList<>();
 		for (CompositeQueryElement q : composite.getInputComposite().getQueries()) {
 			Query query = q.getQuery();
 			for (Column column:query.getInputBean().getColumns()) {

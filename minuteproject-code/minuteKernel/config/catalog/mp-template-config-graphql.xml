@@ -10,7 +10,7 @@
 		package-root=""
 		belongToPackage="true">
 
-		<template name="GraphQL" templateFileName="GraphQL.vm"
+		<template name="GraphQL.schema" templateFileName="GraphQL.schema.vm"
 			file-extension="graphql"
 			file-prefix="api"
             add-model-dir-name="false"
@@ -19,7 +19,28 @@
             model-specific="true" >
 		</template>
 
-		<!-- 		libdir="GraphQL_LIB.vm" -->
+		<template name="GraphQL.graphiql" templateFileName="GraphQL.graphiql.vm"
+			file-extension="html"
+			file-prefix="graphiql"
+            add-model-dir-name="false"
+            add-package-name="false" add-business-package-dir-name="false"
+            package-root=""
+            model-specific="true" >
+		</template>
+
+    </template-target>
+
+	<template-target
+    	name="Graphql file"
+		outputdir="src/main/java"
+		belongToPackage="true">
+
+		<template name="GraphQL.TimestampScalar" templateFileName="GraphQL.TimestampScalar.vm"
+				  subdir="" outputsubdir="" technicalPackage="graphql.scalar"
+				  file-extension="java" file-prefix="" file-suffix="TimestampScalar"
+				  scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+		</template>
+
     </template-target>
 
 </target>

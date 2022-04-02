@@ -3,26 +3,77 @@
 package ${packageName};
 
 import $sddModelSpringGraphQLServiceImport;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import graphql.ExecutionInput;
 import graphql.ExecutionResult;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-@Path("/graphql/$model.name")
+##TODO move to application specific
+@Path("/graphql")
 public class $className {
 
     @Autowired
     $sddModelSpringGraphQLServiceClass $sddModelSpringGraphQLServiceVariable;
 
+    @GET
+    @Path("/graphiql")
+    public Response graphiql() throws IOException {
+        Resource resource = scoreGraphQLService.getGraphiql();
+        File schemaFile = resource.getFile();
+        return Response.ok(schemaFile, MediaType.TEXT_HTML).build();
+    }
+
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response performQuery(String query) {
-        ExecutionResult execute = ${sddModelSpringGraphQLServiceVariable}.getGraphQL().execute(query);
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response performQuery(String input) throws IOException {
+        if (input==null) {
+            return schema();
+        }
+        GraphQLInput gi = mapToGraphQLInput(input, new GraphQLRestAPI.GraphQLInput());
+        ExecutionInput ei = ExecutionInput.newExecutionInput()
+            .query(gi.getQuery())
+            .variables(gi.getVariables())
+            .build();
+        ExecutionResult execute = ${sddModelSpringGraphQLServiceVariable}.getGraphQL().execute(ei);
 
         return Response
             .status(Response.Status.OK)
+            .type(MediaType.APPLICATION_JSON)
             .entity(execute)
             .build();
+    }
+
+    public Response schema() throws IOException{
+        Resource resource = ${sddModelSpringGraphQLServiceVariable}.getResource();
+        File schemaFile = resource.getFile();
+        return Response.ok(schemaFile, MediaType.TEXT_HTML).build();
+    }
+
+    public static GraphQLInput mapToGraphQLInput (String input, GraphQLInput graphqlInput) {
+        Gson gson = new GsonBuilder().create();
+        Map<String,Object> jsonMap = (input!=null)?gson.fromJson(input, Map.class):new HashMap();
+        graphqlInput.setQuery((String)jsonMap.get("query"));
+        graphqlInput.setVariables((Map<String,Object>)jsonMap.get("variables"));
+        return graphqlInput;
+    }
+
+    @Data
+    public class GraphQLInput {
+        String query;
+        Map<String, Object> variables;
+        String mutation;
+        String operationName;
     }
 
 }
