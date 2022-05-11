@@ -46,7 +46,7 @@
 #end
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
-#if($sizeColumn>0 || $velocityCount>1)           ,#else           #end$chunkName
+#if($isNotVoidInput || $velocityCount>1)           ,#else           #end$chunkName
 #foreach($queryParams in $queryChunk.getQueryChunkParams())
            ,${chunkName}_${queryParams.name}
 #end

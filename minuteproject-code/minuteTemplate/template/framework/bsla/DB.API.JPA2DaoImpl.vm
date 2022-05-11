@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+##import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
@@ -108,15 +109,11 @@ import $importDaoImplExtendedJPAName;
 #else
 @javax.ejb.Stateless (name="$daoInterfaceClassNameUML", mappedName="ejb/$daoInterfaceClassNameUML")
 #end
-
-##public class $className extends JpaDaoSupport implements $daoInterfaceNameUML {##, GenericService<$tableClassName> {
+@Slf4j
 public class $className extends ${ModelGenericDaoJpaImplClass}<$tableClassName> implements $daoInterfaceNameUML {##, GenericService<$tableClassName> {
 
 	public $className () {}
-#*	
-    @PersistenceContext
-    EntityManager entityManager;
-*#	
+
     /**
      * Inserts a $tableClassName entity 
      * @param $tableClassName $tableVariableName
@@ -708,60 +705,8 @@ public class $className extends ${ModelGenericDaoJpaImplClass}<$tableClassName> 
 #end
 	    return query.toString();
     }
-#*      
-    /**
-     * Load a paginated list of $tableClassName entity dependent of pagination criteria
-     * @param PaginationCriteria paginationCriteria
-     * @return List
-     */
-    public List <$tableClassName> loadPaginated$tableClassName ($tableClassName $tableVariableName, PaginationCriteria paginationCriteria) {
-	    List<$primaryKeyType> page = loadPaginated${tableClassName}IdentitiesFromStartPositionId($tableVariableName, paginationCriteria);
-    	int start = paginationCriteria.getNumberOfRowsReturned()*(paginationCriteria.getPageNumber());
-    	int max = page.size();
-    	if (start<max) {
-    	   List<$primaryKeyType> returnPage = page.subList(start, max);	
-           StringBuffer query = new StringBuffer();
-           query.append (" SELECT $tableVariableName FROM $tableClassName $tableVariableName ");      
-	       query.append(" where ${tableVariableName}.$primaryKeyVariable in (");
-##	       // iterate on multiple pk column TODO
-	       for (Iterator iter = returnPage.iterator(); iter.hasNext();) {
-			  $primaryKeyType $primaryKeyVariable = ($primaryKeyType) iter.next();
-#if ($sqlUtils.isQuotedColumn($primaryKeyFirstColumn))  	        
-			  query.append("'"+${primaryKeyVariable}.toString()+"'");
-#else
-			  query.append(${primaryKeyVariable}.toString());
-#end				
-		      if (iter.hasNext())
-			     query.append(",");
-		   }
-	       query.append(") ");
-	       return entityManager.find(query.toString()); 
-    	} 
-        return new ArrayList<$tableClassName>();
-    }      
+##    private Logger log = Logger.getLogger(this.getClass());
 
-    protected List<$primaryKeyType> loadPaginated${tableClassName}IdentitiesFromStartPositionId ($tableClassName $tableVariableName, PaginationCriteria paginationCriteria) {
-       boolean isWhereSet = false;
-       StringBuffer query = new StringBuffer();
-       query.append ("select ${tableVariableName}.$primaryKeyVariable ");
-       query.append (getSearchEqualQuery ($tableVariableName));
-       if (paginationCriteria.getOrderList()!=null) {
-    	   query.append(" order by "+paginationCriteria.getOrderList());
-       }
-       int maxResult = paginationCriteria.getNumberOfRowsReturned()*(1+paginationCriteria.getPageNumber());
-       List<$primaryKeyType> set = getEntityManager().createNamedQuery(query.toString()).setMaxResults(maxResult).getResultList();
-       return set;
-    }
-*# 
-##parse("./snippet/orm/dao/queryBuilderUtils.vm")   
-#*   
-    protected EntityManager getEntityManager () {
-        return entityManager;    
-    }
-*#	
-	
-    private Logger log = Logger.getLogger(this.getClass());
-    
     private SimpleCache simpleCache = new SimpleCache();
 #foreach ($reference in $table.distinctChildrenType)
 #putReferenceParams2()

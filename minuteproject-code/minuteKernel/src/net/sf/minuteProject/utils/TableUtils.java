@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -714,8 +715,16 @@ public class TableUtils {
 	}
 
 	public static List<Column> getColumnsNotDuplicatedNorImplicit(Table table) {
+		return getColumns(table, u -> !u.hasBeenDuplicated() && !u.isImplicit());
+	}
+
+	public static List<Column> getColumnsNotDuplicatedNorImplicitNorOutputOnly(Table table) {
+		return getColumns(table, u -> !u.hasBeenDuplicated() && !u.isImplicit() && !u.isOutputParam());
+	}
+
+	public static List<Column> getColumns(Table table, Predicate<Column> predicate) {
 		return Arrays.stream(table.getColumns())
-				.filter(u -> !u.hasBeenDuplicated() && !u.isImplicit())
+				.filter(predicate)
 				.collect(Collectors.toList());
 	}
 
@@ -733,4 +742,5 @@ public class TableUtils {
 		return Arrays.stream(table.getColumns())
 				.filter(Column::isRequired);
 	}
+
 }
