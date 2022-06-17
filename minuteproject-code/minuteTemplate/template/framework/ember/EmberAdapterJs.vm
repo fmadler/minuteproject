@@ -70,9 +70,9 @@ export default BaseAdapter.extend({
 #set($functionName = $emberUtils.getComponentClassPath(${classVariableName}))
 #set ($functionVariableName = $formatUtils.firstLowerCase(${functionName}))
 	/* connector to composite $className info */
-    ${functionVariableName} (params) {
+    ${functionVariableName} : function(params) {
         return fetchData(baseUrl+'/data/sdd/${sddInputRestClass}'+filter${functionVariableName}(params));
-    }
+    },
 
 #end
 #end

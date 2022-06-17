@@ -24,6 +24,7 @@ public class AbstractConfiguration extends BeanCommon implements GeneratorBean {
 	private boolean isAliasFormatted;
 	private boolean isAliasSet;
 	private String displayName;
+	private String namingConvention;
 	private int displayOrder;
 	
 	public GeneratorBean getParent() {
@@ -221,7 +222,17 @@ public class AbstractConfiguration extends BeanCommon implements GeneratorBean {
 	public void enableCache() {
 		isCacheEnabled = true;
 	}
-	
+
+	@Override
+	public String getNamingConvention() {
+		return namingConvention;
+	}
+
+	@Override
+	public void setNamingConvention(String namingConvention) {
+		this.namingConvention = namingConvention;
+	}
+
 	public String getLabel() {
 		if (label==null)
 			label=getAlias();

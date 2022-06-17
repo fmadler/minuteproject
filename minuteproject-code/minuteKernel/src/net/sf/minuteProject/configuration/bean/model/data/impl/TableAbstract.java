@@ -44,7 +44,8 @@ public abstract class TableAbstract extends AbstractConfiguration implements Tab
 	private Cardinality resultCardinality;
 	private boolean isScalar;
 	private Scope scope;
-	private List<EntityValidation> entityValidations = new ArrayList<>();;
+	private List<EntityValidation> entityValidations = new ArrayList<>();
+	private String namingConvention;
 	
 	public TableAbstract () {
 	}
@@ -69,6 +70,7 @@ public abstract class TableAbstract extends AbstractConfiguration implements Tab
 		this.setScalar(table.isScalar());
 		this.setScope(table.getScope());
 		this.setValidations(table.getValidations());
+		this.setNamingConvention(table.getNamingConvention());
 	}
 
 	public String getName () {
@@ -522,4 +524,13 @@ public abstract class TableAbstract extends AbstractConfiguration implements Tab
 		return entityValidations;
 	}
 
+	@Override
+	public String getNamingConvention() {
+		return namingConvention;
+	}
+
+	@Override
+	public void setNamingConvention(String namingConvention) {
+		this.namingConvention = namingConvention;
+	}
 }

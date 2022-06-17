@@ -236,9 +236,10 @@
 			<property name="add-cache-implementation" value="ehcache"></property>
 			<property name="use-temporal" value="true"></property>
 			<property name="add-backend-implementation" value="spring"></property>
-			<property name="maven-artifact-finalName-suffix" value="KendoUiApp" />
+			<property name="graphql-enabled" value="true" />
+			<property name="maven-artifact-finalName-suffix" value="GraphQLApp" />
 
-			<property name="rest-pom-maven-artifact-finalName-suffix" value="KendoUiApp" />
+			<property name="rest-pom-maven-artifact-finalName-suffix" value="GraphQLApp" />
 			<property name="rest-pom-maven-packaging" value="war" />
 		</technology>
 		

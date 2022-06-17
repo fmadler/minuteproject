@@ -570,6 +570,7 @@
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
 	</xs:complexType>
 	
 	<!-- TODO Remove replaced by validations -->
@@ -634,6 +635,7 @@
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" />
 		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="default-value" type="xs:string" />
 		<xs:attribute name="ordering" type="ordering-type" />
 		<xs:attribute name="label" type="xs:string" />
 		<xs:attribute name="linkToTargetEntity" type="xs:string" />
@@ -897,11 +899,13 @@
 			<xs:element name="query-fields" type="query-fields" />
 			<xs:element name="query-filters" type="query-filters" />
 			<xs:element name="query-schedulers" type="query-schedulers" />
+			<xs:element name="query-post-processors" type="query-post-processors" />
 			<xs:element name="query-params" type="query-params" />
 			<xs:element name="query-pivots" type="query-pivots" />
 			<xs:element name="actions" type="actions" />
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="naming-convention" type="xs:string" />
 		<xs:attribute name="package-name" type="xs:string" />
 		<xs:attribute name="id" type="xs:string" />
 		<xs:attribute name="refid" type="xs:string" />
@@ -971,6 +975,12 @@
 				minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="query-post-processors">
+		<xs:sequence>
+			<xs:element name="query-post-processor" type="query-post-processor"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="query-scheduler">
 		<xs:element name="actions" type="actions" />
@@ -980,6 +990,9 @@
 		<xs:attribute name="name" type="xs:string" />
 		<xs:attribute name="cron" type="xs:string" />
 		<xs:attribute name="report-copy-file-to" type="xs:string" />
+		<xs:attribute name="report-copy-file-to-dir" type="xs:string" />
+		<xs:attribute name="report-template-type" type="xs:string" />
+		<xs:attribute name="report-template-name" type="xs:string" />
 		<xs:attribute name="report-channel" type="xs:string" />
 		<xs:attribute name="report-from" type="xs:string" />
 		<xs:attribute name="processor-class" type="xs:string" />
@@ -993,8 +1006,14 @@
 		<xs:attribute name="report-add-origin" type="xs:boolean" />
 		<xs:attribute name="report-add-environment" type="xs:boolean" />
 		<xs:attribute name="report-add-number-of-records" type="xs:boolean" />
+	</xs:complexType>
 
-	</xs:complexType>	
+	<xs:complexType name="query-post-processor">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="processor-type" type="xs:string" />
+		<xs:attribute name="processor-template-name" type="xs:string" />
+		<xs:attribute name="rendition-type" type="xs:string" />
+	</xs:complexType>
 	
 	<xs:complexType name="value-body">
 		<xs:sequence>

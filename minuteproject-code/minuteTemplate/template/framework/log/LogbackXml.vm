@@ -10,10 +10,11 @@
 	</appender>
 	
 	<appender name="${generatorBean.name}_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>../logs/${generatorBean.name}.log</file>
+		<file>/logs/${generatorBean.name}.log</file>
+		##<file>../logs/${generatorBean.name}.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- daily rollover -->
-			<fileNamePattern>../logs/${generatorBean.name}.%d{yyyy-MM-dd}.%i.log
+			<fileNamePattern>/logs/${generatorBean.name}.%d{yyyy-MM-dd}.%i.log
 			</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -44,11 +45,11 @@
 	</root>
 #else
 #foreach ($model in $application.getModels())
-	<root name="${model.getPackageRoot()}" level="INFO">
+	<root name="$modelUtils.getModelRootPackage($model)" level="INFO">
 		<appender-ref ref="${generatorBean.name}_APPENDER" />
 	</root>
 
-	<root name="${model.getPackageRoot()}" level="DEBUG">
+	<root name="$modelUtils.getModelRootPackage($model)" level="DEBUG">
 		<appender-ref ref="STDOUT" />
 	</root>
 	

@@ -5,7 +5,7 @@
 version: '3'
 services:
 #if ($dockerUtils.hasDbScope($template))
-#*
+
   flyway_clean:
     image: flyway/flyway
     command: -url=jdbc:mysql://db -schemas=${datasource.schema} -user=${datasource.username} -password=${datasource.password} -connectRetries=60 clean
@@ -13,14 +13,14 @@ services:
       - ./MODEL/migration/src/main/resources/${application.name}/clean/:/flyway/sql
     depends_on:
       - db
-*#
+
   flyway:
     image: flyway/flyway
     command: -url=jdbc:mysql://db -schemas=${datasource.schema} -user=${datasource.username} -password=${datasource.password} -connectRetries=60 migrate
     volumes:
       - ./MODEL/migration/src/main/resources/${application.name}/migration/:/flyway/sql
     depends_on:
-      - db
+      - flyway_clean
   db:
     image: mysql
     environment:

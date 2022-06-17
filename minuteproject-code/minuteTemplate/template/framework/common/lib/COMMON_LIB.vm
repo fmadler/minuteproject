@@ -257,6 +257,12 @@ $readmeUtils.getReadme($template)
 #set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDInputBean))
 #end
 
+#macro (putQueryCommons)
+#set($camelCaseConvention=$query.getNamingConvention().equalsIgnoreCase("camelcase"))
+#set ($queryClassName = $formatUtils.getJavaName(${query.name}))
+#set ($queryVariableName = $formatUtils.firstLowerCase(${queryClassName}))
+#end
+
 #macro (exposeGraphQLModelSpecific)
 #exposeGraphQLTemplate()
 #set ($graphQLTimestampScalarClass = $commonUtils.getTemplateClassName($model, $template, $templateGraphQLTimestampScalar))

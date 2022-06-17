@@ -92,7 +92,7 @@ public class Package extends PackageAdapter <Group, GeneratorBean>{
 		return getQueries().stream()
 				.filter(u -> !u.isIndirection() &&
 							!QueryUtils.isBackend(u) &&
-							u.getOutputBean().getColumnCount()>0)
+							u.getOutputBean().getColumnCount()>0) // for graphql (mutation must return something)
 				.filter(predicate)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList())
@@ -105,7 +105,7 @@ public class Package extends PackageAdapter <Group, GeneratorBean>{
 	
 	public List<Composite> getComposites() {
 		if (listOfComposites==null)
-			listOfComposites = new ArrayList<Composite>();
+			listOfComposites = new ArrayList<>();
 		return listOfComposites;
 	}
 

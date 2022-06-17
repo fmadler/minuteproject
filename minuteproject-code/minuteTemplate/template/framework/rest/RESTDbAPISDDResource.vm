@@ -1,4 +1,5 @@
 #exposeBackendTechnology()
+#putQueryCommons()
 #if(!$query.isIndirection())
 #exposeDbApiRestQuerySpecific()
 #exposeSDDSpring()
@@ -20,7 +21,6 @@
 ###
 #macro(resourceSignature $param $showType $addValidation)
 #foreach($column in $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
-##if (!$column.hasBeenDuplicated() && !$column.isImplicit())
 #putColumnParamNaming()
 #if($columnUtils.isTime($column))
 #set($columnType=$dateParamImport)
@@ -55,7 +55,6 @@
 ###
 #macro (resourceParameters)
 #foreach($column in $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
-##if (!$column.hasBeenDuplicated() && !$column.isImplicit())
 #putColumnParamNaming()
 #if($columnUtils.isTimeStampColumn($column))
 #set($columnType=$timestampParamImport)
@@ -121,9 +120,9 @@
         );
 #end
 #end
-
+#set ($hasVelocityPostProcessor = $queryUtils.hasVelocityPostProcessor($query))
 package $packageName;
-    //templateModelCompress $templateModelCompress
+
 $!updatedAreaImport
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.*;
@@ -184,16 +183,29 @@ import $sddDaoInterfaceImport;
 import $modelRestCacheableImport;
 #end
 import $modelRestCompressImport;
+#if ($hasVelocityPostProcessor)
+##TODO integrate properly with embedded velocity renderer   //import velocity render
+${template.getPackageRoot()}.${model.name}.rendering.VelocityMerger
+#end
 /**
 *
 * <p>Title: ${className}</p>
 *
 * <p>Description: class for ${className} service </p>
+* <p>Convention: $query.getNamingConvention() </p>
 *
 */
+#if ($camelCaseConvention)
+@Path("/sdd/${queryVariableName}")
+#else
 @Path("/sdd/${sddInputBeanClass}")
+#end
 @Produces(MediaType.APPLICATION_JSON)
+#if ($camelCaseConvention)
+@Api(value="/sdd/${queryVariableName}", description = "operation about ${sddInputBeanClass}")
+#else
 @Api(value="/sdd/${sddInputBeanClass}", description = "operation about ${sddInputBeanClass}")
+#end
 #if ($tableUtils.hasSecurityColorRole($inputBean))
 @RolesAllowed("$tableUtils.securityColorRoles($inputBean)")
 #end
@@ -298,7 +310,6 @@ $!updatedAreaBegin
         return get${pivotClasses}(list);
     }
 #end
-
 #* TODO 
 #foreach ($pivot in $query.pivots)
 #set($pivotClass = $formatUtils.getJavaName($pivot.name))
@@ -319,7 +330,6 @@ $!updatedAreaBegin
     }
 #end
 *#
-
 #foreach ($pivot in $query.pivots)
 #set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
 #set($pivotClasses = $i18nUtils.plurialize($pivotClass))
@@ -341,7 +351,6 @@ $!updatedAreaBegin
 		}
 #end
 	}
-	
 #*
 TODO change with lambda
 
@@ -419,6 +428,46 @@ TODO change with lambda
         return ret;
     }
 	
+#end
+#if ($hasVelocityPostProcessor)
+    @Autowired
+    VelocityMerger velocityMerger;
+#end
+#foreach ($processor in $query.queryPostProcessors)
+    //Post Processor $processor.name
+    ##TODO put velocityMerger as global
+#if ($processor.getType().equalsIgnoreCase("velocity"))
+
+    private String render ($sddOutputBeanCollectionClass list) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("$queryVariableName",list);
+        return velocityMerger.merge("${processor.getType()}/${processor.getTemplateName()}", map);
+    }
+#end
+
+    @GET
+    @Path("/${processor.name}")
+#if($queryUtils.isCache($query))
+    @${modelRestCacheableClass}(cc = "public, max-age=3600")
+#end
+    @${modelRestCompressClass}
+    @ApiOperation(value = "$queryVariableName", notes = "perform $queryVariableName", response = ${sddOutputBeanCollectionClass}.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "ok")
+    })
+#if ($processor.getRenditionType().equalsIgnoreCase("xml"))
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+#else
+#end
+    public String processTo${processor.name} (
+    #resourceSignature("QueryParam", true, false)
+        ) {
+        $sddOutputBeanCollectionClass l =
+            callImplementation(
+                #resourceSignature("", false, false)
+            );
+        return render(l);
+    }
 #end
 $!updatedAreaEnd
 $!updatedAreaImplementation

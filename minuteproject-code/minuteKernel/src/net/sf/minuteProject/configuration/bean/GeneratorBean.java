@@ -83,4 +83,9 @@ public interface GeneratorBean extends Cloneable, Serializable{
     public default boolean isIndirection() {
     	return getRefid()!=null; 
     }
+
+    String getNamingConvention();
+
+    void setNamingConvention(String namingConvention);
+
 }

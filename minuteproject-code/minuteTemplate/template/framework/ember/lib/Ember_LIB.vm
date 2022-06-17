@@ -1,5 +1,5 @@
 #macro (exposeEmberSpecific)
-#set($isOctane=$template.getPropertyValue("ember-octane","true"))
+#set($isOctane=$template.getPropertyValue("ember-octane",true))
 #end
 
 #macro (exposeEmberCompositeSpecific)

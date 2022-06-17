@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.minuteProject.configuration.bean.*;
+import net.sf.minuteProject.configuration.bean.model.statement.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -21,15 +22,6 @@ import net.sf.minuteProject.configuration.bean.enumeration.Scope;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.Database;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
-import net.sf.minuteProject.configuration.bean.model.statement.Composite;
-import net.sf.minuteProject.configuration.bean.model.statement.CompositeQueryElement;
-import net.sf.minuteProject.configuration.bean.model.statement.Query;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryChunk;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryFilter;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryModel;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryParam;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryParams;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryScheduler;
 import net.sf.minuteProject.exception.MinuteProjectException;
 import net.sf.minuteProject.utils.ColumnUtils;
 import net.sf.minuteProject.utils.ConnectionUtils;
@@ -527,5 +519,11 @@ public class QueryUtils {
 	public static Table getQueryInputTable(StatementModel statementModel, String name) {
 		final Query query = statementModel.getQueryByName(name);
 		return query.getInputBean();
+	}
+
+	public static boolean hasVelocityPostProcessor(Query query) {
+		List<QueryPostProcessor> qpp = query.getQueryPostProcessors();
+		return qpp.stream()
+				.anyMatch(u -> u.getType().equalsIgnoreCase("velocity"));
 	}
 }

@@ -533,7 +533,6 @@ public class ModelGenerator extends AbstractGenerator {
 					// break;
 				}
 			}
-			// }
 		}
 	}
 
@@ -592,12 +591,7 @@ public class ModelGenerator extends AbstractGenerator {
 		}
 		if (bean instanceof Function) {
 			context.put("function", bean);
-			context.put("table", ((Function) bean).getEntity(Direction.ANY)); // to
-																				// give
-																				// access
-																				// to
-																				// model
-			// context.put("table", bean);
+			context.put("table", ((Function) bean).getEntity(Direction.ANY));
 		}
 		if (beanName.equals("view"))
 			context.put("table", bean);

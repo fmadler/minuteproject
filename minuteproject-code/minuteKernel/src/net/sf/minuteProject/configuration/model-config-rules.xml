@@ -282,6 +282,7 @@
 							<set-properties-rule>
 								<alias attr-name="name" prop-name="name" />
 								<alias attr-name="refid" prop-name="refid" />
+								<alias attr-name="naming-convention" prop-name="namingConvention" />
 								<alias attr-name="package-name" prop-name="packageName" />
 								<alias attr-name="content-type" prop-name="contentType" />
 								<alias attr-name="is-write" prop-name="write" />
@@ -442,6 +443,19 @@
 									</pattern>
 								</pattern>
 							</pattern>		
+							<pattern value="query-post-processors/query-post-processor">
+								<object-create-rule
+										classname="net.sf.minuteProject.configuration.bean.model.statement.QueryPostProcessor" />
+								<set-next-rule methodname="addQueryPostProcessor"
+											   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryPostProcessor" />
+								<set-properties-rule>
+									<alias attr-name="name" prop-name="name" />
+									<alias attr-name="processor-type" prop-name="type" />
+									<alias attr-name="processor-class" prop-name="processorClass" />
+									<alias attr-name="processor-template-name" prop-name="templateName" />
+									<alias attr-name="rendition-type" prop-name="renditionType" />
+								</set-properties-rule>
+							</pattern>
 							<pattern value="query-filters/query-filter">
 								<object-create-rule
 									classname="net.sf.minuteProject.configuration.bean.model.statement.QueryFilter" />
@@ -2145,6 +2159,7 @@
 						<set-properties-rule>
 							<alias attr-name="name" prop-name="name" />
 							<alias attr-name="refid" prop-name="refid" />
+							<alias attr-name="naming-convention" prop-name="namingConvention" />
 							<alias attr-name="package-name" prop-name="packageName" />
 							<alias attr-name="content-type" prop-name="contentType" />
 							<alias attr-name="is-write" prop-name="write" />
@@ -2319,7 +2334,18 @@
 								
 							</pattern>
 						</pattern>
-
+						<pattern value="query-post-processors/query-post-processor">
+							<object-create-rule
+									classname="net.sf.minuteProject.configuration.bean.model.statement.QueryPostProcessor" />
+							<set-next-rule methodname="addQueryPostProcessor"
+										   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryPostProcessor" />
+							<set-properties-rule>
+								<alias attr-name="name" prop-name="name" />
+								<alias attr-name="processor-type" prop-name="type" />
+								<alias attr-name="processor-template-name" prop-name="templateName" />
+								<alias attr-name="rendition-type" prop-name="renditionType" />
+							</set-properties-rule>
+						</pattern>
 						<pattern value="query-filters/query-filter">
 							<object-create-rule
 								classname="net.sf.minuteProject.configuration.bean.model.statement.QueryFilter" />

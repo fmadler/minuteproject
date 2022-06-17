@@ -1,4 +1,5 @@
 #exposeVariableEntitySpecific()
+#set($camelCaseConvention=$table.getNamingConvention().equalsIgnoreCase("camelcase"))
 #exposeEnvironmentParams()
 #putImportSDDBean()
 #addedAreas()
@@ -19,6 +20,7 @@ $!updatedAreaImport
  * <p>Title: ${className}</p>
  *
  * <p>Description: Java Bean ${className} </p>
+## * <p>Naming convention $table.namingConvention - $table.name </p>
  *
  */
 #if($addXmlBinding)
@@ -28,7 +30,11 @@ public class ${className} {
 
 #if($addXmlBinding)
 #set($xmlElementValue=$jaxbUtils.getXmlElementValue($listVariable, $xmlFormat))
-    @XmlElement (name="${beanClass}") //$!xmlElementValue
+#if ($camelCaseConvention)
+    @XmlElement (name="${listVariable}")
+#else
+    @XmlElement (name="${beanClass}")
+#end
 #end
     private List<${beanClass}> $listVariable;
 

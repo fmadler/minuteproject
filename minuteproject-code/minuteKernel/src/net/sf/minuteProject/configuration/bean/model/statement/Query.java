@@ -41,6 +41,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private List<Field> queryFields;
 	private List<QueryFilter> queryFilters;
 	private List<QueryScheduler> querySchedulers;
+	private List<QueryPostProcessor> queryPostProcessors;
 	private QueryParams queryParams;
 	private QueryParams outputParams;
 	private boolean isSet = false;
@@ -65,6 +66,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private boolean paginationAsFilter = false;
 	private int paginationSize = 0;
 	private List<EntityValidation> entityValidations = new ArrayList<>();
+	private String namingConvention;
 
 	public void setQueryModel (T t) {
 		this.t = t;
@@ -163,15 +165,27 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 			getQueryFilters().add(queryFilter);
 		}
 	}
-	
-	public List<QueryScheduler> getQuerySchedulers() {
-		if (querySchedulers==null) {
-			querySchedulers = new ArrayList<QueryScheduler>();
+
+	public void addQueryPostProcessor(QueryPostProcessor queryPostProcessor) {
+		if (queryPostProcessor!=null) {
+			getQueryPostProcessors().add(queryPostProcessor);
 		}
-		//this.getQueryFilters().get(0).getQueryParams().
-		return querySchedulers;
 	}
 	
+	public List<QueryPostProcessor> getQueryPostProcessors() {
+		if (queryPostProcessors==null) {
+			queryPostProcessors = new ArrayList<>();
+		}
+		return queryPostProcessors;
+	}
+
+	public List<QueryScheduler> getQuerySchedulers() {
+		if (querySchedulers==null) {
+			querySchedulers = new ArrayList<>();
+		}
+		return querySchedulers;
+	}
+
 	public void addQueryScheduler(QueryScheduler queryScheduler) {
 		queryScheduler.setQuery(this);
 		getQuerySchedulers().add(queryScheduler);
@@ -214,24 +228,8 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 
 	// remove duplication
 	public Table getEntityFromDirection(Direction dir) {
-		//if #if ($query.isIndirection())
-		if (isIndirection()) {
-			
-		}
-		
 		Table entity = getEntityRoot(dir);
 		if (dir.equals(Direction.IN)) {
-			//add pagination
-//			if (hasPagination()) {
-//				QueryFilter offsetQueryFilter = PaginationUtils.getOffsetQueryFilter(queryPagination);
-//				if (offsetQueryFilter!=null) {
-//					complementFields(entity, offsetQueryFilter.getQueryParams());
-//				}
-//				QueryFilter maxResultQueryFilter = PaginationUtils.getMaxResultQueryFilter(queryPagination);
-//				if (maxResultQueryFilter!=null) {
-//					complementFields(entity, maxResultQueryFilter.getQueryParams());
-//				}
-//			}
 			complementValidation(entity);
 			complementFields(entity, queryParams);
 		}
@@ -255,6 +253,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private void complementOutputFields(Table entity) {
 		entity.setResultCardinality(resultCardinality);
 		entity.setScalar(entity.isScalar());
+		entity.setNamingConvention(namingConvention);
 	}
 	
 	private void complementFields(Table table, QueryParams queryParams) {
@@ -633,4 +632,11 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 		return getQueryChunks().stream().anyMatch(u -> u.getQueryChunkParams().size()>0);
 	}
 
+	public String getNamingConvention() {
+		return namingConvention;
+	}
+
+	public void setNamingConvention(String namingConvention) {
+		this.namingConvention = namingConvention;
+	}
 }
