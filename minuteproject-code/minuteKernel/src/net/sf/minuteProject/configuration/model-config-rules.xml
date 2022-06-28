@@ -456,6 +456,29 @@
 									<alias attr-name="rendition-type" prop-name="renditionType" />
 								</set-properties-rule>
 							</pattern>
+							<pattern value="query-links/query-link">
+								<object-create-rule
+										classname="net.sf.minuteProject.configuration.bean.model.statement.QueryLink" />
+								<set-next-rule methodname="addQueryLink"
+											   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryLink" />
+								<set-properties-rule>
+									<alias attr-name="name" prop-name="name" />
+									<alias attr-name="type" prop-name="type" />
+									<alias attr-name="query-name" prop-name="queryName" />
+								</set-properties-rule>
+								<pattern value="query-link-params/query-link-param">
+									<object-create-rule
+											classname="net.sf.minuteProject.configuration.bean.model.statement.QueryLinkParam" />
+									<set-next-rule methodname="addQueryLinkParam"
+												   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryLinkParam" />
+									<set-properties-rule>
+										<alias attr-name="name" prop-name="name" />
+										<alias attr-name="is-mandatory" prop-name="isMandatory" />
+										<alias attr-name="input-field-name" prop-name="inputFieldName" />
+										<alias attr-name="input-query-param-name" prop-name="inputQueryParamName" />
+									</set-properties-rule>
+								</pattern>
+							</pattern>
 							<pattern value="query-filters/query-filter">
 								<object-create-rule
 									classname="net.sf.minuteProject.configuration.bean.model.statement.QueryFilter" />
@@ -2345,6 +2368,29 @@
 								<alias attr-name="processor-template-name" prop-name="templateName" />
 								<alias attr-name="rendition-type" prop-name="renditionType" />
 							</set-properties-rule>
+						</pattern>
+						<pattern value="query-links/query-link">
+							<object-create-rule
+									classname="net.sf.minuteProject.configuration.bean.model.statement.QueryLink" />
+							<set-next-rule methodname="addQueryLink"
+										   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryLink" />
+							<set-properties-rule>
+								<alias attr-name="name" prop-name="name" />
+								<alias attr-name="type" prop-name="type" />
+								<alias attr-name="query-name" prop-name="queryName" />
+							</set-properties-rule>
+							<pattern value="query-link-params/query-link-param">
+								<object-create-rule
+										classname="net.sf.minuteProject.configuration.bean.model.statement.QueryLinkParam" />
+								<set-next-rule methodname="addQueryLinkParam"
+											   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryLinkParam" />
+								<set-properties-rule>
+									<alias attr-name="name" prop-name="name" />
+									<alias attr-name="is-mandatory" prop-name="isMandatory" />
+									<alias attr-name="input-field-name" prop-name="inputFieldName" />
+									<alias attr-name="input-query-param-name" prop-name="inputQueryParamName" />
+								</set-properties-rule>
+							</pattern>
 						</pattern>
 						<pattern value="query-filters/query-filter">
 							<object-create-rule

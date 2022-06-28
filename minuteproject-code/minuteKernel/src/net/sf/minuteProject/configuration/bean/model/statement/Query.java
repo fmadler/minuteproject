@@ -42,6 +42,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private List<QueryFilter> queryFilters;
 	private List<QueryScheduler> querySchedulers;
 	private List<QueryPostProcessor> queryPostProcessors;
+	private List<QueryLink> queryLinks;
 	private QueryParams queryParams;
 	private QueryParams outputParams;
 	private boolean isSet = false;
@@ -133,7 +134,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	
 	public List<QueryChunk> getQueryChunks() {
 		if (queryChunks==null) {
-			queryChunks = new ArrayList<QueryChunk>();
+			queryChunks = new ArrayList<>();
 		}
 		return queryChunks;
 	}
@@ -141,7 +142,18 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	public void addQueryChunk(QueryChunk queryChunk) {
 		getQueryChunks().add(queryChunk);
 	}
-	
+
+	public List<QueryLink> getQueryLinks() {
+		if (queryLinks==null) {
+			queryLinks = new ArrayList<>();
+		}
+		return queryLinks;
+	}
+
+	public void addQueryLink(QueryLink queryLink) {
+		getQueryLinks().add(queryLink);
+	}
+
 	public List<QueryFilter> getQueryFilters() {
 		if (queryFilters==null) {
 			queryFilters = new ArrayList<QueryFilter>();
