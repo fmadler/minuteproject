@@ -73,13 +73,17 @@
         <title title="copy-java-code" projectname="${project.name}" projectdir="${home.dir}"/>
         <description>Copy java code mvn project</description>
         <macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src}"/>
-        <macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-patch}"/>
+        <macro_copy_exclude_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-patch}" exclusion="org/sqlite/*.java"/>
         <!-- TODO check
         <macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-patch2" />
         -->
         <macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-plugin}"/>
 
         <macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.foundation.java.src}"/>
+
+        <!-- copy unit tests -->
+        <macro_copy_java todir="${mvn.kernel.test}" filesetDir="${leg.kernel.java.test}"/>
+
 
     </target>
 
@@ -134,9 +138,23 @@
         <attribute name="todir"/>
         <attribute name="filesetDir"/>
         <sequential>
+            <echo>* copy @{filesetDir} to @{todir}</echo>
             <copy todir="@{todir}">
                 <fileset dir="@{filesetDir}">
                     <include name="**/*.java"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+    <macrodef name="macro_copy_exclude_java">
+        <attribute name="todir"/>
+        <attribute name="filesetDir"/>
+        <attribute name="exclusion"/>
+        <sequential>
+            <copy todir="@{todir}">
+                <fileset dir="@{filesetDir}">
+                    <include name="**/*.java"/>
+                    <exclude name="@{exclusion}" />
                 </fileset>
             </copy>
         </sequential>
@@ -156,6 +174,7 @@
         <attribute name="todir"/>
         <attribute name="filesetDir"/>
         <sequential>
+            <title title="copy-macro_copy_resource" projectname="${project.name}" projectdir="${home.dir}"/>
             <copy todir="@{todir}">
                 <fileset dir="@{filesetDir}">
                     <include name="**/*.xml"/>
