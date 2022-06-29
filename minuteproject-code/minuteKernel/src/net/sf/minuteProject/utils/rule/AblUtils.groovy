@@ -1,11 +1,5 @@
 package net.sf.minuteProject.utils.rule
 
-import java.awt.TexturePaintContext.Int;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.sf.minuteProject.configuration.bean.GeneratorBean;
 import net.sf.minuteProject.configuration.bean.Model;
 import net.sf.minuteProject.configuration.bean.Template;
@@ -15,7 +9,6 @@ import net.sf.minuteProject.configuration.bean.enrichment.rule.Derivation;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.CommonUtils;
-import net.sf.minuteProject.utils.TemplateUtils;
 
 class AblUtils {
 

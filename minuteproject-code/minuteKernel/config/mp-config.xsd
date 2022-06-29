@@ -51,6 +51,15 @@
          </xs:restriction>
      </xs:simpleType>
 
+     <xs:simpleType name="queryLinkType">
+         <xs:restriction base="xs:string">
+             <xs:enumeration value="one-to-many" />
+             <xs:enumeration value="many-to-one" />
+             <xs:enumeration value="one-to-one" />
+             <xs:enumeration value="many-to-many" />
+         </xs:restriction>
+     </xs:simpleType>
+
      <xs:simpleType name="databaseObjectType">
          <xs:restriction base="xs:string">
              <xs:enumeration value="TABLE" />
@@ -898,6 +907,7 @@
 			<xs:element name="query-pagination" type="query-pagination" />
 			<xs:element name="query-fields" type="query-fields" />
 			<xs:element name="query-filters" type="query-filters" />
+			<xs:element name="query-links" type="query-links" />
 			<xs:element name="query-schedulers" type="query-schedulers" />
 			<xs:element name="query-post-processors" type="query-post-processors" />
 			<xs:element name="query-params" type="query-params" />
@@ -937,7 +947,20 @@
 			<xs:element name="query-param" type="query-param" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
-	
+
+	<xs:complexType name="query-link-params">
+		<xs:sequence>
+			<xs:element name="query-link-param" type="query-link-param" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="query-link-param">
+		<xs:attribute name="is-mandatory" type="xs:boolean" default="true"/>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="input-field-name" type="xs:string"/>
+		<xs:attribute name="input-query-param-name" type="xs:string"/>
+	</xs:complexType>
+
 	<xs:complexType name="query-pivots">
 		<xs:sequence>
 			<xs:element name="query-pivot" type="query-pivot"
@@ -958,6 +981,13 @@
 				minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="query-links">
+		<xs:sequence>
+			<xs:element name="query-link" type="query-link"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="query-filter">
 		<xs:sequence>
@@ -968,7 +998,17 @@
 		<xs:attribute name="id" type="xs:string"/>
 		<xs:attribute name="and-where-connection" type="and-where-connection"/>
 	</xs:complexType>
-	
+
+	<xs:complexType name="query-link">
+		<xs:sequence>
+			<xs:element name="query-link-params" type="query-link-params" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="id" type="xs:string"/>
+		<xs:attribute name="type" type="queryLinkType"/>
+		<xs:attribute name="query-name" type="xs:string"/>
+	</xs:complexType>
+
 	<xs:complexType name="query-schedulers">
 		<xs:sequence>
 			<xs:element name="query-scheduler" type="query-scheduler"

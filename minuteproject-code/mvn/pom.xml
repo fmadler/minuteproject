@@ -4,11 +4,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.minuteproject</groupId>
 	<artifactId>minuteproject</artifactId>
-	<version>0.9</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
 	<description>minuteproject kernel</description>
 	<url>http://minuteproject.sf.net</url>
 
+	<properties>
+		<groovy.version>2.5.6</groovy.version>
+		<java.version>8</java.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -46,15 +50,15 @@
 			<groupId>org.apache.ddlutils</groupId>
 			<artifactId>ddlutils</artifactId>
 			<version>1.0</version>
-			<exclusions>
+<!--			<exclusions>
 				<exclusion></exclusion>
-			</exclusions>
+			</exclusions>-->
 		</dependency>
-<dependency>
-	<groupId>org.apache.velocity</groupId>
-	<artifactId>velocity</artifactId>
-	<version>1.7</version>
-</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
             
 		<dependency>
 			<groupId>junit</groupId>
@@ -75,14 +79,18 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>${groovy.version}</version>
+			<type>pom</type>
+		</dependency>
+
 	</dependencies>
 
-	<properties>
-	</properties>
-
 	<modules>
-<module>mvnMinuteFoundation</module>
-<module>mvnMinuteKernel</module>
+		<module>kernel</module><!--
+		<module>minuteFoundation</module>-->
 	</modules>
 	<scm>
 		<developerConnection>florian adler</developerConnection>
@@ -97,7 +105,7 @@
 			</testResource>
 		</testResources>
 		<plugins>
-
+<!--
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
@@ -109,6 +117,27 @@
 						<groupId>org.codehaus.groovy</groupId>
 						<artifactId>groovy-eclipse-compiler</artifactId>
 						<version>2.7.0-01</version>
+					</dependency>
+				</dependencies>
+			</plugin>-->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<compilerId>groovy-eclipse-compiler</compilerId>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.groovy</groupId>
+						<artifactId>groovy-eclipse-compiler</artifactId>
+						<version>3.3.0-01</version>
+					</dependency>
+					<dependency>
+						<groupId>org.codehaus.groovy</groupId>
+						<artifactId>groovy-eclipse-batch</artifactId>
+						<version>${groovy.version}-01</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -258,5 +287,18 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<pluginRepositories>
+		<pluginRepository>
+			<id>bintray</id>
+			<name>Groovy Bintray</name>
+			<url>https://dl.bintray.com/groovy/maven</url>
+			<releases>
+				<!-- avoid automatic updates -->
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
