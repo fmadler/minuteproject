@@ -180,6 +180,7 @@
                     <include name="**/*.xml"/>
                     <include name="**/*.xsd"/>
                     <include name="**/*.properties"/>
+                    <include name="**/*.vm"/>
                 </fileset>
             </copy>
         </sequential>

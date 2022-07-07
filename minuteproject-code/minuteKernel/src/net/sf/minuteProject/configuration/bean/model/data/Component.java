@@ -1,7 +1,5 @@
 package net.sf.minuteProject.configuration.bean.model.data;
 
-import org.w3c.dom.views.AbstractView;
-
 import net.sf.minuteProject.configuration.bean.GeneratorBean;
 
 public interface Component extends GeneratorBean{
