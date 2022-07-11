@@ -1,30 +1,29 @@
-package net.sf.minuteProject.utils.rule
+package net.sf.minuteProject.utils.rule;
 
-import net.sf.minuteProject.configuration.bean.GeneratorBean;
 import net.sf.minuteProject.configuration.bean.Model;
 import net.sf.minuteProject.configuration.bean.Template;
 import net.sf.minuteProject.configuration.bean.enrichment.Action;
 import net.sf.minuteProject.configuration.bean.enrichment.rule.Constraint;
-import net.sf.minuteProject.configuration.bean.enrichment.rule.Derivation;
-import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.CommonUtils;
+
+import java.util.*;
 
 class AblUtils {
 
 	AblUtils(){}
 	
 	String getPackageList (Model model, String targetTemplateName) {
-		List<String> packageNames = new ArrayList<String> (getPackageWithRulesList(model, targetTemplateName))
-		packageNames.toListString()
-		StringBuffer sb = new StringBuffer()
-		Template template = CommonUtils.getTemplate(model.getConfiguration(), targetTemplateName)
+		List<String> packageNames = new ArrayList<>(getPackageWithRulesList(model, targetTemplateName));
+		//packageNames.toListString()
+		StringBuffer sb = new StringBuffer();
+		Template template = CommonUtils.getTemplate(model.getConfiguration(), targetTemplateName);
 		for (int i=0; i<packageNames.size(); i++) {
-			sb.append(packageNames.get(i))
+			sb.append(packageNames.get(i));
 			if (i<packageNames.size()-1)
-				sb.append ","
+				sb.append (",");
 		}
-		sb.toString()
+		return sb.toString();
 	}
 	
 	public static Collection<String> getPackageWithRulesList (Model model, String targetTemplateName) {
@@ -41,18 +40,18 @@ class AblUtils {
 	}
 	
 	String getConstraintName (Table table, Constraint constraint) {
-		constraint.getName table 
+		return constraint.getName(table);
 	}
 	
 	String getActionName (Table table, Action action) {
-		action.getName table 
+		return action.getName(table);
 	}
 	
-	String getDerivationName (Column column, Derivation derivation) {
-		derivation.getName column
+/*	String getDerivationName (Column column, Derivation derivation) {
+		return derivation.getName(column);
 	}
-	
-	boolean isToGenerateBasedRulePresence (Template template, GeneratorBean bean) {
+	*/
+/*	boolean isToGenerateBasedRulePresence (Template template, GeneratorBean bean) {
 		if (bean instanceof Table) {
 			Table table = (Table) bean
 			if (table.getActions()!=null && table.getActions().size()>0)
@@ -70,6 +69,6 @@ class AblUtils {
 				return true
 		}
 		return false
-	}
+	}*/
 	
 }

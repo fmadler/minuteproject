@@ -97,13 +97,5 @@ public class StringUtils {
 		}
 		return sb.toString();
 	}
-/*
-	public static Function stripFromExpression(Function<String, String> identity, String expression, String ...fieldPattern) {
-		if (Condition.STARTS_WITH.equals(expression)  || Condition.STARTS__WITH.equals(expression) || Condition.STARTS___WITH.equals(expression)) {
-			return org.apache.commons.lang.StringUtils.removeStart(identity.toString(), remove)
-		}
 
-		return null;
-	}
-	*/
 }

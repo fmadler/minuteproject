@@ -255,7 +255,7 @@ public class FormatUtils {
 		return name;
 	}
 
-	private static String getEachWordFirstLetterUpper(String name, String token) {
+	public static String getEachWordFirstLetterUpper(String name, String token) {
 		StringTokenizer st = new StringTokenizer(name, token);
 		StringBuffer sb = new StringBuffer();
 		while (st.hasMoreTokens()) {

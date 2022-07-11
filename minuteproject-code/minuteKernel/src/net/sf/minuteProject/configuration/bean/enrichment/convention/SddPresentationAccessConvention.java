@@ -11,6 +11,7 @@ class SddPresentationAccessConvention extends SddConvention{
 	
 	public SddPresentationAccessConvention () {
 	}
+
 	@Override
 	public void apply(StatementModel t) {
 		Queries queries = t.getQueries();

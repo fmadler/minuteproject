@@ -1,9 +1,11 @@
 package net.sf.minuteProject.configuration.bean.enrichment.security;
 
+import java.util.List;
+
+import com.mysql.jdbc.StringUtils;
+
 import net.sf.minuteProject.configuration.bean.AbstractConfiguration;
 import net.sf.minuteProject.utils.parser.ParserUtils;
-
-import java.util.List;
 
 public class EntitySecuredAccess extends AbstractConfiguration {
 	

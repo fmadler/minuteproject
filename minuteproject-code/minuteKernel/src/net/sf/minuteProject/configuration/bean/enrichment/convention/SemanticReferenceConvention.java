@@ -1,5 +1,12 @@
 package net.sf.minuteProject.configuration.bean.enrichment.convention;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.junit.experimental.max.MaxCore;
+
 import net.sf.minuteProject.configuration.bean.BusinessModel;
 import net.sf.minuteProject.configuration.bean.enrichment.SemanticReference;
 import net.sf.minuteProject.configuration.bean.enrichment.path.SqlPath;
@@ -8,10 +15,6 @@ import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.ColumnUtils;
 import net.sf.minuteProject.utils.TableUtils;
 import net.sf.minuteProject.utils.parser.ParserUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
-import java.util.List;
 
 public class SemanticReferenceConvention extends ModelConvention {
 

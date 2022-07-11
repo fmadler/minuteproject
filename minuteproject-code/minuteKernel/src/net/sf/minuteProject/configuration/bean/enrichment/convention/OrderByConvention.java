@@ -1,20 +1,16 @@
-package net.sf.minuteProject.configuration.bean.enrichment.convention
+package net.sf.minuteProject.configuration.bean.enrichment.convention;
 
-import org.apache.log4j.Logger;
-
+import lombok.extern.log4j.Log4j;
 import net.sf.minuteProject.configuration.bean.BusinessModel;
-import net.sf.minuteProject.configuration.bean.enrichment.SemanticReference;
 import net.sf.minuteProject.configuration.bean.enrichment.Stereotype;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
-import net.sf.minuteProject.utils.StringUtils;
-import net.sf.minuteProject.utils.parser.ParserUtils;
 
-class OrderByConvention extends FieldConvention {
+@Log4j
+public class OrderByConvention extends FieldConvention {
 
 	String direction;
-	private Logger logger = Logger.getLogger(OrderByConvention.class);
-	
+
 	@Override
 	public void apply(BusinessModel model) {
 		if (isValid()) {
@@ -24,24 +20,28 @@ class OrderByConvention extends FieldConvention {
 				}
 			}
 		} else
-			logger.error("OrderByConvention not valid")
+			log.error("OrderByConvention not valid");
 	}
 
 	public void apply(Table table) {
 		for (Column column : table.getColumns()) {
 			if (match(column)) {
-				logger.debug("applying stereotype "+direction+" to column "+column.getName())
-				column.setStereotype(new Stereotype(stereotype: direction))
+				log.debug("applying stereotype "+direction+" to column "+column.getName());
+				Stereotype stereotype = new Stereotype();
+				stereotype.setStereotype(direction);
+
+				//column.setStereotype(new Stereotype(stereotype: direction)) //former groovy
+				column.setStereotype(stereotype);
 			}
 		}
 	}
 	
 	private boolean hasDirection() {
-		direction!=null
+		return direction!=null;
 	}
 	
 	protected boolean isValid() {
-		hasDirection() && (hasFieldType() || (hasFieldPatternType() && hasFieldPattern())) ;
+		return hasDirection() && (hasFieldType() || (hasFieldPatternType() && hasFieldPattern())) ;
 	}
 	
 

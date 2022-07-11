@@ -1,4 +1,4 @@
-package net.sf.minuteProject.configuration.bean.enrichment.rule
+package net.sf.minuteProject.configuration.bean.enrichment.rule;
 
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 

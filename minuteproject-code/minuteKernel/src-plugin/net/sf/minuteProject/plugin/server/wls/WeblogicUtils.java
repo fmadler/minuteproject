@@ -1,19 +1,17 @@
-package net.sf.minuteProject.plugin.server.wls
-
-import org.apache.commons.lang.StringUtils;
+package net.sf.minuteProject.plugin.server.wls;
 
 import net.sf.minuteProject.configuration.bean.Model;
 import net.sf.minuteProject.configuration.bean.Template;
-import net.sf.minuteProject.utils.FormatUtils;
+import org.apache.commons.lang.StringUtils;
 
 class WeblogicUtils {
 
 	public String getContextRoot(Template template, Model model) {
-		String context = template.getPropertyValue("context-root")
+		String context = template.getPropertyValue("context-root");
 		if (StringUtils.isEmpty(context)) {
-			context = model.getName()+"App"
+			context = model.getName()+"App";
 		}
-		context
+		return context;
 	}
 
 }

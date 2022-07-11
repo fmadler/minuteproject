@@ -1,4 +1,4 @@
-package net.sf.minuteProject.utils.action
+package net.sf.minuteProject.utils.action;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -12,34 +12,34 @@ class ActionUtils {
 	public final String SHOW_DETAILS = "showDetails";
 	
 	boolean isReservedAction(Action action) {
-		if (SHOW_DETAILS.equals(action.defaultImplementation))
+		if (SHOW_DETAILS.equals(action.getDefaultImplementation()))
 			return true;
 		return false;
 	}
 	String getActionLabel (Action action) {
-		if (!StringUtils.isEmpty(action.name)) 
-			action.name
+		if (!StringUtils.isEmpty(action.getName()))
+			return action.getName();
 		else
-			action.description
+			return action.getDescription();
 	}
 	
 	String getActionMethod (Action action) {
-		if (SHOW_DETAILS.equals(action.defaultImplementation))
+		if (SHOW_DETAILS.equals(action.getDefaultImplementation()))
 			return SHOW_DETAILS;
-		FormatUtils.getEachWordFirstLetterUpper(action.name, " ")
+		return FormatUtils.getEachWordFirstLetterUpper(action.getName(), " ");
 	}
 	
 	String getTargetUrl (Action action, Model model) {
-		String queryId = action.getQueryId()
-		Query query = model.getStatementModel().getQueryByIdOrName(queryId)
+		String queryId = action.getQueryId();
+		Query query = model.getStatementModel().getQueryByIdOrName(queryId);
 		if (query!=null)
-			return "/html/sdd/"+FormatUtils.getJavaName(query.getName())+"In"
-		return "/data/sdd/"+queryId+"In"
+			return "/html/sdd/"+FormatUtils.getJavaName(query.getName())+"In";
+		return "/data/sdd/"+queryId+"In";
 	}
 	
 	Query getQuery(Action action, Model model) {
-		String queryId = action.getQueryId()
-		model.getStatementModel().getQueryByIdOrName(queryId)
+		String queryId = action.getQueryId();
+		return model.getStatementModel().getQueryByIdOrName(queryId);
 	}
 	
 }
