@@ -86,8 +86,8 @@ public class ConvertUtilsTest {
 	public void testGetJavaTypeMaskLong() {
 		when(column.getType()).thenReturn("INTEGER");
 		when(column.getTypeAlias()).thenReturn("INTEGER");
-		String s = ConvertUtils.getJavaTypeMask(column, "rowKey", true);
-		Assert.assertTrue("s = "+s,s.equals("Integer.valueOf(rowKey)"));
+		String s = ConvertUtils.getJavaTypeMask(column, "1", true);
+		Assert.assertTrue("s = "+s,s.equals("Integer.valueOf(1)"));
 	}
 	
 	@Test

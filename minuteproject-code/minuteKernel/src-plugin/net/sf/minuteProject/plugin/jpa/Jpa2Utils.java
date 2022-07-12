@@ -6,7 +6,7 @@ import net.sf.minuteProject.configuration.bean.model.data.Reference;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.TableUtils;
 
-class Jpa2Utils {
+public class Jpa2Utils {
 
 	public static final String JPA2_IMPLEMENTATION_HIBERNATE = "hibernate";
 	public static final String JPA2_IMPLEMENTATION_ECLIPSELINK = "eclipselink";

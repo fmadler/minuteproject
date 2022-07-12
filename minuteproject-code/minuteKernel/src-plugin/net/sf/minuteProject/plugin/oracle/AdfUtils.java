@@ -1,7 +1,5 @@
 package net.sf.minuteProject.plugin.oracle;
 
-import org.codehaus.groovy.runtime.ConvertedClosure;
-
 import net.sf.minuteProject.configuration.bean.Model;
 import net.sf.minuteProject.configuration.bean.Template;
 import net.sf.minuteProject.configuration.bean.model.data.Column;

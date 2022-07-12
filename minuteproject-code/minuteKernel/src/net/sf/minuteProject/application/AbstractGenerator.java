@@ -690,17 +690,20 @@ public abstract class AbstractGenerator implements Generator {
 			org.apache.velocity.Template velocityTemplate,
 			String outputFilename, Template template) throws Exception {
 		FileOutputStream fos = new FileOutputStream(outputFilename);
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
+		try (
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
+		) {
 
-		String licence = template.getLicence();
-		if (template.isLicenceAtBeginning() && licence != null)
-			writer.append(licence);
-		if (velocityTemplate != null)
-			velocityTemplate.merge(context, writer);
-		if (!template.isLicenceAtBeginning() && licence != null)
-			writer.append(licence);
-		writer.flush();
-		writer.close();
+			String licence = template.getLicence();
+			if (template.isLicenceAtBeginning() && licence != null)
+				writer.append(licence);
+			if (velocityTemplate != null)
+				velocityTemplate.merge(context, writer);
+			if (!template.isLicenceAtBeginning() && licence != null)
+				writer.append(licence);
+			writer.flush();
+			//writer.close();
+		}
 	}
 
 	protected String getAbstractBeanName(GeneratorBean bean) {

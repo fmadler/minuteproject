@@ -9,9 +9,9 @@ import net.sf.minuteProject.utils.CommonUtils;
 
 import java.util.*;
 
-class AblUtils {
+public class AblUtils {
 
-	AblUtils(){}
+	public AblUtils(){}
 	
 	String getPackageList (Model model, String targetTemplateName) {
 		List<String> packageNames = new ArrayList<>(getPackageWithRulesList(model, targetTemplateName));

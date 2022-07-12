@@ -2,7 +2,7 @@ package net.sf.minuteProject.plugin.kendoui;
 
 import net.sf.minuteProject.configuration.bean.Template;
 
-class KendoUiUtils {
+public class KendoUiUtils {
 
 	public String pageSize() {
 		return "30";

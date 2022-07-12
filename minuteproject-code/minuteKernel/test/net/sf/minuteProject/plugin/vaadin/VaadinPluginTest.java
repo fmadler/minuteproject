@@ -30,11 +30,12 @@ public class VaadinPluginTest {
 	
 	@Test
 	public void testInteger() {
-		when(column.getType()).thenReturn("NUMERIC");
+		when(column.getType()).thenReturn("INTEGER");
 		when(column.getScale()).thenReturn(0);
 		String getConverter = VaadinPlugin.getConverter(column);
 		Assert.assertTrue("should be getInteger ; but get:  "+getConverter,"getInteger".equals(getConverter));
 	}
+
 	@Test
 	public void testClob() {
 		when(column.getType()).thenReturn("CLOB");
@@ -42,6 +43,7 @@ public class VaadinPluginTest {
 		String getConverter = VaadinPlugin.getConverter(column);
 		Assert.assertTrue("should be getString ; but get:  "+getConverter,"getString".equals(getConverter));
 	}
+
 	@Test
 	public void testBlob() {
 		when(column.getType()).thenReturn("BLOB");

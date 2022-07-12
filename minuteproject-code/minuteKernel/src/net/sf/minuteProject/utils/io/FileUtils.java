@@ -152,62 +152,63 @@ public class FileUtils {
 		Map<String, String> areas = new HashMap<String, String>();
 		String strLine;
 		try {
-			// Open the file that is the first
-			// command line parameter
-			FileInputStream fstream = new FileInputStream(file);
-			// Get the object of DataInputStream
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			// skip first line
+			try (
+				FileInputStream fstream = new FileInputStream(file);
+				// Get the object of DataInputStream
+				DataInputStream in = new DataInputStream(fstream);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			) {
+				// skip first line
 //			strLine = br.readLine();
-			boolean isWithinAddedArea = false;
-			String key = null;
-			StringBuffer sb = null;
-			int cpt = 0;
-			// Read File Line By Line
-			while ((strLine = br.readLine()) != null) {
-				// Print the content on the console
-				if (artifactIsNotPartOfTheGeneration(strLine)) {
-					areas = new HashMap<String, String>();
-					areas.put(MP_MANAGED_STOP_GENERATING,
-							MP_MANAGED_STOP_GENERATING);
-					return areas;
-				}
-				if (!isWithinAddedArea) {
-					cpt = 0;
-					if (isBeginning(strLine)) {
-						isWithinAddedArea = true;
-						key = getKey(strLine);
-						if (key != null)
-							sb = new StringBuffer();
+				boolean isWithinAddedArea = false;
+				String key = null;
+				StringBuffer sb = null;
+				int cpt = 0;
+				// Read File Line By Line
+				while ((strLine = br.readLine()) != null) {
+					// Print the content on the console
+					if (artifactIsNotPartOfTheGeneration(strLine)) {
+						areas = new HashMap<String, String>();
+						areas.put(MP_MANAGED_STOP_GENERATING,
+								MP_MANAGED_STOP_GENERATING);
+						return areas;
 					}
-				} else {
-					if (isEnding(strLine)) {
-						isWithinAddedArea = false;
-						if (key != null && sb.length() > 0) {
-							// sb.append(strLine+"\n");
-							// sb.append(strLine);
-							areas.put(key, sb.toString());
+					if (!isWithinAddedArea) {
+						cpt = 0;
+						if (isBeginning(strLine)) {
+							isWithinAddedArea = true;
+							key = getKey(strLine);
+							if (key != null)
+								sb = new StringBuffer();
 						}
-						key = null;
-					}
-				}
-				if (isWithinAddedArea) {
-					cpt++;
-					if (strLine != null && sb != null) {
-						if (cpt > 1) {
-							if (cpt > 2)
-								// prepend CRLF from third line on
-								sb.append("\n");
-							// first line not taken since directive start with
-							// second
-							sb.append(strLine);
+					} else {
+						if (isEnding(strLine)) {
+							isWithinAddedArea = false;
+							if (key != null && sb.length() > 0) {
+								// sb.append(strLine+"\n");
+								// sb.append(strLine);
+								areas.put(key, sb.toString());
+							}
+							key = null;
 						}
 					}
+					if (isWithinAddedArea) {
+						cpt++;
+						if (strLine != null && sb != null) {
+							if (cpt > 1) {
+								if (cpt > 2)
+									// prepend CRLF from third line on
+									sb.append("\n");
+								// first line not taken since directive start with
+								// second
+								sb.append(strLine);
+							}
+						}
+					}
 				}
+				// Close the input stream
+				in.close();
 			}
-			// Close the input stream
-			in.close();
 		} catch (Exception e) {// Catch exception if any
 			e.printStackTrace();
 			System.err.println("Error in retrieving updatable areas: "
@@ -251,15 +252,16 @@ public class FileUtils {
 		String strLine = "";
 		if (file.exists()) {
 			try {
-				// Open the file that is the first
-				// command line parameter
-				FileInputStream fstream = new FileInputStream(file);
-				// Get the object of DataInputStream
-				DataInputStream in = new DataInputStream(fstream);
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(in));
-				strLine = br.readLine();
-				in.close();
+				try (
+					FileInputStream fstream = new FileInputStream(file);
+					// Get the object of DataInputStream
+					DataInputStream in = new DataInputStream(fstream);
+					BufferedReader br = new BufferedReader(
+							new InputStreamReader(in));
+				) {
+					strLine = br.readLine();
+					//in.close();
+				}
 			} catch (Exception e) {// Catch exception if any
 				System.err.println("Error: " + e.getMessage());
 			}
@@ -272,22 +274,23 @@ public class FileUtils {
 		Lines lines = new Lines();
 		String strLine;
 		try {
-			// Open the file that is the first
-			// command line parameter
+			try (
 			FileInputStream fstream = new FileInputStream(file);
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			// skip first line
-			strLine = br.readLine();
-			// Read File Line By Line
-			while ((strLine = br.readLine()) != null) {
-				// Print the content on the console
-				lines.addLine(parseLine(strLine, separator, properties));
-				// System.out.println (strLine);
+			) {
+				strLine = br.readLine();
+				// Read File Line By Line
+				while ((strLine = br.readLine()) != null) {
+					// Print the content on the console
+					lines.addLine(parseLine(strLine, separator, properties));
+					// System.out.println (strLine);
+				}
+				// Close the input stream
+				//in.close();
 			}
-			// Close the input stream
-			in.close();
 		} catch (Exception e) {// Catch exception if any
 			System.err.println("Error: " + e.getMessage());
 		}
