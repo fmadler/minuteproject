@@ -6,9 +6,8 @@ import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.ColumnUtils;
 import net.sf.minuteProject.utils.FormatUtils;
-import net.sf.minuteProject.utils.StringUtils;
 
-class SemanticReferenceUtils {
+public class SemanticReferenceUtils {
 	
 	public static Column convertPathToColumn (Table table, SqlPath sqlpath) {
 		return ColumnUtils.getColumn(table, sqlpath.getPath());

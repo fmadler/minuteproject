@@ -2,6 +2,7 @@ package net.sf.minuteProject.application;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -103,7 +104,7 @@ public class XmlGenerator extends AbstractGenerator {
 		generator.generate(model.getConfiguration().getTarget());
 	}
 
-	private void loadModel(Model model) throws DocumentException {
+	private void loadModel(Model model) throws DocumentException, MalformedURLException {
 		FileSource fileSource = model.getDataModel().getFileSource();
 		if (fileSource!=null) {
 			document = parse(fileSource);
@@ -144,7 +145,7 @@ public class XmlGenerator extends AbstractGenerator {
     	return new ElementDom4j(root);
     }
     
-    private Document parse(FileSource fileSource) throws DocumentException {
+    private Document parse(FileSource fileSource) throws DocumentException, MalformedURLException {
     	String filename = fileSource.getDir()+"/"+fileSource.getName();
         SAXReader reader = new SAXReader();
         Document document = reader.read(new File(filename));

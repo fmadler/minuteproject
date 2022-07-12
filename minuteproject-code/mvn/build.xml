@@ -17,40 +17,7 @@
         <format property='build.time' pattern='yyyy-MM-dd HH:mm:ss'/>
     </tstamp>
 
-    <!-- ===================================================================== -->
-    <!-- classpath definitions -->
-    <!-- ===================================================================== -->
-    <path id="compile.classpath">
-        <fileset dir="${lib.dir}">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${libextra.dir}">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${libmongo.dir}">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${libcmis.dir}">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${deplib.dir}">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
-    <path id="compile.test.classpath">
-        <fileset dir="${libc.dir}">
-            <include name="*.jar"/>
-        </fileset>
-        <pathelement location="./config"/>
-    </path>
-    <path id="compiled.classes">
-        <pathelement location="${classes.dir}"/>
-    </path>
-    <path id="compiled.test.classes">
-        <pathelement location="${testclasses.dir}"/>
-    </path>
-
-    <target name="migrate-to-maven" depends="clean,copy-java-code,copy-groovy-code,copy-config,copy-resource,copy-velocity-template">
+    <target name="migrate-to-maven" depends="clean,copy-java-code,copy-groovy-code,copy-config,copy-config-test,copy-resource,copy-velocity-template">
         <title title="TASK archive" projectname="${project.name}" projectdir="${home.dir}"/>
         <description>Perform migration tasks</description>
     </target>
@@ -60,12 +27,7 @@
         <title title="clean" projectname="${project.name}" projectdir="${home.dir}"/>
         <description>Clean workspace java code + resources</description>
         <delete failonerror="false" includeemptydirs="true">
-            <fileset dir="${mvn.kernel.java}"/>
-            <fileset dir="${mvn.kernel.groovy}"/>
-            <fileset dir="${mvn.kernel.config}"/>
-            <fileset dir="${mvn.kernel.resources}"/>
-            <fileset dir="${mvn.kernel.config-demo}"/>
-            <fileset dir="${mvn.kernel.config-test}"/>
+            <fileset dir="${mvn.kernel.src}"/>
         </delete>
     </target>
 
@@ -91,7 +53,6 @@
         <title title="copy-groovy-code" projectname="${project.name}" projectdir="${home.dir}"/>
         <macro_copy_groovy todir="${mvn.kernel.groovy}" filesetDir="${leg.kernel.java.src}"/>
         <macro_copy_groovy todir="${mvn.kernel.groovy}" filesetDir="${leg.kernel.java.src-plugin}"/>
-
     </target>
 
     <target name="copy-resource">
@@ -110,29 +71,21 @@
     <target name="copy-config">
         <title title="copy-config" projectname="${project.name}" projectdir="${home.dir}"/>
         <description>Copy kernel config</description>
-        <macro_copy_resource todir="${mvn.kernel.config}" filesetDir="${leg.kernel.config}"/>
-        <macro_copy_resource todir="${mvn.kernel.config-demo}" filesetDir="${leg.kernel.config-test}"/>
-        <macro_copy_resource todir="${mvn.kernel.config-test}" filesetDir="${leg.kernel.config-test}"/>
+        <macro_copy_resource todir="${mvn.kernel.config-catalog}" filesetDir="${leg.kernel.config-catalog}"/>
+        <macro_copy_resource_type todir="${mvn.kernel.config}" filesetDir="${leg.kernel.config}" type="xsd"/>
+    </target>
+
+    <target name="copy-config-test">
+        <title title="copy-config" projectname="${project.name}" projectdir="${home.dir}"/>
+        <description>Copy kernel config test</description>
+        <macro_copy_dir_resource_type todir="${mvn.kernel.config-test}" filesetDir="${leg.kernel.config}" type="xml"/>
+        <macro_copy_dir_resource_type todir="${mvn.kernel.config-test}" filesetDir="${leg.kernel.config-demo}" type="xml"/>
+        <macro_copy_dir_resource_type todir="${mvn.kernel.config-test}" filesetDir="${leg.kernel.config-3rd}" type="xml"/>
     </target>
 
     <!-- ===================================================================== -->
     <!-- specific macros definition -->
     <!-- ===================================================================== -->
-    <macrodef name="macro_compile">
-        <attribute name="debug"/>
-        <attribute name="optimize"/>
-        <sequential>
-            <javac debug="@{debug}" deprecation="false" destdir="${classes.dir}"
-                   optimize="@{optimize}" nowarn="false">
-                <classpath refid="compile.classpath"/>
-                <src path="${src.dir}"/>
-                <src path="${src-plugin.dir}"/>
-                <src path="${src-patch.dir}"/>
-                <include name="**/*.java"/>
-            </javac>
-        </sequential>
-    </macrodef>
-
 
     <macrodef name="macro_copy_java">
         <attribute name="todir"/>
@@ -170,6 +123,7 @@
             </copy>
         </sequential>
     </macrodef>
+
     <macrodef name="macro_copy_resource">
         <attribute name="todir"/>
         <attribute name="filesetDir"/>
@@ -181,6 +135,34 @@
                     <include name="**/*.xsd"/>
                     <include name="**/*.properties"/>
                     <include name="**/*.vm"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="macro_copy_dir_resource_type">
+        <attribute name="todir"/>
+        <attribute name="filesetDir"/>
+        <attribute name="type"/>
+        <sequential>
+            <title title="copy-macro_copy_dir_resource_type" projectname="${project.name}" projectdir="${home.dir}"/>
+            <copy todir="@{todir}">
+                <fileset dir="@{filesetDir}">
+                    <include name="*.@{type}"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="macro_copy_resource_type">
+        <attribute name="todir"/>
+        <attribute name="filesetDir"/>
+        <attribute name="type"/>
+        <sequential>
+            <title title="copy-macro_copy_resource_type" projectname="${project.name}" projectdir="${home.dir}"/>
+            <copy todir="@{todir}">
+                <fileset dir="@{filesetDir}">
+                    <include name="**/*.@{type}"/>
                 </fileset>
             </copy>
         </sequential>
@@ -257,130 +239,6 @@
         </sequential>
     </macrodef>
 
-    <!-- ===================================================================== -->
-    <!-- TEST definitions -->
-    <!-- ===================================================================== -->
-
-    <target name="test" depends="compile-test" description="Run JUnit test">
-        <mkdir dir="${reports.tests}"/>
-        <junit fork="yes" haltonerror="false" haltonfailure="false" printsummary="true">
-            <formatter type="plain"/>
-            <formatter type="xml"/>
-            <batchtest fork="yes" todir="${reports.tests}">
-                <fileset dir="test">
-                    <include name="**/*Test.java"/>
-                    <exclude name="**/TechnologyCatalogUtilsTest.java"/>
-                </fileset>
-            </batchtest>
-            <classpath>
-                <path refid="compile.classpath"/>
-                <path refid="compile.test.classpath"/>
-                <pathelement path="${classes.dir}"/>
-                <pathelement path="${config.dir}"/>
-                <pathelement path="${testclasses.dir}"/>
-            </classpath>
-        </junit>
-    </target>
-
-    <!-- ===================================================================== -->
-    <!-- target definitions -->
-    <!-- ===================================================================== -->
-
-    <target name="compileGroovy">
-        <taskdef name="groovyc"
-                 classname="org.codehaus.groovy.ant.Groovyc"
-                 classpath="${lib.dir}/groovy-all-1.8.0.jar"/>
-        <mkdir dir="${classes.dir}"/>
-        <groovyc destdir="${classes.dir}">
-            <src path="${src.dir}"/>
-            <src path="${src-plugin.dir}"/>
-            <src path="${src-patch.dir}"/>
-            <classpath refid="compile.classpath"/>
-            <classpath>
-                <pathelement path="${classes.dir}"/>
-            </classpath>
-            <javac debug="on" deprecation="true"/>
-        </groovyc>
-    </target>
-
-
-    <!-- target test
-    <target name="test">
-        <junit printsummary="yes" haltonfailure="yes">
-            <classpath refid="junit.class.path" />
-            <classpath>
-                <pathelement location="${build.test.dir}"/>
-              </classpath>
-            <formatter type="xml" />
-            <batchtest todir="${test.report.dir}">
-                <fileset dir="${test.dir}">
-                    <include name="**/*Test.java" />
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
-    -->
-    <!-- target prepare -->
-    <target name="prepare">
-        <title title="TASK prepare" projectname="${project.name}" projectdir="${home.dir}"/>
-        <description>Creates the directories necessary for building the business</description>
-        <mkdir dir="${classes.dir}"/>
-        <mkdir dir="${dist.dir}"/>
-    </target>
-
-    <!-- target compile -->
-    <target name="compile" depends="prepare">
-        <title title="TASK compile" projectname="${project.name}" projectdir="${home.dir}"/>
-        <description>Compile ${project.name} project</description>
-        <macro_compile debug="true" optimize="false"/>
-    </target>
-
-    <!-- target compile test -->
-    <target name="compile-test" depends="compileGroovy">
-        <title title="TASK compile test" projectname="${project.name}" projectdir="${home.dir}"/>
-        <description>Compile test of ${project.name} project</description>
-        <macro_compile_test debug="true" optimize="false"/>
-    </target>
-
-    <!-- target template -->
-    <target name="template">
-        <title title="TASK template" projectname="${project.name}" projectdir="${home.dir}"/>
-        <description>Copy and apply token filter on kernel core properties</description>
-        <macro_copy_template todir="${src.dir}" filesetDir="${src-template.dir}"/>
-    </target>
-
-    <!-- target resource -->
-    <target name="resource">
-        <title title="TASK resource" projectname="${project.name}" projectdir="${home.dir}"/>
-        <description>Copy all the properties and xml files to the working directory (classes.dir).</description>
-        <macro_copy_resource todir="${classes.dir}" filesetDir="${src.dir}"/>
-        <!--<macro_copy_resource todir="${classes.dir}" filesetDir="${test.dir}"/>-->
-    </target>
-
-    <!-- target copy code -->
-    <target name="archive-code">
-        <title title="TASK copy code" projectname="${project.name}" projectdir="${home.dir}"/>
-        <description>Copy all the code.</description>
-        <delete dir="${release.code.dir}">
-        </delete>
-        <mkdir dir="${dist.dir}"/>
-        <macro_copy_code filesetDir="${src.dir}" todir="${release.code.dir}"/>
-        <macro_copy_code filesetDir="${src-plugin.dir}" todir="${release.code.dir}"/>
-        <zip basedir="${release.code.dir}" destfile="${dist.dir}/${archive.src.name}">
-        </zip>
-        <delete dir="${release.code.dir}">
-        </delete>
-    </target>
-
-    <!-- target archive -->
-
-
-    <!-- SHIFT to maven -->
-    <!-- create the maven structure for
-         - foundation
-         - kernel
-         - template
-    -->
     <target name="setup-mvn-foundation">
         <macro_copy_for_mvn fromdir="../minuteFoundation/src/main/java" todir="../mvn/minuteFoundation/src/main/java"/>
     </target>
@@ -405,10 +263,6 @@
         <antcall target="setup-mvn-foundation"></antcall>
         <antcall target="setup-mvn-kernel"></antcall>
     </target>
-    <!-- build from ant -->
-
-
-    <!-- copy artifacts -->
 
 
 </project>

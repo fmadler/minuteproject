@@ -7,7 +7,7 @@ import net.sf.minuteProject.configuration.bean.enrichment.Action;
 import net.sf.minuteProject.configuration.bean.model.statement.Query;
 import net.sf.minuteProject.utils.FormatUtils;
 
-class ActionUtils {
+public class ActionUtils {
 
 	public final String SHOW_DETAILS = "showDetails";
 	
