@@ -40,7 +40,7 @@ public class Field extends AbstractConfiguration implements CoreElement {
 	public String getSizeOrDefault() {
 		if (length!=null)
 			return length;
-		if (FieldType.VARCHAR.equals(type))
+		if (FieldType.VARCHAR.name().equals(type))
 			return "255";
 		else
 			return "0";

@@ -30,11 +30,11 @@ public class DefaultValueConvention extends FieldConvention{
 	public void apply(Table table) {
 		for (Column column : table.getColumns()) {
 			if (match(column)) {
-				if (ColumnUtils.isNumeric(column) && StringUtils.isNumeric(defaultValue)) {
+/*				if (ColumnUtils.isNumeric(column) && StringUtils.isNumeric(defaultValue)) {
 					column.setDefaultValue(defaultValue);
-				} else {
+				} else {*/
 					column.setDefaultValue(defaultValue);
-				}
+				//}
 			}
 		}
 	}

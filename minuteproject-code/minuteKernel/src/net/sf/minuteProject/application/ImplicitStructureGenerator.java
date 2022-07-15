@@ -99,11 +99,10 @@ public class ImplicitStructureGenerator extends AbstractGenerator {
 	    implicitstructureHolder = loader.load();	
 	    String location = implicitstructureHolder.getBaseStructure().getLocation();
 //	    String separator = implicitstructureHolder.getBaseStructure().getSeparator();
-	    if (location!=""){
+	    if (!location.equals("")){
 	    	file = new File(location);
 	    	if (!file.exists()) 
 	    		file = new File(dir+"/"+location);
-//	    	lines = FileUtils.getLines(file, separator);
 	    }
 	}
 
@@ -113,10 +112,6 @@ public class ImplicitStructureGenerator extends AbstractGenerator {
 		target.setFileName(initTarget.getFilename());
 		return target;
 	}
-//	public void loadTarget (AbstractConfigurationRoot abstractConfigurationRoot, Target target) throws Exception {
-//		loadConfiguration(abstractConfigurationRoot, getTargetConfigurationInputStream(abstractConfigurationRoot, target), GENERATOR_TARGET_RULES);
-//		complementWithTargetInfo(abstractConfigurationRoot, target);
-//	}
 
 	@Override
 	public net.sf.minuteProject.configuration.bean.Configuration getConfigurationRoot() {

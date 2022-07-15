@@ -160,8 +160,6 @@ public class XmlGenerator extends AbstractGenerator {
 	public void generate(Template template) throws MinuteProjectException {
 		if (template.getEntitySpecific().equals("true"))
 			generateArtifactsByEntity(template);
-		else if (template.getEntitySpecific().equals("true"))
-			generateArtifactsByEntity(template);
 		else if (template.getPackageSpecific().equals("true"))
 			generateArtifactsByPackage(template);
 		else if (template.getModelSpecific().equals("true"))

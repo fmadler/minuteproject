@@ -46,7 +46,7 @@ public class CollectionUtils {
 						return element.replace(u, "");
 					} else
 						return u;
-				}).findFirst().get();
+				}).findFirst().orElse("Key not found");
 		return s;
 
 	}

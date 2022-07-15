@@ -286,7 +286,7 @@ public abstract class TableAbstract extends AbstractConfiguration implements Tab
 		for (Reference ref : getParents())
 			references.add(ref);
 //m2m
-		return getDistinctTypeArray((Reference[])references.toArray());
+		return getDistinctTypeArray(references.toArray(new Reference[references.size()] ));
 	}
 	
 	public Reference [] getDistinctChildrenTypeArray() {

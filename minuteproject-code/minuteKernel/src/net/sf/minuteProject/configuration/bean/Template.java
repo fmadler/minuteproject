@@ -343,8 +343,6 @@ public class Template extends TemplateTarget {
 	private boolean getPluginIsToGenerate (Plugin plugin, String function, GeneratorBean bean) {
 		if (plugin==null || function==null)
 			return false;
-		if (plugin.equals(""))
-			return true;
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		try {
 			Class clazz = cl.loadClass(plugin.getClassName());

@@ -162,7 +162,7 @@ public class FormatUtils {
 		for (char c :letter.toCharArray()) {
 			if (Character.isUpperCase(c))
 				return true;
-			return false;
+			break;
 		}
 		return false;
 	}

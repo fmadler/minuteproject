@@ -235,9 +235,7 @@ public class ReferenceUtils {
 					  ||
 					  (reference.getForeignTableName().equals(otherReference.getLocalTableName()) &&
 						reference.getForeignColumnName().equals(otherReference.getLocalColumnName()) && 
-						reference.getForeignTableName().equals(otherReference.getLocalTableName()) &&
-						reference.getForeignColumnName().equals(otherReference.getLocalColumnName()) 
-							  
+						reference.getForeignTableName().equals(otherReference.getLocalTableName())
 					  )
 					  ;
 		}

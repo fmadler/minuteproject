@@ -172,9 +172,9 @@ public abstract class TypeMap
         _typeNameToTypeCode.put("BOOLEANCHAR", new Integer(Types.CHAR));
         
         //timestampz oracle
-        registerJdbcType(new Integer(-101),  "TIMESTAMPZ",  JdbcTypeCategoryEnum.DATETIME);
+        registerJdbcType(-101,  "TIMESTAMPZ",  JdbcTypeCategoryEnum.DATETIME);
         // db2 xml type
-        registerJdbcType(new Integer(-2004),  "XML",  JdbcTypeCategoryEnum.TEXTUAL);
+        registerJdbcType(-2004,  "XML",  JdbcTypeCategoryEnum.TEXTUAL);
      
     }
 

@@ -28,13 +28,13 @@ public class ViewDDLUtils extends TableDDLUtils implements View{
 
 	public Column[] getRealPrimaryKeys() {
 		if (realPrimaryKeys==null)
-			realPrimaryKeys = new ArrayList<Column>();
-		return (Column[])realPrimaryKeys.toArray();
+			realPrimaryKeys = new ArrayList<>();
+		return (Column[])realPrimaryKeys.toArray(new Column[realPrimaryKeys.size()]);
 	}
 
 	public Column[] getVirtualPrimaryKeys() {
 		if (virtualPrimaryKeys==null)
-			virtualPrimaryKeys = new ArrayList<Column>();
+			virtualPrimaryKeys = new ArrayList<>();
 		return (Column[])virtualPrimaryKeys.toArray(new Column[virtualPrimaryKeys.size()]);
 	}
 

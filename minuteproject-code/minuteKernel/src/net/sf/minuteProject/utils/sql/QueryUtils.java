@@ -46,7 +46,7 @@ public class QueryUtils {
 			if (!query.getQueryParams().hasOutputParam() && !query.isWrite()) {
 				
 				try {
-					return getOutputParams(connection, query, dataModel.getDatabase());
+					return getOutputParams(connection, query);
 				} catch (SQLException e) {
 					e.printStackTrace();
 					throw new MinuteProjectException("Query Not working "+query,"QUERY_NOT_WORKING");
@@ -65,11 +65,12 @@ public class QueryUtils {
 		return null;
 	}
 
-	private static QueryParams getOutputParams(Connection connection, Query query,
-			Database database) throws SQLException {
+	private static QueryParams getOutputParams(Connection connection, Query query) throws SQLException {
 		String q = getFullQuerySample(query);
-		PreparedStatement prest = connection.prepareStatement(q);
-		try {
+
+		try (
+				PreparedStatement prest = connection.prepareStatement(q);
+				){
 			ResultSet rs = prest.executeQuery();
 			return getQueryParams(rs.getMetaData());
 		} catch (SQLException e) {
@@ -81,7 +82,7 @@ public class QueryUtils {
 	
 	private static QueryParams getOutputParamsFromCallableStatement(Connection connection, QueryParams queryParams, String query,
 			Database database) throws SQLException {
-		CallableStatement callableStatement = connection.prepareCall(query);
+//		CallableStatement callableStatement = connection.prepareCall(query);
 		//callableStatement.execute(createSP);
 		
 		//TODO should not be last only

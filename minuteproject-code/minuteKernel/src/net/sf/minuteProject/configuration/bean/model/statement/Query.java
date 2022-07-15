@@ -373,12 +373,12 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private void addColumns(org.apache.ddlutils.model.Table table, Direction direction) {
 		List<QueryParam> list = getQueryParams(direction);
 		for (QueryParam queryParam : list) {
-			if (!queryParam.isLink()) {
+/*			if (!queryParam.isLink()) {
 				table.addColumn(getColumn(table, queryParam));
-			} else {
+			} else {*/
 				///table.addColumn(getColumnTransient(queryParam));
 				table.addColumn(getColumn(table, queryParam));
-			}
+			//}
 		}
 	}
 

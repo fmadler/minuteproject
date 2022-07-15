@@ -356,17 +356,17 @@ public abstract class AbstractGenerator implements Generator {
 			String catalogEntry) {
 		String outputdirRoot = null;
 		Targets ts = configuration.getTargets();
-		if (ts != null)
+		if (ts != null) {
 			outputdirRoot = ts.getOutputdirRoot();
-		String catalogDir = ts.getOutputdirRoot(catalogEntry);
+		}
 		if (outputdirRoot != null) {
 			if (ts.getAppendCatalogEntryDirToOutputDirRoot())
 				return outputdirRoot + "/" + catalogEntry;
 			else
 				return outputdirRoot;
-		} else
-			return catalogDir;
-
+		} else {
+			return ts.getOutputdirRoot(catalogEntry);
+		}
 	}
 	
 	public boolean isIndirectionCompatible (GeneratorBean bean, Template template) {
@@ -377,7 +377,6 @@ public abstract class AbstractGenerator implements Generator {
 
 	protected boolean isToGenerate (GeneratorBean bean, Template template) {
 		if (!isIndirectionCompatible(bean, template)) 
-		//if (bean.isIndirection() && !template.isIndirectionCompatible()) 
 			return false;
 		if (template.isToGenerateBasedOnModelType(bean)){
 			if (template.getCheckTemplateToGenerate() != null
@@ -721,9 +720,9 @@ public abstract class AbstractGenerator implements Generator {
 		if (beanName.equals("componentddlutils"))
 			return "component";
 		if (beanName.equals("functionddlutils"))
-			return "function";
+			return SCOPE_DATAMODEL_FUNCTION;
 		if (beanName.equals("foreignkeyddlutils"))
-			return "foreignkey";
+			return SCOPE_FOREIGNKEY_APPLICATION;
 		if (beanName.equals("wsdlmodelmetro"))
 			return "wsdlmodel";
 		return beanName;
