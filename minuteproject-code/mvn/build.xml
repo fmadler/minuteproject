@@ -40,8 +40,10 @@
         <macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-patch2" />
         -->
         <macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.kernel.java.src-plugin}"/>
+<!--
 
         <macro_copy_java todir="${mvn.kernel.java}" filesetDir="${leg.foundation.java.src}"/>
+-->
 
         <!-- copy unit tests -->
         <macro_copy_java todir="${mvn.kernel.test}" filesetDir="${leg.kernel.java.test}"/>

@@ -6,7 +6,7 @@ import net.sf.minuteProject.configuration.bean.model.statement.QueryChunkParam;
 import net.sf.minuteProject.configuration.bean.model.statement.QueryParam;
 import net.sf.minuteProject.utils.ConvertUtils;
 import net.sf.minuteProject.utils.FormatUtils;
-import net.sf.minuteproject.model.db.type.FieldType;
+import net.sf.minuteProject.model.db.type.FieldType;
 
 public class StatementUtils {
 

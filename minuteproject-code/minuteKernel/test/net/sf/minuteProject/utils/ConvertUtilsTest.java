@@ -6,7 +6,7 @@ import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.ColumnDDLUtils;
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.DatabaseDDLUtils;
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.TableDDLUtils;
-import net.sf.minuteproject.model.db.type.FieldType;
+import net.sf.minuteProject.model.db.type.FieldType;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -8,7 +8,7 @@ import net.sf.minuteProject.utils.ColumnUtils;
 import net.sf.minuteProject.utils.CommonUtils;
 import net.sf.minuteProject.utils.FormatUtils;
 import net.sf.minuteProject.utils.java.JavaUtils;
-import net.sf.minuteproject.model.db.type.FieldType;
+import net.sf.minuteProject.model.db.type.FieldType;
 
 public class PhpUtils {
 

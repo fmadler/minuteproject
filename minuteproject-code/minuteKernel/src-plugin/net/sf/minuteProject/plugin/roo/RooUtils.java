@@ -10,7 +10,7 @@ import net.sf.minuteProject.utils.ConvertUtils;
 import net.sf.minuteProject.utils.FormatUtils;
 import net.sf.minuteProject.utils.java.JavaUtils;
 import net.sf.minuteProject.utils.sql.SqlUtils;
-import net.sf.minuteproject.model.db.type.FieldType;
+import net.sf.minuteProject.model.db.type.FieldType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

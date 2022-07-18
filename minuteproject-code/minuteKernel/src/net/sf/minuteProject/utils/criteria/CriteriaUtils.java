@@ -1,7 +1,7 @@
 package net.sf.minuteProject.utils.criteria;
 
 import net.sf.minuteProject.configuration.bean.model.data.Column;
-import net.sf.minuteproject.model.db.type.FieldType;
+import net.sf.minuteProject.model.db.type.FieldType;
 
 public class CriteriaUtils {
 

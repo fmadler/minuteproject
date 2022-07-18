@@ -241,7 +241,6 @@ public class EnrichmentUtils {
 			   return false;
 		return true;
 	}
-
 	private static boolean isEqualLocal (Reference origin, Reference ref) {
 		if (!ref.getLocalTableName().equals(origin.getLocalTableName()) )
 			   return false;
