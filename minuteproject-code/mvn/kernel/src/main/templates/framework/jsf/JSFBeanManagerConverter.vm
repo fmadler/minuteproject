@@ -1,0 +1,98 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#if($isSpringBackend)
+#exposeSpringDomainObjectSpecific()
+#exposeSpringServiceDomainObject()
+#set ($EJBDaoImplClass = $SpringServiceInterfaceClass)
+#set ($EJBDaoImplVariable = $SpringServiceInterfaceVariable)
+#exposeSpringModelSpecific()
+#elseif($isEJBBackend)
+#exposeEJBDomainObjectSpecific()
+#end
+package $packageName;
+
+$!updatedAreaImport
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
+
+
+#if($isSpringBackend)
+import org.springframework.stereotype.*;
+
+import $lookupBeanImport;
+import $beanSpringModelServiceImport;
+import $SpringServiceInterfaceImport;
+import $modelJSFUtilsImport;
+import $modelSemanticReferenceUtilsJSFImport;
+
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ViewScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+##import $EJBDaoImplImport;
+
+#end
+import $importDomainObjectUML;
+#exposeJPA2Import()
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: JSF converter ${className} </p>
+ *
+ */
+@FacesConverter(value="${entityConverterJSFVariable}")
+#if($isSpringBackend)
+@Component ("${entityConverterJSFVariable}")
+#elseif($isEJBBackend)
+@ManagedBean ##("${entityConverterJSFVariable}")
+@ViewScoped
+#end
+public class ${className} implements Converter {
+
+##	@Inject 
+##    private $EJBDaoImplClass $EJBDaoImplVariable;
+
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent ui, String value) {
+        $tableClassName $tableVariableName = new $tableClassName();
+#if ($jpa2Utils.isEmbedded($table))
+	//not ideal since not all the column are copied
+#if($columnUtils.isString($primaryKeyFirstColumn))
+	    ${tableVariableName}.set${primaryKeyJavaNameClass}_(value);
+#else
+	    ${tableVariableName}.set${primaryKeyJavaNameClass}_(${primaryKeyFullType}.valueOf(value));
+#end
+#else
+#if($columnUtils.isString($primaryKeyFirstColumn))
+	    ${tableVariableName}.set${primaryKeyJavaNameClass}(value);
+#else
+	    ${tableVariableName}.set${primaryKeyJavaNameClass}(${primaryKeyFullType}.valueOf(value));
+#end
+#end
+    	return $tableVariableName;
+    }
+
+	@Override
+    public String getAsString(FacesContext context, UIComponent ui, Object object) {
+		if (object==null)
+            return "";
+#if ($jpa2Utils.isEmbedded($table))
+		return (($tableClassName) object).get${primaryKeyJavaNameClass}_().toString();
+#else
+		return (($tableClassName) object).get${primaryKeyJavaNameClass}().toString();
+#end
+##		return object.toString();
+    }
+	
+$!updatedAreaImplementation
+}

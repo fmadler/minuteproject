@@ -1,0 +1,475 @@
+#exposeBackendTechnology()
+#putQueryCommons()
+#if(!$query.isIndirection())
+#exposeDbApiRestQuerySpecific()
+#exposeSDDSpring()
+#exposeRESTSDDURLServer()
+#putImportQuerySDDBean()
+#else
+//TODO query indirection
+#end
+#exposeRESTModelCache()
+#exposeRESTModelCompress()
+#exposeRESTModelJWTUtils()
+#addedAreas()
+#if (!$query.isIndirection())
+#set ($sizeColumn = $inputBean.columns.size())
+#set ($sizeChunk = $query.getQueryChunks().size())
+#set ($size = $sizeColumn + $sizeChunk)
+#set ($useTemporal = true)
+#set ($inputBeanAtLeastOneVisibleColumn=$queryUtils.hasInputBeanAtLeastOneVisibleColumn($inputBean))
+###
+#macro(resourceSignature $param $showType $addValidation)
+#foreach($column in $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
+#putColumnParamNaming()
+#if($columnUtils.isTime($column))
+#set($columnType=$dateParamImport)
+#end
+#if($columnUtils.isBoolean($column))
+#set($columnType="java.lang.Boolean")
+#end
+#if($velocityCount>1)        ,#end        #if($addValidation)@javax.validation.Valid#end#if($param != "")@ApiParam(value = "$columnVar", required = ${column.isRequired()}) @${param} ("$columnVar") #end #if($showType)#if(!$column.isArray())$columnType#else String#end #end$columnVar
+##end
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1)        ,#end        #if($param != "")@ApiParam(value = "$chunkName", required=true, allowableValues = "$queryChunk.getDistinctValues()" #if($queryChunk.hasDefault()), defaultValue = "${queryChunk.getDefaultValue().getName()}"#end) @${param} ("$chunkName") #end #if($showType)String #end$chunkName
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+        ,#if($param != "")@ApiParam(value = "${chunkName}_${queryParams.name}", required=true) @${param} ("${chunkName}_${queryParams.name}") #end #if($showType)String #end${chunkName}_${queryParams.name}
+#end
+#end
+#end
+###
+#macro (daoParameters)
+#if($isNotVoidInput)
+        	${sddInputBeanVariable}
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if($isNotVoidInput || $velocityCount>1)           ,#else           #end$chunkName
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+           ,${chunkName}_${queryParams.name}
+#end
+#end
+#end
+###
+#macro (resourceParameters)
+#foreach($column in $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
+#putColumnParamNaming()
+#if($columnUtils.isTimeStampColumn($column))
+#set($columnType=$timestampParamImport)
+#elseif($columnUtils.isTime($column))
+#set($columnType=$dateParamImport)
+#end
+#if($velocityCount>1),#end $columnVar
+##end
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1),#end $chunkName
+#end
+#end
+
+###
+#macro (executeSddImplementation)
+#if($isNotVoidInput)
+        $sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass ();
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+#if (!$column.hasBeenDuplicated())
+#if (!$column.isImplicit())
+#if($columnUtils.isTime($column))
+		if (${columnVar}!=null && ${columnVar}.getDate()!=null)
+			${sddInputBeanVariable}.set$columnClass (${columnVar}.getDate());
+#else
+		${sddInputBeanVariable}.set$columnClass ($columnVar);
+#end
+#elseif ($column.isImplicit()) ##TODO check if sessionParam
+#if ($column.useJwtSubject())
+        //Jwtsubject
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.isNotEmpty(authorizationHeader)) {
+            String token = authorizationHeader.substring("Bearer".length()).trim();
+            ${sddInputBeanVariable}.set$columnClass (JWTUtils.getSubjectFromToken(token));
+        } else {
+            //TODO throw exception
+        }
+#elseif ($column.defaultValue)
+		${columnType} ${columnClass}_DEFAULT = "$column.defaultValue"; ##TODO with other column type
+		Object ${columnClass}_SESSION = request.getSession().getAttribute("${column.sessionParamName}");
+		${columnType} ${columnClass}_VALUE = ${columnClass}_SESSION!=null?(${columnType})${columnClass}_SESSION:${columnClass}_DEFAULT;
+		${sddInputBeanVariable}.set$columnClass (${columnClass}_VALUE);
+#else
+		${sddInputBeanVariable}.set$columnClass ((${columnType})request.getSession().getAttribute("${column.sessionParamName}"));
+#end
+#end
+#end
+#end
+        return ${sddDaoInterfaceVariable}.execute(
+#daoParameters()
+        );
+#else
+        return ${sddDaoInterfaceVariable}.execute(
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+            #if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1),#end $chunkName
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+           ,${chunkName}_${queryParams.name}
+#end
+#end
+        );
+#end
+#end
+#set ($hasVelocityPostProcessor = $queryUtils.hasVelocityPostProcessor($query))
+package $packageName;
+
+$!updatedAreaImport
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.annotations.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.io.*;
+import java.sql.*;
+import java.io.IOException;
+import javax.servlet.http.*;
+import java.util.List;
+import java.util.ArrayList;
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ejb.EJB;
+import $EJBDaoImplImport;
+#end
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.HttpHeaders;
+import javax.xml.bind.JAXBElement;
+
+import ${modelRestJWTUtilsImport};
+import org.apache.commons.lang3.StringUtils;
+
+import javax.annotation.security.RolesAllowed;
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+import $sddDaoInterfaceImport;
+#if($queryUtils.isCache($query))
+import $modelRestCacheableImport;
+#end
+import $modelRestCompressImport;
+#if ($hasVelocityPostProcessor)
+##TODO integrate properly with embedded velocity renderer   //import velocity render
+${template.getPackageRoot()}.${model.name}.rendering.VelocityMerger
+#end
+/**
+*
+* <p>Title: ${className}</p>
+*
+* <p>Description: class for ${className} service </p>
+* <p>Convention: $query.getNamingConvention() </p>
+*
+*/
+#if ($camelCaseConvention)
+@Path("/sdd/${queryVariableName}")
+#else
+@Path("/sdd/${sddInputBeanClass}")
+#end
+@Produces(MediaType.APPLICATION_JSON)
+#if ($camelCaseConvention)
+@Api(value="/sdd/${queryVariableName}", description = "operation about ${sddInputBeanClass}")
+#else
+@Api(value="/sdd/${sddInputBeanClass}", description = "operation about ${sddInputBeanClass}")
+#end
+#if ($tableUtils.hasSecurityColorRole($inputBean))
+@RolesAllowed("$tableUtils.securityColorRoles($inputBean)")
+#end
+public class ${className} {
+#if ($tableUtils.needsRequest($inputBean))
+
+	@Context
+	private HttpServletRequest request;
+	
+#end
+#if ($isSpringBackend)
+    @Autowired
+    @Qualifier("$sddDaoInterfaceVariable")
+#elseif($isEJBBackend)
+    @EJB	
+#end
+	${sddDaoInterfaceClass} $sddDaoInterfaceVariable;
+	
+#if (!$query.isWrite())
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+    $!updatedAreaSnippet
+#else
+    @GET
+#if($queryUtils.isCache($query))
+    @${modelRestCacheableClass}(cc = "public, max-age=3600")
+#end
+	@${modelRestCompressClass}
+    @ApiOperation(value = "$query.name", notes = "$queryUtils.getDescription($query)", response = ${sddOutputBeanCollectionClass}.class)
+    @ApiResponses(value = {
+    	@ApiResponse(code = 200, message = "ok")
+    })
+    public $sddOutputBeanCollectionClass execute (
+#resourceSignature("QueryParam", true, false)
+    ) {
+		return callImplementation(
+#resourceSignature("", false, false)
+		);
+    }
+#end
+#end
+
+#if ($query.isWrite())
+#exposeQueryUpdatedAreas("SDD_EXECUTE_POST")
+$!updatedAreaBegin
+#if($isUpdated)
+    $!updatedAreaSnippet
+#else
+    @POST
+	@${modelRestCompressClass}
+    @ApiOperation(value = "$query.name", notes = "$queryUtils.getDescription($query)", response = ${sddOutputBeanCollectionClass}.class)
+    @ApiResponses(value = {
+    	@ApiResponse(code = 200, message = "ok")
+    })
+    public $sddOutputBeanCollectionClass post (
+#resourceSignature("FormParam", true, false)
+    ) {
+		return callImplementation(
+#resourceSignature("", false, false)
+		);
+    }
+    
+    @POST
+    @Path("/withValidation")//TODO remove just for migration testing
+    public ${sddOutputBeanCollectionClass} postWithValidation (
+#if($isTomcatTargetServer)
+#resourceSignature("FormParam", true, true)##validation javax activated, on weblogic 12.c conflict with rest
+#else
+#resourceSignature("FormParam", true, false)
+#end
+    ) {
+		return callImplementation(
+#resourceSignature("", false, false)
+		);
+    }
+    
+#end
+#end
+
+	public $sddOutputBeanCollectionClass callImplementation (
+#resourceSignature("", true, false)
+	) {
+#executeSddImplementation()	
+	}
+	
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+    @GET
+    @Path ("/get${pivotClasses}")
+    @ApiOperation(value = "get${pivotClasses}", notes = "get${pivotClasses}", response = ${pivotClass}.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "ok")
+    })
+    public List<$pivotClass> get${pivotClasses} (
+#resourceSignature("QueryParam", true, false)
+    ) {
+        $sddOutputBeanCollectionClass list = execute(
+#resourceParameters()
+			);
+        return get${pivotClasses}(list);
+    }
+#end
+#* TODO 
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.getJavaName($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+    @GET
+    @Path ("/per${pivotClasses}")
+    @ApiOperation(value = "per${pivotClasses}", notes = "per${pivotClasses}", response = ${pivotClass}.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "ok")
+    })
+    public List<$pivotClass> per${pivotClasses} (
+#resourceSignature("QueryParam", true, false)
+    ) {
+        $sddOutputBeanCollectionClass list = execute(
+#resourceParameters()
+			);
+        return get${pivotClasses}(list);
+    }
+#end
+*#
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+	@lombok.Data
+	private class $pivotClass {
+#foreach ($column in $pivot.getColumnList())
+#putColumnParamNaming()
+		$columnType $columnVar;
+#end
+
+#foreach ($sibling in $pivot.getSiblings())	
+#set($siblingClass = $formatUtils.firstUpperCase($sibling.name))
+#set($siblingName = $i18nUtils.plurialize($sibling.name))
+#set($siblingClasses = $i18nUtils.plurialize($siblingClass))
+		@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)	
+		List<${siblingClass}> $siblingName = new ArrayList<>();
+		public void add${siblingClass}(${siblingClass} e) {
+			get${siblingClasses}().add(e);
+		}
+#end
+	}
+#*
+TODO change with lambda
+
+	public List<$pivotClass> per${pivotClasses} ($sddOutputBeanCollectionClass input) {
+		Map<Country, List<$sddOutputBeanClass>> collector = input.get$sddOutputBeanClass().stream()
+				.collect(Collectors.groupingBy(
+						u -> {	
+							$pivotClass ret = new $pivotClass();
+#foreach ($column in $pivot.getColumnList())
+#putColumnParamNaming()
+							ret.$columnVar(u.$columnVar);
+#end
+				);
+		List<$pivotClass> countries = eventGroupByCountry.entrySet().stream()
+				.map(u -> {
+							u.getKey().getEventYearNumbers().addAll(convert(u.getValue()));
+							return u.getKey();
+						}
+				)
+				.collect(Collectors.toList());
+		return countries;
+	}
+
+	public List<Country> getCountries (EventsPerYearStatOutList input) {
+		Map<Country, List<EventsPerYearStatOut>> eventGroupByCountry = input.getEventsPerYearStatOuts().stream()
+				.collect(Collectors.groupingBy(
+						u -> new Country(u.getEventCountryId(), u.getEventCountryName(), u.getEventCountryWebPath()))
+				);
+		List<Country> countries = eventGroupByCountry.entrySet().stream()
+				.map(u -> {
+							u.getKey().getEventYearNumbers().addAll(convert(u.getValue()));
+							return u.getKey();
+						}
+				)
+				.collect(Collectors.toList());
+		return countries;
+	}
+
+*#
+	public List<$pivotClass> get${pivotClasses} ($sddOutputBeanCollectionClass input) {
+        List<$pivotClass> ret = new ArrayList<>();
+#set($pivotColumnClassType = $commonUtils.getJavaType($pivot.getPivotColumn()))
+        Map<$pivotColumnClassType, $pivotClass> map = new HashMap<$pivotColumnClassType, $pivotClass>();
+        for ($sddOutputBeanClass pivot : input.get${sddOutputBeanClass}s()) {
+#set($pivotColumnClass = $commonUtils.getColumnClassName($pivot.getPivotColumn()))
+            $pivotClass p = map.get(pivot.get$pivotColumnClass());
+
+            if (p==null) {
+                p = new $pivotClass();
+#foreach ($column in $pivot.getColumnList())
+#putColumnParamNaming()
+                p.${columnVar} = pivot.get${columnClass}();
+#end
+                map.put(pivot.get$pivotColumnClass(), p);
+            }
+#foreach ($sibling in $pivot.getSiblings())	
+#if ($velocityCount==1)
+#set($pivotVar="p")
+#else
+#set($pivotVar=$siblingVar)
+#end
+#set($siblingClass = $formatUtils.firstUpperCase($sibling.name))
+#set($siblingVar = $javaUtils.getJavaVariableNaming($sibling.name))
+            ${siblingClass} $siblingVar = new ${siblingClass}();
+#foreach ($column in $sibling.getColumnList())
+#putColumnParamNaming()
+            ${siblingVar}.${columnVar} = pivot.get${columnClass}();
+#end
+            ${pivotVar}.add${siblingClass}(${siblingVar});
+#end
+        }
+        for ($pivotClass e : map.values()) {
+            ret.add(e);
+        }
+        return ret;
+    }
+	
+#end
+#if ($hasVelocityPostProcessor)
+    @Autowired
+    VelocityMerger velocityMerger;
+#end
+#foreach ($processor in $query.queryPostProcessors)
+    //Post Processor $processor.name
+    ##TODO put velocityMerger as global
+#if ($processor.getType().equalsIgnoreCase("velocity"))
+
+    private String render ($sddOutputBeanCollectionClass list) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("$queryVariableName",list);
+        return velocityMerger.merge("${processor.getType()}/${processor.getTemplateName()}", map);
+    }
+#end
+
+    @GET
+    @Path("/${processor.name}")
+#if($queryUtils.isCache($query))
+    @${modelRestCacheableClass}(cc = "public, max-age=3600")
+#end
+    @${modelRestCompressClass}
+    @ApiOperation(value = "$queryVariableName", notes = "perform $queryVariableName", response = ${sddOutputBeanCollectionClass}.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "ok")
+    })
+#if ($processor.getRenditionType().equalsIgnoreCase("xml"))
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+#else
+#end
+    public String processTo${processor.name} (
+    #resourceSignature("QueryParam", true, false)
+        ) {
+        $sddOutputBeanCollectionClass l =
+            callImplementation(
+                #resourceSignature("", false, false)
+            );
+        return render(l);
+    }
+#end
+$!updatedAreaEnd
+$!updatedAreaImplementation
+}
+#end

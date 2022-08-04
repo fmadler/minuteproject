@@ -1,0 +1,52 @@
+#macro (exposePHPVariableEntitySpecific)
+#set ($packageName = $phpUtils.getPackageName($model, $template, $table))
+#end
+
+#macro (putPHPColumnParamNaming)
+#putColumnParams()
+#columnPHPNaming()
+#set ($packageName = $phpUtils.getPackageName($model, $template, $table))
+#end
+
+#macro (columnPHPNaming)
+#set($columnVar="$"+$phpUtils.getVariableNaming(${columnVar}))
+#set($columnClass=$phpUtils.getClassNaming(${columnClass}))
+#set($columnType=$phpUtils.getType(${column}))
+#end
+
+#macro (exposePHPImport)
+#foreach ($reference in $table.children)
+#set ($thisTable = $reference.foreignTable)
+#exposePHPDomainObjectImport($reference.foreignTable)
+#if(!$thisTable.isManyToMany())
+use $importDomainObjectUML;
+#end
+#end
+#foreach ($reference in $table.parents)
+#exposePHPDomainObjectImport($reference.foreignTable)
+#set ($thisTable = $reference.foreignTable)
+#if(!$thisTable.isManyToMany())
+use $importDomainObjectUML;
+#end
+#end
+##foreach ($reference in $childReferences)
+##putReferenceParams()
+##if($linktableDB.isManyToMany())
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposePHPDomainObjectImport($targetTable)
+use $importDomainObjectUML;
+##end
+##end
+#end
+#end
+
+#macro (exposePHPDomainObjectImport $tableDB)
+#putPHPTemplateDefinition()
+#set ($importDomainObjectUML = $formatUtils.transformSlashIntoBackSlash($commonUtils.getArtifactRelativePathDirAndName($tableDB, $template, $templateDoctrineDomainObject)))
+#end
+
+#macro (putPHPTemplateDefinition)
+#set ($templateDoctrineDomainObject = "DomainEntityDoctrineAnnotation")
+#end
+

@@ -1,0 +1,50 @@
+#exposeADFQuerySpecific()
+#putImportQuerySDDBean()
+#exposeADFFacesCommon()
+#set($entityADFVariable=$sddInputBeanVariable)
+#set($tableVariableName=$sddInputBeanVariable)
+<?xml version="1.0" encoding="UTF-8" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+##  <task-flow-definition id="${tableVariableName}-details-flow-definition">
+  <task-flow-definition id="${className}">
+    <default-activity id="__4">${tableVariableName}Result</default-activity>
+    <data-control-scope id="__3">
+      <shared/>
+    </data-control-scope>
+#if($isNotVoidInput)
+    <input-parameter-definition id="__1">
+      <name id="__2">$sddInputBeanVariable</name>
+      <value>#{pageFlowScope.${sddInputBeanVariable}}</value>
+      <class>$sddInputBeanImport</class>
+      <required/>
+    </input-parameter-definition>
+#end
+    <managed-bean id="__17">
+      <managed-bean-name id="__19">${queryBackingBeanADFFaceVariable}</managed-bean-name>
+      <managed-bean-class id="__18">${queryBackingBeanADFFaceImport}</managed-bean-class>
+      <managed-bean-scope id="__16">pageFlow</managed-bean-scope>
+    </managed-bean>
+    <managed-bean id="__117">
+      <managed-bean-name id="__119">${queryListenerBeanADFFaceVariable}</managed-bean-name>
+      <managed-bean-class id="__118">${queryListenerBeanADFFaceImport}</managed-bean-class>
+      <managed-bean-scope id="__116">request</managed-bean-scope>
+    </managed-bean>
+    <view id="${tableVariableName}Result">
+      <page>/$queryInputJsffResultADFFaceRelativePath</page>
+    </view>
+    <use-page-fragments/>
+  </task-flow-definition>
+</adfc-config>
+
+#foreach($action in $actions)
+    <af:column sortProperty="$actionName"  sortable="false" headerText="" id="c5">
+      <!-- Facelet template -->
+      <af:commandLink text="$actionName" id="action1"
+                      actionListener="#{${queryBackingBeanADFFaceVariable}.actionListener}"
+                      action="#{${queryBackingBeanADFFaceVariable}.process}">
+       <f:setPropertyActionListener value="#{row.rowKey}"
+                      target="#{${queryBackingBeanADFFaceVariable}.curentRow}" />
+      </af:commandLink>      
+
+    </af:column>
+#end

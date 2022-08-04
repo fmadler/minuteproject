@@ -1,0 +1,86 @@
+#exposeEmberQuerySpecific()
+{{!--#layout/container/index-layout-container--}}
+    <div class="row">
+        <div class="col-md-12">
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+#if($columnUtils.isLink($column))
+#set($queryId =$column.queryParamLink.queryName)
+#set($fieldKey =$column.queryParamLink.fieldKey)
+#set($fieldName =$column.queryParamLink.fieldName)
+#exposeQueryTarget()
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldName))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+#set($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if ($isAutocompletion)
+##			{{!-- TODO autocomplete https://ember-power-select.com/docs/custom-search-action --}}
+			<PowerSelect
+			  @searchEnabled={{true}}
+			  @search={{this.${columnVar}Search}}
+			  @selected={{this.${columnVar}selected}}
+			  @onChange={{fn (mut this.selected)}} as |repo|>
+			  {{repo.name}}
+			</PowerSelect>
+			(It might fail if the API limit is exceeded)			
+#end
+#end
+
+	        <div class="form-group">
+	        	<label>$columnVar</label>
+	        	<Input type="text" class="form-control" @value={{this.$columnVar}} />
+	        </div>
+#end
+
+	        <button type="button" class="btn btn-info" {{on "click" (fn this.search)}}>
+	            Search
+	        </button>
+        </div>
+    </div>
+ 
+    <div class="col-md-12">
+        <h2>Results <span class="badge badge-dark" >{{@data.${sddOutputBeanClass}.length}}</span></h2>         
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+#foreach($column in $outputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+                	<th>
+                	   $columnVar
+                	</th>
+#end
+#end
+            	</tr>
+            </thead>
+            <tbody>
+{{#each @data.$sddOutputBeanClass as |item index| }} 
+            	<tr>
+#foreach($column in $outputBean.columns)
+                	<td>
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+#if (!$column.getSeparatorCharacters())
+                		{{item.$columnVar}}
+#else
+{{#each item.$columnVar as |$columnVar| }}
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldClass = $commonUtils.getJavaClassName($field.name))
+#set($fieldVar = $commonUtils.getJavaVariableName($field.name))
+						{{$columnVar.$fieldVar}}
+#end
+{{/each}}
+#end
+#end
+					</td>
+#end
+            	</tr>
+{{/each}}
+            </tbody>
+		</table>
+    </div>
+{{!--/layout/container/index-layout-container--}}

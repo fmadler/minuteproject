@@ -1,0 +1,3 @@
+#generatorSpecific()
+DROP SCHEMA IF EXISTS `${generatorBean.name}` ;
+CREATE SCHEMA IF NOT EXISTS `${generatorBean.name}` DEFAULT CHARACTER SET utf8 ;

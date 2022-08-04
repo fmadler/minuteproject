@@ -1,0 +1,85 @@
+import fetch from 'fetch';
+import { hash } from 'rsvp';
+import _ from 'lodash';
+
+export function postData(url) {
+    return fetchIt(url, "post");
+}
+
+export function getData(url) {
+    return fetchIt(url, "get");
+}
+
+export function fetchData(url) {
+    return getData(url);
+}
+
+export function fetchDataJwt(url, method) {
+    let myjwt = JSON.parse(localStorage.getItem("ember_simple_auth-session")).authenticated.token
+    return fetch(url, 
+        {
+            method : method,
+            mode: 'cors', 
+            headers : {
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer '+myjwt,
+            }
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .catch(function(error) {
+            throw {"session":"invalidate"};
+        })
+        
+    ;
+}
+
+function fetchIt(url, method) {
+    return fetch(url, 
+        {
+            method : method,
+            mode: 'cors', 
+            headers : {
+                'Content-type': 'application/json'
+            }
+        })
+        .then(function(response) {
+            return response.json();
+        })
+    ;
+}
+
+export default { 
+    fetchData: fetchData 
+};
+
+export function getJsonFromLocalStorage(key, adapter, dataCallback) {
+    var c = window.localStorage.getItem(key);
+    var result=(c && c!="undefined")?JSON.parse(c):null;
+    if (!result) {
+        var promise = adapter.findAll().then((data) => {
+            return dataCallback(data);
+        });
+        var promises = {
+            promise : promise
+        };
+        hash(promises).then(function(data) {
+            result = data.promise;
+            window.localStorage.setItem(key,JSON.stringify(result));
+        });
+    }
+    return result;
+}
+
+export function webPath(input) {
+    return replaceAll(input.toLowerCase(), " ", "-");
+}
+
+export function toWebPath(param) {
+  if (param) {
+    return param.trim().toLowerCase().split(' ').join('-');
+  } else {
+    return "";
+  }
+}

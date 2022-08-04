@@ -1,0 +1,14 @@
+#exposeEmberQuerySpecific()
+<$importEmberQueryIndexPath 
+	@data={{model}} 
+## queryparams are available at this stage
+#if($inputBean.columns.size() > 0)
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+	@$columnVar={{this.$columnVar}}
+#end
+#end
+#end
+/>

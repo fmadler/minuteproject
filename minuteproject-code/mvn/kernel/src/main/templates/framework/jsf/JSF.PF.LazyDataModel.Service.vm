@@ -1,0 +1,113 @@
+#exposeBackendTechnology()
+#putJPA2TemplateDefinition()
+#exposeVariableModelSpecific()
+#exposeSpringModelSpecific()
+#exposeJSFModelSpecific()
+#addedAreas()
+#set($thisClassName="$className")
+#set($thisDomainVariableName=$classVariable)
+package $packageName;
+
+$!updatedAreaImport
+
+import  java.io.Serializable;
+
+import org.primefaces.model.LazyDataModel;
+
+#if ($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#else
+import javax.ejb.Stateless;	
+import javax.ejb.EJB;	
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+#end
+
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#exposeJPA2DomainObject($table)
+#exposeSpringBslaDomainObject()
+#exposeJSFEntitySpecific()
+#if(!$isMany2Many)
+#exposeSpringServiceDomainObject()
+import $importDomainObjectUML;
+##import $BslaDaoInterfaceImport;
+import $entityLazyDataModelImport;
+import $SpringServiceInterfaceImport;
+#end
+#end
+
+import $beanSpringModelServiceImport;
+
+/**
+ *
+ * <p>Title: $thisClassName</p>
+ *
+ * <p>Description: Service layer Interface 
+ * It offers coarse grain methods over the fine grain DAO layer:
+ * It performs input and business validation.
+ * </p>
+ *
+ */
+#if ($isSpringBackend)
+@Service ("$modelLazyDataModelServiceVariable")
+@Transactional
+#else
+@Stateless (name="$modelLazyDataModelServiceVariable")	
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
+#end
+public class $thisClassName { ##implements Serializable $beanSpringModelServiceClass {
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#exposeJPA2DomainObject($table)
+#exposeSpringBslaDomainObject()
+#if(!$isMany2Many)
+#exposeSpringServiceDomainObject()
+#exposeJSFEntitySpecific()
+#set ($EJBDaoImplClass = $SpringServiceInterfaceClass)
+#set ($EJBDaoImplVariable = $SpringServiceInterfaceVariable)
+#if ($isSpringBackend)
+    @Autowired
+    @Qualifier("$EJBDaoImplVariable")	
+#else
+	@EJB// (name="$EJBDaoImplVariable")	
+#end
+	private ${EJBDaoImplClass} ${EJBDaoImplVariable};
+	
+    public LazyDataModel <${domainClassName}> getLazyDataModel(${domainClassName} $tableVariableName) {
+        $entityLazyDataModelClass lazyDataModel = new $entityLazyDataModelClass(${EJBDaoImplVariable});
+        return lazyDataModel.getLazyModel($tableVariableName);
+    }
+#*  
+#set($ordering=$orderingUtils.getFirstOrdering($table))
+#set($column=$ordering.column)
+#set($order=$ordering.order)
+#putColumnParamNaming()
+#if (!$columnUtils.isPartOfCompositePrimaryKey($column))
+#set($defaultStuffing = $columnUtils.getDefaultStuffingForColumn($column, $useTemporal))
+#if($columnUtils.isForeignKey($column))
+#set($columnClass = "${columnClass}_")
+#end
+        sortMask.set$columnClass($defaultStuffing);
+#end
+
+        return lazyDataModel.getLazyModel($tableVariableName);
+*#
+#end
+#end
+
+$!updatedAreaImplementation
+
+}

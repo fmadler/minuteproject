@@ -1,0 +1,60 @@
+#exposeADFQuerySpecific()
+#putImportQuerySDDBean()
+#exposeADFFacesCommon()
+#exposeChartSpecific()
+#set($entityADFVariable=$sddInputBeanVariable)
+#set($tableVariableName=$sddInputBeanVariable)
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+#if ($isChartLayout)
+          xmlns:dvt="http://xmlns.oracle.com/dss/adf/faces"
+#end
+          xmlns:f="http://java.sun.com/jsf/core">
+  <af:panelGroupLayout id="pgl1">
+    <af:panelBox text="Search criteria" id="pb1">
+      <af:panelFormLayout id="pfl0">
+        <af:panelGroupLayout id="pgl2" layout="horizontal">
+          <af:spacer width="105" id="s5"/>
+#set($tableClassName=$sddOutputBeanClass)
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+#adfSddInputColumnDisplay("input$velocityCount")
+#end
+        </af:panelGroupLayout>
+        <f:facet name="footer">
+          <af:panelGroupLayout id="pgl4" layout="horizontal" halign="right">
+            <af:spacer width="400" id="s4"/>
+            <af:commandButton text="Search" id="cb1"
+                              action="#{pageFlowScope.${queryBackingBeanADFFaceVariable}.search}" partialSubmit="true"/>
+          </af:panelGroupLayout>
+        </f:facet>
+      </af:panelFormLayout>
+    </af:panelBox>
+    <br/>
+    <af:outputText inlineStyle="color:Blue; font-weight:500;font-weight:bold; font-size:11pt;"
+                   value="Results" id="result1"/>
+    <af:separator id="s1"/>
+##    <af:panelFormLayout id="pfl2">
+##      <af:inputText label="params" value="" id="it3" readOnly="true"/>
+##    </af:panelFormLayout>
+##    <af:separator id="s2"/>
+    <af:panelTabbed id="pt1" childCreation="lazy"
+                    binding="#{pageFlowScope.${queryResponseBeanADFFaceVariable}.tabs}"
+                    partialTriggers="cb1" dimensionsFrom="auto"
+                    >
+      <af:showDetailItem text="Selection" id="sdi1">
+        <af:panelBox text=" " disclosed="true" id="pb2">
+#putSDDResultGraph()
+#putSDDResultTable()
+##          <af:region binding="#{pageFlowScope.${queryResponseBeanADFFaceVariable}.queryflowdefinition1}" value="#{bindings.queryflowdefinition1.regionModel}"
+##                     id="r2"/>
+        </af:panelBox>
+      </af:showDetailItem>
+    </af:panelTabbed>
+##    <af:commandButton text="Start" id="cb2" action="execute" />
+  </af:panelGroupLayout>
+</jsp:root>
+

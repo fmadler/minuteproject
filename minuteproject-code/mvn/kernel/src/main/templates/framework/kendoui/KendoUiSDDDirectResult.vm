@@ -1,0 +1,139 @@
+#generatorSpecific()
+#exposeSeparator()
+#putImportQuerySDDBean()
+#putImportSDDInputBean()
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#exposeKendoUIGeneratorBeanSpecific()
+#set($table=$inputBean)
+#asUML($table)
+#set ($inputClass = $commonUtils.getTemplateClassName($inputBean, $model, $templateSDDInputBean))
+#set ($tableVariableName = $commonUtils.getJavaNameVariableFirstLetter($inputClass))
+#set($tableDB = $inputBean)
+#set ($entityControllerJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityControllerJSF))
+#set ($entityControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityControllerJSFClass))
+#exposeVariableEntitySpecific()
+#addedAreas()
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>$generatorBean.name</title>
+
+#putKendoUIJSImport("../../../")
+
+</head>
+
+<body>
+    
+<div id="ssd-output-grid"/>
+<div id="details"/>
+
+<!-- kendo js scripts -->
+<script>
+    $(document).ready(function () {
+
+#exposeKendoUIDetailWindowTemplate()
+
+                isQuestionMarkDone = false;
+        		var query = "";
+#set($cpt=0)
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#set($cpt=$cpt+1)
+#putColumnParamNaming()
+        		var $columnVar = QueryString.$columnVar;
+#if($columnUtils.isTime($column))
+                ${columnVar}Date = new Date(${columnVar});
+				${columnVar}DateSt = kendo.toString(${columnVar}Date, "yyyy-MM-dd");
+#set($columnValue="${columnVar}DateSt")
+#else
+#set($columnValue=$columnVar)
+#end
+                if ($columnVar!=undefined && !$columnVar=='' && $columnVar!='Choose') {
+                    if (!isQuestionMarkDone) {
+                        isQuestionMarkDone = true;
+                        query = "?"+"$columnVar="+$columnValue;
+                    } else {
+                        query = query+"&"+"$columnVar="+$columnValue;
+                    }
+                }
+#end
+#end
+				var dataSourceUrl = contextPath+"/data/sdd/${tableClassName}In"+query;
+
+                $("#ssd-output-grid").kendoGrid({
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: dataSourceUrl,
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                cache: false
+                            }
+                        }
+                        ,
+                        schema: {
+                            data: "$sddOutputBeanClass"
+                        },
+                        pageSize : $kendoUiUtils.pageSize()
+                    },
+                    resizable: true,
+                    sortable: {
+                        mode: "single",
+                        allowUnsort: false
+                    },
+                    pageable: {
+                        buttonCount: 5
+                    },
+					columns: [
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+					{
+#set($fieldLabel=$formatUtils.performDisplayReadableFirstUpperOnlyName($column.alias))
+	                	title: "$fieldLabel",
+	                	field: "$columnVar",
+#updatedColumnAttributeAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+//						width : toset, $column.type
+#end
+#if($columnUtils.isTimeStampColumn($column))
+				template: '#= kendo.toString(kendo.parseDate(${columnVar}),"dd/MM/yyyy HH:mm:ss") #' ,
+#elseif($columnUtils.isTime($column))
+				template: '#= kendo.toString(kendo.parseDate(${columnVar}),"dd/MM/yyyy") #' ,
+#end
+#if ($presentationUtils.isLinkUrl($column, $query))
+				template: '<a href="$presentationUtils.getLinkUrlKendoUiTemplate($column, $query)" #if ($query.queryDisplay.resultRowLinkNewWindow) target="_blank" #end>#=${columnVar}#</a>',
+#end
+#if ($presentationUtils.isHidden($column, $query))
+						hidden : true
+#else
+						hidden : false
+#end
+$!updatedAreaEnd
+	            	}
+#if ($query.actions.size()>0 || $velocityCount!=$outputBean.columns.size())
+                	,#end 
+#end
+#foreach ($action in $query.actions)
+						{ command: { text: "$actionUtils.getActionLabel($action)", click: $actionUtils.getActionMethod($action) }, title: " "}
+#if ($velocityCount!=$query.actions.size()),#end
+#end
+	            	],
+                    height: 500,
+                    scrollable: true,
+                    selectable: true
+
+                });
+	});
+
+#exposeKendoUISDDActions()
+#exposeKendoUIShowDetailsFromListAction()
+
+</script>
+#exposeKendoUIDetailAction()
+</body>
+</html>

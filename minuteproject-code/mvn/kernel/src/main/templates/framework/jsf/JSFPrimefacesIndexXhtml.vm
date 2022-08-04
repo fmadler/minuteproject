@@ -1,0 +1,45 @@
+#exposeJSFApplicationSpecific()
+#exposePrimefacesConfig()
+#exposeSourcecode()
+#set($title="$model.name jsf web")
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace">
+  	<f:view locale="#{${modelBeanManagerLanguageJSFVariable}.localeCode}">
+    <ui:composition template="$modelDecoratorJSFImport">
+    	<ui:define name="title">
+    		<ui:insert name="title">Welcome to $model.name jsf primefaces web app</ui:insert>
+    	</ui:define>
+    	<ui:define name="heading">
+    		<h:outputText value="Menu" />
+    	</ui:define>
+		<ui:define name="body">
+#if($isGithub)
+            <a href="$sourcecodeUrl"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"/></a>
+#end
+			<div align="center" >Welcome to $model.name jsf primefaces web app</div>
+#if($addAdvertising)
+			<div align="center" >This application has been generated in couple of seconds using minuteproject</div>
+			<div align="center" >You can reproduce for your own database schema to get instant CRUD facilities</div>
+			<div align="center" >Questions @ googlegroup minuteproject mailto</div>
+			<div align="center" >or on stackoverflow </div>
+			<div align="center" >For Support: for demo / training / custom development : minuteproject@gmail.com</div>
+			
+#end
+#if($addTechnologyInfo)
+			<ul>
+#foreach($technology in $technologies)
+				<li>$technology.name</li>
+				<li>$technology.icon</li>
+				<li>$technology.url</li>
+#end
+			</ul>
+#end
+    	</ui:define>
+    </ui:composition>
+  </f:view>
+</html>	

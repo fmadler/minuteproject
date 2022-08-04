@@ -1,0 +1,101 @@
+#exposeBackendTechnology()
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+
+import java.util.ArrayList;
+import java.util.List;
+
+#if ($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#else
+import javax.ejb.Stateless;	
+import javax.ejb.EJB;	
+#end
+
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+import $sddDaoInterfaceImport;
+import $sddServiceInterfaceImport;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: SDD Spring service implementation </p>
+ *
+ */
+#if ($isSpringBackend)
+@Service ("$sddServiceInterfaceVariable")
+@Transactional
+#else
+@Stateless (name="$sddServiceInterfaceVariable")	
+#end
+public class ${className} implements $sddServiceInterfaceClass{
+#if ($isSpringBackend)
+    @Autowired
+    @Qualifier("$sddDaoInterfaceVariable")
+#else
+	@EJB (name="$sddServiceInterfaceVariable")
+#end
+    $sddDaoInterfaceClass $sddDaoInterfaceVariable;
+    
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#if ($query.isScalar())
+#set ($firstColumn = $columnUtils.getFirstColumn($inputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getJavaType($firstColumn))
+#end
+    public $sddOutputBeanCollectionClass execute (
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        String $chunkName 
+#else
+        ,String $chunkName 
+#end
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+        ,String ${chunkName}_${queryParams.name}
+#end
+#end
+    	) {
+        return ${sddDaoInterfaceVariable}.execute (
+#if($isNotVoidInput)
+			$sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        	$chunkName 
+#else
+        	,$chunkName  
+#end
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+        	,${chunkName}_${queryParams.name}
+#end
+#end
+        );
+    }
+#end
+$!updatedAreaEnd
+
+$!updatedAreaImplementation
+
+}

@@ -1,0 +1,12 @@
+asadmin create-jdbc-connection-pool --datasourceclassname oracle.jdbc.pool.OracleDataSource --restype javax.sql.DataSource --property user="dbuser":password="dbpassword":url="jdbc:oracle\:thin\:@localhost\:1521\:ORCL" $datasourceName
+asadmin create-jdbc-connection-pool --datasourceclassname $datasourceclassname --restype javax.sql.DataSource --property user="$username":password="$password":url="$url" $datasourceName
+
+asadmin create-jdbc-connection-pool --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --restype javax.sql.DataSource --property user="$username":password="$password":url="$url" $datasourceName
+
+$glassfishUtils.escape(":")
+asadmin create-jdbc-connection-pool --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype    javax.sql.ConnectionPoolDataSource --property "User=root:Password=mysql:URL=jdbc\:mysql\://localhost\:3306/porphyry" porphyryCP
+asadmin create-jdbc-resource --connectionpoolid porphyry jdbc/porphyryDS
+
+--
+asadmin undeploy xxxApp
+asadmin deploy ear\target\GiA.war

@@ -1,0 +1,137 @@
+#exposeADFFacesModelSpecific()
+#exposeADFFacesDataControlModelSpecific()
+#exposeFrontEndBackendBindingType()
+#set($domainTemplate = $commonUtils.getTargetTemplate($template, "DomainEntityJPA2Annotation"))
+#set($thisClassName=$className)
+#macro(putConverter)
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+#if(!$isForeignKey && !$tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+#set ($isEnum = $enumUtils.isEnumType($domainTemplate, $column))
+#if($isEnum)
+    output.set$columnClass((input.get$columnClass()==null)?(String)null:input.get$columnClass().toString());
+#elseif($columnUtils.isTimeStampColumn($column))
+    output.set$columnClass((input.get$columnClass()==null)?(Timestamp)null:new Timestamp(input.get$columnClass().getTime()));
+#elseif(!$column.isLob())
+    output.set$columnClass(input.get$columnClass());
+#end
+#end
+#if($isForeignKey && !$tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    output.set${columnClass}_(input.get${columnClass}_());
+#end
+#end
+#end
+#macro(putConverterM2M4Bean)
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeImportParamsUML($targetTable)
+    for ($targetTableName entity : input.get${childrenListClass}()) {
+        $importDomainObjectUML element = new $importDomainObjectUML();
+        convertSimple (entity, element);
+        output.add${targetTableName}(element);
+    }
+#end
+#end
+#macro(putConverterM2M4Domain)
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeImportParamsUML($targetTable)
+    for ($importDomainObjectUML entity : input.get${childrenListClass}()) {
+        $targetTableName element = new $targetTableName();
+        convertSimple (entity, element);
+        output.add${targetTableName}(element);
+    }
+#end
+#end
+package $packageName;
+
+import net.sf.minuteproject.adf.query.QueryRequest;
+import net.sf.minuteproject.adf.query.QueryResponse;
+
+import java.util.ArrayList;
+
+#foreach($table in $entities)
+#exposeADFFacesEntitySpecific()
+#exposeADFFacesDataControlEntitySpecific()
+#if(!$isMany2Many)
+import $beanVOADFFacesImport;
+#end
+#end
+
+import java.lang.reflect.InvocationTargetException;
+
+import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+
+import java.sql.Timestamp;
+
+public class $thisClassName {
+
+    public $thisClassName() {
+    }
+    private EntityMatchType getEntityMatchType(QueryRequest request) {
+        if (QueryRequest.PrototypeMatchType.ALL.equals(request.getMatchType()))
+            return EntityMatchType.ALL;
+        if (QueryRequest.PrototypeMatchType.ANY.equals(request.getMatchType()))
+            return EntityMatchType.ANY;
+        return EntityMatchType.ALL;
+    }
+	
+    private boolean isCaseSensitive(QueryRequest request) {
+        return (QueryRequest.PrototypeCase.SENSITIVE.equals(request.getCaseSensitiveness()))?true:false;
+    }
+	
+    private OperandType getOperandType(QueryRequest request) {
+        if (QueryRequest.PrototypeType.EQUALS.equals(request.getType()))
+            return OperandType.EQUALS;
+        if (QueryRequest.PrototypeType.LIKE.equals(request.getType()))
+            return OperandType.LIKE;
+        if (QueryRequest.PrototypeType.CONTAINS.equals(request.getType()))
+            return OperandType.CONTAINS; 
+        return OperandType.EQUALS;
+    } 
+	
+   public void convert(Object output, Object input) {
+      try {
+         BeanUtils.copyProperties(output, input);
+      } catch (IllegalAccessException e) {
+      } catch (InvocationTargetException e) {
+      } catch (Exception e) {
+          //TODO handle
+      System.out.println("e:"+e.getMessage());
+      }
+    }
+#foreach($table in $entities)
+#exposeADFFacesEntitySpecific()
+#exposeADFFacesDataControlEntitySpecific()
+#exposeADFFacesSpringBindingSpecific()
+#set($tableHasOnlyOnePrimaryKey=$hasOnlyOnePrimaryKey)
+#if(!$isMany2Many)
+#set($beanVOADFFacesVariable = $formatUtils.getJavaNameVariableConvertReservedWord($beanVOADFFacesVariable))
+	
+  public static void convertSimple($beanVOADFFacesClass input, ${domainClassImport} output) {
+#putConverter()
+
+  }
+	
+  public static void convertSimple($domainClassImport input, ${beanVOADFFacesClass} output) {
+#putConverter()
+  }
+	
+  public static void convert($beanVOADFFacesClass input, ${domainClassImport} output) {
+    convertSimple(input, output);
+#putConverterM2M4Bean()
+  }
+	
+  public static void convert($domainClassImport input, ${beanVOADFFacesClass} output) {
+    convertSimple(input, output);
+#putConverterM2M4Domain()
+  }
+#end
+#end
+}

@@ -266,6 +266,9 @@
                                 <resource>
                                     <directory>src/main/templates</directory>
                                 </resource>
+                                <resource>
+                                    <directory>src/main/private-resources</directory>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>

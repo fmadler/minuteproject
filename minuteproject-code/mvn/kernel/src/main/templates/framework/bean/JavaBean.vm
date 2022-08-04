@@ -1,0 +1,109 @@
+#generatorSpecific()
+#exposeVariableEntitySpecific()
+#addedAreas()
+#putJPA2TemplateDefinition()
+#set ($useTemporal = true)
+package $packageName;
+
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+#if ($template.hasPropertyValue("direction","in"))
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+#end
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+#putEntityValidationImport()
+
+import org.apache.commons.lang.StringUtils;
+##if ($model.hasCmisModel())
+#set ($applicationJsonDateSerializerImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, "REST.jackson.serializer.date"))
+#set ($applicationJsonDateSerializerClass  = $commonUtils.getTemplateClassName($model, $template, "REST.jackson.serializer.date"))
+import $applicationJsonDateSerializerImport;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+##end
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: ${domainClassName} Java Bean </p>
+ *
+ */
+@Data
+#if ($template.hasPropertyValue("direction","in"))
+@JsonIgnoreProperties(ignoreUnknown = true)
+#end
+public class ${className} {
+#putEntityValidation()
+
+#foreach($column in ${table.columns})
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#simpleDateClass()
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+    private final $columnType $defaultConstant = $defaultValue;
+#end
+#end
+#end
+#foreach($column in ${table.columns})
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#simpleDateClass()
+#if (!$column.isArray())
+#if($columnUtils.isTimeStampColumn($column))
+	@JsonSerialize (using=${applicationJsonDateSerializerClass}.class)
+#elseif ($columnUtils.isTimeColumn($column))
+#else
+#end
+#putValidationConstraints()
+#putFieldValidation()
+#if ($column.getSeparatorCharacters())
+	@Data
+	public class $columnClass {
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldVariable = $javaUtils.getJavaVariableNaming($commonUtils.getJavaVariableName($field.name)))
+		$fieldType $fieldVariable;
+#end
+	}
+##TODO check dimensions if list or single element
+    private List<$columnClass> ${columnVar};
+#else
+    private $columnType $columnVar;
+#end
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+    public $columnType get${columnClass}(){
+    	return $columnVar!=null?$columnVar:$defaultConstant;
+    }
+#end
+#else
+#putValidationConstraints()
+#putFieldValidation()
+    private String ${columnVar}Input;
+    private List<$columnType> $columnVar;
+
+    public List<${columnType}> get${columnClass} () {
+        if (${columnVar}==null)
+            ${columnVar} = new ArrayList<$columnType>();
+        return ${columnVar};
+    }
+    
+    public void set$columnClass (String $columnVar) {
+        this.${columnVar}Input = ${columnVar};
+    	if ($columnVar!=null) {
+    		for (String element : StringUtils.split($columnVar, ",")) {
+#set($key=$convertUtils.getJavaTypeMaskExpressionFromStringInput($column, "element", true))
+        		get${columnClass}().add ($key);
+        	}
+        }
+    }
+#end
+#end
+#end
+$!updatedAreaImplementation
+}

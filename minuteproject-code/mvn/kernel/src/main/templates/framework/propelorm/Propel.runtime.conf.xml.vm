@@ -1,0 +1,28 @@
+#exposeVariableModelSpecific()
+#exposeConnectionSpecific()
+#set ($basicDataSource = $model.dataModel.basicDataSource)
+#set ($datasource = $databaseUtils.getDatasource(basicDataSource))
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <!-- Uncomment this if you have PEAR Log installed
+  <log>
+    <type>file</type>
+    <name>/path/to/propel.log</name>
+    <ident>propel-bookstore</ident>
+    <level>7</level>
+  </log>
+  -->
+  <propel>
+    <datasources default="$model.name">
+      <datasource id="$model.name">
+        <adapter>$propelUtils.getDatabaseType($model)</adapter> <!-- sqlite, mysql, mssql, oracle, or pgsql -->
+        <connection>
+          <dsn>$propelUtils.getDsn($model)</dsn>
+##mysql:host=localhost;dbname=my_db_name</dsn>
+          <user>$basicDataSource.username</user>
+          <password>$basicDataSource.password</password>
+        </connection>
+      </datasource>
+    </datasources>
+  </propel>
+</config>

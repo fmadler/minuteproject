@@ -1,0 +1,187 @@
+#exposeRestDbApiDomainObject()
+#exposeBackendTechnology()
+#putJPA2TemplateDefinition()
+#if($isSpringBackend)
+#exposeSpringDomainObjectSpecific()
+#elseif($isEJBBackend)
+#exposeEJBDomainObjectSpecific()
+#end
+#exposeSpringServiceDomainObject()
+#set ($EJBDaoImplClass = $SpringServiceInterfaceClass)
+#set ($EJBDaoImplVariable = $SpringServiceInterfaceVariable)
+#exposeSpringModelSpecific()
+
+package $packageName;
+
+$!updatedAreaImport
+import io.swagger.annotations.*;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import net.sf.minuteProject.model.data.criteria.EntityCriteria;
+import net.sf.minuteProject.model.data.criteria.EntitySort;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+
+import $BslaDaoInterfaceImport;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ejb.EJB;
+
+import $EJBDaoImplImport;
+
+#end
+import $importDomainObjectUML;
+import $RESTDbAPIGenericResourceImport;
+import net.sf.minuteProject.model.service.GenericService;
+#if($columnUtils.isPartOfCompositePrimaryKey($primaryKeyFirstColumn))
+#set($primaryKeyJavaNameClass = $primaryKeyJavaNameClass+"_")
+#end
+#exposeJPA2Import()
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: REST entity resource ${className} </p>
+ *
+ */
+@Path("/entity/${tableClassName}")
+@Produces(MediaType.APPLICATION_JSON)
+@Api(value="/entity/${tableClassName}", description = "operation about ${tableClassName}")
+#if($isSpringBackend)
+@Component ## it triggers a MalformedParameterizedTypeException w/ spring ??? when used with generics
+#end
+public class $className {##extends $RESTDbAPIGenericResourceClass <$tableClassName, $BslaDaoInterfaceClass> {
+
+#if ($isSpringBackend)
+    @Autowired
+    @Qualifier("$BslaDaoInterfaceVariable")	
+#elseif($isEJBBackend)
+	@EJB ## (name="$BslaDaoInterfaceVariable")	
+#end
+	${BslaDaoInterfaceClass} $BslaDaoInterfaceVariable;
+
+##    @Override
+    protected $BslaDaoInterfaceClass getService() {
+        return $BslaDaoInterfaceVariable;  
+    }
+
+##    @Override
+    protected $tableClassName getInstance() {
+        return new $tableClassName();  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+##    @Override
+    protected $tableClassName getElement($tableClassName element) {
+        return element.flat(); 
+##   // clone() might trigger lazy instantiations.
+    }
+    
+#if ($hasOnlyOnePrimaryKey)
+#exposeEntityUpdatedAreas("FIND_BY_ID")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+	@GET
+	@Path(value = "/{$primaryKeyVariable}")
+    @ApiOperation(value = "find by id", notes = "find by id", response = ${tableClassName}.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "ok")
+    })
+    public $tableClassName findById (@PathParam ("$primaryKeyVariable") $primaryKeyFullType $primaryKeyVariable) {
+        $tableClassName _$tableVariableName = new $tableClassName ();
+		_${tableVariableName}.set${primaryKeyJavaNameClass}($primaryKeyVariable);
+		_$tableVariableName = ${BslaDaoInterfaceVariable}.getFirst$tableClassName(_$tableVariableName);
+		if (_$tableVariableName!=null) return _${tableVariableName}.flat();
+		return new $tableClassName ();
+    }
+#end
+$!updatedAreaEnd
+#end
+
+#if ($hasOnlyOnePrimaryKey)
+	@DELETE
+    @Path(value = "/{$primaryKeyVariable}")
+    @ApiOperation(value = "delete id", notes = "delete id", response = ${tableClassName}.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "ok")
+    })
+	@Transactional
+    public $tableClassName delete (@PathParam ("$primaryKeyVariable") $primaryKeyType $primaryKeyVariable) {
+        $tableClassName _$tableVariableName = new $tableClassName ();
+        _${tableVariableName}.set$primaryKeyJavaNameClass($primaryKeyVariable);
+		_${tableVariableName} = getService().load${tableClassName}($primaryKeyVariable);
+        getService().delete(_$tableVariableName);
+		return _${tableVariableName}.flat();
+    }
+
+#end
+
+	@POST
+    @ApiOperation(value = "save entity", notes = "delete id", response = ${tableClassName}.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "ok")
+    })
+	@Transactional
+	public $tableClassName save (
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+        @FormParam("$columnVar") $columnType $columnVar #if ($velocityCount!=$table.columnCount),
+#end
+#end
+        ) {
+        $tableClassName _$tableVariableName = new $tableClassName (
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+           $columnVar#if ($velocityCount!=$table.columnCount),
+#end
+#end	   
+);
+#if (!$tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    	if ($primaryKeyVariable == null) {
+    		getService().insert(_$tableVariableName);
+    	} else {
+    		getService().update(_$tableVariableName);
+    	}
+#end
+##        getService().save(_$tableVariableName);
+        return _${tableVariableName}.flat();
+    }
+
+$!updatedAreaImplementation
+}

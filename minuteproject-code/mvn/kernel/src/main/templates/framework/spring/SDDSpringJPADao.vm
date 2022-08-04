@@ -1,0 +1,265 @@
+#exposeBackendTechnology()
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+#exposeModelType()
+#if ($isRdbmsModel)
+#exposeJPASpecifics()
+#exposeJPA2Specifics()
+#end
+#set ($sizeChunk = $query.getQueryChunks().size())
+package $packageName;
+
+$!updatedAreaImport
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.stream.Collectors;
+
+#if($jpa2ImplementationIsHibernate)
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.jdbc.Work;
+#end
+#if ($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#end
+#if (!$query.isScalar())
+import $sddOutputBeanCollectionImport;
+#end
+import $sddOutputBeanImport;
+import $sddDaoInterfaceImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: SDD DAO Spring JPA implementation </p>
+ *
+ */
+#if ($isSpringBackend)
+@Repository ("$sddDaoInterfaceVariable")
+##@Transactional
+##temporary for cloudfoundry-mysql error: com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: Communications link failure during commit(). Transaction resolution unknown.
+@Transactional(propagation = Propagation.REQUIRED)
+public class ${className} implements $sddDaoInterfaceClass {
+#else
+@javax.ejb.Stateless ##(name="$sddDaoInterfaceVariable")
+public class ${className} { ## CDI apparently does not work with implement $sddDaoInterfaceClass
+#end
+
+#set ($coreQuery = $queryUtils.getQueryBodyQuestionMark($query))
+	public static final String QUERY_NATIVE = "$coreQuery";
+#foreach ($filter in $query.queryFilters)
+	public static final String CHUNK_$filter.name = "$filter.value";
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+	public static final String CHUNK_${chunkName} = "$queryChunk.name";
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+	public static final String CHUNK_${chunkName}_${chunkValueName} = "$queryChunkValue.value";
+#end
+#end
+
+	@PersistenceContext(unitName = "$persistenceUnitName")  
+    EntityManager entityManager;  
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#if($query.isCache() && !$query.isWrite())
+#set($cacheName=$formatUtils.getJavaNameVariable(${query.name})+"Cache")
+	@Cacheable (cacheNames="${cacheName}") 
+#end
+#if ($query.isScalar())
+#set ($firstColumn = $columnUtils.getFirstColumn($inputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getJavaType($firstColumn))
+#end
+    public $sddOutputBeanCollectionClass execute (
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        String $chunkName 
+#else
+        ,String $chunkName 
+#end
+#foreach($queryParam in $queryChunk.getQueryChunkParams())
+#set($columnType = $statementUtils.getJdbcType($queryParam))
+       ,$columnType ${chunkName}_${queryParam.name}
+#end
+#end
+		) {
+#if (!$query.isScalar())
+		$sddOutputBeanCollectionClass $sddOutputBeanCollectionVariable = new $sddOutputBeanCollectionClass();
+#end
+		${sddOutputBeanCollectionClass}Work work = new ${sddOutputBeanCollectionClass}Work (
+#if($isNotVoidInput)
+			$sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        	$chunkName 
+#else
+        	, $chunkName 
+#end
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+        	, ${chunkName}_${queryParams.name}
+#end
+#end
+			);
+        Session session = getSession();
+        session.doWork(work);
+#if ($query.isScalar())
+		return work.getResult();
+#else
+		${sddOutputBeanCollectionVariable}.set$sddOutputBeanClasses (work.getResult());
+        return ${sddOutputBeanCollectionVariable};
+#end
+    }
+#end
+$!updatedAreaEnd
+
+##putSddJdbcLookup()
+#putSddQueryLookupMisc()
+#if($jpa2ImplementationIsEclipseLink)
+    public Connection getConnection() throws SQLException {
+        return entityManager.unwrap(Connection.class);
+    }
+#else
+	
+   private class ${sddOutputBeanCollectionClass}Work implements Work {
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable;
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        String $chunkName;
+#else
+        String $chunkName; 
+#end
+#foreach($queryParam in $queryChunk.getQueryChunkParams())
+#set($columnType = $statementUtils.getJdbcType($queryParam))
+        $columnType ${chunkName}_${queryParam.name};
+#end   	
+#end
+        ${sddOutputBeanCollectionClass}Work(
+#if($isNotVoidInput)
+			$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        	String $chunkName 
+#else
+        	,String $chunkName 
+#end
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+        	,String ${chunkName}_${queryParams.name}
+#end
+#end
+			){
+#if($isNotVoidInput)
+				this.$sddInputBeanVariable = $sddInputBeanVariable;
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        		this.$chunkName = $chunkName; 
+#else
+        		this.$chunkName = $chunkName;
+#end
+#foreach($queryParams in $queryChunk.getQueryChunkParams())
+        		this.${chunkName}_${queryParams.name} = ${chunkName}_${queryParams.name};
+#end
+#end
+		}
+#if ($query.isScalar())
+#set ($firstColumn = $columnUtils.getFirstColumn($inputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getJavaType($firstColumn))
+	  $sddOutputBeanCollectionClass x;
+#else
+		List<$sddOutputBeanClass> list = new ArrayList<>();
+#end
+#if($isNotVoidInput || $hasQueryChunkWithParams) 
+#injectPrepareStatementParams()
+#end
+
+		@Override
+		public void execute(Connection conn) throws SQLException {
+			try (
+#if($query.isWrite())
+				CallableStatement pstmt = conn.prepareCall(
+#else
+				PreparedStatement pstmt = conn.prepareStatement(
+#end
+					getStatement(
+#if($isNotVoidInput) 
+						$sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+						$chunkName 
+#else
+						, $chunkName 
+#end
+#end
+						)
+					);
+				) {
+#putSddExecuteStatementClosable()
+       }
+## end autoclosable : + find way to pass value
+
+#if ($query.isScalar())
+#set ($firstColumn = $columnUtils.getFirstColumn($inputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getJavaType($firstColumn))
+       $sddOutputBeanCollectionClass getResult() {
+          return x;
+       }
+#else
+       List<$sddOutputBeanClass> getResult() {
+          return list;
+       }
+#end
+    }
+  	
+   	private Session getSession() {  
+   		Session session = (Session) entityManager.getDelegate();  
+   		return session;  
+   	}
+#end	
+$!updatedAreaImplementation
+
+}

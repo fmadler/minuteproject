@@ -1,0 +1,182 @@
+#exposeVariableModelDetailSpecific()
+#exposeVaadinModel()
+#set ($thisClassName=$className)
+package $packageName;
+
+import com.vaadin.annotations.Theme;
+import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+
+#foreach ($table in ${entities})
+#if(!$table.isManyToMany())
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+import $domainObjectViewImport;
+import $domainObjectListViewImport;
+import $domainObjectListImport;
+import $domainObjectFormImport;
+#end
+#end
+
+//@Theme("${model.name}")
+@Theme("runo")
+public class $thisClassName extends UI {
+    private static final long serialVersionUID = 511085335415683713L;
+
+    Navigator  navigator;
+
+    protected static final String MAINVIEW = "";
+
+    /** A start view for navigating to the main view */
+    public class StartView extends VerticalLayout implements View {
+        private static final long serialVersionUID = -3398565663865641952L;
+
+        public StartView() {
+            setSizeFull();
+
+            Button button = new Button("Go to Main View",
+                new Button.ClickListener() {
+                    private static final long serialVersionUID = -1809072471885383781L;
+
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        navigator.navigateTo(MAINVIEW);
+                    }
+                });
+            addComponent(button);
+            setComponentAlignment(button, Alignment.MIDDLE_CENTER);
+        }
+
+        @Override
+        public void enter(ViewChangeEvent event) {
+            Notification.show("Welcome to $model.name");
+        }
+    }
+
+    /** Main view with a menu */
+    public class MainView extends VerticalLayout implements View {
+        private static final long serialVersionUID = -3398565663865641952L;
+        Panel panel;
+
+        // Menu navigation button listener
+        class ButtonListener implements Button.ClickListener {
+            private static final long serialVersionUID = -4941184695301907995L;
+
+            String menuitem;
+            public ButtonListener(String menuitem) {
+                this.menuitem = menuitem;
+            }
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                // Navigate to a specific state
+                navigator.navigateTo(MAINVIEW + "/" + menuitem);
+            }
+        }
+
+        public MainView() {
+            setSizeFull();
+
+            // Layout with menu on left and view area on right
+            HorizontalLayout hLayout = new HorizontalLayout();
+            hLayout.setSizeFull();
+
+            // Have a menu on the left side of the screen
+            Panel menu = new Panel("Menu");
+            menu.setHeight("100%");
+            menu.setWidth(null);
+            VerticalLayout menuContent = new VerticalLayout();
+#foreach ($table in ${entities})
+#if(!$table.isManyToMany())
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+			menuContent.addComponent(new Button("${domainObjectViewClass}App",
+               new ButtonListener("${domainObjectViewClass}App")));
+#end
+#end
+            menuContent.setWidth(null);
+            menuContent.setMargin(true);
+            menu.setContent(menuContent);
+            hLayout.addComponent(menu);
+
+            // A panel that contains a content area on right
+            panel = new Panel("Powered by minuteproject");
+            panel.setSizeFull();
+            hLayout.addComponent(panel);
+            hLayout.setExpandRatio(panel, 1.0f);
+
+            addComponent(hLayout);
+            setExpandRatio(hLayout, 1.0f);
+
+        }
+
+#foreach ($table in ${entities})
+#if(!$table.isManyToMany())
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+        private $domainObjectListViewClass getList${domainObjectViewClass}() {
+            $domainObjectFormClass form = new ${domainObjectFormClass}();
+			form.init();
+            $domainObjectListClass list = new ${domainObjectListClass}(form);
+            return new ${domainObjectListViewClass}(list, form);
+        }
+#end
+#end
+
+        @Override
+        public void enter(ViewChangeEvent event) {
+            VerticalLayout panelContent = new VerticalLayout();
+//            horizontalSplit.setSecondComponent(getListView());
+            panelContent.setSizeFull();
+            panelContent.setMargin(true);
+            panel.setContent(panelContent); // Also clears
+
+            if (event.getParameters() == null
+                    || event.getParameters().isEmpty()) {
+                panelContent.addComponent(
+                        new Label("Nothing to see here, " +
+                                "just pass along."));
+                return;
+            }
+
+            // Display the fragment parameters
+#foreach ($table in ${entities})
+#if(!$table.isManyToMany())
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+			if ("${domainObjectViewClass}App".equals(event.getParameters()))
+                panelContent.addComponent(getList${domainObjectViewClass}());
+#end
+#end
+//            panelContent.setComponentAlignment(watching,
+//                    Alignment.MIDDLE_CENTER);
+
+
+        }
+    }
+
+    @Override
+    protected void init(VaadinRequest request) {
+        getPage().setTitle("Navigation Example");
+
+        // Create a navigator to control the views
+        navigator = new Navigator(this, this);
+
+        // Create and register the views
+        navigator.addView("", new StartView());
+        navigator.addView(MAINVIEW, new MainView());
+    }
+}

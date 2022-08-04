@@ -1,0 +1,514 @@
+#generatorSpecific()
+#exposeBackendTechnology()
+#exposeMaven()
+#exposeMavenCXF()
+#exposeMavenJersey()
+#exposeMavenCommonDependencies()
+#putTargetServerDefinition()
+#exposeWebXmlSpecific()
+#set($restPomPackaging=$template.getPropertyValue("rest-pom-maven-packaging", "jar"))
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+#if($hasMasterPom)
+#set($masterPomArtifactId = $mavenUtils.getMasterPomArtifactId($template, $generatorBean))
+    <parent>
+        <artifactId>${masterPomArtifactId}</artifactId>
+        <groupId>${groupId}</groupId>
+        <version>${version}</version>
+    </parent>
+
+#end
+#if(!$hasMasterPom)
+  	<groupId>${groupId}</groupId>
+  	<version>${version}</version>
+#end
+    <artifactId>$finalName</artifactId>
+    <packaging>${restPomPackaging}</packaging>
+    <name>$generatorBean.name REST service</name>
+    
+    <dependencies>
+        <dependency>
+            <groupId>${groupId}</groupId>
+#if($isEJBBackend)
+                <artifactId>${generatorBean.name}Bela</artifactId>
+#else
+                <artifactId>${generatorBean.name}Bsla</artifactId>
+#end     
+            <version>${version}</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>servlet-api</artifactId>
+            		<groupId>org.apache.tomcat</groupId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+#if(!$hasMasterPom)
+			<version>${lombok.version}</version>
+#end
+			<scope>provided</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+#if(!$hasMasterPom)
+            <version>${junit.version}</version>
+#end
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+    	<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+#if(!$hasMasterPom)
+            <version>${powermock.version}</version>
+#end
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+#if(!$hasMasterPom)
+            <version>${powermock.version}</version>
+#end
+            <scope>test</scope>
+        </dependency>
+        
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>			
+		</dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>$javaeeApiVersion</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+	        <groupId>org.glassfish.jersey.core</groupId>
+	        <artifactId>jersey-server</artifactId>
+	        <version>${jersey.version}</version>
+#if(!$isTomcatTargetServer)
+	        <exclusions>
+		        <exclusion>
+			        <artifactId>javax.ws.rs-api</artifactId>
+			        <groupId>javax.ws.rs</groupId>
+		        </exclusion>
+##TODO dependent of hibernatejersey-media-multip
+                <exclusion>
+			        <artifactId>validation-api</artifactId>
+			        <groupId>javax.validation</groupId>
+		        </exclusion>
+	        </exclusions>
+#end
+#if($isGlassfishTargetServer)
+        	<scope>provided</scope>
+#end            
+        </dependency>
+#if($isTomcatTargetServer && $hasScheduler)        
+		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>1.5.0-b01</version>
+		</dependency>
+#else
+			<!-- TUTO: POTENTIAL-ISSUE if target server is tomcat then no embedded mail jar can prevent deployment -->
+#end
+        <dependency>
+	        <groupId>org.glassfish.jersey.containers</groupId>
+	        <artifactId>jersey-container-servlet-core</artifactId>
+	        <version>${jersey.version}</version>
+#if(!$isTomcatTargetServer)
+        <exclusions>
+	        <exclusion>
+		        <artifactId>javax.ws.rs-api</artifactId>
+		        <groupId>javax.ws.rs</groupId>
+	        </exclusion>
+        </exclusions>
+#end
+#if($isGlassfishTargetServer)
+        <scope>provided</scope>
+#end            
+        </dependency>
+        
+        <!-- testing http rest request -->
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+            <version>${jersey.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework</groupId>
+            <artifactId>jersey-test-framework-core</artifactId>
+            <version>${jersey.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- atmosphere -->
+		<dependency>
+			<groupId>org.atmosphere</groupId>
+			<artifactId>atmosphere-jersey</artifactId>
+			<version>${atmosphere.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jersey-server</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-servlet</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+        </dependency>
+
+#if($botdetect)
+        <!-- botdetect -->
+        <dependency>
+            <groupId>com.captcha</groupId>
+            <artifactId>botdetect-jsp20</artifactId>
+            <version>4.0.beta3.7</version>
+        </dependency>
+
+#end
+#if($isGraphQLEnabled)
+        <!-- graphql -->
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-tools</artifactId>
+            <version>5.2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-extended-scalars</artifactId>
+            <version>17.0</version>
+        </dependency>
+#end
+        <!-- swagger -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jersey2-jaxrs</artifactId>
+            <version>1.5.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.containers</groupId>
+                    <artifactId>jersey-container-servlet-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-multipart</artifactId>
+                </exclusion>
+##ship with hibernate
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+#if($isSpringBackend)
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-spring3</artifactId>
+            <version>2.6</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+#end        
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jersey-server</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-servlet</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-sse</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+    		<groupId>org.glassfish.jersey.ext</groupId>
+    		<artifactId>jersey-bean-validation</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <!-- jjwt -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <!-- jjwt end -->
+        
+#if($isVelocityEnabled)
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-tools</artifactId>
+			<version>2.0</version>
+		</dependency>
+		
+#end
+#if($hasCorsFilter)
+#if($corsFilter=="thetransactioncompany")
+		<!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
+		<dependency>
+			<groupId>com.thetransactioncompany</groupId>
+			<artifactId>cors-filter</artifactId>
+			<version>2.5</version>
+		</dependency>
+#end
+#if($corsFilter=="apache")		
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>8.0.5</version>
+#if($isTomcatTargetServer)
+			<scope>provided</scope>
+#else
+			<!-- TUTO: POTENTIAL-ISSUE if target server is tomcat then embedded tomcat jar can collide with runtime tomcat server jar -->
+#end
+#end
+
+        </dependency>
+#end
+#if($template.hasProperty("mvn-dep-groupId"))
+		<dependency>
+			<groupId>$template.getPropertyValue("mvn-dep-groupId")</groupId>
+			<artifactId>$template.getPropertyValue("mvn-dep-artifactId")</artifactId>
+			<version>$template.getPropertyValue("mvn-dep-version")</version>
+		</dependency>
+#end
+#foreach($mavenDep in $mavenUtils.getDependencies($template))
+		<dependency>
+			<groupId>$mavenDep.groupId</groupId>
+			<artifactId>$mavenDep.artifactId</artifactId>
+			<version>$mavenDep.version</version>
+#if($mavenDep.hasScope())
+			<scope>$mavenDep.scope</scope>
+#end
+		</dependency>
+
+#end
+    </dependencies>
+    <build>
+        <finalName>$finalName</finalName>
+        <plugins>
+#if($isGlassfishTargetServer)    ##earwar-shift
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+##	    <version>2.4</version>
+				<configuration>
+				    <packagingExcludes>WEB-INF/lib/*Bela*.jar</packagingExcludes>
+				</configuration>
+            </plugin>
+#end
+#exposeCompilerPlugin()
+#exposeApplicationPropertiesPlugin()
+#exposeSassPlugin()
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-war-plugin</artifactId>
+	        <version>2.6</version>
+              <configuration>
+                  <webXml>src\main\webapp\WEB-INF\web.xml</webXml>
+#if($isTomcatTargetServer)
+                  <packagingExcludes>
+                      %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar]
+                  </packagingExcludes>
+#end
+              </configuration>
+	      </plugin>
+        </plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+#*
+		<filters>
+			<filter>${basedir}/target/application.properties</filter>
+		</filters>
+*#
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+    
+    <profiles>
+#foreach ($environment in $configuration.environments.environments)
+        <profile>
+            <id>${environment.name}</id>
+#if($environment.isDefault())
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+#end
+            <properties>
+                <environment>${environment.name}</environment>
+#foreach ($property in $environment.getProperties())
+				<$property.name>$formatUtils.escapeHtml($property.value)</$property.name>
+#end
+            </properties>
+        </profile>
+#end
+#if($isTomcatTargetServer)
+        <profile>
+            <id>tomcat-embedded-ds</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-tomcat-context</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${basedir}/target/${build.finalName}/META-INF</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>./src/tomcat/resources/META-INF</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+#end
+    </profiles>
+    
+    <properties>
+        <cxf.version>${cxfVersion}</cxf.version>
+        <jersey.version>${jerseyVersion}</jersey.version>
+		<guava.version>${guavaVersion}</guava.version>
+        <atmosphere.version>${atmosphereVersion}</atmosphere.version>
+        <jackson.version>${jacksonVersion}</jackson.version>
+        <build.time>${maven.build.timestamp}</build.time>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+#if(!$hasMasterPom)
+#putRESTDependencyVersions()
+#end
+    </properties>
+
+#if($botdetect)
+    <repositories>
+        <repository>
+            <id>captcha</id>
+            <name>BotDetect Captcha Repository</name>
+            <url>https://git.captcha.com/botdetect-java-captcha.git/blob_plain/HEAD:/</url>
+        </repository>
+    </repositories>
+#end
+</project>

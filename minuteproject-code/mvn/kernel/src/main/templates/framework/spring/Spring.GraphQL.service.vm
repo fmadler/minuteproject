@@ -1,0 +1,102 @@
+#macro(dataFetcherWiring $isWrite)
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($query in $package.getPureQueries($isWrite))
+#exposeSpringGraphQLQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+                .dataFetcher("${tableVariableName}",$sddInputBeanDataFetcherVariable)
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+                //.dataFetcher("${tableVariableName}$pivotClasses",$sddInputBeanDataFetcherVariable)
+#end
+#end
+#end
+#end
+#exposeVariableModelSpecific()
+#exposeGraphQLInfo()
+#exposeGraphQLModelSpecific()
+#exposeSpringGraphQLModelSpecific()
+package $packageName;
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($query in $package.getPureQueries())
+#exposeSpringGraphQLQuerySpecific()
+import $sddInputBeanDataFetcherImport;
+#end
+#end
+import graphql.GraphQL;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+
+import graphql.scalars.ExtendedScalars;
+import $graphQLTimestampScalarImport;
+
+@Service
+public class ${className} {
+
+    @Value("classpath:${graphqlSddSchema}")
+    Resource resource;
+    @Value("classpath:${graphqlSddGraphiql}")
+    Resource graphiql;
+
+    private GraphQL graphQL;
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($query in $package.getPureQueries())
+#exposeSpringGraphQLQuerySpecific()
+    @Autowired
+    $sddInputBeanDataFetcherClass $sddInputBeanDataFetcherVariable;
+#end
+#end
+
+    // load schema at application start up
+    @PostConstruct
+    private void loadSchema() throws IOException {
+        // get the schema
+        File schemaFile = resource.getFile();
+        // parse schema
+        TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(schemaFile);
+        RuntimeWiring wiring = buildRuntimeWiring();
+        GraphQLSchema schema = new SchemaGenerator().makeExecutableSchema(typeRegistry, wiring);
+        graphQL = GraphQL.newGraphQL(schema).build();
+    }
+
+    private RuntimeWiring buildRuntimeWiring() {
+        return RuntimeWiring.newRuntimeWiring()
+            .scalar(ExtendedScalars.Date)
+            .scalar(ExtendedScalars.DateTime)
+            .scalar(${graphQLTimestampScalarClass}.INSTANCE)
+            .type("Query", typeWiring -> typeWiring
+#dataFetcherWiring(false)
+            )
+            .type("Mutation", typeWiring -> typeWiring
+#dataFetcherWiring(true)
+            )
+            .build();
+    }
+
+    public GraphQL getGraphQL() {
+        return graphQL;
+    }
+
+    public Resource getResource() {
+        return resource;
+    }
+
+    public Resource getGraphiql() {
+        return graphiql;
+    }
+
+}

@@ -1,0 +1,228 @@
+#macro (thisDomainObject)
+#set($thisDomainImport = $importDomainObjectUML)
+#set($thisDomainObjectVariable = $domainObjectVariable)
+#set($thisDomainObjectClass = $domainObjectClass)
+#end
+
+#macro (putJPA2TemplateDefinitionOld)
+##set ($templateJPA2EmbeddedId="DomainEntityJPA2EmbeddedId")
+#getTemplatePropertyValue("DomainEntityJPA2EmbeddedId")
+#if (!$value.equals(""))
+#set ($templateJPA2EmbeddedId=$value)
+#else
+#set ($templateJPA2EmbeddedId="DomainEntityJPA2EmbeddedId")
+#end
+#getTemplatePropertyValue("DomainEntityUMLTemplate")
+#if (!$value.equals(""))
+#set ($templateJPA2DomainObject=$value)
+#else
+#set ($templateJPA2DomainObject="DomainEntityJPA2Annotation")
+#end
+#end
+
+#macro (putJPA2TemplateDefinition)
+#set($templateJPA2EmbeddedId=$template.getPropertyValue("DomainEntityJPA2EmbeddedId","DomainEntityJPA2EmbeddedId"))
+#set($templateJPA2DomainObject=$template.getPropertyValue("DomainEntityUMLTemplate","DomainEntityJPA2Annotation"))
+#set($groovify=$template.getPropertyValue("groovify",false))
+#set($templateEnvironment=$template.getPropertyValue("environment","local"))
+#set($isEnvironmentLocal=($templateEnvironment=="local"))
+#set($addXmlBinding=$template.getPropertyValue("add-xmlbinding",false))
+#set($addDomainSpecificMethod=$template.getPropertyValue("add-domain-specific-method",false))
+#set($hasABLNature=$template.hasPropertyValue("add-automated-business-logic",false))
+#set($autobizlogicVersion=$template.getPropertyValue("add-automated-business-logic","2.1.4"))
+#set($useTemporal=$template.getPropertyValue("use-temporal",false))
+#set($xmlFormat=$template.getPropertyValue("add-xml-format","none"))
+#set($isShowSql=$template.getPropertyValue("show-sql",true))
+#set($isCacheEnabled=$template.hasPropertyValue("add-cache-implementation",false))
+#set($isEhCacheEnabled=$template.hasPropertyValue("add-cache-implementation","ehcache"))
+#set($isJtaTransactionServer=$jpa2Utils.isJtaTransactionServer($template))
+#set($javaValidation=$template.hasPropertyValue("java-validation",false))
+#end
+
+#macro (exposeJPA2DomainObject $tableDB)
+#putJPA2TemplateDefinition()
+#set ($domainObjectClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateJPA2DomainObject))
+#set ($domainObjectVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectClass))
+#set ($importDomainObjectUML = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateJPA2DomainObject))
+#end
+
+#macro (exposeEntityValidation $tableDB)
+#set ($templateFieldCompareValidation = "Validation.FieldCompare.java")
+#set ($templateFieldCompareValidatorValidation = "Validation.FieldCompareValidator.java")
+#set ($templateFieldComparatorEnumValidation = "Validation.CompareOperatorEnum.java")
+#set ($fieldCompareClass = $commonUtils.getTemplateClassName($model, $template, $templateFieldCompareValidation))
+#set ($fieldCompareVariable = $commonUtils.getJavaNameVariableFirstLetter($fieldCompareClass))
+#set ($importFieldCompare = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateFieldCompareValidation))
+#set ($importFieldCompareValidator = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateFieldCompareValidatorValidation))
+#set ($importFieldComparatorEnum = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateFieldComparatorEnumValidation))
+#end
+
+#macro (exposeJPA2DomainObjectImport $tableDB)
+#putJPA2TemplateDefinition()
+#set ($importDomainObjectUML = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateJPA2DomainObject))
+#end
+
+#macro (exposeEmbeddedId $tableDB)
+#putJPA2TemplateDefinition()
+#set ($isEmbedded = $jpa2Utils.isEmbedded($table))
+#set ($embeddedIdClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateJPA2EmbeddedId))
+#set ($embeddedIdVariable = $commonUtils.getJavaNameVariableFirstLetter($embeddedIdClass))
+##this variable my collide with existing attribute
+#set ($embeddedIdVariable = $tableUtils.getEmbeddedVariable($tableDB, $embeddedIdVariable))
+#set ($importDomainObjectUMLEmbeddedId = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateJPA2EmbeddedId))
+#end
+
+#macro (exposeJPA2EnumImport)
+#foreach ($column in $table.columns)
+#####foreach ($column in $table.attributes) to migrate
+#putColumnParams()
+##-$column.name - $isEnum - $enumImport - $enumClassName
+#if($isEnum)
+import $enumImport;
+#end
+#end
+#end
+
+#macro (exposeJPA2CompositeKeyImport)
+#exposeEmbeddedId($table)
+#if ($isEmbedded)
+import $importDomainObjectUMLEmbeddedId;
+#end
+#if ($isEmbedded)
+#set($embeddedIdClassGetSet=$embeddedIdClass+"__")
+#end
+#end
+
+#macro (exposeJPA2Import)
+#foreach ($reference in $table.children)
+#set ($thisTable = $reference.foreignTable)
+#exposeJPA2DomainObjectImport($reference.foreignTable)
+#if(!$thisTable.isManyToMany())
+import $importDomainObjectUML;
+#end
+#end
+#foreach ($reference in $table.parents)
+#exposeJPA2DomainObjectImport($reference.foreignTable)
+#set ($thisTable = $reference.foreignTable)
+#if(!$thisTable.isManyToMany())
+import $importDomainObjectUML;
+#end
+#end
+##foreach ($reference in $childReferences)
+##putReferenceParams()
+##if($linktableDB.isManyToMany())
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeJPA2DomainObject($targetTable)
+import $importDomainObjectUML;
+##end
+##end
+#end
+#end
+
+#macro(exposeJPA2Specifics)
+#exposeJPASpecifics()
+#set ($jpa2Implementation = $jpa2Utils.getJpa2Implementation($template))
+#set ($jpa2ImplementationIsHibernate = ($jpa2Implementation=="hibernate"))
+#set ($jpa2ImplementationIsEclipseLink = ($jpa2Implementation=="eclipselink"))
+#set($templateEnvironment=$template.getPropertyValue("environment","local"))
+#set($isEnvironmentLocal=($templateEnvironment=="local"))
+#set ($datasourceName=$persistenceUtils.getDatasourceName($model))
+#set($relationshipPersistence=$template.getPropertyValue("relationship-persistence","object"))
+#set($isFieldRelationshipPersistence=($relationshipPersistence=="field"))
+#end
+
+#macro(exposeXmlElementValue)
+#set($xmlElementValue=$jaxbUtils.getXmlElementValue($column, $xmlFormat))
+#end
+
+#macro(putJPA2TriggerSnippet)
+#if ($tableUtils.hasPrepersist($table))
+#exposeEntityUpdatedAreas("prepersist")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    @javax.persistence.PrePersist
+    public void prePersist_ () {
+#putColumnDefaultValueAffectation()
+#foreach ($trigger in $tableUtils.getInsertTriggers($table)) 
+#exposeVariableTriggerSpecific()
+        $triggerVar = $triggerJavaExpressionChunk;
+#end
+    }
+#end
+$!updatedAreaEnd
+#end
+
+#if ($tableUtils.hasPreUpdate($table))
+#exposeEntityUpdatedAreas("preupdate")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    @javax.persistence.PreUpdate
+    public void preUpdate_ () {
+#putColumnDefaultValueAffectation()
+#foreach ($trigger in $tableUtils.getUpdateTriggers($table)) 
+#exposeVariableTriggerSpecific()
+        $triggerVar = $triggerJavaExpressionChunk;
+#end
+    }
+#end
+$!updatedAreaEnd
+#end
+#end
+
+#macro(putJPA2Temporal)
+#if($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+    @Temporal(TemporalType.${column.type})
+#end
+#end
+
+#macro(putValidationConstraints)
+#if($javaValidation)
+#if($column.isRequired() && !$columnUtils.hasPropertyTagStartsWith($column, 'trigger-'))
+	@NotNull
+#end
+#end
+#end
+
+#macro(putEntityValidation)
+#set($validationComparisons = $validationUtils.getJavaFieldComparisonAnnotations(${table.validations}))
+#foreach($validation in $validationComparisons)
+#end
+#if ($validationComparisons.size()>0)
+@FieldCompare.List({
+#foreach($v in $validationComparisons)
+#foreach($validation in $validationUtils.getJavaValidationAnnotations($v))
+	$validation
+#end
+#end
+})
+#end
+#end
+
+#macro(putFieldValidation)
+#foreach($validationList in ${column.validations})
+#foreach($validation in $validationUtils.getJavaValidationAnnotations($validationList))
+	$validation
+#end
+#end
+#end
+#macro(putEntityValidationImport)
+#foreach($column in ${table.columns})
+#foreach($validationList in ${column.validations})
+#foreach($validation in $validationUtils.getJavaImportValidationAnnotations($validationList))
+import $validation;
+#end
+#end
+#end
+#set($validationComparisons = $validationUtils.getJavaFieldComparisonAnnotations(${table.validations}))
+#if ($validationComparisons.size()>0)
+import $importFieldCompare;
+import $importFieldComparatorEnum;
+#end
+#end
+

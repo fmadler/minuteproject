@@ -1,0 +1,32 @@
+#generatorSpecific()
+#set($contextRoot = $weblogicUtils.getContextRoot($template, $generatorBean))
+#set($technotargetFE=$template.getPropertyValue("technology-target-frontend","primefaces"))
+#set($isPrimefaces=($technotargetFE=="primefaces"))
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-web-app xmlns="http://www.bea.com/ns/weblogic/weblogic-web-app" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.bea.com/ns/weblogic/weblogic-web-app   http://www.bea.com/ns/weblogic/weblogic-web-app/1.0/weblogic-web-app.xsd">
+
+    <context-root>$contextRoot</context-root>
+	   
+#if($hasCasAuthentication)
+	<session-descriptor>
+         <cookie-path>/$contextRoot</cookie-path>
+	</session-descriptor>
+#end
+	<container-descriptor>
+        <prefer-web-inf-classes>true</prefer-web-inf-classes>
+#if($hasCasAuthentication)
+        <allow-all-roles>true</allow-all-roles>
+#end
+    </container-descriptor>
+#if($isPrimefaces)
+#*
+<library-ref>
+        <library-name>jsf</library-name>
+        <specification-version>2.0</specification-version>
+        <implementation-version>1.0.0.0_2-0-2</implementation-version>
+        <exact-match>false</exact-match> 
+    </library-ref>
+	*#
+#end
+</weblogic-web-app>
+	

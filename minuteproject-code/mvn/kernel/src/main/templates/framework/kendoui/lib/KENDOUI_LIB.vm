@@ -1,0 +1,1100 @@
+#macro (exposeKendoUIVersion)
+#set($kendoUiVersion="2018.1.221")## 2017.1.118 2016.2.504 "2015.1.318")##2014.1.416   2015.1.318 2014.3.1119
+##set($kendoUiVersion="2014.3.1119")##2014.1.416   2015.1.318 
+#end
+
+#macro(putKendoUIJSImport $pathToRoot)
+#exposeKendoUIVersion()
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<script src="http://cdn.kendostatic.com/${kendoUiVersion}/js/jquery.min.js"></script>
+<script src="http://cdn.kendostatic.com/${kendoUiVersion}/js/kendo.all.min.js"></script>
+<script src="http://cdn.kendostatic.com/${kendoUiVersion}/js/cultures/kendo.culture.en-GB.min.js"></script>
+<script src="${pathToRoot}bower_components/growl/javascripts/jquery.growl.js"></script>
+<script src="${pathToRoot}$kendoUiMainJsPath"></script>
+<script src="${pathToRoot}js/jszip.min.js"></script>
+<link href="http://cdn.kendostatic.com/${kendoUiVersion}/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="http://cdn.kendostatic.com/${kendoUiVersion}/styles/kendo.rtl.min.css" rel="stylesheet" />
+<link href="http://cdn.kendostatic.com/${kendoUiVersion}/styles/kendo.blueopal.min.css" rel="stylesheet" />
+<link href="http://code.jquery.com/ui/1.9.1/themes/cupertino/jquery-ui.css" rel="stylesheet" />
+##<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<link href="http://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="${pathToRoot}$kendoUiMainCssPath" rel="stylesheet" />
+<link href="${pathToRoot}bower_components/growl/stylesheets/jquery.growl.css" rel="stylesheet" />
+#end
+
+#macro(putKendoUIMenuPackage)
+##https://github.com/insanio/kendoui.ex/tree/master/examples inspiration
+#set($displayableEntities = $presentationUtils.getDisplayableEntityFromPackage($package))
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#set($packageLabel=$i18nUtils.getPackageName($package))
+#set($subMenuVar = "submenu${package.name}")
+#set($tabVar = "tab${package.name}")
+#if(!$displayableEntities.isEmpty())
+<li> $packageLabel
+    <ul>
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$kendoUIUtils.getAccessUrl($table.name))
+#exposeKendoUIEntitySpecific()
+#if($table.scope != 'BACKEND')
+        <li><a href="/$entityFullPath"> $tableLabel</a></li>
+#end
+#end
+#end
+    </ul>
+</li>
+#end
+#end
+
+#macro(putKendoUIMenuStructure)
+#foreach ($package in ${businessPackages})
+#putKendoUIMenuPackage()
+#end
+#foreach ($package in ${businessPackageViews})
+#putKendoUIMenuPackage()
+#end
+
+<!-- sdd package -->
+#foreach ($package in $model.getStatementModel().getSddPackage().getOrderedPackages())
+#if ($package.securityColor.hasMenuAccess)
+<li>$i18nUtils.getI18nFromDBObject(${package.displayName})
+    <ul>
+#foreach ($query in $package.getQueries())
+#if(!$query.isIndirection())
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$kendoUIUtils.getAccessUrl($table.name))
+##exposeVariableEntitySpecific()
+#exposeKendoUISddSpecific()
+#if($table.scope != 'BACKEND')
+        <li><a onclick="javascript:location.href=getMenuLink('/$entityFullPath');return false;" href="/$entityFullPath"> $tableLabel</a></li>
+#end
+#end
+#end
+    </ul>
+</li>
+#end
+#end
+#end
+
+#macro(putKendoUIHtmlInputSnippet)
+<div id="${tableVariableName}">
+   <div>
+   		<div id="form-${tableVariableName}" >
+#set($tableAlias=$formatUtils.performDisplayReadableFirstUpperOnlyName($table.alias))
+        	<h3>${tableAlias}</h3>
+<div style="display: table; width: 100%; margin-top: 10px;">
+<!-- pk -->
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided && $column.scope!='BACKEND')
+#putKendoHtmlColumnSnippet($tableVariableName $tableVariableName)
+#end
+#end
+#foreach ($columnGroup in $tableUtils.extractFieldGroup(${table.attributes}, $table))
+#foreach ($column in $columnGroup)
+#putColumnParams()
+#if (!$column.isImplicit() && $column.scope!='BACKEND')
+#columnJavaNaming()
+#putKendoHtmlColumnSnippet($tableVariableName $tableVariableName)
+#end
+#end
+#end
+<!-- reference -->
+#foreach ($reference in $tableUtils.getParentOrderByReferenceData($table))
+#putReferenceParams2()
+#set ($column=$localColumn)
+#putColumnParams()
+#if (!$column.isImplicit() && $column.scope!='BACKEND')
+#columnJavaNaming()
+#putKendoHtmlColumnSnippet($tableVariableName $tableVariableName)
+#end
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#putKendoHtmlChunkSnippet()
+#end
+</div>
+#end
+
+#macro (putKendoHtmlChunkSnippet)
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#set($chunkValue=$formatUtils.performDisplayReadableFirstUpperOnlyName($queryChunk.name))
+        	<!-- $chunkName -->
+<div class="row">
+	<div class="cell">
+		<label for="field-$chunkName">$chunkValue</label><!-- i18n -->
+	</div>
+	<div class="cell">
+	<select name="$chunkName" id="field-$chunkName" 
+		data-bind="source: ${chunkName}List, value: ${chunkName}" 
+		data-text-field="value"
+		data-value-field="name"
+##		data-value-field="$chunkName"
+		style="width: 200px;">
+     </select>
+     </div>
+</div>
+#end
+
+#macro (putKendoHtmlColumnSnippet $tableVariableName $internat)
+#set($labelFor=$columnVar)
+#set($fieldId="field-$columnVar")
+#set($columnAlias=$formatUtils.performDisplayReadableFirstUpperOnlyName($column.alias))
+#set($width = $presentationUtils.getDisplayRowsInPixel($column))
+<div class="row">
+	<div class="cell" style="width: 300px;">
+		<label for="$fieldId" #if($column.isRequired())class="required"#end>$columnAlias</label><!-- i18n -->
+	</div>
+	<div class="cell">
+#if($columnUtils.hasCheckConstraint($column))
+	<select name="$labelFor" id="$fieldId" 
+		data-bind="source: ${columnVar}List, value: ${columnVar}" 
+		data-text-field="value"
+		data-value-field="${columnVar}"
+##		data-value-field="name"
+##		data-option-label="Select"
+		#if($column.isRequired())required#end data-required-msg="Select $columnAlias" style="width: ${width}px;">
+#if(!$column.isRequired())
+#end
+     </select>
+##     <span class="k-invalid-msg" data-for="$labelFor"></span>
+#elseif($columnUtils.isLink($column))
+#set($queryId =$column.queryParamLink.queryName)
+#set($fieldKey =$column.queryParamLink.fieldKey)
+#set($fieldName =$column.queryParamLink.fieldName)
+#exposeQueryTarget()
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldName))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+#set($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if($isMasterData && !$isAutocompletion)
+	<select name="$labelFor" id="$fieldId" 
+		data-bind="source: ${columnVar}DDL, value: ${columnVar}Selected"
+		data-text-field="$columnText"
+		data-value-field="${columnValue}"
+##		data-option-label="Select"
+		#if($column.isRequired())required#end data-required-msg="Select $columnAlias" style="width: ${width}px;">
+     </select>
+#elseif ($isAutocompletion)
+	 <input id="$fieldId" data-bind="value: ${columnVar}" #if($column.isRequired())required="true"#end placeholder="$columnAlias" class="k-textbox" type="text"/>
+	 <input hidden="true" id="${fieldId}Selected" /> 
+#else
+#set($titleSearch=$formatUtils.performDisplayReadableFirstUpperOnlyName($columnText))
+#set($width = $width+50)
+	<div style="width:  ${width}px; display: inline-flex;" >
+##TODO if field_key != field-name => readonly
+		<input type="text" id="$fieldId" data-bind="value: ${columnVar}" class="k-textbox" />
+		<input hidden="true" id="${fieldId}Selected" data-bind="value: ${columnVar}Selected" />
+		<a class="ui-icon ui-icon-circle-plus"   onclick="openSearchFor${columnVar}()" title="$titleSearch lookup" style="margin-left: 10px; margin-top: 10px;"></a>
+		<a class="ui-icon ui-icon-circle-minus"  onclick="clearSearchFor${columnVar}()" title="clear" style="margin-left: 10px; margin-top: 10px;" ></a>
+	</div>
+#end
+#else
+## time
+#if($columnUtils.isTimeColumn($column))
+		<input id="$fieldId" data-bind="value: ${columnVar}" />
+#else
+## boolean
+#if($columnUtils.isBoolean($column))
+		<input type="checkbox" id="$fieldId" data-bind="value: ${columnVar}" #if($column.isRequired())required="true"#end #if($column.defaultValue)checked #end/>
+#else
+## textarea
+#if($presentationUtils.isTextArea($column))
+	<textarea type="text" id="$fieldId" data-bind="value: ${columnVar}" name="$labelFor" class="k-textbox" placeholder="$columnAlias" #if($column.isRequired())required="true"#end rows="$presentationUtils.getDisplayRows($column)" cols="$presentationUtils.getDisplayColumns($column)" validationMessage="Enter {0}" style="width: ${width}px;" ></textarea> 
+#elseif($presentationUtils.isRichText($column))
+##	<p:editor
+	<textarea type="text" id="$fieldId" data-bind="value: ${columnVar}"name="$labelFor" class="k-textbox" placeholder="$columnAlias" #if($column.isRequired())required="true"#end validationMessage="Enter {0}" style="width: ${width}px;" /> 
+## simple input
+#else
+	<input type="text" id="$fieldId" data-bind="value: ${columnVar}" name="$labelFor" class="k-textbox" placeholder="$columnAlias" #if($column.isRequired())required="true"#end validationMessage="Enter {0}" style="width: ${width}px;" />
+#end
+##	<input type="text" id="$labelFor" name="$labelFor" class="k-textbox" placeholder="${columnVar}" required="$column.isRequired()" validationMessage="Enter {0}" style="width: ${width}px;" />
+##		label="${columnClass}" id="lbl${columnClass}-#{idValue}" value="#{${entityControllerJSFVariable}.${tableVariableName}.${columnVar}}" required="$column.isRequired()"/>
+#end
+## file upload entry to do
+#end
+#end
+	</div>
+</div>
+#end
+
+#macro (putKendoJsColumnSnippet $tableVariableName $internat)
+#set($labelFor=$columnVar)
+#set($fieldId="field-$columnVar")
+#if($columnUtils.hasCheckConstraint($column))
+#if (!$column.isArray())
+	$("#${fieldId}").kendoDropDownList(
+		{
+			optionLabel: {
+				name:  "Choose",
+				value: ""
+			}
+		}
+	);
+#else	
+	$("#${fieldId}").kendoMultiSelect(
+		{
+			optionLabel: {
+				name:  "Choose",
+				value: ""
+			}
+		}
+	);
+#end
+#elseif($columnUtils.isTimeColumn($column))
+	$("#${fieldId}").kendoDatePicker();
+#elseif($columnUtils.isBoolean($column))
+#elseif($presentationUtils.isTextArea($column))
+##	<p:inputTextarea rows="$primefacesUtils.getDisplayRows($column)" cols="$primefacesUtils.getDisplayColumns($column)" maxlength="$column.sizeAsInt" width="$column.sizeAsInt" 
+##        counterTemplate="{0} characters remaining." autoResize="false"
+#elseif($presentationUtils.isRichText($column))
+
+#else
+
+#end
+#end
+
+#macro (putJSFColumnSnippet2)
+#putJSFColumnSnippet("selected${tableClassName}" ${tableVariableName})
+#end
+
+#macro(putKendoUIMenu)
+        var _option_menu = QueryString._option_menu;
+        if (_option_menu==undefined || _option_menu=='true') {
+#*TODO FOR 0.9.10 check if works with single model
+#foreach ($model in $configuration.allModels)
+#exposeKendoUIModelSpecific()
+        	jQuery.ajax({
+            	url: contextPath+"/$kendoUiMenuStructurePath",
+            	success: function (data) { $('#menu').append(data); },
+            	dataType: 'html',
+            	async : false,
+            	cache : true
+        	});
+        	$("#${model.name}-Menu").kendoMenu();
+#end
+*#
+
+#exposeKendoUIGeneratorBeanSpecific()
+        	jQuery.ajax({
+            	url: contextPath+"/$kendoUiMenuStructurePath",
+            	success: function (data) { $('#menu').append(data); },
+            	dataType: 'html',
+            	async : false,
+            	cache : true
+        	});
+        	$("#${generatorBean.name}-Menu").kendoMenu();
+		}
+#end
+
+#macro(putKendoUIMenuREST)
+  $("#${model.name}-Menu").kendoMenu({ 
+   dataSource: {
+    error: function (e) {
+##     if (e.errors !== false) {
+##        $("#${tableVariableName}ListFooter").text(e.errors);
+##     }
+    },
+	transport: {
+     read: {
+      url: "data/model/menu", //package.name (entity,+URL)
+      dataType: "json",
+      contentType: "application/json; charset=utf-8",
+      cache: false
+     }
+    },
+    schema: {
+     data: "data",
+     total: "total",
+     errors: "error"
+    },
+    columns: [
+#foreach ($column in $outputBean.columns)
+#putColumnParamNaming()
+     {
+         template: kendo.template($("#grid-template-$column.alias").html()),
+#set($title=$formatUtils.performDisplayReadableFirstUpperOnlyName($column.alias))
+         title: '$title', //$column.name
+#if($isLengthPrecisionColumn)        width:$column.size,#end
+         headerAttributes: "$columnVar",
+#if ($presentationUtils.isHidden($column, $query))
+		 hidden : true
+#else
+		 hidden : false
+#end
+     }
+#if ($velocityCount!=$table.columnCount)
+    ,#end 
+##set($counter=$counter+1)
+#end
+     ]
+    });
+#end
+
+#macro(exposeKendoUIShowDetailsAction)     
+	function showDetails(e) {
+		e.preventDefault();
+		var dataItem = e.dataItem;
+		wnd.content(detailsTemplate(dataItem));
+		wnd.center().open();
+	}
+#end
+
+#macro(exposeKendoUIShowDetailsFromListAction)     
+	function showDetails(e) {
+		e.preventDefault();
+		var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+		wnd.content(detailsTemplate(dataItem));
+		wnd.center().open();
+	}
+#end
+
+#macro(exposeKendoUISDDActions)
+#foreach ($action in $query.actions)
+#set($targetQuery = $actionUtils.getQuery($action, $model))
+#if(!$actionUtils.isReservedAction($action))
+	function $actionUtils.getActionMethod($action) (e) {
+		e.preventDefault();
+#if ($targetQuery.isWrite())
+#*		var grid = $("#ssd-output-grid").data("kendoGrid");
+		grid.select( $(e.currentTarget).closest("tr"));
+		var rowId = grid.select().data("uid");
+		var item = grid.dataSource.getByUid(rowId);
+*#
+		var item = getItem(e, "ssd-output-grid");
+##TODO for each para	
+#foreach ($actionEntry in $action.actionFieldMapEntries)
+#if ($actionEntry.isOutputFieldMapping())
+#set($fieldName=$actionEntry.outputField)
+#set($to=${actionEntry.toActionField})
+		var $to = item.get("$fieldName");
+#end
+#end
+		$("#basicPopup").kendoWindow({
+          	 modal: true
+           }).data("kendoWindow");
+#if($action.getPopupFields().size()==0)  
+		var popup = openBasicPopup("confirm $action.name", 960);
+		$("#basicPopupYes").click(function() {
+#else
+		var popup = openNewPopup("basicPopupTpl-$formatUtils.getInUnderscore($action.name)","Confirm $action.name", 960);
+		$("#basicPopupYes-$formatUtils.getInUnderscore($action.name)").click(function() {
+#end
+
+			popup.close();
+			do$actionUtils.getActionMethod($action)(
+#foreach ($actionEntry in $action.actionFieldMapEntries)
+#if ($actionEntry.isOutputFieldMapping())
+#set($fieldName=$actionEntry.outputField)
+#set($to=${actionEntry.toActionField})
+				#if ($velocityCount!=1),#end $to 
+#end
+#end
+			);
+		});
+#else
+#if(!$isChart)
+#*		var grid = $("#ssd-output-grid").data("kendoGrid");
+		grid.select( $(e.currentTarget).closest("tr"));
+		var rowId = grid.select().data("uid");
+		var item = grid.dataSource.getByUid(rowId);
+*#
+		var item = getItem(e, "ssd-output-grid");
+#else
+		var item = e.dataItem;
+		var $outputBeanDimension1Var = item.$outputBeanDimension1Var;
+		var series = e.series;
+		var serieField = series.field;
+#end
+#end
+##		kendo.ui.progress($("#ssd-output-grid"), true);
+#if (!$targetQuery.isWrite())
+#exposeEntityUpdatedAreas("${action.name}-action")
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+#set($queryId = $action.getQueryId())
+#exposeQueryTarget()
+#if(!$isChart)
+#set($targetUrl = $commonUtils.getArtifactRelativePathDirAndFullName($targetQuery, $template, $templateKendoUiSddDirectResult))
+#else
+#set($targetUrl = $commonUtils.getArtifactRelativePathDirAndFullName($targetQuery, $template, $templateKendoUiSddDirectResultJs))
+#end
+		var targetUrl = contextPath+"/$targetUrl";
+		isQuestionMarkDone = false;
+		var hasSerieExtraParam = false;
+#set($cpt=0)
+#foreach ($field in $query.queryFields)
+#if ($field.isKey())
+#set($fieldName=$field.name)
+		var $fieldName = item.get("$fieldName");
+		if ($fieldName != undefined) {
+			hasSerieExtraParam = true;
+			if (!isQuestionMarkDone) {
+				targetUrl = targetUrl +"?" +"$fieldName="+$fieldName;
+				isQuestionMarkDone = true;
+			} else {
+				targetUrl = targetUrl +"&" +"$fieldName="+$fieldName;
+			}
+		} 
+#set($cpt=$cpt+1)
+#end
+#end
+#foreach ($actionEntry in $action.actionFieldMapEntries)
+#if ($actionEntry.isOutputFieldMapping())
+#set($fieldName=$actionEntry.outputField)
+#set($to=${actionEntry.toActionField})
+		var $to = item.get("$fieldName");
+		if ($to != undefined) {
+			hasSerieExtraParam = true;
+			if (!isQuestionMarkDone) {
+				targetUrl = targetUrl +"?" +"$to="+$to;
+				isQuestionMarkDone = true;
+			} else {
+				targetUrl = targetUrl +"&" +"$to="+$to;
+			}
+		}
+#set($cpt=$cpt+1)
+#elseif ($actionEntry.isFilterFieldMapping())
+#set($fieldName=$actionEntry.filterField)
+#set($to=${actionEntry.toActionField})
+		var $to = $("#form-${tableVariableName} :input[name='$fieldName']").val();
+		if ($to != undefined) {
+			hasSerieExtraParam = true;
+			if (!isQuestionMarkDone) {
+				targetUrl = targetUrl +"?" +"$to="+$to;
+				isQuestionMarkDone = true;
+			} else {
+				targetUrl = targetUrl +"&" +"$to="+$to;
+			}
+		}
+#end
+#end
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+        var $columnVar = $("#field-$columnVar").val();
+#if($columnUtils.isTime($column))
+        ${columnVar}Date = new Date(${columnVar});
+		${columnVar} = kendo.toString(${columnVar}Date, "yyyy-MM-dd");
+#end
+#end
+#end
+#foreach ($actionEntry in $action.actionColumnMapEntries)
+		if (serieField != undefined) {
+#if ($actionEntry.isUpperCaseConvert())
+			serieField = serieField.toUpperCase();
+#end
+			if ("${actionEntry.columnField}".toUpperCase() == serieField) {
+			   hasSerieExtraParam = true;
+#foreach ($ae in $actionEntry.actionFieldMapEntries)
+#set($to=${ae.toActionField})
+#if ($ae.origin=="static-value")
+#set($toValue=$ae.staticValue)
+				if (!isQuestionMarkDone) {
+					targetUrl = targetUrl +"?" +"$to=$toValue";
+					isQuestionMarkDone = true;
+				} else {
+					targetUrl = targetUrl +"&" +"$to=$toValue";
+				}
+#elseif ($ae.origin=="input-field")
+#set($toValue=$ae.inputField)
+				if (!isQuestionMarkDone) {
+					targetUrl = targetUrl +"?" +"$to="+$columnVar;
+					isQuestionMarkDone = true;
+				} else {
+					targetUrl = targetUrl +"&" +"$to="+$columnVar;
+				}
+#else
+#set($toValue=$ae.outputField)
+//TODO mapping
+#end
+
+#end
+			}
+		}
+#end
+		if (!hasSerieExtraParam) 
+			return;
+#end
+#if(!$isChart)
+#set($actionName=$formatUtils.performDisplayReadableFirstUpperOnlyName($action.name))
+		openPopup ("$actionName",targetUrl, 1000, 600);
+#else
+##		targetUrl = targetUrl + "?$outputBeanDimension1Var="$outputBeanDimension1Var;
+		$("#${model.name}-store").val(targetUrl);
+		$("#ssd-output-chart-grid").load(targetUrl);
+#end
+$!updatedAreaEnd
+#end
+	}
+
+#if ($targetQuery.isWrite())
+	function do$actionUtils.getActionMethod($action)(
+#foreach ($actionEntry in $action.actionFieldMapEntries)
+#if ($actionEntry.isOutputFieldMapping())
+#set($fieldName=$actionEntry.outputField)
+#set($to=${actionEntry.toActionField})
+			#if ($velocityCount!=1),#end $to 
+#end
+#end
+		) {
+		var query = "";
+#foreach ($actionEntry in $action.actionFieldMapEntries)
+#if ($actionEntry.isOutputFieldMapping())
+#set($fieldName=$actionEntry.outputField)
+#set($to=${actionEntry.toActionField})
+		query += #if ($velocityCount==1)"?"#else "&" #end+"${to}="+${to}; 
+#end
+#if ($actionEntry.isRequestedFieldMapping())
+#set($fieldName=$actionEntry.requestedField)
+#set($to=${actionEntry.toActionField})
+		query += #if ($velocityCount==1)"?"#else "&" #end+"${to}="+$("#${actionEntry.requestedField}-popup").val(); 
+#end
+#end
+#set($targetQueryClassName = $commonUtils.getJavaClassName($targetQuery))
+		var targetUrl = contextPath+"/data/sdd/${targetQueryClassName}In"+query;
+
+		jQuery.ajax({
+			cache: false,
+			type: "GET",
+			url: targetUrl,
+			//data : createToJSON(),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function(data) {
+				$(".k-button, .button").prop('disabled', false);
+				alert("Done!");
+			},
+			error: function(jqXHR, status) {
+				alert( status.code);
+			}						
+		});
+	}
+#end
+#end
+#end
+#end
+
+#macro(exposeKendoUISDDDGrid)
+#set($tableAlias=$formatUtils.performDisplayReadableFirstUpperOnlyName($table.alias))
+#if (!$isChart)
+       $("#ssd-output-grid").kendoGrid({
+#else
+       $("#ssd-output-chart").kendoChart({
+#end
+      toolbar: ["excel"],
+         excel: {
+            fileName: "${tableAlias}-"+getReportTime()+".xlsx",
+            filterable: true
+       },
+       dataSource: {
+          transport: {
+             read: {
+                 url: dataSourceUrl,
+                 dataType: "json",
+                 contentType: "application/json; charset=utf-8",
+                 cache: false
+              }
+           }
+           ,
+           schema: {
+              data: "$sddOutputBeanClass"
+           }
+           // ,pageSize : $kendoUiUtils.pageSize() seems not to work
+        },
+#if (!$isChart)
+           resizable: true,
+           sortable: {
+           		mode: "single",
+                allowUnsort: false
+           },
+           pageable: {
+                buttonCount: 5
+           },
+		   change: function () {
+			   var _option_affect = QueryString._option_affect;
+			   if (_option_affect != undefined) {
+				   var rowId = this.select().data("uid");
+				   var item = this.dataSource.getByUid(rowId);
+				   var affect_field_name_ = QueryString._option_affect_field_name;
+				   var affect_field_name  = item.get(affect_field_name_);
+				   var affect_field_key_  = QueryString._option_affect_field_key;
+				   var affect_field_key  = item.get(affect_field_key_);
+				   
+				   var affect_field_name_to = QueryString._option_affect_field_name_to;
+				   var affect_field_key_to  = QueryString._option_affect_field_key_to;
+
+				   parent.$("#field-"+affect_field_name_to).val(affect_field_name);
+				   parent.$("#field-"+affect_field_key_to+"Selected").val(affect_field_key);
+				   parent.popup.close();
+			   }
+		   },
+#else
+		  title : {
+			  text: "$tableAlias"
+		  },
+		  chartArea: { margin: 0, padding: 0, height: (screen.height * 0.50), width: (screen.width * 0.35) },
+		  plotArea: { margin: 0, padding: 0, height: (screen.height * 0.50), width: (screen.width * 0.35) },
+          legend: {
+              position: "top"
+          },
+          seriesDefaults: {
+#if($isPieChart)
+               labels: {
+               		visible: true,
+##               		template: "#= category #: \n #= value#%"
+               		background: "transparent"
+               }
+#end
+##               type: "column"
+          },
+          series:
+               [
+#foreach($column in $dimensions)
+#putColumnParamNaming()
+#set($dimVar = "${columnVar}$velocityCount")
+				{
+#if($isPieChart)
+					type : "pie",
+#elseif ($isBarChart)
+					type : "bar",
+#elseif ($isColumnChart)
+					type : "column",
+#end
+                    field: "${columnVar}",
+#set($fieldLabel=$formatUtils.performDisplayReadableFirstUpperOnlyName($column.alias))
+                    name: "$fieldLabel"
+				}#if ($velocityCount < $dimensions.size()) , #end
+
+#end
+                ],
+           categoryAxis: {
+               field: "$outputBeanDimension1Var", 
+               majorGridLines: {
+                  visible: false
+               }
+           },
+           valueAxis: {
+               labels: {
+                   format: "N0"
+               },
+               line: {
+                    visible: false
+               }
+           },
+           tooltip: {
+               visible: true,
+               format: "N0"
+           },
+           seriesClick: function(e) {
+#foreach ($action in $query.actions)
+#if($velocityCount==1)
+				$actionUtils.getActionMethod($action) (e);
+#end
+#end
+           },
+#end
+		   groupable: true,
+		   columns: [
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+			  {
+	           field: "$columnVar",
+#set($title=$formatUtils.performDisplayReadableFirstUpperOnlyName($column.alias))
+	           title: '$title',
+#updatedColumnAttributeAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+//				width : toset, $column.type
+#end
+#if($columnUtils.isTimeStampColumn($column))
+				template: '#= kendo.toString(kendo.parseDate(${columnVar}),"dd/MM/yyyy HH:mm:ss") #' ,
+#elseif($columnUtils.isTime($column))
+				template: '#= kendo.toString(kendo.parseDate(${columnVar}),"dd/MM/yyyy") #' ,
+#end
+#if ($presentationUtils.isLinkUrl($column, $query))
+#if (!$presentationUtils.isJsLinkUrlKendoUiURL($column, $query))
+##				template: '<a href="$presentationUtils.getLinkUrlKendoUiTemplate($column, $query)" #if ($query.queryDisplay.resultRowLinkNewWindow) target="_blank" #end>#=${columnVar}#</a>',
+				template: '<a href="\\\\#" onClick="javascript:concatUrlWithParam(\'$key\', \'$param\'); return false;" #if ($query.queryDisplay.resultRowLinkNewWindow) target="_blank" #end>#=${columnVar}#</a>',
+#else
+##set($key = $presentationUtils.getRootUrl($column, $query))
+#set($envParam = $presentationUtils.getEnvParam($column, $query))
+#set($param = $presentationUtils.getKendoUiUrlParam($column, $query))
+				template: '<a href="\\\\#" onClick="javascript:resolveUrl(\'$envParam\', \'$param\'); return false;" #if ($query.queryDisplay.resultRowLinkNewWindow) target="_blank" #end>#=${columnVar}#</a>',
+#end
+#end
+#if ($presentationUtils.isHidden($column, $query))
+				hidden : true
+#else
+				hidden : false
+#end
+$!updatedAreaEnd
+	         }
+#if ($query.actions.size()>0 || $velocityCount!=$outputBean.columns.size())
+              ,#end 
+#end
+#foreach($newColumn in $query.queryDisplay.queryDisplayNewColumns)
+			  ,{
+	           	title: "$newColumn.name",
+	           	template: '<span class="#= $newColumn.classFromColumn#" style="color : #=$newColumn.styleColorFromColumn#" ></span>' ,
+	           }
+#end
+#foreach ($action in $query.actions)
+			   { command: { text: "$actionUtils.getActionLabel($action)", click: $actionUtils.getActionMethod($action) }, title: " "}
+#if ($velocityCount!=$query.actions.size())
+                ,#end 
+#end
+	        ],
+            height: 500,
+            scrollable: true,
+            selectable: true
+      });
+ 
+##exposeKendoUIShowDetailsFromListAction()
+	
+#end
+
+#macro(exposeKendoUIDetailAction)
+<script type="text/x-kendo-template" id="template-detail">
+
+<div style="display: table; width: 100%; margin-top: 10px;">
+
+#foreach($list in $presentationUtils.getDetailDisplay($query))
+<div class="row">
+#foreach($column in $list)
+#putColumnParamNaming()
+	<div class="cell-label">
+#set($title=$formatUtils.performDisplayReadableFirstUpperOnlyName($column.alias))
+		<label>$title</label><!-- i18n -->
+	</div>
+	<div class="cell">#= ($columnVar == null) ? ' ' :$columnVar #</div>
+#end
+</div>
+#end
+</div>
+
+</script>
+#end
+
+#macro(exposeKendoUIDetailWindowTemplate)
+		wnd = $("#details").kendoWindow({
+#set($title=$formatUtils.performDisplayReadableFirstUpperOnlyName($table.alias))
+           title: "$title details",
+           modal: true,
+           visible: false,
+           resizable: true,
+           width: 600
+           }).data("kendoWindow");
+		detailsTemplate = kendo.template($("#template-detail").html());
+#end
+
+#macro(exposeSearchSDDFunction)
+	function searchSdd() {
+#exposeSearchSDD()
+	}
+#end
+
+#macro(exposeSDDSubUcSearch)
+#foreach ($column in $table.columns)
+#if($columnUtils.isLink($column))
+#putColumnParamNaming()
+#set($queryId =$column.queryParamLink.queryName)
+#exposeQueryTarget()
+#set($fieldId="field-$columnVar")
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery))
+#set($fieldName = $queryUtils.getColumnVariable($targetQuery, $column.queryParamLink.fieldName))
+#set($fieldKey = $queryUtils.getColumnVariable($targetQuery, $column.queryParamLink.fieldKey))
+#set ($isMasterData = $queryUtils.isAdminContentType($targetQuery))
+#set($targetUrl = $commonUtils.getArtifactRelativePathDirAndFullName($targetQuery, $template, $templateKendoUiSddInput))
+#if(!$isMasterData)
+	function openSearchFor${columnVar}() {
+		var targetUrl = contextPath+"/${targetUrl}?_option_menu=false&_option_affect=true&_option_affect_field_name=${fieldName}&_option_affect_field_key=${fieldKey}&_option_affect_field_name_to=${columnVar}&_option_affect_field_key_to=${columnVar}";
+		openPopup ("search $columnText",targetUrl, 1000, 600);
+	}
+	function clearSearchFor${columnVar}() {
+		$("#${fieldId}").val("");
+		$("#${fieldId}Selected").val("");
+	}
+#end
+#end
+#end
+#end
+
+
+#macro (exposePerformWriteSDD)
+#exposeQuerySDD()
+        $("#sdd-info").html("");
+        jQuery.ajax({
+            url: dataSourceUrl,
+            success: function (data) {
+            	$("#sdd-info").html("Action performed");
+            	jQuery.growl.notice({message: "Action performed!" });
+            },
+            error: function (data) { 
+            	$("#sdd-info").html("Action not performed! "+data.responseText);
+                jQuery.growl.error({message: "Action not performed! " + data.responseText });
+            },
+            dataType: 'html',
+            async : false
+        });
+        
+#end
+
+#macro(exposeClearInput)
+	function clearInput() {
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+		$("#field-${chunkName}").val("");
+		$("${chunkName}Selected").val("");
+		this.set("${columnVar}","");
+#end
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if($columnUtils.isLink($column))
+#set($fieldKey =$column.queryParamLink.fieldKey)
+#set($queryId =$column.queryParamLink.queryName)
+#exposeQueryTarget()
+#set ($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#if($isMasterData)
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldKey))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+#if($column.isArray())
+##TODO		var ${columnVar} = $("#field-$columnVar").data("kendoMultiSelect").value();
+#else
+		$("${columnVar}Selected").val("");
+		$("#field-$columnVar").val("");
+#end
+#else
+#if($column.queryParamLink.fieldKey == $column.queryParamLink.fieldName)
+		$("#field-$columnVar").val("");
+#else
+		$("#field-$columnVar").val("");
+		$("#field-${columnVar}Selected").val("");
+#end
+#end
+#else
+#if (!$column.isArray())
+		$("#field-$columnVar").val("");
+		this.set("${columnVar}","");
+#else
+##TODO		var $columnVar = $("#field-$columnVar").data("kendoMultiSelect").value();
+#end
+#end
+#end
+#end
+	}
+#end
+
+#macro(exposeSearchSDD)
+#exposeQuerySDD()
+//		$("#action").disable();
+#exposeKendoUISDDDGrid()
+//		$("#action").enable();
+#end
+
+#macro(exposeQuerySDD)
+        isQuestionMarkDone = false;
+        var query = "";
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+		var ${chunkName}Selected = this.get("${chunkName}");
+        if (${chunkName}Selected!=undefined && !${chunkName}Selected=='') {
+           if (!isQuestionMarkDone) {
+              isQuestionMarkDone = true;
+              query = "?"+"$chunkName="+${chunkName}Selected;
+           } else {
+              query = query+"&"+"$chunkName="+${chunkName}Selected;
+           }
+        }
+#end
+#set($cpt=0)
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#set($cpt=$cpt+1)
+#putColumnParamNaming()
+#if($columnUtils.isLink($column))
+#set($fieldKey =$column.queryParamLink.fieldKey)
+#set($queryId =$column.queryParamLink.queryName)
+#exposeQueryTarget()
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#set ($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#if($isMasterData)
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldKey))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+#if($column.isArray())
+		var ${columnVar} = ($("#field-$columnVar").data("kendoMultiSelect"))?$("#field-$columnVar").data("kendoMultiSelect").value():this.get("$columnVar");
+#else
+## unfortunately does not work fine for first select
+##		var ${columnVar}Selected = this.get("${columnVar}Selected");
+#if($isMasterData && !$isAutocompletion)
+		var dropdownlist$columnVar = $("#field-$columnVar").data("kendoDropDownList");
+		var ${columnVar}Selected = dropdownlist${columnVar}.dataItem();
+		var ${columnVar} = (${columnVar}Selected==undefined)? undefined: ${columnVar}Selected.$columnText;
+#elseif ($isAutocompletion)
+##		var dropdownlist$columnVar = $("#field-$columnVar").val();
+		var ${columnVar} = $("#field-$columnVar").val();
+#end
+#end
+#else
+#if($column.queryParamLink.fieldKey == $column.queryParamLink.fieldName)
+#set($fieldId="field-$columnVar")
+#else
+#set($fieldId="field-${columnVar}Selected")
+#end
+#if($columnUtils.isBoolean($column))
+		var $columnVar = $("#field-$columnVar").is(':checked');
+#else
+		var ${columnVar} = $("#field-$columnVar").val();
+#end
+#end
+#else
+#if (!$column.isArray())
+#if($columnUtils.isBoolean($column))
+		var $columnVar = $("#field-$columnVar").is(':checked');
+#else
+		var $columnVar = $("#field-$columnVar").val();
+#end
+#else
+		var $columnVar = ($("#field-$columnVar").data("kendoMultiSelect"))?$("#field-$columnVar").data("kendoMultiSelect").value():$("$columnVar").val();
+#end
+#end
+#if($columnUtils.isTime($column))
+        ${columnVar}Date = new Date(${columnVar});
+		${columnVar}DateSt = kendo.toString(${columnVar}Date, "yyyy-MM-dd");
+#set($columnValue="${columnVar}DateSt")
+#else
+#set($columnValue=$columnVar)
+#end
+#if($columnUtils.isBoolean($column))
+		if (!isQuestionMarkDone) {
+			isQuestionMarkDone = true;
+			query = "?"+"$columnVar="+$columnValue;
+		} else {
+		    query = query+"&"+"$columnVar="+$columnValue;
+		}
+#else
+		if ($columnVar!=undefined && !$columnVar=='' && $columnVar!='Choose') {
+			if (!isQuestionMarkDone) {
+				isQuestionMarkDone = true;
+				query = "?"+"$columnVar="+$columnValue;
+			} else {
+			    query = query+"&"+"$columnVar="+$columnValue;
+			}
+		}
+#end
+#end
+#end
+		var dataSourceUrl = contextPath+"/data/sdd/${tableClassName}In"+query;
+#end
+
+#macro(exposeKendoUIApplicationSpecific)
+#exposeKendoUITemplate()
+#set($kendoUiMenuStructurePath=$commonUtils.getTemplateArtifactName($configuration.application, $templateKendoUiMenuStructure))
+#set($kendoUiMainCssPath=$commonUtils.getArtifactRelativePathDirAndFullName($configuration.application, $template, $templateKendoUiMainCss))
+#set($kendoUiMainJsPath=$commonUtils.getArtifactRelativePathDirAndFullName($configuration.application, $template, $templateKendoUiMainJs))
+#end
+
+#macro(exposeKendoUIModelSpecific)
+#exposeKendoUITemplate()
+#set($kendoUiMenuStructurePath=$commonUtils.getTemplateArtifactName($model, $templateKendoUiMenuStructure))
+#set($kendoUiMainCssPath=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateKendoUiMainCss))
+#set($kendoUiMainJsPath=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateKendoUiMainJs))
+#end
+
+#macro(exposeKendoUIGeneratorBeanSpecific)
+#exposeKendoUITemplate()
+#set($kendoUiMenuStructurePath=$commonUtils.getTemplateArtifactName($generatorBean, $templateKendoUiMenuStructure))
+#set($kendoUiMenuPath=$commonUtils.getTemplateArtifactName($generatorBean, $templateKendoUiMenu))
+#set($kendoUiMainCssPath=$commonUtils.getArtifactRootPathDirAndFullName($generatorBean, $template, $templateKendoUiMainCss))
+#set($kendoUiMainJsPath=$commonUtils.getArtifactRootPathDirAndFullName($generatorBean, $template, $templateKendoUiMainJs))
+#end
+
+#macro(exposeKendoUIEntitySpecific)
+#exposeKendoUITemplate()
+#set ($entityFullPath =$commonUtils.getArtifactRelativePathDirAndFullName($table, $templateEntitySearchGridList))
+#end
+
+#macro(exposeKendoUISddSpecific)
+#exposeKendoUITemplate()
+#set ($entityFullPath =$commonUtils.getArtifactRelativePathDirAndFullName($query, $template, $templateKendoSddInput))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateKendoSddInput))
+#end
+
+#macro (exposeRestDbApiDomainObject)
+#exposeDbApiRestTemplate()
+#set ($RESTDbAPIGenericResourceClass = $commonUtils.getTemplateClassName($model, $template, $templateRESTDbApiGenericResource))
+#set ($RESTDbAPIGenericResourceImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateRESTDbApiGenericResource))
+#end
+
+#macro (exposeDbApiRestQuerySpecific)
+#exposeQuerySpecific()
+#exposeDbApiRestTemplate()
+#set($queryInputSDDRelativePath = $commonUtils.getArtifactRelativePathDirAndFullName($query, $template, $templateRESTDbApiSDDResource))
+#set($dateParamImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateRESTDateParam))
+#set($timestampParamImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateRESTTimestampParam))
+#end
+
+#macro (exposeDbApiRestTemplate)
+#set($templateRESTDbApiGenericResource="RESTDbAPIGenericResource")
+#set($templateRESTDbApiSDDResource="RESTDbAPISDDResource")
+#set($templateRESTDateParam="REST.DateParam")
+#set($templateRESTTimestampParam="REST.TimestampParam")
+#end
+
+#macro(exposeKendoUITemplate)
+#set($templateEntitySearchGridList="KendoUiEntitySearchGrid")
+#set($templateKendoSddInput="KendoUiSDDInput")
+#set($templateKendoUiMenu="KendoUiMenu")
+#set($templateKendoUiMenuStructure="KendoUiMenuStructure")
+#set($templateKendoUiMainCss="KendoUiMainCss")
+#set($templateKendoUiMainJs="KendoUiMainJs")
+#set($templateKendoUiSddInput="KendoUiSDDInput")
+#set($templateKendoUiSddDirectResult="KendoUiSDDDirectResult")
+#set($templateKendoUiSddDirectResultJs="KendoUiSDDDirectResult.js")
+#end
+
+#macro(exposeKendoUIPopupTpl $id $fields)
+#if($fields.size()>0)
+<script id="basicPopupTpl-$id" type="text/x-kendo-template">
+	<div id="basicPopupWrapper-$id" style="margin: 0 auto; margin-top: -10px; text-align: center; padding: 0;">
+		<div id="basicPopupText-$id" style="overflow: auto; margin-bottom: 30px;"/>
+#foreach($field in $fields)
+<!-- $field.requestedField  $field.toActionField -->
+#end
+#foreach($field in $fields)
+<div class="row">
+##putColumnParamNaming()
+	<div class="cell-label">
+#set($title=$formatUtils.performDisplayReadableFirstUpperOnlyName($field.requestedField))
+		<label>$title</label>
+	</div>
+	<div class="cell"><input id="${field.requestedField}-popup" name="${field.requestedField}" required="true" placeholder="$title" class="k-textbox" type="text"/></div>
+</div>
+#end
+		<input type="button" id="basicPopupCancel-$id" class="buttonCancel" style="min-width: 80px;" value="cancel" onclick="$('\#basicPopup').data('kendoWindow').close();"/>
+		<input type="button" id="basicPopupYes-$id" class="button" style="min-width: 80px; margin-left: 20px;" value="yes"/>
+	</div>
+</script>
+#end
+#end
+
+#macro(exposeKendoUIPopupYesNoTpl)
+<script id="basicPopupTpl" type="text/x-kendo-template">
+	<div id="basicPopupWrapper" style="margin: 0 auto; margin-top: -10px; text-align: center; padding: 0;">
+		<div id="basicPopupText" style="overflow: auto; margin-bottom: 30px;"/>
+		<input type="button" id="basicPopupCancel" class="buttonCancel" style="min-width: 80px;" value="cancel" onclick="$('\#basicPopup').data('kendoWindow').close();"/>
+		<input type="button" id="basicPopupYes" class="button" style="min-width: 80px; margin-left: 20px;" value="yes"/>
+	</div>
+</script>
+#end

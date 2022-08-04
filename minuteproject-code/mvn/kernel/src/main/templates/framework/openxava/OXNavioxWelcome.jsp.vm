@@ -1,0 +1,44 @@
+#exposeMaven()
+#exposeOXSpecific()
+#exposeVariableModelSpecific()
+#set ($applicationLabel=$formatUtils.getJavaName($applicationOX))
+<%@include file="../xava/imports.jsp"%>
+
+<%@page import="org.openxava.application.meta.MetaApplications"%>
+<%@page import="org.openxava.application.meta.MetaApplication"%>
+
+<%-- To put your own text add entries in the i18n messages files of your project --%>
+
+<%
+String applicationName = request.getContextPath().substring(1);
+MetaApplication metaApplication = MetaApplications.getMetaApplication(applicationName);
+%>
+
+<h1><xava:message key="welcome_to" param="<%=metaApplication.getLabel()%>"/></h1>
+<h2><%=metaApplication.getDescription()%></h2>
+
+<table style="margin: 20px">
+<%--
+<tr>
+	<td><img src="../naviox/images/point1.png" class="feature-image"/></td> 
+	<td>${generatorBean.name} application brought to you by <a href="http://minuteproject.sf.net">Minuteproject</a> for <a href="http://openxava.org">Openxava</a> generation</td>
+</tr>
+
+--%>
+<tr>
+	<td><img src="../naviox/images/point3.png" class="feature-image"/></td>
+	<td>${generatorBean.name} application brought to you by <a href="http://minuteproject.sf.net">Minuteproject</a> for <a href="http://openxava.org">Openxava</a> generation</td>
+</tr>
+<tr>
+	<td><img src="../naviox/images/point2.png" class="feature-image"/></td>	
+	<td><a href="https://twitter.com/minuteproject" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @minuteproject</a> </td>	
+</tr>
+
+</table>
+
+<p>
+<b>Disclaimer:</b>
+This site is an example site to demonstrate the use of <a href=http://minuteproject.sourceforge.net>MinuteProject</a> for the project $applicationLabel <br/>
+Model $generatorBean.name - $version - Application build time : $formatUtils.displayCurrentTime()<br/>
+</p>
+<p><xava:message key="signin_tip" param="<%=metaApplication.getLabel()%>"/></p>

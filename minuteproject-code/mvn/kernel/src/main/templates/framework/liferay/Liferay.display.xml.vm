@@ -1,0 +1,51 @@
+#exposeVariableModelSpecific() 
+#exposeApplicationSpecific()
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE display PUBLIC "-//Liferay//DTD Display 4.0.0//EN" "http://www.liferay.com/dtd/liferay-display_4_0_0.dtd">
+<display>
+	<category name="minuteproject.$applicationName"> 
+#if($hasBusinessPackages)
+	    <category name="CRUD Admin">
+#foreach($table in $businessTablePackages)
+#if(!$table.isMany2Many)
+#exposeVariableEntitySpecific()	
+		    <portlet id="$domainClassName" /> 
+#end
+#end
+	    </category>
+#end
+#if($hasBusinessPackageViews)
+	    <category name="Virtualisation">
+#foreach($table in $businessViewPackages)
+#if(!$table.isMany2Many)
+#exposeVariableEntitySpecific()	
+		    <portlet id="$domainClassName" /> 
+#end
+#end
+	    </category>
+#end
+#if($hasBusinessPackageTransferEntities)
+        <!-- Transient definitions -->
+	    <category name="Transient definitions">
+#foreach ($table in $businessTranferEntityPackages)
+#exposeVariableEntitySpecific()
+		     <portlet id="$domainClassName" /> 
+#end
+	    </category>
+#end
+
+#if($hasStatements)
+        <!-- SDD -->
+	    <category name="Statement Driven Development">
+#foreach ($query in $statements)
+#set($table=$query.inputBean)
+#set($inputBean=$query.inputBean)
+#exposeSDDOX()
+#set($domainClassName=$tableClassName)
+		    <portlet id="$domainClassName" /> 
+#end
+	    </category>
+#end
+	</category>
+</display>

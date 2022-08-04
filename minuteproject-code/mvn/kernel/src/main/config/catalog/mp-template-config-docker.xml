@@ -1,0 +1,50 @@
+<target name="Docker">
+	<architecture-target name="docker" description="docker architecture">
+	</architecture-target>	
+    <plugin name="dockerUtils" className="net.sf.minuteProject.plugin.docker.DockerUtils"></plugin>
+
+	<template-target
+        name="docker embedded artifact"
+		libdir="Docker_LIB.vm"
+		tool="velocity"
+		outputdir="../"
+		package-root=""
+		belongToPackage="true">			
+
+		<template 
+			name="DockerCompose-DB" templateFileName="DockerCompose.yml.vm"
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false"
+			add-model-dir-name="false"
+			file-extension="yml" file-prefix="" file-suffix="docker-compose-db"
+			application-specific="true"
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotPropertyPresenceValue" >
+			<property name="property-presence" value="docker" ></property>
+			<property name="property-presence-value" value="true" ></property>
+			<property name="scopes" value="db"/>
+		</template>
+		<template
+			name="DockerCompose-DB-tomcat" templateFileName="DockerCompose.yml.vm"
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false"
+			add-model-dir-name="false"
+			file-extension="yml" file-prefix="" file-suffix="docker-compose-db-tomcat"
+			application-specific="true"
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotPropertyPresenceValue" >
+			<property name="property-presence" value="docker" ></property>
+			<property name="property-presence-value" value="true" ></property>
+			<property name="scopes" value="db,tomcat"/>
+		</template>
+		<template
+			name="DockerCompose-DB-tomcat-apache" templateFileName="DockerCompose.yml.vm"
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false"
+			add-model-dir-name="false"
+			file-extension="yml" file-prefix="" file-suffix="docker-compose-db-tomcat-apache"
+			application-specific="true"
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotPropertyPresenceValue" >
+			<property name="property-presence" value="docker" ></property>
+			<property name="property-presence-value" value="true" ></property>
+			<property name="scopes" value="db,tomcat,apache"/>
+		</template>
+
+  </template-target>
+
+</target>

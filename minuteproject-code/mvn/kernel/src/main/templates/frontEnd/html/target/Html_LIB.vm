@@ -1,0 +1,24 @@
+#macro(populateComponentSnippet $component)
+#if ($component.type=='textField')
+<input type="text" name="$component.name" />
+#elseif($component.type=='dropDownList')
+#set ($valuelist = $component.valuelistByRef)
+<select id="$component.id" name="$component.name">
+#foreach ($valueElement in $valuelist.valueelements)
+<option id="$valueElement.name">$valueElement.value</option>
+#end
+</select>
+#elseif ($component.type=='button')
+<input type="button" value="$component.name"/>
+#end
+#end
+
+#macro (populateMandatorySnippet $component)
+#if ($component.ismandatory) * #end
+#end
+
+#macro(populateComponentLabelSnippet $component)
+#if ($component.type!='button')
+$component.name
+#end
+#end

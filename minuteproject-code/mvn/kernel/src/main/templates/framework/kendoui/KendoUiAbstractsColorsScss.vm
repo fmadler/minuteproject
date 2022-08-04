@@ -1,0 +1,7 @@
+$color-light-grey : #E5F0F6;
+$color-deep-blue : #0065A2;
+$color-deep-blue-plus : #0066A5;
+$color-light-blue : #7bd2f6;
+$color-dark-blue : #003f59;
+$color-pale-blue : #94c0d2;
+$color-light-medium-grey : #B7B7B7; //is is 72% lighter than black #000000

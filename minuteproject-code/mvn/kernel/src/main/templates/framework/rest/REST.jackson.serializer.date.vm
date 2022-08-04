@@ -1,0 +1,33 @@
+#exposeVariablePackageSpecific()
+package $packageName;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class $className extends JsonSerializer<Date> {
+
+	public static final String FORMAT_DATE_TIME_US 			= "yyyy/MM/dd HH:mm:ss";
+	public static final String FORMAT_DATE_TIME_EU 			= "dd/MM/yyyy HH:mm:ss";
+	public static final String FORMAT_DATE_TIME_EU_RNDED 	= "dd/MM/yyyy HH:00:00";
+	public static final String FORMAT_DATE_TIME_EU_235959 	= "dd/MM/yyyy 23:59:59";
+	public static final String FORMAT_DATE_TIME_LOG 		= "yyyy-MM-dd HH:mm:ss";
+	public static final String FORMAT_DATE_TIME_SQL 		= "DD/MM/YYYY HH24:MI:SS";
+	public static final String FORMAT_DATE_TIME_ISO_8601 	= "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+	public static final String FORMAT_DATE_US 				= "yyyy/MM/dd";
+	public static final String FORMAT_DATE_EU 				= "dd/MM/yyyy";
+	public static final String FORMAT_DATE_FULL				= "EEEE dd MMMM yyyy";
+	public static final String FORMAT_TIME 					= "HH:mm:ss";
+	public static final String FORMAT_TIME_235959 			= "23:59:59";
+
+    @Override
+    public void serialize(Date date, JsonGenerator jsonGen, SerializerProvider provider) throws IOException, JsonProcessingException {
+        jsonGen.writeString(new SimpleDateFormat(FORMAT_DATE_TIME_ISO_8601).format(date));
+    }
+
+}

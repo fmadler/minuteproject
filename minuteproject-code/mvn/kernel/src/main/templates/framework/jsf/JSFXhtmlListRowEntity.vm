@@ -1,0 +1,53 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#exposeSeparator()
+#exposePrimefacesConfig()
+#set($hasDisplayableChildren=$presentationUtils.hasDisplayableChildren($table))
+#set($refCnt=1)
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace">
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+            <p:column sortBy="#{item.${columnVar}}" filterBy="#{item.${columnVar}}" >  
+                <f:facet name="header">  
+                    <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}" />  
+                </f:facet>  
+                <h:outputText value="#{item.${columnVar}}" />  
+            </p:column> 
+#end
+#end
+#foreach ($column in $table.attributes)
+#if (!$column.isLob())
+#putColumnParams()
+#columnJavaNaming()	
+            <p:column sortBy="#{item.${columnVar}}" filterBy="#{item.${columnVar}}"
+#if($isEnum)
+                filterOptions="#{${lookupEnumVar}.get${domainClassName}${columnClass}SelectItemListSelect()}"
+                filterMatchMode="exact"
+#end
+             >  
+                <f:facet name="header">  
+                    <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}" />  
+                </f:facet>  
+#if($columnUtils.isBoolean($column))
+                <p:selectBooleanCheckbox value="#{item.${columnVar}}" /> 
+#else
+                <h:outputText value="#{item.${columnVar}}" /> 
+#end
+            </p:column>
+#* 
+        <p:column id="manufacturerColumn" filterBy="manufacturer" 
+                headerText="Manufacturer" footerText="exact"
+                filterOptions="#{tableBean.manufacturerOptions}"
+                filterMatchMode="exact">
+            <h:outputText value="#{car.manufacturer}" />
+        </p:column>
+*#
+#end
+#end
+</html>

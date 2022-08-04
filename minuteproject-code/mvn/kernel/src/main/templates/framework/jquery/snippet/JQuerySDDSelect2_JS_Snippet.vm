@@ -1,0 +1,27 @@
+#set ($sddTargetInputBeanClass = $formatUtils.getJavaName(${query.getInputBean().getName()}))
+function get${sddTargetInputBeanClass} (selectId) {
+    var webUrl = winy.sddCountryWithRegionList;
+    jQuery.ajax({
+        type : 'get',
+        url: contextPath+"/data/sdd/${sddTargetInputBeanClass}In",
+        //async : false,
+        success : function(data) {
+            var filterSelectBox = $('#' + selectId);
+
+            filterSelectBox.find('option').remove();
+            filterSelectBox.append('<option value=\'\'>Select...</option>');
+
+            var dataArr = data.CountryListHavingRegionOut;
+
+            for (var i = 0; i < dataArr.length; i++) {
+                var optionTxt = "<option value='" + dataArr[i].id
+                    + "'>" + dataArr[i].name + "</option>";
+                filterSelectBox.append(optionTxt);
+
+            }
+
+        }
+
+    });
+}
+    $("#${sddTargetInputBeanClass}").select2();

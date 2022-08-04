@@ -1,0 +1,176 @@
+<target name="KendoUI">		
+	<architecture-target name="kendoUI" description="KendoUI architecture">
+	</architecture-target>	
+   	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"/>
+   	<plugin name="kendoUiUtils" className="net.sf.minuteProject.plugin.kendoui.KendoUiUtils"/>
+    <plugin name="environmentUtils" className="net.sf.minuteProject.plugin.environment.EnvironmentUtils"></plugin>
+ 
+	<resource-target outputdir="src/main/webapp/icon">
+		<resource name="plus-h" resource-file-name="plus_h.png" />
+		<resource name="plus-n" resource-file-name="plus_n.png" />
+	</resource-target>
+	
+	<template-target 
+    	name="ENVIRONMENT set"
+		libdir=""
+		outputdir="src/main/webapp"
+		belongToPackage="true">
+
+		<template name="environment.js" templateFileName="environment.js.vm" 
+			subdir="" outputsubdir="" technicalPackage="js"
+			file-prefix="environment" file-suffix="" 
+			add-model-dir-name="false"
+			scope-specific-value="environment"
+			has-updatable-nature="true"
+			file-name-builder-plugin="environmentUtils"
+			file-name-builder-method="getEnvironmentName"	
+			add-model-name="false"
+			file-extension="js">
+		</template>
+
+	</template-target>
+
+	<template-target 
+    	name="REST kendoui client css, js"
+		outputdir="src/main/webapp"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="KendoUiMainCss" templateFileName="KendoUiMainCss.vm" 
+			has-updatable-nature="true"
+			file-extension="css" technicalPackage="css" file-suffix="" 
+			application-specific="true" add-model-name="true" >
+		</template>
+			 
+		<template name="KendoUiMainJs" templateFileName="KendoUiMainJs.vm" 
+			has-updatable-nature="true"
+			file-extension="js" technicalPackage="js" file-suffix="" 
+			application-specific="true" add-model-name="true" >
+		</template>
+
+    </template-target>
+      	
+	<template-target 
+    	name="REST kendoui client sass"
+		outputdir="src/main/sass"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="KendoUiMainScss" templateFileName="KendoUiMainScss.vm" 
+			has-updatable-nature="true"
+			file-extension="scss" file-suffix="" 
+			application-specific="true" add-model-name="true" >
+		</template>
+			 
+		<template name="KendoUiAbstractsColorsScss" templateFileName="KendoUiAbstractsColorsScss.vm" 
+			has-updatable-nature="true"
+			file-extension="scss" technicalPackage="abstracts" file-prefix="_colors" 
+			application-specific="true" add-model-name="false" >
+		</template>
+
+    </template-target>
+    
+  	<template-target 
+    	name="Kendo client"
+		outputdir="src/main/webapp"
+		libdir="lib/KENDOUI_LIB.vm">
+		
+		<template name="KendoUiEntitySearchGrid" templateFileName="KendoUiEntityList.vm" 
+			file-extension="html" technicalPackage="" add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			entity-specific="true" 
+			file-prefix="kendoUiEntityList"
+			package-root="html"
+			package-name-builder-plugin="restUtils"
+			package-name-builder-method="getRenderingPackageName"				
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="REST_EXCHANGE_FORMAT" value="json"/>
+		</template>	
+		
+		<template name="KendoUiEntityCreate" templateFileName="KendoUiEntityCreate.vm" 
+			file-extension="html" technicalPackage="" add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			entity-specific="true" 
+			file-prefix="KendoUiEntityCreate"
+			package-root="html"
+			package-name-builder-plugin="restUtils"
+			package-name-builder-method="getRenderingPackageName"				
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="REST_EXCHANGE_FORMAT" value="json"/>
+		</template>	
+		
+		<!-- SDD -->
+        <template name="KendoUiSDDInput" templateFileName="KendoUiSDDInput.vm" 
+            file-extension="html" technicalPackage="sdd" file-suffix="Input"
+            add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="html" has-updatable-nature="true"
+            scope-specific-value="query"
+            check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedRestStackRequired"
+            />
+            
+        <template name="KendoUiSDDDirectResult" templateFileName="KendoUiSDDDirectResult.vm" 
+            file-extension="html" technicalPackage="sdd" file-suffix="DirectResult"
+            add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="html" has-updatable-nature="true"
+            scope-specific-value="query"
+            check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedRestStackRequired"
+            />
+            
+        <template name="KendoUiSDDDirectResult.js" templateFileName="KendoUiSDDDirectResult.js.vm" 
+            file-extension="html" technicalPackage="sdd" file-suffix="DirectResultJs"
+            add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="html" has-updatable-nature="true"
+            scope-specific-value="query"
+            check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedRestStackRequired"
+            />
+
+	</template-target>
+   	
+  	<template-target 
+    	name="Kendo client"
+		outputdir="src/main/webapp"
+		package-root=""
+		libdir="lib/KENDOUI_LIB.vm">
+
+		<template
+			name="KendoUiMenu" templateFileName="KendoUiMenu.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="false" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="html" file-prefix="" file-suffix="homeMenu" 
+			application-specific="true">
+		</template>	
+
+		<template
+			name="KendoUiBower.json" templateFileName="KendoUiBower.json.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="false" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="json" file-prefix="" file-suffix="bower" 
+			application-specific="true">
+		</template>	
+
+		<template
+			name="KendoUiMenuStructure" templateFileName="KendoUiMenuStructure.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="true" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="html" file-prefix="" file-suffix="menuStructure" 
+			model-specific="true">
+		</template>	
+		
+		<template
+			name="KendoUiMenuApplicationStructure" templateFileName="KendoUiMenuApplicationStructure.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="true" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="html" file-prefix="" file-suffix="menuStructure" 
+			application-specific="true">
+		</template>	
+		
+	</template-target>				
+
+</target>

@@ -1,0 +1,4 @@
+import BaseRoute from '$pathToEmberBaseRoute';//'../../base'
+
+export default BaseRoute.extend({
+});

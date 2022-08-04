@@ -1,0 +1,50 @@
+#exposeEmberQuerySpecific()
+#set($table=$query.inputBean)
+import Component from '@glimmer/component';
+import { tracked } from "@glimmer/tracking";
+import { action } from "@ember/object";
+import { inject as service } from '@ember/service';
+
+export default class $importEmberQueryComponentIndexClassPath extends Component {
+
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+#if($columnUtils.isLink($column))
+#set($queryId =$column.queryParamLink.queryName)
+#set($fieldKey =$column.queryParamLink.fieldKey)
+#set($fieldName =$column.queryParamLink.fieldName)
+#exposeQueryTarget()
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldName))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+#set($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if ($isAutocompletion)
+ // TODO autocomplete https://ember-power-select.com/docs/custom-search-action
+	${columnVar}Search(term) {
+	debugger;
+    //let url = `https://api.github.com/search/repositories?q=${term}`;
+    //return fetch(url).then((resp) => resp.json()).then((json) => json.items);
+	}
+	@tracked ${columnVar}selected;
+#end
+#end
+	@tracked $columnVar = this.args.$columnVar;
+#end
+
+	@service router;
+
+	@action
+	search() {
+	    this.router.transitionTo('$importEmberQueryIndexRouterPath', {
+	      queryParams: {
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+	        $columnVar : this.$columnVar,
+#end
+	      }
+	    });
+	}
+
+}

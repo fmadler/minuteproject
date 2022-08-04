@@ -1,0 +1,50 @@
+#exposeMaven()
+#exposeJSFModelSpecific()
+#exposePrimefacesConfig()
+#set($title="$generatorBean.name jsf web")
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace">
+<f:view locale="#{${modelBeanManagerLanguageJSFVariable}.localeCode}">
+<h:head>
+    <title><ui:insert name="title">$generatorBean.name jsf web</ui:insert></title>
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/style.css" />
+	<!-- add bootstrap online -->
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+		<!-- Optional theme -->
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" />
+		<!-- Latest compiled and minified JavaScript -->
+	<script type="text/javascript"
+            src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</h:head>
+<h:body>
+ 	<ui:include src="/${generatorBean.name}/IdleMonitor.xhtml" />
+    <p:layout fullPage="true" id="layout">  
+#*    <p:layoutUnit position="north" size="100" header="Top" resizable="true" closable="true" collapsible="true">  
+        <h:outputText value="Powered by minuteproject" />  
+    </p:layoutUnit>
+*#
+#if(!$isPortlet)
+    <p:layoutUnit header="#{i18n.administration}" position="west" resizable="true" size="216" collapsible="true">
+##        <ui:include src="/${generatorBean.name}/ConfigBoard.xhtml" />
+        <ui:include src="/${generatorBean.name}/Menu.xhtml" />
+    </p:layoutUnit>       
+#end
+    <p:layoutUnit position="center">
+##        <ui:include src="/${generatorBean.name}/BreadCrumb.xhtml" />
+        <ui:insert name="body">Welcome $generatorBean.name Primeface webapp. <a href="http://minuteproject.sf.net">Powered by minuteproject</a>.</ui:insert>
+    </p:layoutUnit>
+    <p:layoutUnit position="south" size="120" header="Disclaimer" resizable="true" closable="true" collapsible="true"><br/>  
+        <h:outputText value="This is a sample website " /><a href="http://minuteproject.sf.net">Powered by minuteproject</a> version $minuteprojectUtils.version - $minuteprojectUtils.buildDate<br/>  
+		<a href="https://twitter.com/minuteproject" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @minuteproject</a>
+        <h:outputText value="Model $generatorBean.name - $version - " />Application build time : $formatUtils.displayCurrentTime()
+    </p:layoutUnit>  
+  </p:layout>
+</h:body>
+</f:view>
+</html>

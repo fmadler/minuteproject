@@ -1,0 +1,6 @@
+build.number= ${build.number}
+build.time= ${build.time}
+build.id=${build.id}
+application.version= ${project.version}
+vcs.version= ${vcs.revision}
+environment=${environment}

@@ -1,0 +1,131 @@
+<target name="TWBS">		
+	<architecture-target name="TWBS" description="TWBS architecture">
+	</architecture-target>	
+   	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"/>
+   	<plugin name="kendoUiUtils" className="net.sf.minuteProject.plugin.kendoui.KendoUiUtils"/>
+
+	<template-target 
+    	name="REST kendoui client css, js"
+		outputdir="src/main/webapp"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="KendoUiMainCss" templateFileName="KendoUiMainCss.vm" 
+			has-updatable-nature="true"
+			file-extension="css" technicalPackage="css" file-suffix="" 
+			application-specific="true" add-model-name="true" >
+		</template>
+			 
+		<template name="KendoUiMainJs" templateFileName="KendoUiMainJs.vm" 
+			has-updatable-nature="true"
+			file-extension="js" technicalPackage="js" file-suffix="" 
+			application-specific="true" add-model-name="true" >
+		</template>
+
+    </template-target>
+      	
+  	<template-target 
+    	name="Kendo client"
+		outputdir="src/main/webapp"
+		libdir="lib/KENDOUI_LIB.vm">
+		
+		<template name="KendoUiEntitySearchGrid" templateFileName="KendoUiEntityList.vm" 
+			file-extension="html" technicalPackage="" add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			entity-specific="true" 
+			file-prefix="kendoUiEntityList"
+			package-root="html"
+			package-name-builder-plugin="restUtils"
+			package-name-builder-method="getRenderingPackageName"				
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="REST_EXCHANGE_FORMAT" value="json"/>
+		</template>	
+		
+		<template name="KendoUiEntityCreate" templateFileName="KendoUiEntityCreate.vm" 
+			file-extension="html" technicalPackage="" add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			entity-specific="true" 
+			file-prefix="KendoUiEntityCreate"
+			package-root="html"
+			package-name-builder-plugin="restUtils"
+			package-name-builder-method="getRenderingPackageName"				
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="REST_EXCHANGE_FORMAT" value="json"/>
+		</template>	
+		
+		<!-- SDD 
+        <template name="KendoUiSDDInput" templateFileName="KendoUiSDDInput.vm" 
+            file-extension="html" technicalPackage="sdd" file-suffix="Input"
+            add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="html" has-updatable-nature="true"
+            scope-specific-value="query"/>
+            
+        <template name="KendoUiSDDDirectResult" templateFileName="KendoUiSDDDirectResult.vm" 
+            file-extension="html" technicalPackage="sdd" file-suffix="DirectResult"
+            add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="html" has-updatable-nature="true"
+            scope-specific-value="query"/>
+            
+        <template name="KendoUiSDDDirectResult.js" templateFileName="KendoUiSDDDirectResult.js.vm" 
+            file-extension="html" technicalPackage="sdd" file-suffix="DirectResultJs"
+            add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="html" has-updatable-nature="true"
+            scope-specific-value="query"/>
+            
+        <template name="SDDDirectResult.js" templateFileName="KendoUiSDDDirectResult.js.vm" 
+            file-extension="html" technicalPackage="sdd" file-suffix="DirectResultJs"
+            add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="html" has-updatable-nature="true"
+            scope-specific-value="query"/>
+            
+         -->
+            
+        <template name="JQuerySDDTreeHtml" templateFileName="JQuerySDDTreeHtml.vm" 
+            file-extension="html" technicalPackage="sdd.tree" file-suffix="Tree"
+            add-model-dir-name="false" 
+			add-package-name="false" add-business-package-dir-name="false"
+			package-root="html" has-updatable-nature="true"
+            scope-specific-value="query-pivot"/>
+
+	</template-target>				
+   	
+  	<template-target 
+    	name="TWBS client"
+		outputdir="src/main/webapp"
+		package-root=""
+		libdir="lib/TWBS_LIB.vm">
+
+		<template
+			name="Twbs.SbAdmin.index" templateFileName="Twbs.SbAdmin.index.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="false" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="html" file-prefix="" file-suffix="index2" 
+			application-specific="true">
+		</template>	
+
+		<template
+			name="KendoUiBower.json" templateFileName="KendoUiBower.json.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="false" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="json" file-prefix="" file-suffix="bower" 
+			application-specific="true">
+		</template>	
+
+		<template
+			name="KendoUiMenuStructure" templateFileName="KendoUiMenuStructure.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			add-model-name="true" add-model-dir-name="false"
+			add-package-name="false" 
+			file-extension="html" file-prefix="" file-suffix="menuStructure" 
+			model-specific="true">
+		</template>	
+		
+	</template-target>				
+
+</target>

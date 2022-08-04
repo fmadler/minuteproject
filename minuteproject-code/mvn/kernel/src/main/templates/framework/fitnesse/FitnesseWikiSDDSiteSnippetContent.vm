@@ -1,0 +1,9 @@
+#exposeVariableModelDetailSpecific()
+!contents -R2 -g -p -f -h
+
+!1 This is $model.name statement test suite
+
+#foreach($dir in $fileUtils.getDirectories($template))
+>$dir
+#end
+
