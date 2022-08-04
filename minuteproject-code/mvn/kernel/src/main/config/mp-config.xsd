@@ -188,6 +188,7 @@
 	<xs:simpleType name="primaryKeyPolicyPatternType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="sequencePattern" />
+			<xs:enumeration value="sequence" />
 			<xs:enumeration value="identityPattern" />
 			<xs:enumeration value="uuid" />
 			<xs:enumeration value="autoincrementPattern" />

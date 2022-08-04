@@ -234,8 +234,10 @@ public class ApplicationGenerator extends AbstractGenerator {
 	
 	protected void generateEnvironment(Template template) throws MinuteProjectException {
 		Environments environments = application.getConfiguration().getEnvironments();
-		for (Environment environment : environments.getEnvironments()) {
-			writeTemplateResult(environment, template);
+		if (environments!=null) {
+			for (Environment environment : environments.getEnvironments()) {
+				writeTemplateResult(environment, template);
+			}
 		}
 	}
 }

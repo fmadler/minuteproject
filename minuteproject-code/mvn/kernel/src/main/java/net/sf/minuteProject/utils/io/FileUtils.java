@@ -56,7 +56,7 @@ public class FileUtils {
 
 	public static String getFileFullPathFromFileInRootClassPath(
 			String filePathInClassPath) throws MinuteProjectException {
-/*		URL url = Thread.currentThread().getContextClassLoader()
+/**/		URL url = Thread.currentThread().getContextClassLoader()
 				.getResource(filePathInClassPath);
 		if (url == null)
 			return filePathInClassPath;// "RESOURCE NOT IN THE PATH";
@@ -67,8 +67,8 @@ public class FileUtils {
 				e.printStackTrace();
 				return filePathInClassPath;
 			}
-		}*/
-		return getFileFromFileInRootClassPath(filePathInClassPath).getAbsolutePath();
+		}
+		//return getFileFromFileInRootClassPath(filePathInClassPath).getAbsolutePath();
 	}
 
 

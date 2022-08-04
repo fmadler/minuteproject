@@ -54,7 +54,22 @@
                 <version>8.0.29</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8 -->
+            <!-- TODO move drivers to mp-workspace -->
+            <!-- with oracle solve the no matching authentication protocol
+                check with jdk you use
+                check with oracle server version SELECT * FROM v$version;
+                taken a driver compatible with your jdk and below or equal to your oracle server version
+            -->
+
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>18.3.0.0</version>
+            </dependency>
+
         </dependencies>
+
     </dependencyManagement>
 
     <dependencies>
@@ -201,13 +216,6 @@
             <artifactId>webservices-tools</artifactId>
             <version>@metro.version@</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>2.5.6</version>
-            <type>pom</type>
-        </dependency>-->
 
         <dependency>
             <groupId>org.jacoco</groupId>
@@ -219,8 +227,20 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.29</version>
         </dependency>
+
+        <!--
+        mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.0.2.0.0 -Dpackaging=jar -Dfile=ojdbc14.jar -DgeneratePom=true
+      -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+        </dependency>
+<!--        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc14</artifactId>
+            <version>10.0.2.0.0</version>
+        </dependency>-->
 
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>
@@ -238,15 +258,7 @@
 
     <build>
         <finalName>mp-kernel</finalName>
-        <!-- 		<sourceDirectory>${basedir}/src/java/main</sourceDirectory> -->
-        <!--		<testResources>
-                    <testResource>
-                        <directory>config/</directory>
-                        <filtering>true</filtering>
-                    </testResource>
-                </testResources>-->
         <plugins>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -295,16 +307,6 @@
                     </annotationProcessorPaths>
                 </configuration>
                 <dependencies>
-<!--                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>3.3.0-01</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>${groovy.version}-01</version>
-                    </dependency>-->
                     <dependency>
                         <groupId>org.projectlombok</groupId>
                         <artifactId>lombok</artifactId>
@@ -312,54 +314,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
-<!--            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <configuration>
-                            <tasks>
-                                <mkdir dir="${basedir}/src/main/groovy"/>
-                                <taskdef name="groovyc"
-                                         classname="org.codehaus.groovy.ant.Groovyc">
-                                    <classpath refid="maven.compile.classpath"/>
-                                </taskdef>
-                                <mkdir dir="${project.build.outputDirectory}"/>
-                                <groovyc destdir="${project.build.outputDirectory}"
-                                         srcdir="${basedir}/src/main/groovy/" listfiles="true">
-                                    <classpath refid="maven.compile.classpath"/>
-                                </groovyc>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <configuration>
-                            <tasks>
-                                <mkdir dir="${basedir}/src/test/groovy"/>
-                                <taskdef name="groovyc"
-                                         classname="org.codehaus.groovy.ant.Groovyc">
-                                    <classpath refid="maven.test.classpath"/>
-                                </taskdef>
-                                <mkdir dir="${project.build.testOutputDirectory}"/>
-                                <groovyc destdir="${project.build.testOutputDirectory}"
-                                         srcdir="${basedir}/src/test/groovy/" listfiles="true">
-                                    <classpath refid="maven.test.classpath"/>
-                                </groovyc>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
 
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -380,6 +334,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>net.sf.minuteProject.application.ApplicationGenerator</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
