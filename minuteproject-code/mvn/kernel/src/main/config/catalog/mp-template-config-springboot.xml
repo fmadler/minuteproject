@@ -1,0 +1,45 @@
+<target name="springboot"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="./mp-template-config.xsd">	
+	<architecture-target name="springboot REST GRAPHQL API" description="springboot REST GRAPHQL API"/>
+
+	<template-target
+			name="Spring boot core files"
+			outputdir="src/main/java"
+			belongToPackage="true">
+
+		<template name="SpringBootApplication" templateFileName="SpringBootApplication.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="java" file-prefix="" file-suffix="BootApplication"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBootModelApplication" templateFileName="SpringBootModelApplication.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="java" file-prefix="" file-suffix="BootApplication"
+				  scope-specific-value="model" add-model-name="true">
+		</template>
+
+		<template name="SpringBootPersistenceJNDI" templateFileName="SpringBootPersistenceJNDI.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="java" file-prefix="" file-suffix="PersistenceJNDIConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBootWebFilterConfig" templateFileName="SpringBootWebFilterConfig.vm"
+				  subdir="" outputsubdir="" technicalPackage="web"
+				  file-extension="java" file-prefix="" file-suffix="WebFilterConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBootWebSecurityConfig" templateFileName="SpringBootWebSecurityConfig.vm"
+				  subdir="" outputsubdir="" technicalPackage="web"
+				  file-extension="java" file-prefix="" file-suffix="WebSecurityConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+	</template-target>
+
+
+</target>
