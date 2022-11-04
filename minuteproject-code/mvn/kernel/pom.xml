@@ -344,7 +344,9 @@
                     <mainClass>net.sf.minuteProject.application.ApplicationGenerator</mainClass>
                 </configuration>
             </plugin>
+
         </plugins>
+
     </build>
 
 </project>

@@ -1,8 +1,12 @@
 package net.sf.minuteProject.utils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import net.sf.minuteProject.configuration.bean.GeneratorBean;
+import net.sf.minuteProject.utils.format.FormatCache;
+import net.sf.minuteProject.utils.format.FormatCacheEntry;
+import net.sf.minuteProject.utils.java.JavaUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+
 import java.text.CharacterIterator;
 import java.text.SimpleDateFormat;
 import java.text.StringCharacterIterator;
@@ -10,19 +14,16 @@ import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-
-import net.sf.minuteProject.configuration.bean.GeneratorBean;
-import net.sf.minuteProject.utils.format.FormatCache;
-import net.sf.minuteProject.utils.format.FormatCacheEntry;
-import net.sf.minuteProject.utils.java.JavaUtils;
-
 public class FormatUtils {
+
+	private FormatUtils() {
+		throw new IllegalStateException("Utility class");
+	}
 
 	public static final String CONVERT_TO_JAVA_NAME = "CONVERT_TO_JAVA_NAME";
 	public static final String CONVERT_TO_JAVA_VARIABLE_NAME = "CONVERT_TO_JAVA_VARIABLE_NAME";
 	public static final String CONVERT_TO_JAVA_VARIABLE_NAME_CONVERTING_RESERVED_WORD = "CONVERT_TO_JAVA_VARIABLE_NAME_CONVERTING_RESERVED_WORD";
+	public static final String INPUT_STRING_IS_NULL = "INPUT_STRING_IS_NULL";
 
 	public static String getJavaName(String name) {
 		FormatCacheEntry fce = new FormatCacheEntry(name, CONVERT_TO_JAVA_NAME);
@@ -56,17 +57,17 @@ public class FormatUtils {
 
 	public static String getUppercaseUnderscore (String name) {
 		if (name!=null) {
-			String underscoreName = StringUtils.replace(name, "-", "_");
-			underscoreName = StringUtils.replace(name, " ", "_");
+			//String underscoreName = StringUtils.replace(name, "-", "_");
+			String underscoreName = StringUtils.replace(name, " ", "_");
 			return underscoreName.toUpperCase();
 		}
 		return "";
 	}
-	
+
 	public static String getLowcaseHyphen (String name) {
 		name = name.toLowerCase();
 		return StringUtils.replace(name, "_", "-");
-	}	
+	}
 	public static String getDirFromPackage(String packageSt) {
 		return getDirFromPackage(packageSt, true);
 	}
@@ -81,10 +82,10 @@ public class FormatUtils {
 	}
 
 	public static String performDisplayReadableName(String name) {
-		String s = getStripIntoSpace(name);	
+		String s = getStripIntoSpace(name);
 		return firstUpperCase(s);
 	}
-	
+
 	public static String performDisplayReadableFirstUpperOnlyName(String name) {
 		String s = getStripIntoSpace(name);
 		s = s.toLowerCase();
@@ -94,11 +95,11 @@ public class FormatUtils {
 	private static String getStripIntoSpace(String name) {
 		if (StringUtils.isEmpty(name))
 			return "NAME_RETURNS_NULL";
-		String s = StringUtils.replace(name, "-", "_");
-		s = StringUtils.replace(name, "_", " ");
-		return s;
+		//String s = StringUtils.replace(name, "-", "_");
+		//String s = StringUtils.replace(name, "_", " ");
+		return StringUtils.replace(name, "_", " ");
 	}
-	
+
 	public static String performGetJavaName(String name) {
 		String underscoreName = getInUnderscore(name);
 		return getJavaNameViaCharStrip(underscoreName, "_");
@@ -113,9 +114,9 @@ public class FormatUtils {
 	}
 
 	private static String getJavaNameViaCharStrip(String name,
-			String charToStrip) {
+												  String charToStrip) {
 		StringTokenizer st = new StringTokenizer(name, charToStrip);
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		while (st.hasMoreTokens()) {
 			sb.append(firstUpperCaseOnly(st.nextToken()));
 		}
@@ -145,7 +146,7 @@ public class FormatUtils {
 			return name;
 		return firstLowerCase(name);
 	}
-	
+
 	private static boolean isSecondLetterUpperCase(String name) {
 		String secondLetter = getSecondLetter(name);
 		if (secondLetter==null) return false;
@@ -173,7 +174,7 @@ public class FormatUtils {
 	}
 
 	public static String getJavaNameForGetterAndSetter(String name,
-			String javaname) {
+													   String javaname) {
 		if (isStandardBean(name))
 			return firstLowerCase(javaname);
 		// trick java part
@@ -187,12 +188,11 @@ public class FormatUtils {
 
 	public static String getJavaNameVariableFirstLetter(String name) {
 		return getJavaVariableNameForGetterAndSetterFromJavaName(name);
-//		return firstLowerCase(name);
 	}
 
 	public static String firstUpperCaseOnly(String st) {
 		if (st == null)
-			return "INPUT_STRING_IS_NULL";
+			return INPUT_STRING_IS_NULL;
 		int len = Math.min (st.length(),1);
 		return st.substring(0, len).toUpperCase()
 				+ st.substring(len, st.length()).toLowerCase();
@@ -200,31 +200,31 @@ public class FormatUtils {
 
 	public static String fullLowerCase(String st) {
 		if (st == null)
-			return "INPUT_STRING_IS_NULL";
+			return INPUT_STRING_IS_NULL;
 		return st.substring(0, 1).toLowerCase()
 				+ st.substring(1, st.length()).toLowerCase();
 	}
-	
+
 	public static String firstLowerCaseOnly(String st) {
 		if (st == null)
-			return "INPUT_STRING_IS_NULL";
+			return INPUT_STRING_IS_NULL;
 		return st.substring(0, 1).toLowerCase()
 				+ st.substring(1, st.length());
 	}
-	
+
 	public static String lowerCase(String st) {
 		return st.toLowerCase();
 	}
 
 	public static String firstLowerCase(String st) {
 		if (StringUtils.isEmpty(st))
-			return "INPUT_STRING_IS_NULL";
+			return INPUT_STRING_IS_NULL;
 		return st.substring(0, 1).toLowerCase() + st.substring(1, st.length());
 	}
 
 	public static String firstUpperCase(String st) {
 		if (st == null)
-			return "INPUT_STRING_IS_NULL";
+			return INPUT_STRING_IS_NULL;
 		return st.substring(0, 1).toUpperCase() + st.substring(1, st.length());
 	}
 
@@ -244,9 +244,7 @@ public class FormatUtils {
 	}
 
 	private static boolean isStandardBean(String name) {
-		if (name.indexOf("_") == 1)
-			return false;
-		return true;
+		return (name.indexOf("_") == 1)?false:true;
 	}
 
 	public static String getShortNameFromVerbose(String name) {
@@ -257,7 +255,7 @@ public class FormatUtils {
 
 	public static String getEachWordFirstLetterUpper(String name, String token) {
 		StringTokenizer st = new StringTokenizer(name, token);
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		while (st.hasMoreTokens()) {
 			String s = st.nextToken();
 			sb.append(firstUpperCase(s));
@@ -266,7 +264,7 @@ public class FormatUtils {
 	}
 
 	public static final String convertToValidJava(String input, String regEx,
-			String replacement, boolean upperCase) {
+												  String replacement, boolean upperCase) {
 		input = input.trim();
 		String res = convertToValidJava(input, regEx, replacement);
 		if (upperCase)
@@ -275,7 +273,7 @@ public class FormatUtils {
 	}
 
 	public static final String convertToValidJava(String input, String regEx,
-			String replacement) {
+												  String replacement) {
 		String res = input.trim();
 		Pattern pattern = Pattern.compile(regEx);
 		java.util.regex.Matcher matcher = pattern.matcher(res);
@@ -287,7 +285,7 @@ public class FormatUtils {
 	}
 
 	public static final String trimExpression(String inputExpression,
-			String trimmedValue) {
+											  String trimmedValue) {
 		// TODO some validation needed
 		if (inputExpression.startsWith(trimmedValue)) {
 			int startIndex = inputExpression.indexOf(trimmedValue);
@@ -303,7 +301,7 @@ public class FormatUtils {
 
 	public static final String eliminateMultipleSequenceOfChar(
 			String inputExpression, char... seq) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		char prevChar = 0;
 		for (int i = 0; i < inputExpression.length(); i++) {
 			char currentChar = inputExpression.charAt(i);
@@ -337,7 +335,7 @@ public class FormatUtils {
 		if (StringUtils.isEmpty(description)) return "";
 		return StringUtils.replace(description, "\\", "\n");
 	}
-	
+
 	public static String transformSlashIntoBackSlash(String description) {
 		if (StringUtils.isEmpty(description)) return "";
 		return StringUtils.replace(description, "/", "\\");
@@ -353,7 +351,7 @@ public class FormatUtils {
 	}
 
 	public static String insertUnderscoreforCamelCaseSeparation(String name) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String[] split = StringUtils.splitByCharacterTypeCamelCase(name);
 		for (int i=0; i<split.length;i++) {
 			sb.append(split[i]);
@@ -362,9 +360,9 @@ public class FormatUtils {
 		}
 		return sb.toString();
 	}
-	
+
 	public static String decamelCaseForSqlAliasing(String name) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String[] split = StringUtils.splitByCharacterTypeCamelCase(name);
 		for (int i=0; i<split.length;i++) {
 			sb.append(getSqlAliasingForCamelChunk(split[i]));
@@ -376,14 +374,14 @@ public class FormatUtils {
 
 	private static String getSqlAliasingForCamelChunk(String string) {
 		char[] chars = string.toCharArray();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i<chars.length; i++) {
 			if (Character.isUpperCase(chars[i]) && i>0)
 				sb.append("_"+chars[i]);
 			else
 				sb.append(Character.toUpperCase(chars[i]));
 		}
-		return sb.toString(); 
+		return sb.toString();
 	}
 
 	public static String renderCurrentTime() {
@@ -394,55 +392,53 @@ public class FormatUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd G 'at' HH:mm:ss z");
 		return sdf.format(date);
 	}
-	
+
 	public static String displayCurrentTime() {
 		return displayTime(new Date());
 	}
-	
+
 	public static String displayTime(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return sdf.format(date);
 	}
-	
+
 	public static String windowizePath (String path) {
 		return StringUtils.replace(path, "/", "\\");
 	}
-	
-	public static String unixizePath (String path) {
-	    final StringBuilder result = new StringBuilder();
-	    final StringCharacterIterator iterator = new StringCharacterIterator(path);
-	    char character =  iterator.current();
-	    while (character != CharacterIterator.DONE ){
-	     
-	      if (character == '\\') {
-	         result.append("/");
-	      }
-	       else {
-	        result.append(character);
-	      }
 
-	      
-	      character = iterator.next();
-	    }
-	    return result.toString();
-//		return StringUtils.replace(path, "\\", "/");
+	public static String unixizePath (String path) {
+		final StringBuilder result = new StringBuilder();
+		final StringCharacterIterator iterator = new StringCharacterIterator(path);
+		char character =  iterator.current();
+		while (character != CharacterIterator.DONE ){
+
+			if (character == '\\') {
+				result.append("/");
+			}
+			else {
+				result.append(character);
+			}
+
+			character = iterator.next();
+		}
+		return result.toString();
 	}
 
 	public static String stripToSizeRemovingLeft(String input, int i) {
 		return StringUtils.left(input, i);
 	}
-	
+
 	public static String stripToSizeRemovingRight(String input, int i) {
 		return StringUtils.right(input, i);
 	}
 
 	public static String removeStart(String input,
-			String start) {
+									 String start) {
 		if (input.startsWith(start))
 			return StringUtils.removeStart(input, start);
 		return input;
 	}
-	
+
 	public static String addDoubleQuotes (String input) {
 		return "\""+input+"\"";
 	}
@@ -454,22 +450,21 @@ public class FormatUtils {
 		}
 		return result;
 	}
-	
+
 	public static String escapeHtml (String input) {
 		return StringEscapeUtils.escapeHtml(input);
 	}
-	
+
 	public static String getSentence(String input) {
 		input = input.toLowerCase();
 		input = StringUtils.replace(input, "_", " ");
 		input = StringUtils.replace(input, "-", " ");
 		return firstUpperCaseOnly(input);
 	}
-	
+
 	public static String escapePath(String path)
 	{
-		if (path==null) return "";
-	    return path.replace("\\", "\\\\");
+		return (path==null)?"":path.replace("\\", "\\\\");
 	}
 
 	public static String escapeXml(String path)  {

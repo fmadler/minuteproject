@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import lombok.extern.log4j.Log4j;
 import net.sf.minuteProject.configuration.bean.Template;
 import net.sf.minuteProject.configuration.bean.system.Property;
 import net.sf.minuteProject.exception.MinuteProjectException;
@@ -23,7 +24,9 @@ import net.sf.minuteProject.loader.implicitstructure.node.Line;
 import net.sf.minuteProject.loader.implicitstructure.node.Lines;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
+@Log4j
 public class FileUtils {
 	
 	public static List<String> getDirectories (Template template) {
@@ -55,8 +58,8 @@ public class FileUtils {
 	}
 
 	public static String getFileFullPathFromFileInRootClassPath(
-			String filePathInClassPath) throws MinuteProjectException {
-/**/		URL url = Thread.currentThread().getContextClassLoader()
+			String filePathInClassPath) {
+		URL url = Thread.currentThread().getContextClassLoader()
 				.getResource(filePathInClassPath);
 		if (url == null)
 			return filePathInClassPath;// "RESOURCE NOT IN THE PATH";
@@ -64,11 +67,14 @@ public class FileUtils {
 			try {
 				return new File(url.toURI()).getAbsolutePath();
 			} catch (URISyntaxException e) {
+				if (log.isDebugEnabled()) {
+					final String stackTrace = ExceptionUtils.getStackTrace(e);
+					log.debug(">>> stackTrace "+stackTrace);
+				}
 				e.printStackTrace();
 				return filePathInClassPath;
 			}
 		}
-		//return getFileFromFileInRootClassPath(filePathInClassPath).getAbsolutePath();
 	}
 
 

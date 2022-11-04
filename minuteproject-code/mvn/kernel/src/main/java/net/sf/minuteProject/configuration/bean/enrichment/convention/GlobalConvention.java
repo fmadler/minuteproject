@@ -65,15 +65,4 @@ public class GlobalConvention extends ModelConvention {
 	}
 
 
-
-	private void apply(Table table) {
-		for (ForeignKey fk : table.getForeignKeys()) {
-			for (Reference ref : fk.getReferences()) {
-				ref=null;
-			}
-			fk=null;
-		}
-			
-	}
-
 }
