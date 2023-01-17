@@ -16,9 +16,11 @@ import java.util.regex.Pattern;
 
 public class FormatUtils {
 
+/*
+	TODO check how to pass to velocity context
 	private FormatUtils() {
 		throw new IllegalStateException("Utility class");
-	}
+	}*/
 
 	public static final String CONVERT_TO_JAVA_NAME = "CONVERT_TO_JAVA_NAME";
 	public static final String CONVERT_TO_JAVA_VARIABLE_NAME = "CONVERT_TO_JAVA_VARIABLE_NAME";
