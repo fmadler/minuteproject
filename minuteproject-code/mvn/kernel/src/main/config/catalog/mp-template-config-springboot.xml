@@ -41,5 +41,18 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 	</template-target>
 
+	<template-target
+			name="Springboot Maven"
+			outputdir=""
+			package-root=""
+			libdir="lib/REST_LIB.vm">
+
+		<template name="SpringBoot.PomXml" templateFileName="SpringBoot.PomXml.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="xml" file-prefix="pom" file-suffix=""
+				  application-specific="true" add-model-name="false">
+		</template>
+
+	</template-target>
 
 </target>
