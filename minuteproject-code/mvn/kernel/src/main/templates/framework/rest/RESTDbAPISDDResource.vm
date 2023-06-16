@@ -1,5 +1,6 @@
 #exposeBackendTechnology()
 #putQueryCommons()
+#exposeVelocitySpecific()
 #if(!$query.isIndirection())
 #exposeDbApiRestQuerySpecific()
 #exposeSDDSpring()
@@ -185,7 +186,7 @@ import $modelRestCacheableImport;
 import $modelRestCompressImport;
 #if ($hasVelocityPostProcessor)
 ##TODO integrate properly with embedded velocity renderer   //import velocity render
-${template.getPackageRoot()}.${model.name}.rendering.VelocityMerger
+import $velocityMergerImport;
 #end
 /**
 *

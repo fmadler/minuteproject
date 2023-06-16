@@ -13,7 +13,10 @@
 #set ($password=$embeddedDatasource.getPropertyValue("password"))
 #end
 #exposeOXSpecific()
-    <Resource name="jdbc/${model.name}DS" auth="Container" type="javax.sql.DataSource"
+<!-- embeddedDatasource = $embeddedDatasource -->
+    <Resource name="jdbc/${model.name}DS"
+       auth="Container"
+       type="javax.sql.DataSource"
        maxActive="20" maxIdle="5" maxWait="10000"
        username="$username"
        password="$password"

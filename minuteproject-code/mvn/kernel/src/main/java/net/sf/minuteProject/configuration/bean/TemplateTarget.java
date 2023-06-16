@@ -96,12 +96,14 @@ public class TemplateTarget extends AbstractConfiguration implements Comparable<
 		if (s!=null) return s;
 		if (target!=null) return target.getPropertyValue(name);
 		return null;
+		//TODO change order for overriding purpose + unit test
+/*		String s = target.getPropertyValue(name);
+		return (s!=null)?s:super.getPropertyValue(name);*/
 	}
 
 	public String getTemplateTargetPropertyValue(String name) {
 		String s = getPropertyValue(name);
 		if (s!=null) return s;
-//		if (target!=null) return target.getTargetPropertyValue(name);
 		if (target!=null) return target.getTargetPropertyValue(name);
 		return null;
 	}

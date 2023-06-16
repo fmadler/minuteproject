@@ -9,6 +9,7 @@ import net.sf.minuteProject.configuration.bean.system.GenerationAction;
 import net.sf.minuteProject.exception.MinuteProjectException;
 import net.sf.minuteProject.utils.io.FileUtils;
 
+import net.sf.minuteProject.utils.property.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -149,7 +150,8 @@ public class Targets extends AbstractConfiguration {
 	}
 
 	public void setCatalogEntry(String catalogEntry) {
-		this.catalogEntry = catalogEntry;
+		final String cat = PropertyUtils.convertValueIfSystemOrEnvironmentVariable(catalogEntry);
+		this.catalogEntry = cat;
 	}
 
 	public Boolean getAppendCatalogEntryDirToOutputDirRoot() {

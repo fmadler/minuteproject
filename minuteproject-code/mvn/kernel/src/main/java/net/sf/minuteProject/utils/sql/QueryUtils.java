@@ -527,4 +527,17 @@ public class QueryUtils {
 		return qpp.stream()
 				.anyMatch(u -> u.getType().equalsIgnoreCase("velocity"));
 	}
+
+	public static boolean hasVelocityRendition(Application application) {
+		return application.getModels().stream()
+				.flatMap(u -> u.getStatementModel().getQueries().getQueries().stream())
+				.anyMatch(QueryUtils::hasVelocityPostProcessor)
+				;
+	}
+
+	public static boolean hasVelocityRendition(Model model) {
+		return model.getStatementModel().getQueries().getQueries().stream()
+				.anyMatch(QueryUtils::hasVelocityPostProcessor)
+				;
+	}
 }

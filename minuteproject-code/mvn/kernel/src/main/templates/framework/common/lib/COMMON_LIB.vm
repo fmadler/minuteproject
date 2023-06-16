@@ -263,6 +263,17 @@ $readmeUtils.getReadme($template)
 #set ($queryVariableName = $formatUtils.firstLowerCase(${queryClassName}))
 #end
 
+#macro (exposeVelocitySpecific)
+	#exposeVelocityTemplate()
+	#set ($velocityMergerClass = $commonUtils.getTemplateClassName($model, $template, $templateVelocityMerger))
+	#set ($velocityMergerImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateVelocityMerger))
+#end
+
+#macro(exposeVelocityTemplate)
+	#set($templateVelocityMerger="VelocityMerger")
+	#set($templateVelocityUtils="VelocityUtils")
+#end
+
 #macro (exposeGraphQLModelSpecific)
 #exposeGraphQLTemplate()
 #set ($graphQLTimestampScalarClass = $commonUtils.getTemplateClassName($model, $template, $templateGraphQLTimestampScalar))
@@ -604,31 +615,34 @@ $!updatedAreaEnd
 #if (!$column.getSeparatorCharacters())
 						${sddOutputBeanVariable}.set$columnClass(rs.get${columnType}("${column.name}"));
 #else
-						${sddOutputBeanVariable}.set${columnClass}(
-							Arrays.asList(rs.get${columnType}("${column.name}").split("\\,")).stream()
-								.map(u -> {
-									String[] uA = u.split("\\|");
-									${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnClass}();
-									if (uA.length==$column.structuredArray.size()) {
+						$columnType $columnVar = rs.get${columnType}("${column.name}");
+						if ($columnVar != null) {
+							${sddOutputBeanVariable}.set${columnClass}(
+								Arrays.asList(${columnVar}.split("\\,")).stream()
+									.map(u -> {
+										String[] uA = u.split("\\|");
+										${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnClass}();
+										if (uA.length==$column.structuredArray.size()) {
 #foreach($field in $column.structuredArray)
 #set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
 #set($fieldClass = $commonUtils.getJavaClassName($field.name))
 #set($vIndex = $velocityUtils.getIndexFromCount(${velocityCount}))
-										c.set$fieldClass(uA[${vIndex}]);
+											c.set$fieldClass(uA[${vIndex}]);
 #end
-									}
-									return c;
-								})
-								.collect(Collectors.toList())
-						);
+										}
+										return c;
+									})
+									.collect(Collectors.toList())
+							);
+						}
 #end
 #end
 						list.add(${sddOutputBeanVariable});
 #end
-	        		}//from while (rs.next())
+	        		}##//from while (rs.next())
 #end
 #end
-	        	}//from try (autoclosable)
+	        	}##//from try (autoclosable)
 #if(!$query.isWrite()) 
 			}
 #end

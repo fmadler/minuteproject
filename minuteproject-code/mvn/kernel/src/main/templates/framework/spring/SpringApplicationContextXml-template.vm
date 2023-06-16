@@ -1,5 +1,8 @@
+#generatorSpecific()
 #exposeEnabledProperties()
 #exposeSpringTemplate()
+#set ($hasVelocityRendition = $queryUtils.hasVelocityRendition($generatorBean))
+#exposeVelocitySpecific()
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -58,7 +61,7 @@
 	<context:component-scan base-package="$scanPackage,$scanPackage2,$scanPackageScheduler,$scanPackageGraphQL" />
 
 #end
-#if ($isVelocityEnabled)
+#if ($hasVelocityRendition)
     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
         <property name="velocityProperties">
 
@@ -91,12 +94,12 @@
             </value>
 -->
 *#
-
         </property>
     </bean>
-
-
-    <bean id="velocityMerger" class="com.winy.rendering.VelocityMerger">
+    <!--
+    ##TODO integrate properly with embedded velocity renderer   //import velocity render
+-->
+    <bean id="velocityMerger" class="$velocityMergerImport">
         <property name="engine" ref="velocityEngine"/>
         <property name="toolBoxConfigLocation" value="/WEB-INF/velocity-tools.xml"/>
     </bean>
