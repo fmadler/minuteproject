@@ -16,7 +16,13 @@
 			<property name="property-presence" value="enable-velocity-rendition"></property>
 			<property name="property-presence-value" value="true" ></property>
 		</template>
-		
+
+		<template name="VelocityMerger" templateFileName="VelocityMerger.java.vm"
+				  subdir="" outputsubdir="" technicalPackage="rendition" has-updatable-nature="true"
+				  file-extension="java" file-prefix="VelocityMerger" file-suffix=""
+				  model-specific="true" add-model-name="false">
+		</template>
+
 	</template-target>	
 
 	<template-target 

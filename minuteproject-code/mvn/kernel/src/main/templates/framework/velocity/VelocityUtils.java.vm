@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 22.01.2004
  */
 @Slf4j
-public abstract class $className { ## VelocityUtils {
+public abstract class $className {
 
 	/**
 	 * Merge the specified Velocity template with the given model and write the

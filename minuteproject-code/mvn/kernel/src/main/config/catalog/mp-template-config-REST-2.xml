@@ -102,7 +102,11 @@
 		<template name="REST.GraphQL.spring.endpoint" templateFileName="REST.GraphQL.spring.endpoint.vm"
 			subdir="" outputsubdir="" technicalPackage="rest"
 			file-extension="java" file-prefix="" file-suffix="GraphQLRestAPI"
-			scope-specific-value="model" has-updatable-nature="true" add-model-name="false">
+			scope-specific-value="model" has-updatable-nature="true" add-model-name="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
 		</template>
 		
 		<template name="REST.DateParam" templateFileName="REST.DateParam.vm" 

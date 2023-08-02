@@ -102,11 +102,21 @@ public class Template extends TemplateTarget {
 	public String getPropertyValue(String name) {
 		String s = super.getPropertyValue(name);
 		return (s!=null)?s:templateTarget.getTemplateTargetPropertyValue(name);
-	}	
+		//TODO change order for overriding purpose + unit test
+/*		System.out.println("prop name ="+name);
+		if (templateTarget!=null) {
+			String s = templateTarget.getTemplateTargetPropertyValue(name);
+			if (s != null) return s;
+		}
+		return super.getPropertyValue(name);*/
+	}
 	
 	public Property getPropertyByName(String name) {
 		Property p = super.getPropertyByName(name);
 		return (p!=null)?p:templateTarget.getTemplateTargetPropertyByName(name);
+		//TODO change order for overriding purpose + unit test
+/*		Property p = templateTarget.getTemplateTargetPropertyByName(name);
+		return (p!=null)?p:super.getPropertyByName(name);*/
 	}
 	
 	public String getPropertyValue(String name, String defaultValue) {
@@ -124,7 +134,6 @@ public class Template extends TemplateTarget {
 		return (s!=null)?true:defaultValue;
 	}
 
-	
 	public boolean hasProperty(String name) {
 		String s = getPropertyValue(name);
 		return (s!=null);
@@ -133,9 +142,11 @@ public class Template extends TemplateTarget {
 	public TemplateTarget getTemplateTarget() {
 		return templateTarget;
 	}
+
 	public void setTemplateTarget(TemplateTarget templateTarget) {
 		this.templateTarget = templateTarget;
 	}
+
 	public String getEntitySpecific() {
 		if (entitySpecific==null)
 			entitySpecific="false";

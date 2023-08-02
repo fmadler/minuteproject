@@ -16,6 +16,8 @@ module.exports = function(defaults) {
     }
   });
 *#
+npm install cypress --save-dev
+
 ember install ember-composable-helpers
 npm i lodash
 

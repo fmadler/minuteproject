@@ -45,6 +45,14 @@ import net.sf.minuteProject.utils.FormatUtils;
 import net.sf.minuteProject.utils.ModelUtils;
 import net.sf.minuteProject.utils.URLUtils;
 import net.sf.minuteProject.utils.ViewUtils;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
  * @author Florian Adler
@@ -94,7 +102,7 @@ public class XmlGenerator extends AbstractGenerator {
 		}
 		config = args[0];
 		XmlGenerator generator = new XmlGenerator(config);
-		Configuration configuration = (Configuration) generator.load();
+		Configuration configuration = generator.load();
 		Model model = configuration.getModel();
 		generator.setModel(model);
 		generator.loadModel(model);
@@ -104,7 +112,7 @@ public class XmlGenerator extends AbstractGenerator {
 		generator.generate(model.getConfiguration().getTarget());
 	}
 
-	private void loadModel(Model model) throws DocumentException, MalformedURLException {
+	private void loadModel(Model model) throws DocumentException, MalformedURLException, ParserConfigurationException, SAXException {
 		FileSource fileSource = model.getDataModel().getFileSource();
 		if (fileSource!=null) {
 			document = parse(fileSource);
@@ -129,7 +137,7 @@ public class XmlGenerator extends AbstractGenerator {
             	//ele.getNamespace().getName()
             	ElementDom4j elementDom4jParent = new ElementDom4j(element);
             	ElementDom4j elementDom4j = new ElementDom4j(ele);
-            	elementDom4j.setParentElement((net.sf.minuteProject.configuration.bean.xml.Element)elementDom4jParent);
+            	elementDom4j.setParentElement(elementDom4jParent);
             	getElements().add(elementDom4j);
             	treeWalkWithParent( ele);
             }
@@ -145,9 +153,18 @@ public class XmlGenerator extends AbstractGenerator {
     	return new ElementDom4j(root);
     }
     
-    private Document parse(FileSource fileSource) throws DocumentException, MalformedURLException {
+    private Document parse(FileSource fileSource) throws DocumentException, MalformedURLException, SAXException, ParserConfigurationException {
     	String filename = fileSource.getDir()+"/"+fileSource.getName();
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+// to be compliant, completely disable DOCTYPE declaration:
+		factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+// or completely disable external entities declarations:
+		factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+		factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+// or prohibit the use of all protocols by external entities:
         SAXReader reader = new SAXReader();
+        reader.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        reader.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         Document document = reader.read(new File(filename));
         return document;
     }
