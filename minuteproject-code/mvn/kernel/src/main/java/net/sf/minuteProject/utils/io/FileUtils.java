@@ -80,8 +80,10 @@ public class FileUtils {
 
 	public static File getFileFromFileInRootClassPath(
 			String filePathInClassPath) throws MinuteProjectException {
+		log.debug(">>>> filePathInClassPath "+filePathInClassPath);
 		URL url = Thread.currentThread().getContextClassLoader()
 				.getResource(filePathInClassPath);
+		log.debug(">>>> URL getFileFromFileInRootClassPath "+url.getFile());
 		if (url == null)
 			throw new MinuteProjectException("Missing file "+filePathInClassPath);
 		else {

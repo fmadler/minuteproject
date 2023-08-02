@@ -60,7 +60,9 @@ schema {
 ## sdd queries
     query: Query
 ## check what to do with composite queries
+#if ($graphqlUtils.hasMutation($model))
     mutation: Mutation
+#end
 }
 
 scalar Date
@@ -71,9 +73,11 @@ type Query {
 #graphqlQueryMutationType(false)
 }
 
+#if ($graphqlUtils.hasMutation($model))
 type Mutation {
 #graphqlQueryMutationType(true)
 }
+#end
 
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 #set($pureQueries=$package.getPureQueries())

@@ -215,14 +215,18 @@ public abstract class AbstractGenerator implements Generator {
 		Configuration abstractConfiguration = getConfigurationRoot();
 		abstractConfiguration.setConfigurationFileInClassPath(configuration);
 		InputStream configurationInputStream = getConfigurationInputStream(configuration);
-		loadConfiguration(abstractConfiguration, configurationInputStream,
-				rules);
+		loadConfiguration(abstractConfiguration, configurationInputStream, rules);
 		return abstractConfiguration;
 	}
 
-	private InputStream getConfigurationInputStream(String configurationFileName) {
-		return getClass().getClassLoader().getSystemResourceAsStream(
-				configurationFileName);
+	private InputStream getConfigurationInputStream(String configurationFileName) throws IOException {
+		return Thread.currentThread().getContextClassLoader().getResource(configurationFileName).openStream();
+		//return this.getClass().getResourceAsStream(configurationFileName);
+
+		//return getClass().getClassLoader().getSystemResourceAsStream(
+		//		configurationFileName);
+
+
 	}
 
 	/**

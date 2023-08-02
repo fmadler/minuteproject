@@ -36,7 +36,15 @@ public class ${className} implements DataFetcher<List<$sddOutputBeanClass>> {
 #putColumnParamNaming()
 #if (!$column.hasBeenDuplicated())
 #if (!$column.isImplicit())
+#if ($columnUtils.isDate($column))
+        java.time.LocalDate ${columnVar}LocalTime = dataFetchingEnvironment.getArgument("${columnVar}");
+        if (${columnVar}LocalTime!=null) {
+            java.util.Date ${columnVar}Date = java.util.Date.from(${columnVar}LocalTime.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
+            ${sddInputBeanVariable}.set$columnClass (${columnVar}Date);
+        }
+#else
         ${sddInputBeanVariable}.set$columnClass (dataFetchingEnvironment.getArgument("${columnVar}"));
+#end
 #elseif ($column.isImplicit()) ##TODO check if sessionParam
 #if ($column.useJwtSubject())
 //Jwtsubject TODO

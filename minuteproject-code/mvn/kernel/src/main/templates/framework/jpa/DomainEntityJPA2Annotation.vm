@@ -130,6 +130,10 @@ public class ${className} implements Serializable {
 #else
 #foreach($column in ${table.primaryKeyColumns})
 #putColumnParamNaming()
+// isMany2Many $isMany2Many
+// isPkUserProvided $isPkUserProvided
+// isView $isView
+// databaseUtils.isPrimaryKeyPolicySequence $databaseUtils.isPrimaryKeyPolicySequence($table)
 #if (!$isMany2Many)
 #if (!$isPkUserProvided && !$isView)
 #if ($databaseUtils.isPrimaryKeyPolicySequence($table))
@@ -137,7 +141,7 @@ public class ${className} implements Serializable {
     @SequenceGenerator(name = "${table.name}SEQ", sequenceName ="$sequenceName", allocationSize=1 )
 #end
 #end
-    @Id @Column(name="\"$column.name\"" #if($isLengthPrecisionColumn),length=$column.size#end) 
+    @Id @Column(name="\"$column.name\"" #if($isLengthPrecisionColumn),length=$column.size#end)
 #if (!$isMany2Many)
 #if (!$isPkUserProvided && !$isView)
 #if ($databaseUtils.isPrimaryKeyPolicySequence($table))

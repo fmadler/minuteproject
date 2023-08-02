@@ -52,15 +52,15 @@ public class PrimaryKeyPolicyPattern extends AbstractConfiguration {
 	
 	public PrimaryKeyPolicyPatternEnum getPrimaryKeyPolicyPatternEnum () {
 		if (getName()!=null) {
-			if (getName().equals(SEQUENCE))
+			if (getName().equalsIgnoreCase(SEQUENCE))
 				return PrimaryKeyPolicyPatternEnum.SEQUENCE;
-			if (getName().equals(IDENTITY))
+			if (getName().equalsIgnoreCase(IDENTITY))
 				return PrimaryKeyPolicyPatternEnum.IDENTITY;
-			if (getName().equals(UUID))
+			if (getName().equalsIgnoreCase(UUID))
 				return PrimaryKeyPolicyPatternEnum.UUID;			
-			if (getName().equals(AUTOINCREMENT))
+			if (getName().equalsIgnoreCase(AUTOINCREMENT))
 				return PrimaryKeyPolicyPatternEnum.AUTOINCREMENT;			
-			if (getName().equals(NONE))
+			if (getName().equalsIgnoreCase(NONE))
 				return PrimaryKeyPolicyPatternEnum.NONE;			
 			return PrimaryKeyPolicyPatternEnum.OTHER;
 		}

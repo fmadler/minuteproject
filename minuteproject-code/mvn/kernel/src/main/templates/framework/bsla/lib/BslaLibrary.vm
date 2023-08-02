@@ -151,7 +151,6 @@
 #set ($businessPackageViews = $model.businessModel.businessPackage.packageViews)
 #set ($businessPackagesAll = $model.businessModel.businessPackage.getPackagesTableViewTransfer())
 #set ($businessPackageEntities = $model.businessModel.businessPackage.entities)
-##
 #set ($businessTablePackages = $model.businessModel.businessPackage.tables)
 #set ($businessViewPackages = $model.businessModel.businessPackage.views)
 #set ($businessAllPackages = $model.businessModel.businessPackage.transferEntities)

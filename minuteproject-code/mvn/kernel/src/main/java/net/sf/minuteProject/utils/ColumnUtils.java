@@ -322,6 +322,14 @@ public class ColumnUtils {
 		}
 		return false;
 	}
+
+	public static boolean isDate (Column column) {
+		if (column!=null && column.getType()!=null) {
+			if (column.getType().equalsIgnoreCase("DATE"))
+				return true;
+		}
+		return false;
+	}
 	
 	public static Property getCheckConstraintProperty (Column column) {
 		return column.getPropertyByTag(CHECK_CONSTRAINT_PROPERTY_TAG);
