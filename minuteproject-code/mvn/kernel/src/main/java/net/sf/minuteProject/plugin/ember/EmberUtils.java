@@ -16,6 +16,9 @@ import net.sf.minuteProject.utils.FormatUtils;
 public class EmberUtils {
 
 	public static String getEmberFileName(Template template, GeneratorBean bean) {
+		return getFileName(template, bean);
+	}
+	public static String getFileName(Template template, GeneratorBean bean) {
 		if (bean.getName()!=null) {
 			StringBuilder sb = new StringBuilder();
 			if (!StringUtils.isEmpty(template.getFilePrefix())) {

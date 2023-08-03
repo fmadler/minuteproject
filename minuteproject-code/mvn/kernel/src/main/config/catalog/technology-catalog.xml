@@ -177,7 +177,17 @@
 			template-dir="@templateRoot@/framework/ember" status="released"
 			description="Generates:\Ember full stack">
 			<frameworks>
-				<framework name="ember" version="3+"></framework>
+				<framework name="ember" version="4+"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Angular" model-type="rdbms"
+			template-config-file-name="mp-template-config-angular.xml"
+			default-outputdir="UI" depends-on-targets="Typescript-Domain"
+			template-dir="@templateRoot@/framework/angular" status="released"
+			description="Generates:\A full stack">
+			<frameworks>
+				<framework name="angular" version="16+"></framework>
 			</frameworks>
 		</technology>
 
@@ -186,6 +196,15 @@
 			default-outputdir="REST" depends-on-targets=""
 			template-dir="@templateRoot@/framework/graphql" status="released"
 			description="Generates:\Graphql API">
+			<frameworks>
+			</frameworks>
+		</technology>
+
+		<technology name="Typescript-Domain" model-type="rdbms"
+			template-config-file-name="mp-template-config-typescript-domain.xml"
+			default-outputdir="UI" depends-on-targets=""
+			template-dir="@templateRoot@/framework/typescript" status="released"
+			description="Generates:\Typescript type entities">
 			<frameworks>
 			</frameworks>
 		</technology>

@@ -597,6 +597,14 @@ public class CommonUtils {
 	public static String getModelLevelTemplateFullClassPath(Model model, Template template, String targetTemplateName) {
 		return FormatUtils.getDirFromPackage(getModelLevelTemplateFullPath(model, template, targetTemplateName));
 	}
+
+	public static String getLevelTemplateFullClassPath(GeneratorBean bean, Template template, String targetTemplateName) {
+		return FormatUtils.getDirFromPackage(getLevelTemplateFullPath(bean, template, targetTemplateName));
+	}
+
+	public static String getLevelTemplateFullPath(GeneratorBean bean, Template template, String targetTemplateName) {
+		return getPackageName(bean, template, targetTemplateName) +"."+ getTemplateClassName (bean, template, targetTemplateName);
+	}
 	
 	public static String getPhysicalPathFileStartWithLowerCase (GeneratorBean bean, Template template, String targetTemplateName) {
 		Template target = getTargetTemplate(template, targetTemplateName);

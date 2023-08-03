@@ -1,7 +1,5 @@
 package net.sf.minuteProject.utils;
 
-import net.sf.minuteProject.configuration.bean.Template;
-
 public class LicenceUtils {
 
 	public static String getLicence() {
@@ -19,11 +17,6 @@ public class LicenceUtils {
 				" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n"+
 				" See the License for the specific language governing permissions and\n"+
 				" limitations under the License.\n"+
-				" \n"+
-				" More information on minuteproject:\n"+
-				" twitter @minuteproject\n"+
-				" wiki http://minuteproject.wikispaces.com \n"+
-				" blog http://minuteproject.blogspot.net\n"+
 				" \n"+
 				"";
 	}

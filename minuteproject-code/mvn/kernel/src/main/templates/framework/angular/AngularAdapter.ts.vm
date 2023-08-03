@@ -1,0 +1,141 @@
+#exposeAngularModelSpecific()
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import appendQuery from 'append-query';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+
+import {${modelAngularBaseAdapterClass}} from '@/${modelAngularBaseAdapterImport}';
+import * as model from '@/${modelTypescriptSchemaImport}';
+
+@Injectable({ providedIn: 'root' })
+export default class ${className} extends ${modelAngularBaseAdapterClass} {
+
+	httpOptions = {
+		headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+	};
+
+	constructor(
+		private http: HttpClient
+	) { }
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+    //package $package.name
+#foreach ($query in $package.getQueries())
+#if(!$query.isIndirection())
+#if(!$queryUtils.isBackend($query))
+#exposeAngularQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDInputBean()
+    /* connector to $domainClassName info */
+    ${tableVariableName} (params:model.${sddInputBeanClass}):Observable<model.${sddOutputBeanClass}[]> {
+		return this.http.get<model.${sddOutputBeanClass}[]>(`${this.baseUrl}/data/sdd/${sddInputBeanClass}`+filter${domainClassName}(params))
+			.pipe(
+				tap(_ => this.log('fetched ${sddOutputBeanClass}')),
+				catchError(this.handleError<model.${sddOutputBeanClass}[]>('${sddOutputBeanClass}', []))
+			);
+    }
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+	/* pivot $pivotClass */
+	${tableVariableName}Get${pivotClasses} (params) {
+		return fetchData(this.baseUrl+'/data/sdd/${sddInputBeanClass}/get${pivotClasses}'+filter${domainClassName}(params));
+	}
+#end
+#end
+#end
+#end
+#end
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($composite in $package.getComposites())
+#exposeCompositeSpecific()
+#putImportCompositeRESTSDDBean()
+#set($functionName = $emberUtils.getComponentClassPath(${classVariableName}))
+#set ($functionVariableName = $formatUtils.firstLowerCase(${functionName}))
+	/* connector to composite $className info */
+    ${functionVariableName} : function(params) {
+        return fetchData(this.baseUrl+'/data/sdd/${sddInputRestClass}'+filter${functionVariableName}(params));
+    },
+
+#end
+#end
+
+	private handleError<T>(operation = 'operation', result?: T) {
+		return (error: any): Observable<T> => {
+
+			// TODO: send the error to remote logging infrastructure
+			console.error(error); // log to console instead
+
+			// TODO: better job of transforming error for user consumption
+			this.log(`${operation} failed: ${error.message}`);
+
+			// Let the app keep running by returning an empty result.
+			return of(result as T);
+		};
+	}
+
+}
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#foreach ($composite in $package.getComposites())
+#exposeCompositeSpecific()
+#set($functionName = $emberUtils.getComponentClassPath(${classVariableName}))
+#set ($functionVariableName = $formatUtils.firstLowerCase(${functionName}))
+/* filter for composite $className entity */
+function filter${functionVariableName} (filter:model.${sddInputBeanClass}) {
+	if (filter) {
+		return appendQuery("",{
+#foreach($column in ${composite.distinctInputColumn})
+#putColumnParamNaming()
+				"$columnVar":filter.$columnVar #if($velocityCount!=$size),
+#end
+#end
+				}, 
+				{ removeNull: true }
+			);
+	}
+	return "";
+}			
+
+#end
+#end
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+//$package.name
+#foreach ($query in $package.getQueries())
+#if(!$query.isIndirection())
+#if (!$queryUtils.isBackend($query))
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$kendoUIUtils.getAccessUrl($table.name))
+#exposeVariableEntitySpecific()
+
+/* filter for $domainClassName entity */
+function filter${domainClassName} (filter:model.${sddInputBeanClass}) {
+	if (filter) {
+		return appendQuery("",{
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+				"$columnVar":filter.$columnVar,
+#end
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+				"$chunkName":filter.$chunkName,	//Allowed values $queryChunk.getDistinctValues()
+#end
+				}, 
+				{ removeNull: true }
+			);
+	}
+	return "";
+}			
+#end
+#end
+#end
+#end
+

@@ -20,11 +20,6 @@ public class LicenceUtils {
 				" See the License for the specific language governing permissions and\n"+
 				" limitations under the License.\n"+
 				" \n"+
-				" More information on minuteproject:\n"+
-				" twitter @minuteproject\n"+
-				" wiki http://minuteproject.wikispaces.com \n"+
-				" blog http://minuteproject.blogspot.net\n"+
-				" \n"+
 				"";
 	}
 }

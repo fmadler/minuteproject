@@ -1,0 +1,121 @@
+#macro(chunkInfo)
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#set ($enumName = $formatUtils.getJavaName("${query.name}_${queryChunk.name}"))
+#end
+#macro(tsQueries)
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#set($queries=$package.getQueries())
+#if($queries.size()>0)
+/*
+    Package $package.name input
+*/
+#end
+#foreach ($query in $queries)
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDInputBean()
+##${tableVariableName} {
+interface ${sddInputBeanClass} {
+#set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
+#foreach($column in $columnList)
+#putColumnParamNaming()
+    $columnVar#if(!$column.isRequired())?#end:$typescriptUtils.convertColumnType($column);
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#chunkInfo()
+    $chunkName:${enumName};
+#end
+}
+
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+interface ${tableVariableName}${pivotClasses} {
+#set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
+#foreach($column in $columnList)
+#putColumnParamNaming()
+        $columnVar:$typescriptUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
+#end
+#end
+}
+#end
+#end
+#end
+#end
+#exposeEmberModelSpecific()
+#tsQueries()
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#set($pureQueries=$package.getPureQueries())
+#foreach ($query in $pureQueries)
+#foreach($queryChunk in $query.getQueryChunks())
+#chunkInfo()
+enum ${enumName} {
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+    $queryChunkValue.value,
+#end
+}
+#end
+#end
+#end
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#set($pureQueries=$package.getPureQueries())
+#if($pureQueries.size()>0)
+/*
+    Package $package.name output
+*/
+#end
+#foreach ($query in $pureQueries)
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#set($table=$query.outputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDBean()
+
+interface ${sddOutputBeanClass} {
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#if ($column.getSeparatorCharacters())
+#putColumnParamNaming()
+    $columnVar:[${sddOutputBeanClass}$columnClass];
+#else
+    $columnVar:$typescriptUtils.convertColumnType($column);##if(!$column.isRequired())?#end
+
+#end
+#end
+}
+#foreach($column in $outputBean.columns)
+#if ($column.getSeparatorCharacters())
+#putColumnParamNaming()
+interface ${sddOutputBeanClass}$columnClass {
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldVariable = $javaUtils.getJavaVariableNaming($commonUtils.getJavaVariableName($field.name)))
+    $fieldVariable:$fieldType;
+#end
+}
+#end
+#end
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+
+/* pivot $pivotClass */
+interface $tableClassName$pivotClass {
+#foreach ($column in $pivot.getColumnList())
+#putColumnParamNaming()
+    $columnVar: $typescriptUtils.convertColumnType($column);
+#end
+#foreach ($sibling in $pivot.getSiblings())
+#set($siblingClass = $formatUtils.firstUpperCase($sibling.name))
+#set($siblingName = $i18nUtils.plurialize($sibling.name))
+    $siblingName: [$tableClassName$siblingClass]
+#end
+}
+#end
+#end
+#end

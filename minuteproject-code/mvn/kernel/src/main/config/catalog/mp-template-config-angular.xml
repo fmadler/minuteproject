@@ -1,0 +1,74 @@
+<target name="Angular">
+	<architecture-target name="Angular" description="Angular app">
+	</architecture-target>	
+   	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"/>
+   	<plugin name="angularUtils" className="net.sf.minuteProject.plugin.angular.AngularUtils"/>
+    <plugin name="environmentUtils" className="net.sf.minuteProject.plugin.environment.EnvironmentUtils"></plugin>
+    
+   	<template-target 
+	   	name="Angular client"
+		outputdir=""
+		package-root=""
+		libdir="lib/Angular_LIB.vm">
+
+		<template name="Angular-httpclient.npm.package.json" templateFileName="Angular-httpclient.npm.package.json.vm"
+			subdir="" outputsubdir="" technicalPackage=""
+			add-package-name="false" file-extension="json"
+			add-model-name="false"
+			file-suffix="package" application-specific="true">
+		</template>
+
+		<template name="Angular-httpclient.tsconfig.json" templateFileName="Angular-httpclient.tsconfig.json.vm"
+			subdir="" outputsubdir="" technicalPackage=""
+			add-package-name="false" file-extension="json"
+			add-model-name="false"
+			file-suffix="tsconfig" application-specific="true">
+		</template>
+
+	</template-target>
+
+	<template-target
+	   	name="Angular client"
+		outputdir="src/"
+		package-root=""
+		libdir="lib/Angular_LIB.vm">
+
+		<template name="AngularBaseAdapterTs" templateFileName="AngularBaseAdapter.ts.vm"
+			subdir="" outputsubdir="" technicalPackage="adapter"
+			add-package-name="false" file-extension="ts"
+			file-suffix="BaseAdapter" application-specific="true">
+		</template>
+
+		<template 
+			name="AngularAdapterTs" templateFileName="AngularAdapter.ts.vm"
+            file-extension="ts" technicalPackage="adapter" file-suffix="Adapter"
+			add-package-name="true" add-business-package-dir-name="false"
+			package-root=""
+            model-specific="true"
+
+            />
+		<test            file-name-builder-plugin="angularUtils"
+		file-name-builder-method="getFileName"/>
+
+<!--
+
+		<template
+			name="AngularServiceTs" templateFileName="AngularServiceTs.vm"
+            file-extension="ts" technicalPackage="service" file-suffix=""
+			add-package-name="true" add-business-package-dir-name="false"
+			package-root=""
+            model-specific="true"
+            file-name-builder-plugin="angularUtils"
+			file-name-builder-method="getAngularFileName"
+            />
+		<template name="AngularRouterTs" templateFileName="AngularRouterTs.vm"
+				  subdir="" outputsubdir="" technicalPackage="" add-model-name="false"
+				  add-model-dir-name="false" add-package-name="false"
+				  file-extension="ts"
+				  file-prefix="router" file-suffix="" application-specific="true">
+		</template>
+
+-->
+	</template-target>
+
+</target>

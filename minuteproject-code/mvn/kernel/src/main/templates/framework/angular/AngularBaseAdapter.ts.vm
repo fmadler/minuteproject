@@ -1,0 +1,12 @@
+#exposeAngularModelSpecific()
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import config from '../../config/environment';
+const { host, namespace } = config.${model.name}DS;
+
+export default class ${className} {
+
+    baseUrl = `${host}+"/"+${namespace}`;
+    private log(message: string) {} //TODO propose implementation
+
+}

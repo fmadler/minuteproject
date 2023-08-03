@@ -1,0 +1,24 @@
+<target name="typescript-domain">
+	<architecture-target name="Typescript entity" description="Typescript entity + SDD type generation">
+	</architecture-target>
+    <plugin name="environmentUtils" className="net.sf.minuteProject.plugin.environment.EnvironmentUtils"></plugin>
+	<plugin name="typescriptUtils" className="net.sf.minuteProject.plugin.typescript.TypescriptUtils"></plugin>
+
+	<template-target
+    	name="typescript file"
+		outputdir="src/main/ui"
+		package-root=""
+		libdir="lib/Typescript_LIB.vm">
+
+		<template name="type.schema.ts" templateFileName="type.schema.ts.vm"
+			file-extension="ts"
+			file-suffix="Types"
+            add-model-dir-name="false"
+            add-package-name="true" add-business-package-dir-name="false"
+            package-root="model"
+            model-specific="true" >
+		</template>
+
+    </template-target>
+
+</target>
