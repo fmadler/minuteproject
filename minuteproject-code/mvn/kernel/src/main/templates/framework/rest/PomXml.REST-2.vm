@@ -1,7 +1,6 @@
 #generatorSpecific()
 #exposeBackendTechnology()
 #exposeMaven()
-#exposeMavenCXF()
 #exposeMavenJersey()
 #exposeMavenCommonDependencies()
 #putTargetServerDefinition()

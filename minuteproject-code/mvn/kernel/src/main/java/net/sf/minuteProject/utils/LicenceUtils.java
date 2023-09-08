@@ -1,7 +1,5 @@
 package net.sf.minuteProject.utils;
 
-import net.sf.minuteProject.configuration.bean.Template;
-
 public class LicenceUtils {
 
 	public static String getLicence() {

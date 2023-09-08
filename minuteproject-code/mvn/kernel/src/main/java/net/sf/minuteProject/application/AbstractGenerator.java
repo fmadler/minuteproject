@@ -506,8 +506,9 @@ public abstract class AbstractGenerator implements Generator {
 		ExtendedProperties extendedProperties = new ExtendedProperties();
 		extendedProperties.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH,
 				getTemplatePath(template));
+		final String templateRelativeLibPath = getTemplateRelativeLibPath(template);
 		extendedProperties.setProperty(Velocity.VM_LIBRARY,
-				getTemplateRelativeLibPath(template));
+				templateRelativeLibPath);
 		// extendedProperties.setProperty(RuntimeConstants.RESOURCE_LOADER,
 		// "string");
 		// extendedProperties.setProperty("classpath.resource.loader.class",StringResourceLoader.class.getName());

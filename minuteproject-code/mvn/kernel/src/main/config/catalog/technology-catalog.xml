@@ -42,7 +42,8 @@
 			template-dir="@templateRoot@/framework/environment" status="released"
 			description="Generates:\environment properties">
 		</technology>
-		
+
+		<!--
 		<technology name="JPA2-groovy" target-name="JPA2-groovy"
 			model-type="rdbms" template-config-file-name="mp-template-config-JPA2-groovy.xml"
 			default-outputdir="JPA2" depends-on-targets="BSLA_LIB,CACHE_LIB,SDD-BEANS"
@@ -57,7 +58,8 @@
 			<property name="add-jpa2-implementation" value="hibernate"></property>
 			<property name="add-cache-implementation" value="ehcache"></property>
 		</technology>
-
+-->
+		<!--
 		<technology name="JPA2-ABL" target-name="JPA2-ABL"
 			model-type="rdbms" template-config-file-name="mp-template-config-JPA2.xml"
 			default-outputdir="JPA2" depends-on-targets="BSLA_LIB,CACHE_LIB,ABL-JPA2,COMMON-LIB"
@@ -72,6 +74,7 @@
 			<property name="add-jpa2-implementation" value="hibernate"></property>
 			<property name="add-cache-implementation" value="ehcache"></property>
 		</technology>
+		-->
 
 		<technology name="BSLA-JPA2" target-name="BSLA-JPA2"
 			model-type="rdbms" template-config-file-name="mp-template-config-JPA2-bsla.xml"
@@ -82,7 +85,6 @@
 			<frameworks>
 				<framework name="Spring" version="3.+"></framework>
 			</frameworks>
-			<!-- depends-on-targets="JPA2,ABL-JPA2,BSLA_LIB,CACHE_LIB,MavenMaster" -->
 			<property name="add-querydsl" value="2.1.2"></property>
 			<property name="add-automated-business-logic" value="2.2.0"></property>
 			<property name="add-jpa2-implementation" value="hibernate"></property>
@@ -243,7 +245,7 @@
 		<technology name="REST-GRAPHQL_API" model-type="rdbms"
 					template-config-file-name="mp-template-config-rest-graphql-api.xml"
 					default-outputdir="API"
-					depends-on-targets="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,REST,CloudFoundry-REST,tomcat,docker,MavenMaster"
+					depends-on-targets="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,REST,tomcat,docker,MavenMaster"
 					template-dir="@templateRoot@/framework/spring" status="released"
 					description="Generates:\REST Spring MVC CRUD app\Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
 			<frameworks>
@@ -284,6 +286,7 @@
 			<property name="rest-pom-maven-packaging" value="war" />
 		</technology>
 
+		<!--
 		<technology name="REST-TWBS" model-type="rdbms"
 			template-config-file-name="mp-template-config-twbs.xml"
 			default-outputdir="REST" depends-on-targets="JPA2,SDD-BEANS,BSLA-JPA2,SpringService,REST,CloudFoundry-REST,MavenMaster"
@@ -304,7 +307,8 @@
 			<property name="rest-pom-maven-packaging" value="war" />
 		</technology>
 
-
+-->
+<!--
 		<technology name="REST-CXF-Spring" model-type="rdbms"
 			template-config-file-name="mp-template-config-REST-CXF-Spring.xml"
 			default-outputdir="REST" depends-on-targets="JPA2,SDD-BEANS,BSLA-JPA2,MavenMaster"
@@ -318,11 +322,12 @@
 			<property name="add-cache-implementation" value="ehcache"></property>
 			<property name="add-domain-specific-method" value="true"></property>
 			<property name="add-xmlbinding" value="true"></property>
-			<property name="add-xml-format" value="lowercase-hyphen"></property>		<!-- java-variable, uppercase-underscore, lowercase-hyphen, java-class -->
-			<property name="use-temporal" value="true"></property>
+			<property name="add-xml-format" value="lowercase-hyphen"></property>
+						<property name="use-temporal" value="true"></property>
 			<property name="add-rest-implementation-cxf-version" value="2.2.3"></property>
 			<property name="add-backend-implementation" value="spring"></property>
 		</technology>
+		-->
 
 		<technology name="REST-CXF-JEE" model-type="rdbms"
 			template-config-file-name="mp-template-config-REST-CXF-JEE.xml"
@@ -446,6 +451,7 @@
 			</frameworks>
 		</technology>
 
+		<!--
 		<technology name="Solr" model-type="rdbms"
 			template-config-file-name="mp-template-config-solr.xml" template-dir="@templateRoot@/framework/osem/solr"
 			depends-on-targets="BSLA_LIB" status="released" description="Generates Solr artifacts">
@@ -453,6 +459,7 @@
 				<framework name="Solr" version=""></framework>
 			</frameworks>
 		</technology>
+		-->
 
 		<technology name="OpenXava" model-type="rdbms"
 			template-config-file-name="mp-template-config-openxava-last-features.xml"

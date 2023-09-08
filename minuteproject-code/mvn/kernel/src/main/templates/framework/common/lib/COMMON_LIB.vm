@@ -639,10 +639,12 @@ $!updatedAreaEnd
 #end
 						list.add(${sddOutputBeanVariable});
 #end
-	        		}##//from while (rs.next())
+	        		} ##//from while (rs.next())
+
 #end
 #end
-	        	}##//from try (autoclosable)
+	        	} ##//from try (autoclosable)
+
 #if(!$query.isWrite()) 
 			}
 #end

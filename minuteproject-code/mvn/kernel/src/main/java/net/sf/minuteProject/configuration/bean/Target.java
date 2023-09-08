@@ -104,15 +104,13 @@ public class Target extends AbstractConfiguration {
 	}
 
 	public void addTemplateTarget(TemplateTarget templateTarget) {
-		// if (templateTargets==null)
-		// templateTargets = new ArrayList<TemplateTarget>();
 		templateTarget.setTarget(this);
 		getTemplateTargets().add(templateTarget);
 	}
 
 	public List<TemplateTarget> getTemplateTargets() {
 		if (templateTargets == null)
-			templateTargets = new ArrayList<TemplateTarget>();
+			templateTargets = new ArrayList<>();
 		return templateTargets;
 	}
 

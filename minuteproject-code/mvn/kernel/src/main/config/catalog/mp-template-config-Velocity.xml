@@ -10,8 +10,8 @@
 			subdir="" outputsubdir="" technicalPackage="rendition" has-updatable-nature="true"
 			file-extension="java" file-prefix="VelocityUtils" file-suffix="" 
 			model-specific="true" add-model-name="false"
-				  check-template-to-generate="true"
-				  is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+			check-template-to-generate="true"
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
 		>
 			<property name="property-presence" value="enable-velocity-rendition"></property>
 			<property name="property-presence-value" value="true" ></property>
@@ -20,7 +20,12 @@
 		<template name="VelocityMerger" templateFileName="VelocityMerger.java.vm"
 				  subdir="" outputsubdir="" technicalPackage="rendition" has-updatable-nature="true"
 				  file-extension="java" file-prefix="VelocityMerger" file-suffix=""
-				  model-specific="true" add-model-name="false">
+				  model-specific="true" add-model-name="false"
+				  check-template-to-generate="true"
+				  is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="enable-velocity-rendition"></property>
+			<property name="property-presence-value" value="true" ></property>
 		</template>
 
 	</template-target>	
