@@ -3,6 +3,9 @@ ember install ember-cli-typescript@latest
 npm i ember-bootstrap
 
 npm install append-query
+npm install querystring
+npm install url
+
 ember install ember-truth-helpers
 ember install ember-cli-string-helpers 
 ## TODO add in ember-cli-build.js

@@ -189,6 +189,16 @@ $!updatedAreaEnd
 #end
 #end
 
+#macro(putInputBeanValidationConstraints)
+#if($isMandatory)
+#if ($columnUtils.isString($column))
+    @NotBlank (message = "$columnVar cannot be blank")
+#else
+    @NotNull (message = "$columnVar cannot be null")
+#end
+#end
+#end
+
 #macro(putEntityValidation)
 #set($validationComparisons = $validationUtils.getJavaFieldComparisonAnnotations(${table.validations}))
 #foreach($validation in $validationComparisons)
@@ -210,7 +220,8 @@ $!updatedAreaEnd
 	$validation
 #end
 #end
-#end
+#end
+
 #macro(putEntityValidationImport)
 #foreach($column in ${table.columns})
 #foreach($validationList in ${column.validations})

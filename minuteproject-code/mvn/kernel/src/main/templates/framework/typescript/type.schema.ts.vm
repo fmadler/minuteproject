@@ -17,7 +17,7 @@
 #exposeVariableEntitySpecific()
 #putImportSDDInputBean()
 ##${tableVariableName} {
-interface ${sddInputBeanClass} {
+export type ${sddInputBeanClass} = {
 #set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
 #foreach($column in $columnList)
 #putColumnParamNaming()
@@ -32,12 +32,11 @@ interface ${sddInputBeanClass} {
 #foreach ($pivot in $query.pivots)
 #set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
 #set($pivotClasses = $i18nUtils.plurialize($pivotClass))
-interface ${tableVariableName}${pivotClasses} {
+export type ${tableVariableName}${pivotClasses} = {
 #set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
 #foreach($column in $columnList)
 #putColumnParamNaming()
-        $columnVar:$typescriptUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
-#end
+        $columnVar#if(!$column.isRequired())?#end:$typescriptUtils.convertColumnType($column);
 #end
 }
 #end
@@ -52,10 +51,10 @@ interface ${tableVariableName}${pivotClasses} {
 #foreach ($query in $pureQueries)
 #foreach($queryChunk in $query.getQueryChunks())
 #chunkInfo()
-enum ${enumName} {
+export enum ${enumName} {
 #foreach($queryChunkValue in $queryChunk.queryChunkValues)
-#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
-    $queryChunkValue.value,
+#set($chunkValueName=$formatUtils.upperCase($queryChunkValue.name))
+     $chunkValueName = "$queryChunkValue.value",
 #end
 }
 #end
@@ -75,13 +74,16 @@ enum ${enumName} {
 #set($table=$query.outputBean)
 #exposeVariableEntitySpecific()
 #putImportSDDBean()
-
-interface ${sddOutputBeanClass} {
+/* wrapper */
+export type ${sddOutputBeanClass}W = {
+    ${sddOutputBeanClass}:${sddOutputBeanClass}[];
+}
+export type ${sddOutputBeanClass} = {
 #foreach($column in $outputBean.columns)
 #putColumnParamNaming()
 #if ($column.getSeparatorCharacters())
 #putColumnParamNaming()
-    $columnVar:[${sddOutputBeanClass}$columnClass];
+    $columnVar:${sddOutputBeanClass}$columnClass [];
 #else
     $columnVar:$typescriptUtils.convertColumnType($column);##if(!$column.isRequired())?#end
 
@@ -91,7 +93,7 @@ interface ${sddOutputBeanClass} {
 #foreach($column in $outputBean.columns)
 #if ($column.getSeparatorCharacters())
 #putColumnParamNaming()
-interface ${sddOutputBeanClass}$columnClass {
+export type ${sddOutputBeanClass}$columnClass = {
 #foreach($field in $column.structuredArray)
 #set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
 #set($fieldVariable = $javaUtils.getJavaVariableNaming($commonUtils.getJavaVariableName($field.name)))
@@ -105,7 +107,7 @@ interface ${sddOutputBeanClass}$columnClass {
 #set($pivotClasses = $i18nUtils.plurialize($pivotClass))
 
 /* pivot $pivotClass */
-interface $tableClassName$pivotClass {
+export type $tableClassName$pivotClass = {
 #foreach ($column in $pivot.getColumnList())
 #putColumnParamNaming()
     $columnVar: $typescriptUtils.convertColumnType($column);
@@ -113,7 +115,7 @@ interface $tableClassName$pivotClass {
 #foreach ($sibling in $pivot.getSiblings())
 #set($siblingClass = $formatUtils.firstUpperCase($sibling.name))
 #set($siblingName = $i18nUtils.plurialize($sibling.name))
-    $siblingName: [$tableClassName$siblingClass]
+    $siblingName: $tableClassName$siblingClass [];
 #end
 }
 #end

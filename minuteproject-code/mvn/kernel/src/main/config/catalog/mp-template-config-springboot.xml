@@ -39,6 +39,37 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 
+		<!-- commons -->
+		<template name="SpringBoot.rest.preconditions" templateFileName="SpringBoot.rest.preconditions.vm"
+				  subdir="" outputsubdir="" technicalPackage="controller"
+				  file-extension="java" file-prefix="" file-suffix="RestPreconditions"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<!-- query -->
+		<template name="SpringBoot.sdd.controller" templateFileName="SpringBoot.sdd.controller.vm"
+				  subdir="" outputsubdir="" technicalPackage="controller"
+				  file-extension="java" file-prefix="" file-suffix="Controller"
+				  add-package-name="false" add-business-package-dir-name="false"
+				  scope-specific-value="query"
+				  check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedRestStackRequired"
+				  is-indirection-compatible="true"
+		>
+			<!-- is-indirection-compatible="true" -->
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>
+
+		<template name="SpringJdbcTemplate.sdd.repository" templateFileName="SpringJdbcTemplate.sdd.repository.vm"
+				  subdir="" outputsubdir="" technicalPackage="repository"
+				  file-extension="java" file-prefix="" file-suffix="JdbcTemplate"
+				  add-package-name="false" add-business-package-dir-name="false"
+				  scope-specific-value="query"
+				  is-indirection-compatible="true"
+		>
+			<!-- is-indirection-compatible="true" -->
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>
+
 	</template-target>
 
 	<template-target

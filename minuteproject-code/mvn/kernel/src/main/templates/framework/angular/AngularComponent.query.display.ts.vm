@@ -1,0 +1,37 @@
+#exposeAngularQuerySpecific()
+#set($table=$query.inputBean)
+#set($model=$queryUtils.getModel($query))
+#exposeAngularModelSpecific()
+import { Component, OnInit, Input } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import * as model from '../../../${modelTypescriptSchemaImport}';
+##TODO solve relative path
+import ${modelAngularAdapterClass} from '../../../${modelAngularAdapterImport}';##TODO solve relative path
+
+@Component({
+	selector: 'display-${sddInputBeanClass}',
+	templateUrl: './${angularQueryComponentDisplayHtmlClass}.html',
+	//styleUrls: ['./score-${sddInputBeanClass}.scss']
+})
+export class $angularQueryComponentDisplayTsClass implements OnInit {
+
+	${sddInputBeanVariable}: model.${sddInputBeanClass}={};
+
+	constructor(private adapter: ${modelAngularAdapterClass}) { }
+
+	entities! : model.${sddOutputBeanClass}[]
+
+	ngOnInit(): void {
+	}
+
+	public ${sddOutputBeanVariable}() {
+		this.adapter.${tableVariableName}(this.${sddInputBeanVariable})
+			.subscribe((w:any) =>
+				{
+					this.entities = w.${sddOutputBeanClass};
+				}
+			);
+	}
+
+
+}

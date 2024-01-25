@@ -38,8 +38,11 @@ public class QueryUtils {
 	public static boolean isBackend(Query query) {
 		return Scope.BACKEND==query.getQueryScope();
 	}
+	public static Model getModel(Query query) {
+		return query.getQueries().getStatementModel().getModel();
+	}
 	public static QueryParams getOutputParams(Query query) throws MinuteProjectException {
-		DataModel dataModel = query.getQueries().getStatementModel().getModel()
+		DataModel dataModel = getModel(query)//query.getQueries().getStatementModel().getModel()
 				.getDataModel();
 		Connection connection = ConnectionUtils.getConnection(dataModel);
 		if (connection != null) {

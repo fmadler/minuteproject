@@ -1,12 +1,7 @@
 #exposeEmberModelSpecific()
-#if($isOctane)
-##import {fetchData} from '../utils/common-utils';
-##import BaseAdapter from './${modelEmberBaseAdapterClass}';
-##import appendQuery from 'append-query';##TODO change dependent of ember version > octane => import appendQuery from 'append-query'
-##
-##export default class ${className} extends BaseAdapter {
+
 import JSONAPIAdapter from '@ember-data/adapter/json-api';
-import {fetchData} from '../utils/common-utils';
+import {fetchData, postData} from '../utils/common-utils';
 import appendQuery from 'append-query';
 
 /*
@@ -17,19 +12,6 @@ const baseUrl = host+"/"+namespace;
 
 export default class ${className} extends JSONAPIAdapter {
 
-#else
-import DS from 'ember-data';
-import {fetchData} from '../utils/common-utils';
-import BaseAdapter from './BaseAdapter';
-import appendQuery from 'npm:append-query';##TODO change dependent of ember version > octane => import appendQuery from 'append-query'
-
-import config from '../../config/environment';
-const { host, namespace } = config.DS${className};
-const baseUrl = host+"/"+namespace;
-
-export default BaseAdapter.extend({
-
-#end
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
     //package $package.name
 #foreach ($query in $package.getQueries())
@@ -40,9 +22,12 @@ export default BaseAdapter.extend({
 #exposeVariableEntitySpecific()
 #putImportSDDInputBean()
     /* connector to $domainClassName info */
-#if($isOctane)
     ${tableVariableName} (params) {
+#if ($query.isWrite())
+        return postData(baseUrl+'/data/sdd/${sddInputBeanClass}',json${domainClassName}(params), "URLENCODED");
+#else
         return fetchData(baseUrl+'/data/sdd/${sddInputBeanClass}'+filter${domainClassName}(params));
+#end
     }
 #foreach ($pivot in $query.pivots)
 #set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
@@ -53,11 +38,6 @@ export default BaseAdapter.extend({
 	}
 #end
 
-#else
-    ${tableVariableName} : function(params) {
-        return fetchData(baseUrl+'/data/sdd/${sddInputBeanClass}'+filter${domainClassName}(params));
-    },
-#end
 #end
 #end
 #end
@@ -77,11 +57,7 @@ export default BaseAdapter.extend({
 #end
 #end
 
-#if($isOctane)
 }
-#else
-});
-#end
 
 
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
@@ -92,18 +68,26 @@ export default BaseAdapter.extend({
 /* filter for composite $className entity */
 function filter${functionVariableName} (filter) {
 	if (filter) {
-		return appendQuery("",{
+		return appendQuery("",
+				json${functionVariableName} (filter),
+				{ removeNull: true }
+			);
+	}
+	return "";
+}
+/* $className entity as Json*/
+function json${functionVariableName} (filter) {
+	if (filter) {
+		return {
 #foreach($column in ${composite.distinctInputColumn})
 #putColumnParamNaming()
 				"$columnVar":filter.$columnVar #if($velocityCount!=$size),
 #end
 #end
-				}, 
-				{ removeNull: true }
-			);
+				}
 	}
-	return "";
-}			
+	return {};
+}
 
 #end
 #end
@@ -122,7 +106,18 @@ function filter${functionVariableName} (filter) {
 /* filter for $domainClassName entity */
 function filter${domainClassName} (filter) {
 	if (filter) {
-		return appendQuery("",{
+		return appendQuery("",
+				json${domainClassName} (filter),
+				{ removeNull: true }
+			);
+	}
+	return "";
+}
+
+/*  $domainClassName entity as Json */
+function json${domainClassName} (filter) {
+	if (filter) {
+		return {
 #foreach($column in $inputBean.columns)
 #if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
@@ -133,12 +128,10 @@ function filter${domainClassName} (filter) {
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
 				"$chunkName":filter.$chunkName,	//Allowed values $queryChunk.getDistinctValues()
 #end
-				}, 
-				{ removeNull: true }
-			);
+				}
 	}
-	return "";
-}			
+	return {};
+}
 #end
 #end
 #end

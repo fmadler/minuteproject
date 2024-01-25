@@ -829,6 +829,31 @@ $!updatedAreaEnd
 #end
 #end
 
+#macro(exposeGetParametersList)
+	public String getParameters(
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1)
+		String $chunkName
+#else
+		,String $chunkName
+#end
+#end
+	) {
+		List<Object> list = new ArrayList<>();
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+		if (${sddInputBeanVariable}.get$columnClass()!=null) list.add(${sddInputBeanVariable}.get$columnClass());
+#end
+##injectGetStatementChunk()
+##injectGetStatementFilter()
+		return list;
+	}
+#end
+
 #macro(injectGetStatementChunk)
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkNameString=$javaUtils.getJavaVariableNaming($queryChunk.name))
@@ -1085,5 +1110,21 @@ $!updatedAreaEnd
 #set($targetQuery = $model.getStatementModel().getQueryByIdOrName($queryId))
 #else
 #set($targetQuery = $queryUtils.getQueryByIdOrName($configuration.application, $queryId))
+#end
+#end
+
+#macro (exposeQueryNativeAndChunks)
+#set ($coreQuery = $queryUtils.getQueryBodyQuestionMark($query))
+	public static final String QUERY_NATIVE = "$coreQuery";
+#foreach ($filter in $query.queryFilters)
+	public static final String CHUNK_$filter.name = "$filter.value";
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+	public static final String CHUNK_${chunkName} = "$queryChunk.name";
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+	public static final String CHUNK_${chunkName}_${chunkValueName} = "$queryChunkValue.value";
+#end
 #end
 #end

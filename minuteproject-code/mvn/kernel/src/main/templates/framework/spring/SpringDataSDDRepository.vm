@@ -1,0 +1,17 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#exposeSpringdataModelSpecific()
+package $packageName;
+
+import $importDomainObjectUML;
+import $modelRepositoryImport;
+/**
+ * Custom spring data select for {@link $domainEntity}.
+ */
+public interface $className {
+
+@Query(value = "$query.value", nativeQuery = true)
+Optional<xx> findPackageByName(String repositoryId, String name);
+
+}

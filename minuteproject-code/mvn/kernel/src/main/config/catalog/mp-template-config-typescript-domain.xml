@@ -6,16 +6,17 @@
 
 	<template-target
     	name="typescript file"
-		outputdir="src/main/ui"
+		outputdir="src"
 		package-root=""
 		libdir="lib/Typescript_LIB.vm">
 
 		<template name="type.schema.ts" templateFileName="type.schema.ts.vm"
 			file-extension="ts"
+			technicalPackage="model"
 			file-suffix="Types"
-            add-model-dir-name="false"
-            add-package-name="true" add-business-package-dir-name="false"
-            package-root="model"
+            add-package-name="true"
+            add-model-dir-name="true"
+			add-business-package-dir-name="false"
             model-specific="true" >
 		</template>
 

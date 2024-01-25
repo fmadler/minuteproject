@@ -1,10 +1,13 @@
 ##TODO use the migrated template from /tomcat
+##parse("../tomcat/TomcatContextXml.vm")
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
 
+    <!-- context OX -->
     <WatchedResource>WEB-INF/web.xml</WatchedResource>
 #foreach ($model in $configuration.models())
 #parse("TomcatJndiConnectionPoolSnippet.vm")
 #end
 
 </Context>
+
