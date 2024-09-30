@@ -66,6 +66,15 @@ public class FormatUtils {
 		return "";
 	}
 
+	public static String getUppercaseUnderscore2 (String name) {
+		if (name!=null) {
+			String underscoreName = StringUtils.replace(name, "-", "_");
+			underscoreName = StringUtils.replace(name, " ", "_");
+			return underscoreName.toUpperCase();
+		}
+		return "";
+	}
+
 	public static String getLowcaseHyphen (String name) {
 		name = name.toLowerCase();
 		return StringUtils.replace(name, "_", "-");

@@ -10,18 +10,24 @@
 <script src="http://cdn.kendostatic.com/${kendoUiVersion}/js/jquery.min.js"></script>
 <script src="http://cdn.kendostatic.com/${kendoUiVersion}/js/kendo.all.min.js"></script>
 <script src="http://cdn.kendostatic.com/${kendoUiVersion}/js/cultures/kendo.culture.en-GB.min.js"></script>
-<script src="${pathToRoot}bower_components/growl/javascripts/jquery.growl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+##<script src="${pathToRoot}bower_components/growl/javascripts/jquery.growl.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.9/jquery.jgrowl.js"></script>
 <script src="${pathToRoot}$kendoUiMainJsPath"></script>
-<script src="${pathToRoot}js/jszip.min.js"></script>
+##<script src="${pathToRoot}js/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <link href="http://cdn.kendostatic.com/${kendoUiVersion}/styles/kendo.common.min.css" rel="stylesheet" />
 <link href="http://cdn.kendostatic.com/${kendoUiVersion}/styles/kendo.rtl.min.css" rel="stylesheet" />
 <link href="http://cdn.kendostatic.com/${kendoUiVersion}/styles/kendo.blueopal.min.css" rel="stylesheet" />
-<link href="http://code.jquery.com/ui/1.9.1/themes/cupertino/jquery-ui.css" rel="stylesheet" />
+##<link href="http://code.jquery.com/ui/1.9.1/themes/cupertino/jquery-ui.css" rel="stylesheet" />
 ##<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-<link href="http://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
-<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+##<link href="http://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
+##<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 <link href="${pathToRoot}$kendoUiMainCssPath" rel="stylesheet" />
-<link href="${pathToRoot}bower_components/growl/stylesheets/jquery.growl.css" rel="stylesheet" />
+##<link href="${pathToRoot}bower_components/growl/stylesheets/jquery.growl.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.9/jquery.jgrowl.css" rel="stylesheet" />
 #end
 
 #macro(putKendoUIMenuPackage)
@@ -82,9 +88,9 @@
 #end
 
 #macro(putKendoUIHtmlInputSnippet)
-<div id="${tableVariableName}">
+<div id="${tableVariableName}" class="container">
    <div>
-   		<div id="form-${tableVariableName}" >
+   		<div id="form-${tableVariableName}">
 #set($tableAlias=$formatUtils.performDisplayReadableFirstUpperOnlyName($table.alias))
         	<h3>${tableAlias}</h3>
 <div style="display: table; width: 100%; margin-top: 10px;">
@@ -426,21 +432,22 @@ $updatedAreaSnippet
 #else
 #set($targetUrl = $commonUtils.getArtifactRelativePathDirAndFullName($targetQuery, $template, $templateKendoUiSddDirectResultJs))
 #end
-		var targetUrl = contextPath+"/$targetUrl";
+		let targetUrl = contextPath+"/$targetUrl";
 		isQuestionMarkDone = false;
-		var hasSerieExtraParam = false;
+		let hasSerieExtraParam = false;
 #set($cpt=0)
 #foreach ($field in $query.queryFields)
 #if ($field.isKey())
 #set($fieldName=$field.name)
+#set($fieldVar=$formatUtils.getJavaNameVariable($fieldName))
 		var $fieldName = item.get("$fieldName");
 		if ($fieldName != undefined) {
 			hasSerieExtraParam = true;
 			if (!isQuestionMarkDone) {
-				targetUrl = targetUrl +"?" +"$fieldName="+$fieldName;
+				targetUrl = targetUrl +"?" +"$fieldVar="+$fieldName;
 				isQuestionMarkDone = true;
 			} else {
-				targetUrl = targetUrl +"&" +"$fieldName="+$fieldName;
+				targetUrl = targetUrl +"&" +"$fieldVar="+$fieldName;
 			}
 		} 
 #set($cpt=$cpt+1)
@@ -450,28 +457,30 @@ $updatedAreaSnippet
 #if ($actionEntry.isOutputFieldMapping())
 #set($fieldName=$actionEntry.outputField)
 #set($to=${actionEntry.toActionField})
-		var $to = item.get("$fieldName");
+#set($toVar=$formatUtils.getJavaNameVariable($to))
+		let $to = item.get("$fieldName");
 		if ($to != undefined) {
 			hasSerieExtraParam = true;
 			if (!isQuestionMarkDone) {
-				targetUrl = targetUrl +"?" +"$to="+$to;
+				targetUrl = targetUrl +"?" +"$toVar="+$to;
 				isQuestionMarkDone = true;
 			} else {
-				targetUrl = targetUrl +"&" +"$to="+$to;
+				targetUrl = targetUrl +"&" +"$toVar="+$to;
 			}
 		}
 #set($cpt=$cpt+1)
 #elseif ($actionEntry.isFilterFieldMapping())
 #set($fieldName=$actionEntry.filterField)
 #set($to=${actionEntry.toActionField})
+#set($toVar=$formatUtils.getJavaNameVariable($to))
 		var $to = $("#form-${tableVariableName} :input[name='$fieldName']").val();
 		if ($to != undefined) {
 			hasSerieExtraParam = true;
 			if (!isQuestionMarkDone) {
-				targetUrl = targetUrl +"?" +"$to="+$to;
+				targetUrl = targetUrl +"?" +"$toVar="+$toVar;
 				isQuestionMarkDone = true;
 			} else {
-				targetUrl = targetUrl +"&" +"$to="+$to;
+				targetUrl = targetUrl +"&" +"$toVar="+$toVar;
 			}
 		}
 #end
@@ -496,21 +505,22 @@ $updatedAreaSnippet
 			   hasSerieExtraParam = true;
 #foreach ($ae in $actionEntry.actionFieldMapEntries)
 #set($to=${ae.toActionField})
+#set($toVar=$formatUtils.getJavaNameVariable($to))
 #if ($ae.origin=="static-value")
 #set($toValue=$ae.staticValue)
 				if (!isQuestionMarkDone) {
-					targetUrl = targetUrl +"?" +"$to=$toValue";
+					targetUrl = targetUrl +"?" +"$toVar=$toValue";
 					isQuestionMarkDone = true;
 				} else {
-					targetUrl = targetUrl +"&" +"$to=$toValue";
+					targetUrl = targetUrl +"&" +"$toVar=$toValue";
 				}
 #elseif ($ae.origin=="input-field")
 #set($toValue=$ae.inputField)
 				if (!isQuestionMarkDone) {
-					targetUrl = targetUrl +"?" +"$to="+$columnVar;
+					targetUrl = targetUrl +"?" +"$toVar="+$columnVar;
 					isQuestionMarkDone = true;
 				} else {
-					targetUrl = targetUrl +"&" +"$to="+$columnVar;
+					targetUrl = targetUrl +"&" +"$toVar="+$columnVar;
 				}
 #else
 #set($toValue=$ae.outputField)

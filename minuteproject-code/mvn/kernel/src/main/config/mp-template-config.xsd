@@ -65,7 +65,9 @@
 		<xs:attribute name="model-type" type="model-type" />
 		<xs:attribute name="package-root" type="xs:string" />
 		<xs:attribute name="add-technical-dir-name" type="xs:boolean" />
-		<xs:attribute name="add-business-package-dir-name=" type="xs:boolean" />
+		<xs:attribute name="scope-specific-value" type="xs:string" /><!-- todo enum-->
+		<xs:attribute name="add-business-package-dir-name" type="xs:boolean" />
+		<xs:attribute name="has-updatable-nature" type="xs:boolean" />
 	</xs:complexType>
 
      <xs:simpleType name="model-type">
@@ -83,6 +85,7 @@
 				maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
 		<xs:attribute name="libdir" type="xs:string" />
 		<xs:attribute name="tool" type="xs:string" />
 		<xs:attribute name="outputdir" type="xs:string" />

@@ -2,8 +2,10 @@
 import Controller from '@ember/controller';
 
 ##import config from '../../config/environment';
+import { inject as service } from '@ember/service';
+
 export default class $importEmberQueryControllerIndexClassPath extends Controller {
-	${model.name}Service = Ember.inject.service("${model.name}");
+	@service('${modelEmberServiceClass}') ${model.name}Service;
 #if($inputBean.columns.size() > 0)
 	queryParams= [
 #foreach($column in $inputBean.columns)

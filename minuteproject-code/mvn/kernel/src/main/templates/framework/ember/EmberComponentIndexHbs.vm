@@ -23,24 +23,47 @@
 			  @onChange={{fn (mut this.selected)}} as |repo|>
 			  {{repo.name}}
 			</PowerSelect>
-			(It might fail if the API limit is exceeded)			
+#else
+#set ($sddTargetOutputBeanClass = $commonUtils.getJavaClassName(${targetQuery.getInputBean().getName()}))
+#set ($sddTargetOutputBeanVariable = $commonUtils.getJavaVariableName(${targetQuery.getInputBean().getName()}))
+#set($queryTargetDDL = "${columnVar}DDL")
+	##	//TODO DDL multiple = ($column.isArray())
+#if($column.isArray())
+			<PowerSelectMultiple
+#else
+			<PowerSelect
+#end
+					@options={{this.${sddTargetOutputBeanVariable}Ddl4${columnClass}Options}}
+					@onOpen={{this.show${sddTargetOutputBeanClass}4${columnClass}}}
+					@selected={{this.${columnVar}}}
+					@labelText="$columnVar"
+					@onChange={{this.change${sddTargetOutputBeanClass}4${columnClass}}} as |e|>
+				<strong>{{e.$columnVar}}</strong> ##TODO get first or sem ref
+#if($column.isArray())
+			</PowerSelectMultiple>
+#else
+			</PowerSelect>
 #end
 #end
-
+#end
 	        <div class="form-group">
 	        	<label>$columnVar</label>
 	        	<Input type="text" class="form-control" @value={{this.$columnVar}} />
 	        </div>
 #end
 
-	        <button type="button" class="btn btn-info" {{on "click" (fn this.search)}}>
-	            Search
-	        </button>
+			<br/>
+			<button type="button" class="btn btn-secondary" {{on "click" (fn this.search)}}>
+			Search
+			<span class="text-warning">
+				<FaIcon @icon="search" />
+			</span>
+			</button>
         </div>
     </div>
  
     <div class="col-md-12">
-        <h2>Results <span class="badge badge-dark" >{{@data.${sddOutputBeanClass}.length}}</span></h2>         
+        <h2>Results <span class="badge bg-dark" >{{@data.${sddOutputBeanClass}.length}}</span></h2>
         <table class="table table-condensed">
             <thead>
                 <tr>

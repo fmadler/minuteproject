@@ -21,16 +21,7 @@
 #set ($inputBeanAtLeastOneVisibleColumn=$queryUtils.hasInputBeanAtLeastOneVisibleColumn($inputBean))
 ###
 #macro(resourceSignature $param $showType $addValidation)
-
 #foreach($column in $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
-#set($swaggerOpenApiVersion=$template.getPropertyValue("swagger-openapi-version","2"))
-#if($swaggerOpenApiVersion=="2")
-#set($apiparam="ApiParam")
-#set($apiparam1="value")
-#else
-#set($apiparam="Parameter")
-#set($apiparam1="name")
-#end
 #putColumnParamNaming()
 #if($columnUtils.isTime($column))
 #set($columnType=$dateParamImport)
@@ -38,14 +29,14 @@
 #if($columnUtils.isBoolean($column))
 #set($columnType="java.lang.Boolean")
 #end
-#if($velocityCount>1)        ,#end        #if($addValidation)@javax.validation.Valid#end#if($param != "")@${apiparam}($apiparam1 = "$columnVar", required = ${column.isRequired()}) @${param} ("$columnVar") #end #if($showType)#if(!$column.isArray())$columnType#else String#end #end$columnVar
+#if($velocityCount>1)        ,#end        #if($addValidation)@javax.validation.Valid#end#if($param != "")@Parameter(value = "$columnVar", required = ${column.isRequired()}) @${param} ("$columnVar") #end #if($showType)#if(!$column.isArray())$columnType#else String#end #end$columnVar
 ##end
 #end
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
-#if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1)        ,#end        #if($param != "")@${apiparam}($apiparam1 = "$chunkName", required=true) @${param} ("$chunkName") #end #if($showType)String #end$chunkName
+#if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1)        ,#end        #if($param != "")@Parameter(value = "$chunkName", required=true) @${param} ("$chunkName") #end #if($showType)String #end$chunkName
 #foreach($queryParams in $queryChunk.getQueryChunkParams())
-        ,#if($param != "")@ApiParam(value = "${chunkName}_${queryParams.name}", required=true) @${param} ("${chunkName}_${queryParams.name}") #end #if($showType)String #end${chunkName}_${queryParams.name}
+        ,#if($param != "")@Parameter(name = "${chunkName}_${queryParams.name}", required=true) @${param} ("${chunkName}_${queryParams.name}") #end #if($showType)String #end${chunkName}_${queryParams.name}
 #end
 #end
 #end
@@ -135,51 +126,36 @@ package $packageName;
 
 $!updatedAreaImport
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.*;
-import java.sql.*;
 import java.io.IOException;
 import javax.servlet.http.*;
 import java.util.List;
 import java.util.ArrayList;
-#if($isSpringBackend)
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-#elseif($isEJBBackend)
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Default;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ejb.EJB;
-import $EJBDaoImplImport;
-#end
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.HttpHeaders;
-import javax.xml.bind.JAXBElement;
 
-import ${modelRestJWTUtilsImport};
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+// import ${modelRestJWTUtilsImport};
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.security.RolesAllowed;
@@ -190,9 +166,9 @@ import $sddInputBeanImport;
 #end
 import $sddDaoInterfaceImport;
 #if($queryUtils.isCache($query))
-import $modelRestCacheableImport;
+//import $modelRestCacheableImport;
 #end
-import $modelRestCompressImport;
+//import $modelRestCompressImport;
 #if ($hasVelocityPostProcessor)
 ##TODO integrate properly with embedded velocity renderer   //import velocity render
 import $velocityMergerImport;
@@ -205,52 +181,32 @@ import $velocityMergerImport;
 * <p>Convention: $query.getNamingConvention() </p>
 *
 */
-#if ($camelCaseConvention)
-@Path("/sdd/${queryVariableName}")
-#else
-@Path("/sdd/${sddInputBeanClass}")
-#end
-@Produces(MediaType.APPLICATION_JSON)
-#if ($camelCaseConvention)
-@Api(value="/sdd/${queryVariableName}", description = "operation about ${sddInputBeanClass}")
-#else
-@Api(value="/sdd/${sddInputBeanClass}", description = "operation about ${sddInputBeanClass}")
-#end
-#if ($tableUtils.hasSecurityColorRole($inputBean))
-@RolesAllowed("$tableUtils.securityColorRoles($inputBean)")
-#end
+@RequestMapping(path="/data", produces="application/json")
+@Tag(name = "${className} service", description = "${className} service API")
 public class ${className} {
-#if ($tableUtils.needsRequest($inputBean))
 
-	@Context
-	private HttpServletRequest request;
-	
-#end
-#if ($isSpringBackend)
     @Autowired
     @Qualifier("$sddDaoInterfaceVariable")
-#elseif($isEJBBackend)
-    @EJB	
-#end
 	${sddDaoInterfaceClass} $sddDaoInterfaceVariable;
-	
+
 #if (!$query.isWrite())
 #exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
 $!updatedAreaBegin
 #if($isUpdated)
     $!updatedAreaSnippet
 #else
-    @GET
-#if($queryUtils.isCache($query))
-    @${modelRestCacheableClass}(cc = "public, max-age=3600")
+#if ($camelCaseConvention)
+    @GetMapping ("/sdd/${queryVariableName}")
+#else
+    @GetMapping("/sdd/${sddInputBeanClass}")
 #end
-	@${modelRestCompressClass}
-    @ApiOperation(value = "$query.name", notes = "$queryUtils.getDescription($query)", response = ${sddOutputBeanCollectionClass}.class)
-    @ApiResponses(value = {
-    	@ApiResponse(code = 200, message = "ok")
-    })
+#if($queryUtils.isCache($query))
+// todo convert to spring cache    @${modelRestCacheableClass}(cc = "public, max-age=3600")
+#end
+// todo convert to compress	@${modelRestCompressClass}
+    @Operation(summary = "$sddOutputBeanCollectionClass", description = "$queryUtils.getDescription($query)")
     public $sddOutputBeanCollectionClass execute (
-#resourceSignature("QueryParam", true, false)
+#resourceSignature("PathVariable", true, false)
     ) {
 		return callImplementation(
 #resourceSignature("", false, false)
@@ -266,12 +222,9 @@ $!updatedAreaBegin
     $!updatedAreaSnippet
 #else
     // To use from a client add in the header Content-Type to application/x-www-form-urlencoded
-    @POST
+    @PostMapping("/sdd/${sddInputBeanClass}")
 	@${modelRestCompressClass}
-    @ApiOperation(value = "$query.name", notes = "$queryUtils.getDescription($query)", response = ${sddOutputBeanCollectionClass}.class)
-    @ApiResponses(value = {
-    	@ApiResponse(code = 200, message = "ok")
-    })
+    @Operation(value = "$query.name", description = "$queryUtils.getDescription($query)")
     public $sddOutputBeanCollectionClass post (
 #resourceSignature("FormParam", true, false)
     ) {
@@ -280,8 +233,7 @@ $!updatedAreaBegin
 		);
     }
     
-    @POST
-    @Path("/withValidation")//TODO remove just for migration testing
+    @PostMapping("/withValidation")//TODO remove just for migration testing
     public ${sddOutputBeanCollectionClass} postWithValidation (
 #if($isTomcatTargetServer)
 #resourceSignature("FormParam", true, true)##validation javax activated, on weblogic 12.c conflict with rest
@@ -306,14 +258,10 @@ $!updatedAreaBegin
 #foreach ($pivot in $query.pivots)
 #set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
 #set($pivotClasses = $i18nUtils.plurialize($pivotClass))
-    @GET
-    @Path ("/get${pivotClasses}")
-    @ApiOperation(value = "get${pivotClasses}", notes = "get${pivotClasses}", response = ${pivotClass}.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "ok")
-    })
+    @GetMapping ("/get${pivotClasses}")
+    @Operation(value = "get${pivotClasses}", description = "get${pivotClasses}")
     public List<$pivotClass> get${pivotClasses} (
-#resourceSignature("QueryParam", true, false)
+#resourceSignature("PathVariable", true, false)
     ) {
         $sddOutputBeanCollectionClass list = execute(
 #resourceParameters()
@@ -456,22 +404,18 @@ TODO change with lambda
     }
 #end
 
-    @GET
-    @Path("/${processor.name}")
+    @GetMapping("/${processor.name}")
 #if($queryUtils.isCache($query))
     @${modelRestCacheableClass}(cc = "public, max-age=3600")
 #end
     @${modelRestCompressClass}
-    @ApiOperation(value = "$queryVariableName", notes = "perform $queryVariableName", response = ${sddOutputBeanCollectionClass}.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "ok")
-    })
+    @Operation(value = "$queryVariableName", description = "perform $queryVariableName")
 #if ($processor.getRenditionType().equalsIgnoreCase("xml"))
     @Produces(MediaType.APPLICATION_ATOM_XML)
 #else
 #end
     public String processTo${processor.name} (
-    #resourceSignature("QueryParam", true, false)
+    #resourceSignature("PathVariable", true, false)
         ) {
         $sddOutputBeanCollectionClass l =
             callImplementation(

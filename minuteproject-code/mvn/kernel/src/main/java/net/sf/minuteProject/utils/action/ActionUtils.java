@@ -16,20 +16,20 @@ public class ActionUtils {
 			return true;
 		return false;
 	}
-	String getActionLabel (Action action) {
+	public String getActionLabel (Action action) {
 		if (!StringUtils.isEmpty(action.getName()))
 			return action.getName();
 		else
 			return action.getDescription();
 	}
 	
-	String getActionMethod (Action action) {
+	public String getActionMethod (Action action) {
 		if (SHOW_DETAILS.equals(action.getDefaultImplementation()))
 			return SHOW_DETAILS;
 		return FormatUtils.getEachWordFirstLetterUpper(action.getName(), " ");
 	}
 	
-	String getTargetUrl (Action action, Model model) {
+	public String getTargetUrl (Action action, Model model) {
 		String queryId = action.getQueryId();
 		Query query = model.getStatementModel().getQueryByIdOrName(queryId);
 		if (query!=null)
@@ -37,7 +37,7 @@ public class ActionUtils {
 		return "/data/sdd/"+queryId+"In";
 	}
 	
-	Query getQuery(Action action, Model model) {
+	public Query getQuery(Action action, Model model) {
 		String queryId = action.getQueryId();
 		return model.getStatementModel().getQueryByIdOrName(queryId);
 	}

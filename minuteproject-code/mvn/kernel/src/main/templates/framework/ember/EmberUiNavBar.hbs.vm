@@ -2,9 +2,10 @@
 ##exposeVariableModelSpecific()
 #exposeKendoUIGeneratorBeanSpecific()
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-  <!-- Brand
-  <a class="navbar-brand" href="#">Logo</a>
--->
+  <LinkTo @route="index" className="nav-item">
+    <FaIcon @icon="home"/> &nbsp;
+  </LinkTo>
+#foreach ($model in $application.getModels())
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 <BsDropdown as |dd|>
   <dd.toggle>$package.name<span class="caret"></span></dd.toggle>
@@ -13,46 +14,14 @@
 #if(!$query.isIndirection())
 #exposeQuerySpecific()
 #set($table=$query.inputBean)
-#set($queryClassName=$formatUtils.getJavaName($table.name))
+#set($queryClassName=$formatUtils.getLowcaseHyphen($table.name))
     <ddm.item>
-      <ddm.linkTo @route="${package.name}.index${queryClassName}">${queryClassName}</ddm.linkTo>
+      <ddm.linkTo @route="${package.name}.index-${queryClassName}">${queryClassName}</ddm.linkTo>
     </ddm.item>
 #end
 #end
   </dd.menu>
 </BsDropdown>
 #end
-#*
-  <!-- Links -->
-  <ul class="navbar-nav">
-#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
-    <!-- package $package.name -->
-#foreach ($query in $package.getQueries())
-#exposeQuerySpecific()
-#set($table=$query.inputBean)
-#set($queryClassName=$formatUtils.getJavaName($table.name))
-    {{#link-to "${package.name}.index${queryClassName}" tagName="li" className="nav-item"}}
-      <a class="nav-link" href="#">${queryClassName}</a>
-    {{/link-to}}
 #end
-#end
-
-
-{{!--
-
-    <!-- Dropdown -->
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Documentation
-      </a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Link 1</a>
-        <a class="dropdown-item" href="#">Link 2</a>
-        <a class="dropdown-item" href="#">Link 3</a>
-      </div>
-    </li>
-
-     --}}
-</ul>
-*#
 </nav>

@@ -362,6 +362,7 @@
 									<alias attr-name="is-key" prop-name="key" />
 									<alias attr-name="value" prop-name="value" />
 							    	<alias attr-name="is-structured-array" prop-name="isStructuredArray" />
+							    	<alias attr-name="array-element-name" prop-name="arrayElementName" />
 									<alias attr-name="separator-characters" prop-name="separatorCharacters" />
 									<alias attr-name="array-columns" prop-name="arrayColumns" />
 									<alias attr-name="array-columns-type" prop-name="arrayColumnsType" />
@@ -586,6 +587,7 @@
 								<set-properties-rule>
 									<alias attr-name="name" prop-name="name" />
 									<alias attr-name="sample-value" prop-name="sampleValue" />
+									<alias attr-name="default-value" prop-name="defaultValue" />
 									<alias attr-name="description" prop-name="description" />
 								</set-properties-rule>
 						        <pattern value="query-chunk-params/query-chunk-param">
@@ -2275,6 +2277,7 @@
 								<alias attr-name="is-key" prop-name="key" />
 								<alias attr-name="value" prop-name="value" />
 						    	<alias attr-name="is-structured-array" prop-name="isStructuredArray" />
+								<alias attr-name="array-element-name" prop-name="arrayElementName" />
 								<alias attr-name="separator-characters" prop-name="separatorCharacters" />
 								<alias attr-name="array-columns" prop-name="arrayColumns" />
 								<alias attr-name="array-columns-type" prop-name="arrayColumnsType" />
@@ -2493,6 +2496,7 @@
 							<set-properties-rule>
 								<alias attr-name="name" prop-name="name" />
 								<alias attr-name="sample-value" prop-name="sampleValue" />
+								<alias attr-name="default-value" prop-name="defaultValue" />
 								<alias attr-name="description" prop-name="description" />
 							</set-properties-rule>
 					        <pattern value="query-chunk-params/query-chunk-param">

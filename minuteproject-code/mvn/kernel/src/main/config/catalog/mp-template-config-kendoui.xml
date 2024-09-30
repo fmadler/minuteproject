@@ -4,12 +4,14 @@
    	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"/>
    	<plugin name="kendoUiUtils" className="net.sf.minuteProject.plugin.kendoui.KendoUiUtils"/>
     <plugin name="environmentUtils" className="net.sf.minuteProject.plugin.environment.EnvironmentUtils"></plugin>
- 
+
+	<!--
 	<resource-target outputdir="src/main/webapp/icon">
 		<resource name="plus-h" resource-file-name="plus_h.png" />
 		<resource name="plus-n" resource-file-name="plus_n.png" />
 	</resource-target>
-	
+	-->
+
 	<template-target 
     	name="ENVIRONMENT set"
 		libdir=""

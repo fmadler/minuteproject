@@ -74,6 +74,10 @@
 #set ($templateSDDCompositeRestClass = "RESTDbAPISDDCompositeResource")
 #end
 
+#macro (exposeSprinBootTemplate)
+#set ($templateSpringBootApplication = "SpringBootApplication")
+#end
+
 #macro (exposeSpringModelSpecific)
 #exposeSpringTemplate()
 #exposeSDDSpringTemplate()
@@ -129,6 +133,11 @@
 #set ($sddModelSpringGraphQLServiceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringGraphQLServiceClass))
 #end
 
+#macro (exposeSpringBootModelSpecific)
+#exposeSprinBootTemplate()
+#set ($springBootModelClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringBootApplication))
+#set ($springBootModelImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringBootApplication))
+#end
 
 #macro (putSpringModelLookup $techno)
 #foreach($table in $entities)

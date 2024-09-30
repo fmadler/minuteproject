@@ -804,5 +804,24 @@ public class CommonUtils {
 		}
 		return "NO_RELATIVE_PATH_FOUND";
 	}
-	
+
+	public String getObjectSeparatorChar(Column column) {
+		if (column.getSeparatorCharacters()!=null) {
+			final char[] chars = column.getSeparatorCharacters().toCharArray();
+			if (chars.length==2){
+				return String.valueOf(chars[1]);
+			}
+		}
+		return ",";
+	}
+
+	public String getAttributeSeparatorChar(Column column) {
+		if (column.getSeparatorCharacters()!=null) {
+			final char[] chars = column.getSeparatorCharacters().toCharArray();
+			if (chars.length==2){
+				return String.valueOf(chars[0]);
+			}
+		}
+		return "|";
+	}
 }

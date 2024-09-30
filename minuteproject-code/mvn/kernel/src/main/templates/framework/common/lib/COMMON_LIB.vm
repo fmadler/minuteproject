@@ -1,10 +1,8 @@
 #macro(generatorSpecific)
 #if($configuration.isSingleModel())
 #set($generatorBean=$model)
-#set($hasCmisModel=$model.hasCmisModel())
 #else
 #set($generatorBean=$configuration.application)
-#set($hasCmisModel=$application.hasCmisModel())
 #end
 #end
 
@@ -618,9 +616,11 @@ $!updatedAreaEnd
 						$columnType $columnVar = rs.get${columnType}("${column.name}");
 						if ($columnVar != null) {
 							${sddOutputBeanVariable}.set${columnClass}(
-								Arrays.asList(${columnVar}.split("\\,")).stream()
+#set ($objectSeparatorChar=$commonUtils.getObjectSeparatorChar($column))
+#set ($attributeSeparatorChar=$commonUtils.getAttributeSeparatorChar($column))
+								Arrays.asList(${columnVar}.split("\\\\${objectSeparatorChar}")).stream()
 									.map(u -> {
-										String[] uA = u.split("\\|");
+										String[] uA = u.split("\\\\${attributeSeparatorChar}");
 										${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnClass}();
 										if (uA.length==$column.structuredArray.size()) {
 #foreach($field in $column.structuredArray)
@@ -776,22 +776,21 @@ $!updatedAreaEnd
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
 	String get${chunkName}(String ${chunkName}) {
-#foreach($queryChunkValue in $queryChunk.queryChunkValues)
-#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
-#set($chunkValue=$formatUtils.getJavaNameVariable($queryChunkValue.name))
-		if ("${chunkValueName}".equals(${chunkName}) || "${chunkValue}".equals(${chunkName}))
-			return CHUNK_${chunkName}_${chunkValueName};
-#end
 ##default value
 #if($queryChunk.hasDefault())
 #set($queryChunkValue=$queryChunk.defaultValue)
+		if (${chunkName}==null) {
+			${chunkName} = "${queryChunkValue}";
+		}
+#end
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
 #set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
 #set($chunkValue=$formatUtils.getJavaNameVariable($queryChunkValue.name))
-		return CHUNK_${chunkName}_${chunkValueName};
-#else
-		return ${chunkName};
+		if ("${chunkValueName}".equalsIgnoreCase(${chunkName}))
+			return CHUNK_${chunkName}_${chunkValueName};
 #end
-	}  
+		return "";
+	}
 #end
 
 	public String getStatement(

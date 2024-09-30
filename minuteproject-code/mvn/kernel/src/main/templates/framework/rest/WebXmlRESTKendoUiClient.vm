@@ -89,16 +89,21 @@
           </param-value>
 		</init-param>
 	</filter>
-	
 
 	<filter-mapping>
 		<filter-name>jersey</filter-name>
 		<url-pattern>/data</url-pattern>
 	</filter-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DefaultJaxrsConfig</servlet-name>
+		<url-pattern>/swagger/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- swagger model @ /data/swagger.json -->
 	<!-- add swagger -->
 #end
 
-	
 #if($hasAtmosphereServlet)
 	<servlet>
 		<description>AtmosphereServlet</description>

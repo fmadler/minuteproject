@@ -22,7 +22,7 @@ public abstract class ColumnBaseAbstract extends AbstractConfiguration implement
 	private String typeAlias;
 	private boolean isHidden=false, isTransient=false, isSearchable=true, isEditable=true;
 	private boolean isContext=false, isImplicit=false, hasBeenDuplicated=false, isArray = false, isStructuredArray=false, isOutputParam=false;
-	private String filterName, sessionParamName, separatorCharacters, arrayColumns, arrayColumnsType;
+	private String filterName, sessionParamName, separatorCharacters, arrayColumns, arrayElementName, arrayColumnsType;
 	private QueryParamLink queryParamLink;
 	private boolean useJwtSubject = false;
 
@@ -191,6 +191,14 @@ public abstract class ColumnBaseAbstract extends AbstractConfiguration implement
 
 	public void setArrayColumns(String arrayColumns) {
 		this.arrayColumns = arrayColumns;	
+	}
+
+	public void setArrayElementName(String name) {
+		this.arrayElementName = name;
+	}
+
+	public String getArrayElementName() {
+		return this.arrayElementName;
 	}
 
 	public void setArrayColumnsType(String arrayColumnsType) {

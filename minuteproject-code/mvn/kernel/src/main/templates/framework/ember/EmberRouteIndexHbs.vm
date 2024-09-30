@@ -1,6 +1,6 @@
 #exposeEmberQuerySpecific()
 <$importEmberQueryIndexPath 
-	@data={{model}} 
+	@data={{@model}}
 ## queryparams are available at this stage
 #if($inputBean.columns.size() > 0)
 #foreach($column in $inputBean.columns)

@@ -85,7 +85,8 @@ public class Package extends PackageAdapter <Group, GeneratorBean>{
 	}
 
 	public List<Query> getPureQueries() {
-		return getPureQueries(u -> true);
+		List<Query> queries = getPureQueries(u -> true);
+		return queries;
 	}
 
 	public List<Query> getPureQueries(Predicate<Query> predicate) {

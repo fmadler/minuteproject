@@ -173,27 +173,7 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons-lang3.version}</version>
-    </dependency>	  
-#if ($hasCmisModel)
-    <!-- Apache Chemistry framework -->
-    <dependency>
-        <groupId>org.apache.chemistry.opencmis</groupId>
-        <artifactId>chemistry-opencmis-client-api</artifactId>
-        <version>${chemistry-opencmis.version}</version>
     </dependency>
-
-    <dependency>
-        <groupId>org.apache.chemistry.opencmis</groupId>
-        <artifactId>chemistry-opencmis-client-impl</artifactId>
-        <version>${chemistry-opencmis.version}</version>
-    </dependency>
-
-    <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons-io.version}</version>
-    </dependency>
-#end
 #end	
 	<!-- spring end -->
 #foreach($dependency in $dependencies)
@@ -284,12 +264,6 @@
 		<junit.version>4.10</junit.version>
         <commons-lang3.version>3.3</commons-lang3.version>
 
-#if ($hasCmisModel)
-        <chemistry-opencmis.version>0.12.0</chemistry-opencmis.version>
-        <httpclient.version>4.3.6</httpclient.version>
-        <servlet.version>3.0</servlet.version>
-        <commons-io.version>2.4</commons-io.version>
-#end
 	</properties>
 	
 </project>

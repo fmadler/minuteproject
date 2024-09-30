@@ -4,6 +4,7 @@
 #putJPA2TemplateDefinition()
 #putTargetServerDefinition()
 #set($isQuerydslPowered=$template.hasProperty("add-querydsl"))
+#set($isSpringBootPowered=$template.hasProperty("springboot"))
 #set($querydslVersion=$template.getPropertyValue("add-querydsl"))
 #set($bslaJpaVersion=$template.getPropertyValue("bsla-jpa-version"))
 ##set($jpa2Implementation=$jpaUtils.getJpa2Implementation($template))
@@ -168,7 +169,7 @@
             </exclusions>
         </dependency>
 #end
-#if($isQuerydslPowered)	
+#if($isQuerydslPowered && !$isSpringBootPowered)
 	    <!-- querydsl integration -->
         <dependency>
           <groupId>com.mysema.querydsl</groupId>
@@ -230,7 +231,7 @@
     
     <!-- properties -->
 	<properties>
-#if($isQuerydslPowered)	
+#if($isQuerydslPowered && !$isSpringBootPowered)
       <querydsl.version>$querydslVersion</querydsl.version>
 #end 
 #if($groovify)	
@@ -301,7 +302,7 @@
         	</plugin>
 #end
 #exposeCompilerPlugin()
-#if($isQuerydslPowered && !$groovify)	            
+#if($isQuerydslPowered && !$groovify && !$isSpringBootPowered)
             <!-- querydsl integration -->
             <plugin>
 				<groupId>com.mysema.maven</groupId>

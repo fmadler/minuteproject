@@ -33,7 +33,7 @@ public class Field extends AbstractConfiguration implements CoreElement {
 	private String ordering;
 	private String value, defaultValue;
 	private Boolean isSearchable,isEditable;
-	private String separatorCharacters, arrayColumns, arrayColumnsType;
+	private String separatorCharacters, arrayColumns, arrayColumnsType, arrayElementName;
 	private List<FieldValidation> fieldValidations = new ArrayList<>();
 
 	public String getSizeOrDefault() {

@@ -225,6 +225,7 @@ public class Entity extends AbstractConfiguration implements CoreElement {
 				column.setStereotype(field.getStereotype());
 				column.setIsStructuredArray(field.isStructuredArray());
 				column.setSeparatorCharacters(field.getSeparatorCharacters());
+				column.setArrayElementName(field.getArrayElementName());
 				column.setArrayColumns(field.getArrayColumns());
 				column.setArrayColumnsType(field.getArrayColumnsType());
 				//todo

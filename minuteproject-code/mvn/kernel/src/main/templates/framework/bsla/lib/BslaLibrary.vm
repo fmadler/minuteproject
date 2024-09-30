@@ -794,11 +794,6 @@ import $importDaoInterfaceUML;
 #updatedAreasCommon()
 #end
 
-#macro (updatedColumnAreas $area)
-#set ($updatedArea=$updatedAreaUtils.getColumnSnippet($template, $column, $updatedAreas, $area))
-#updatedAreasCommon()
-#end
-
 #macro (updatedColumnGetterSetterAreas)
 #set ($updatedArea=$updatedAreaUtils.getColumnGetterSetterBeginSnippet($template, $column, $updatedAreas))
 #updatedAreasCommon()

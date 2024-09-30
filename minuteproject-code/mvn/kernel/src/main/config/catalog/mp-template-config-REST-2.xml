@@ -203,7 +203,7 @@
 	</template-target>
 
 	<template-target
-    	name="Kendo client Maven"
+    	name="REST 2 Maven"
 		outputdir=""
 		package-root=""
 		libdir="lib/REST_LIB.vm">

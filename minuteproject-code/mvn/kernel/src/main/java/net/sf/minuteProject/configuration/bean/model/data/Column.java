@@ -76,7 +76,9 @@ public interface Column extends BaseColumn
 	public void setSeparatorCharacters(String chars);
 	
 	public void setArrayColumns(String columns);
-	
+
+	void setArrayElementName(String name);
+
 	public void setArrayColumnsType(String columnsType);
 
 	public String getSeparatorCharacters();

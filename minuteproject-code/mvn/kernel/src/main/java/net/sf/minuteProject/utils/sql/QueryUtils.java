@@ -514,7 +514,8 @@ public class QueryUtils {
 
 	public static boolean isCache(Query query) {
 		return query.isCache() ||
-				"reference-data".equals(query.getContentType());
+				TableUtils.referenceDataContentType.equals(query.getContentType()) ||
+				TableUtils.masterDataContentType.equals(query.getContentType());
 	}
 
 	public static Table getQueryInputTable(StatementModel statementModel, String name) {

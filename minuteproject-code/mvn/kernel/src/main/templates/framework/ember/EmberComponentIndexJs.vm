@@ -27,16 +27,41 @@ export default class $importEmberQueryComponentIndexClassPath extends Component 
     //return fetch(url).then((resp) => resp.json()).then((json) => json.items);
 	}
 	@tracked ${columnVar}selected;
+#else
+#set ($sddTargetOutputBeanClass = $commonUtils.getJavaClassName(${targetQuery.getInputBean().getName()}))
+#set ($sddTargetOutputBeanVariable = $commonUtils.getJavaVariableName(${targetQuery.getInputBean().getName()}))
+#set($queryTargetDDL = "${columnVar}DDL")
+
+	@tracked ${sddTargetOutputBeanVariable}Ddl4${columnClass}Options;
+
+	get ${sddTargetOutputBeanVariable}Ddl4${columnClass} () {
+		return this.${model.name}Service.${sddTargetOutputBeanVariable}();
+	}
+
+	@action
+	change${sddTargetOutputBeanClass}4${columnClass} (e) {
+		this.$columnVar = e;
+	}
+
+	@action
+	async show${sddTargetOutputBeanClass}4${columnClass} () {
+		if (!this.${sddTargetOutputBeanVariable}Ddl4${columnClass}Options) {
+			let x = await this.${model.name}Service.${sddTargetOutputBeanVariable}();
+			this.${sddTargetOutputBeanVariable}Ddl4${columnClass}Options =  x.${sddTargetOutputBeanClass}Out;
+		}
+	}
 #end
 #end
-	@tracked $columnVar = this.args.$columnVar;
+	@tracked $columnVar;// = this.args.$columnVar;
 #end
 
 	@service router;
+	@service('${modelEmberServiceClass}') ${model.name}Service;
 
 	@action
 	search() {
-	    this.router.transitionTo('$importEmberQueryIndexRouterPath', {
+#set($queryClassName=$formatUtils.getLowcaseHyphen($table.name))
+	    this.router.transitionTo('${query.package.name}.index-${queryClassName}', {
 	      queryParams: {
 #foreach($column in $inputBean.columns)
 #putColumnParams()

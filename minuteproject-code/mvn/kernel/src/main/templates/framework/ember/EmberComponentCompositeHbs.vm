@@ -45,7 +45,7 @@
 <BsTab as |tab|>
 	<tab.pane @title={{concat "${columnVar} " @data.${columnVar}.length}}>
     <div class="col-md-12">
-        <h2>Results <span class="badge badge-dark" >{{@data.${sddOutputBeanClass}.length}}</span></h2>         
+        <h2>Results <span class="badge bg-dark" >{{@data.${sddOutputBeanClass}.length}}</span></h2>
         <table class="table table-condensed">
             <thead>
                 <tr>

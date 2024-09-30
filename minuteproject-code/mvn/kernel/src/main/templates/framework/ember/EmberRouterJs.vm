@@ -15,18 +15,20 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function() {
+#foreach ($model in $application.getModels())
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 	this.route('${package.name}', function() {
 #foreach ($query in $package.getQueries())
 #if(!$query.isIndirection())
 #exposeQuerySpecific()
 #set($table=$query.inputBean)
-#set($queryClassName=$formatUtils.getJavaName($table.name))  
-		this.route('index${queryClassName}');
-		this.route('entity${queryClassName}');
+#set($queryClassName=$formatUtils.getLowcaseHyphen($table.name))
+		this.route('index-${queryClassName}');
+		this.route('entity-${queryClassName}');
 #end
 #end
 	});
+#end
 #end
 });
 

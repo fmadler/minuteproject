@@ -127,8 +127,8 @@
 #end
 			schema: {
 				data: "${sddTargetOutputBeanClass}Out"
-			},
-			pageSize : 30
+			}
+			##,pageSize : 30
 		});
 #set($autocompletefilter = $queryParamLinkUtils.getAutoCompleteFilter($column.queryParamLink))
 		$("#field-${columnVar}").kendoAutoComplete({

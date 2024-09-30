@@ -7,8 +7,8 @@ import net.sf.minuteProject.utils.parser.ParserUtils;
 
 class SddStatementAccessConvention extends SddConvention{
 
-	private String securePackages;
-	private String roles;
+	public String securePackages;
+	public String roles;
 	
 	public SddStatementAccessConvention () {
 	}

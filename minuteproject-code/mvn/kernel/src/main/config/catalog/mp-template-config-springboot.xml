@@ -55,4 +55,17 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 	</template-target>
 
+	<template-target
+			name="REST java  set"
+			libdir="lib/SPRING_LIB.vm"
+			outputdir="src/main/java"
+			belongToPackage="true">
+
+		<template name="SpringBoot.SDD.Controller" templateFileName="SpringBoot.SDD.Controller.vm"
+				  file-extension="java" technicalPackage="controller" file-suffix="Controller"
+				  scope-specific-value="query" has-updatable-nature="true" >
+			<property name="add-message-format" value="message-format"></property>
+		</template>
+
+	</template-target>
 </target>

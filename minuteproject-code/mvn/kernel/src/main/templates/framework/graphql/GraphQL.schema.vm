@@ -113,7 +113,7 @@ type ${sddOutputBeanClass} {
 #putColumnParamNaming()
 #if ($column.getSeparatorCharacters())
 #putColumnParamNaming()
-    $columnVar:[${sddOutputBeanClass}$columnClass]
+    $columnVar:[${sddOutputBeanClass}$columnClass] ##""" $column.arrayElementName  """
 #else
     $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end
 

@@ -5,7 +5,7 @@ import net.sf.minuteProject.configuration.bean.Template;
 public class KendoUiUtils {
 
 	public String pageSize() {
-		return "30";
+		return "300";
 	}
 	
 	public int websiteContextIndex(Template template) {

@@ -7,12 +7,14 @@ import Ember from 'ember';
 
 import BaseController from '../base';
 
-import _ from 'lodash';
+## import _ from 'lodash';
 
 import config from '../../config/environment';
-export default BaseController.extend({
+export default BaseController.extend({ //$className
 	${model.name}Service : Ember.inject.service("${model.name}"),
 	model(params) {
-        return this.get('${model.name}Service').${classVariableName}(params);
+#set($classFormat=$formatUtils.getUppercaseUnderscore2($className))
+#set($classFormatVar=$formatUtils.getJavaNameVariable($className))
+        return this.get('${model.name}Service').${classFormatVar}(params);
     },
 });

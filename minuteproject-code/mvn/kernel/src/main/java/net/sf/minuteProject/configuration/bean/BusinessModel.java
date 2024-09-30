@@ -336,6 +336,7 @@ public class BusinessModel {
 		column.setIsStructuredArray(field.isStructuredArray());
 		column.setSeparatorCharacters(field.getSeparatorCharacters());
 		column.setArrayColumns(field.getArrayColumns());
+		column.setArrayElementName(field.getArrayElementName());
 		column.setArrayColumnsType(field.getArrayColumnsType());
 	}
 

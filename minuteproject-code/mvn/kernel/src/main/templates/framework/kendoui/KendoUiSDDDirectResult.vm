@@ -36,13 +36,13 @@
 #exposeKendoUIDetailWindowTemplate()
 
                 isQuestionMarkDone = false;
-        		var query = "";
+        		let query = "";
 #set($cpt=0)
 #foreach($column in $inputBean.columns)
 #if (!$column.hasBeenDuplicated())
 #set($cpt=$cpt+1)
 #putColumnParamNaming()
-        		var $columnVar = QueryString.$columnVar;
+        		let $columnVar = QueryString.$columnVar;
 #if($columnUtils.isTime($column))
                 ${columnVar}Date = new Date(${columnVar});
 				${columnVar}DateSt = kendo.toString(${columnVar}Date, "yyyy-MM-dd");

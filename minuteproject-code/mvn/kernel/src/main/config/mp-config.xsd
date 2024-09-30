@@ -200,6 +200,7 @@
 			<xs:enumeration value="dashboard" />
 			<xs:enumeration value="master" />
 			<xs:enumeration value="detail" />
+			<xs:enumeration value="technical" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -658,6 +659,7 @@
 		<xs:attribute name="is-editable" type="xs:boolean" />
 		<xs:attribute name="hidden" type="xs:boolean" />
 		<xs:attribute name="is-structured-array" type="xs:boolean" />
+		<xs:attribute name="array-element-name" type="xs:string" />
 
 		<xs:attribute name="is-array" type="xs:boolean" />
 		<xs:attribute name="separator-characters" type="xs:string" />
@@ -709,6 +711,7 @@
 			<xs:element name="action-column-map-entry" type="action-column-map-entry"/>
 		</xs:sequence>
 		<xs:attribute name="name"/>
+
 	</xs:complexType>
 	
 	<xs:complexType name="action-column-map-entry">
@@ -731,6 +734,8 @@
 			<xs:element name="convert-case" type="convert-case"/>
 		</xs:sequence>
 		<xs:attribute name="name"/>
+		<xs:attribute name="output-field"/>
+		<xs:attribute name="to-action-field"/>
 	</xs:complexType>
 	
 	<xs:complexType name="action-condition">
@@ -902,6 +907,7 @@
 
 	<xs:complexType name="query">
 		<xs:sequence>
+			<xs:element name="query-documentation" type="value-documentation" />
 			<xs:element name="query-body" type="value-body" />
 			<xs:element name="query-display" type="query-display" />
 			<xs:element name="query-chunks" type="query-chunks" />
@@ -996,6 +1002,7 @@
 			<xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="scope" type="xs:string"/>
 		<xs:attribute name="id" type="xs:string"/>
 		<xs:attribute name="and-where-connection" type="and-where-connection"/>
 	</xs:complexType>
@@ -1062,6 +1069,12 @@
 			<xs:element name="value" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="value-documentation">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="0" />
+			<xs:element name="value" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="query-display">
 		<xs:element   name="query-display-new-column" type="query-display-new-column" minOccurs="0" maxOccurs="unbounded" />
@@ -1111,6 +1124,7 @@
 			<xs:element name="query-chunk-params" type="query-chunk-params"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="default-value" type="xs:string"/>
 		<xs:attribute name="sample-value" type="xs:string" use="required" />
 	</xs:complexType>
 	<xs:complexType name="query-chunk-param">

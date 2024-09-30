@@ -1,33 +1,40 @@
-#exposeQuerySpecific()
-#set($table=$query.inputBean)
-#exposeVariableEntitySpecific()
-#putImportQuerySDDBean()
-#putImportSDDInputBean()
-import Ember from 'ember';
+#exposeEmberQuerySpecific()
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
-import BaseRoute from '../base';
+#set($emberClass=$emberUtils.getEmberClass($table.name))
+#set($emberClassVariable=$emberUtils.getEmberClassVariable($table.name))
 
-import _ from 'lodash';
+export default class Entity${emberClass}Route extends Route {
 
-import config from '../../config/environment';
-export default BaseRoute.extend({
-	titleToken: ['field.${query.name}'],
-	${model.name}Service : Ember.inject.service("${model.name}"),
+	titleToken= ['field.${query.name}'];
+@service('${modelEmberServiceClass}') ${model.name}Service;
+
 #if($inputBean.columns.size() > 0)
-	queryParams: {
+    queryParams= {
 #foreach($column in $inputBean.columns)
 #if (!$column.hasBeenDuplicated())
 #putColumnParams()
 #columnJavaNaming()
-        $columnVar : {
+                $columnVar : {
             refreshModel: true,
             replace: true
-        },
+            },
 #end
 #end
-    },
+    };
 #end
-	model(params) {
-        return this.get('${model.name}Service').${tableVariableName}(params);
-    },
-});
+
+    model(params) {
+#if($inputBean.columns.size() > 0)
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+        if (params.$columnVar === '') params.$columnVar = null;
+#end
+#end
+#end
+        return this.${model.name}Service.${emberClassVariable}(params);
+    }
+}

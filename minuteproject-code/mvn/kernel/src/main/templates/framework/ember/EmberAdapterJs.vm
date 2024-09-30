@@ -1,35 +1,22 @@
 #exposeEmberModelSpecific()
-#if($isOctane)
-##import {fetchData} from '../utils/common-utils';
-##import BaseAdapter from './${modelEmberBaseAdapterClass}';
-##import appendQuery from 'append-query';##TODO change dependent of ember version > octane => import appendQuery from 'append-query'
-##
-##export default class ${className} extends BaseAdapter {
+#addedAreas()
 import JSONAPIAdapter from '@ember-data/adapter/json-api';
 import {fetchData} from '../utils/common-utils';
 import appendQuery from 'append-query';
 
-/*
+#exposeModelUpdatedAreas("ember-adapter-config")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
 import config from '../../config/environment';
 const { host, namespace } = config.${className}DS;
 const baseUrl = host+"/"+namespace;
-*/
+#end
+$!updatedAreaEnd
 
 export default class ${className} extends JSONAPIAdapter {
 
-#else
-import DS from 'ember-data';
-import {fetchData} from '../utils/common-utils';
-import BaseAdapter from './BaseAdapter';
-import appendQuery from 'npm:append-query';##TODO change dependent of ember version > octane => import appendQuery from 'append-query'
-
-import config from '../../config/environment';
-const { host, namespace } = config.DS${className};
-const baseUrl = host+"/"+namespace;
-
-export default BaseAdapter.extend({
-
-#end
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
     //package $package.name
 #foreach ($query in $package.getQueries())
