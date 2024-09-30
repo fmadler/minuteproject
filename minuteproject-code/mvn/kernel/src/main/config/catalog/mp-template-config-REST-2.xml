@@ -14,7 +14,7 @@
    	<plugin name="securityUtils" className="net.sf.minuteProject.utils.security.SecurityUtils"/>
 
    	<template-target 
-    	name="Kendo client"
+    	name="Rest templates"
 		outputdir="src/main/java"
 		libdir="lib/REST_LIB.vm">
 

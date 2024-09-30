@@ -1,0 +1,157 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#exposeSpringdataModelSpecific()
+package $packageName;
+## https://mkyong.com/spring-boot/spring-boot-jdbc-examples/
+## params https://stackoverflow.com/questions/27663170/passing-different-types-of-arguments-to-jdbctemplate-query
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import $sddInputBeanImport;
+import $sddOutputBeanImport;
+##import $modelRepositoryImport;
+/**
+ * Custom spring jdbc template for custom query.
+ */
+@Repository
+public class $className {##//implements
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+#exposeQueryNativeAndChunks()
+#putSddQueryLookupMisc()
+
+
+   //@Override
+   List<$sddOutputBeanClass> execute ($sddInputBeanClass) {
+      return jdbcTemplate.query(
+            getStatement(
+#if($isNotVoidInput)
+                $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1)
+                $chunkName
+#else
+                , $chunkName
+#end
+#end
+                )
+            ,
+                //array of params
+            getParams(
+#if($isNotVoidInput)
+                $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1)
+                $chunkName
+#else
+                , $chunkName
+#end
+#end
+                )
+            ,
+            (rs, rowNum) -> //inline rowMapper
+#if ($statementUtils.hasResult($outputBean))
+                new $sddOutputBeanClass(
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+                    rs.get${columnType}("${column.name}"),
+#end
+                )
+#end
+      );
+   }
+    //@Override
+    protected Object[] getParams () {
+        return getParameters(
+#if($isNotVoidInput)
+            $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1)
+            $chunkName
+#else
+        , $chunkName
+#end
+#end
+        ).toArray();
+    }
+
+#exposeGetParametersList()
+}
+
+#*
+#if ($query.isWrite())
+#if($query.queryParams.hasOutputParam())
+					pstmt.execute();
+#else
+					pstmt.executeUpdate();
+#end
+#else
+#if($query.queryParams.hasOutputParam())
+					pstmt.execute();
+#else
+					try (ResultSet rs = pstmt.executeQuery()) {
+#end
+#end
+#if($query.queryParams.hasOutputParam())
+				$sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+				${sddOutputBeanVariable}.set$columnClass(pstmt.get${columnType}($queryUtils.getQueryPositionFromOutputbeanPosition($query, $velocityCount)));
+#end
+				list.add(${sddOutputBeanVariable});
+#else
+#if ($statementUtils.hasResult($outputBean))
+					while (rs.next()) {
+#if ($query.isScalar())
+#set ($firstColumn = $columnUtils.getFirstColumn($inputBean))
+#set ($firstClass = $commonUtils.getJavaType($firstColumn))
+						x = ($firstClass) rs.getInt(1);
+						break;
+#else
+						$sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+#if (!$column.getSeparatorCharacters())
+						${sddOutputBeanVariable}.set$columnClass(rs.get${columnType}("${column.name}"));
+#else
+						$columnType $columnVar = rs.get${columnType}("${column.name}");
+						if ($columnVar != null) {
+							${sddOutputBeanVariable}.set${columnClass}(
+								Arrays.asList(${columnVar}.split("\\,")).stream()
+									.map(u -> {
+										String[] uA = u.split("\\|");
+										${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnClass}();
+										if (uA.length==$column.structuredArray.size()) {
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldClass = $commonUtils.getJavaClassName($field.name))
+#set($vIndex = $velocityUtils.getIndexFromCount(${velocityCount}))
+											c.set$fieldClass(uA[${vIndex}]);
+#end
+										}
+										return c;
+									})
+									.collect(Collectors.toList())
+							);
+						}
+#end
+#end
+						list.add(${sddOutputBeanVariable});
+#end
+	        		}##//from while (rs.next())
+#end
+#end
+ *#

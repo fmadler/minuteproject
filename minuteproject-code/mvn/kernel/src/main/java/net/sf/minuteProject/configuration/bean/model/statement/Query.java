@@ -311,24 +311,6 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 		complementColumn(entity, dir);
 		return entity;
 	}
-	
-//	private void setEntityModelSpecific(Queries queries, Direction dir,
-//			org.apache.ddlutils.model.Table table, Table entity) {
-//		Database database = queries.getStatementModel().getModel().getDataModel().getDatabase();
-//		initFieldAndRelationship(dir, database, table);
-//		entity.setDatabase(database);
-//	}
-
-//	private void initFieldAndRelationship(Direction dir, Database database,
-//			org.apache.ddlutils.model.Table table) {
-//		if (dir.equals(Direction.IN)) {
-//			List<QueryParam> list = getQueryParams(Direction.IN);
-//			for (QueryParam queryParam : list) {
-//				Entity.assignForeignKey(database, table,
-//						queryParam.getLinkField());
-//			}
-//		}
-//	}
 
 	private void setTableName(org.apache.ddlutils.model.Table table,
 			Direction dir) {

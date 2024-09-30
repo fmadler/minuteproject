@@ -1,19 +1,14 @@
 #exposeEmberModelSpecific()
-#addedAreas()
+
 import JSONAPIAdapter from '@ember-data/adapter/json-api';
-import {fetchData} from '../utils/common-utils';
+import {fetchData, postData} from '../utils/common-utils';
 import appendQuery from 'append-query';
 
-#exposeModelUpdatedAreas("ember-adapter-config")
-$!updatedAreaBegin
-#if($isUpdated)
-$!updatedAreaSnippet
-#else
+/*
 import config from '../../config/environment';
 const { host, namespace } = config.${className}DS;
 const baseUrl = host+"/"+namespace;
-#end
-$!updatedAreaEnd
+*/
 
 export default class ${className} extends JSONAPIAdapter {
 
@@ -27,9 +22,12 @@ export default class ${className} extends JSONAPIAdapter {
 #exposeVariableEntitySpecific()
 #putImportSDDInputBean()
     /* connector to $domainClassName info */
-#if($isOctane)
     ${tableVariableName} (params) {
+#if ($query.isWrite())
+        return postData(baseUrl+'/data/sdd/${sddInputBeanClass}',json${domainClassName}(params), "URLENCODED");
+#else
         return fetchData(baseUrl+'/data/sdd/${sddInputBeanClass}'+filter${domainClassName}(params));
+#end
     }
 #foreach ($pivot in $query.pivots)
 #set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
@@ -40,11 +38,6 @@ export default class ${className} extends JSONAPIAdapter {
 	}
 #end
 
-#else
-    ${tableVariableName} : function(params) {
-        return fetchData(baseUrl+'/data/sdd/${sddInputBeanClass}'+filter${domainClassName}(params));
-    },
-#end
 #end
 #end
 #end
@@ -64,11 +57,7 @@ export default class ${className} extends JSONAPIAdapter {
 #end
 #end
 
-#if($isOctane)
 }
-#else
-});
-#end
 
 
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
@@ -79,18 +68,26 @@ export default class ${className} extends JSONAPIAdapter {
 /* filter for composite $className entity */
 function filter${functionVariableName} (filter) {
 	if (filter) {
-		return appendQuery("",{
+		return appendQuery("",
+				json${functionVariableName} (filter),
+				{ removeNull: true }
+			);
+	}
+	return "";
+}
+/* $className entity as Json*/
+function json${functionVariableName} (filter) {
+	if (filter) {
+		return {
 #foreach($column in ${composite.distinctInputColumn})
 #putColumnParamNaming()
 				"$columnVar":filter.$columnVar #if($velocityCount!=$size),
 #end
 #end
-				}, 
-				{ removeNull: true }
-			);
+				}
 	}
-	return "";
-}			
+	return {};
+}
 
 #end
 #end
@@ -109,7 +106,18 @@ function filter${functionVariableName} (filter) {
 /* filter for $domainClassName entity */
 function filter${domainClassName} (filter) {
 	if (filter) {
-		return appendQuery("",{
+		return appendQuery("",
+				json${domainClassName} (filter),
+				{ removeNull: true }
+			);
+	}
+	return "";
+}
+
+/*  $domainClassName entity as Json */
+function json${domainClassName} (filter) {
+	if (filter) {
+		return {
 #foreach($column in $inputBean.columns)
 #if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
@@ -120,12 +128,10 @@ function filter${domainClassName} (filter) {
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
 				"$chunkName":filter.$chunkName,	//Allowed values $queryChunk.getDistinctValues()
 #end
-				}, 
-				{ removeNull: true }
-			);
+				}
 	}
-	return "";
-}			
+	return {};
+}
 #end
 #end
 #end

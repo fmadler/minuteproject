@@ -29,27 +29,29 @@
 
 	<template-target
 	   	name="Angular client"
-		outputdir="src/"
+		outputdir="src"
 		package-root=""
 		libdir="lib/Angular_LIB.vm">
 
+		<!--
+		for generic multi model
 		<template name="AngularBaseAdapterTs" templateFileName="AngularBaseAdapter.ts.vm"
 			subdir="" outputsubdir="" technicalPackage="adapter"
 			add-package-name="false" file-extension="ts"
 			file-suffix="BaseAdapter" application-specific="true">
 		</template>
 
+-->
 		<template 
 			name="AngularAdapterTs" templateFileName="AngularAdapter.ts.vm"
-            file-extension="ts" technicalPackage="adapter" file-suffix="Adapter"
-			add-package-name="true" add-business-package-dir-name="false"
-			package-root=""
+            file-extension="ts"
+			technicalPackage="adapter"
+			file-suffix="Adapter"
+			add-package-name="true"
+			add-model-dir-name="true"
+			add-business-package-dir-name="false"
             model-specific="true"
-
             />
-		<test            file-name-builder-plugin="angularUtils"
-		file-name-builder-method="getFileName"/>
-
 <!--
 
 		<template
@@ -70,5 +72,71 @@
 
 -->
 	</template-target>
+	<template-target
+			name="Angular client"
+			outputdir="src"
+			package-root=""
+			libdir="lib/Angular_LIB.vm">
 
+		<!-- UI -->
+		<template name="AngularUiNavBar.html" templateFileName="AngularUiNavBar.html.vm"
+				  subdir=""
+				  outputsubdir="layout"
+				  technicalPackage=""
+				  add-model-name="false"
+				  add-model-dir-name="true"
+				  add-package-name="true" file-extension="html"
+				  file-prefix="nav-bar" file-suffix=""
+				  application-specific="true">
+		</template>
+
+		<template
+				name="AngularComponent.query.display.html" templateFileName="AngularComponent.query.display.html.vm"
+				file-extension="html" technicalPackage="component"
+				file-prefix="display-"
+				file-suffix=".component"
+				add-model-dir-name="true"
+				add-package-name="false" add-business-package-dir-name="false"
+				package-root=""
+				scope-specific-value="query"
+				file-name-builder-plugin="AngularUtils"
+				file-name-builder-method="getAngularFileName"
+		/>
+		
+		<template
+				name="AngularComponent.query.display.ts" templateFileName="AngularComponent.query.display.ts.vm"
+				file-extension="ts" technicalPackage="component"
+				file-prefix="display-"
+				file-suffix=".component"
+				add-model-dir-name="true"
+				add-package-name="false" add-business-package-dir-name="false"
+				package-root=""
+				scope-specific-value="query"
+				file-name-builder-plugin="AngularUtils"
+				file-name-builder-method="getAngularFileName"
+		/>
+
+		<!-- composite 
+		<template
+				name="AngularComponentCompositehtml" templateFileName="AngularComponentCompositehtml.vm"
+				file-extension="html" technicalPackage="page" file-prefix="composite"
+				add-model-dir-name="false"
+				add-package-name="false" add-business-package-dir-name="true"
+				package-root=""
+				scope-specific-value="composite"
+				file-name-builder-plugin="AngularUtils"
+				file-name-builder-method="getAngularFileName"
+		/>
+		<template
+				name="AngularComponentCompositeJs" templateFileName="AngularComponentCompositeJs.vm"
+				file-extension="js" technicalPackage="page" file-prefix="composite"
+				add-model-dir-name="false"
+				add-package-name="false" add-business-package-dir-name="true"
+				package-root=""
+				scope-specific-value="composite"
+				file-name-builder-plugin="AngularUtils"
+				file-name-builder-method="getAngularFileName"
+		/>
+-->
+	</template-target>
 </target>

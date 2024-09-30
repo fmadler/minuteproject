@@ -1,15 +1,17 @@
 #exposeAngularModelSpecific()
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import appendQuery from 'append-query';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+## import appendQuery from 'append-query';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import {${modelAngularBaseAdapterClass}} from '@/${modelAngularBaseAdapterImport}';
-import * as model from '@/${modelTypescriptSchemaImport}';
+##import {${modelAngularBaseAdapterClass}} from '@/${modelAngularBaseAdapterImport}';
+import * as model from '../../${modelTypescriptSchemaImport}';##TODO solve relative path
 
 @Injectable({ providedIn: 'root' })
-export default class ${className} extends ${modelAngularBaseAdapterClass} {
+export default class ${className} {##extends ${modelAngularBaseAdapterClass} {
+
+	baseUrl = 'todo';
 
 	httpOptions = {
 		headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -18,50 +20,6 @@ export default class ${className} extends ${modelAngularBaseAdapterClass} {
 	constructor(
 		private http: HttpClient
 	) { }
-
-#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
-    //package $package.name
-#foreach ($query in $package.getQueries())
-#if(!$query.isIndirection())
-#if(!$queryUtils.isBackend($query))
-#exposeAngularQuerySpecific()
-#set($table=$query.inputBean)
-#exposeVariableEntitySpecific()
-#putImportSDDInputBean()
-    /* connector to $domainClassName info */
-    ${tableVariableName} (params:model.${sddInputBeanClass}):Observable<model.${sddOutputBeanClass}[]> {
-		return this.http.get<model.${sddOutputBeanClass}[]>(`${this.baseUrl}/data/sdd/${sddInputBeanClass}`+filter${domainClassName}(params))
-			.pipe(
-				tap(_ => this.log('fetched ${sddOutputBeanClass}')),
-				catchError(this.handleError<model.${sddOutputBeanClass}[]>('${sddOutputBeanClass}', []))
-			);
-    }
-#foreach ($pivot in $query.pivots)
-#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
-#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
-	/* pivot $pivotClass */
-	${tableVariableName}Get${pivotClasses} (params) {
-		return fetchData(this.baseUrl+'/data/sdd/${sddInputBeanClass}/get${pivotClasses}'+filter${domainClassName}(params));
-	}
-#end
-#end
-#end
-#end
-#end
-
-#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
-#foreach ($composite in $package.getComposites())
-#exposeCompositeSpecific()
-#putImportCompositeRESTSDDBean()
-#set($functionName = $emberUtils.getComponentClassPath(${classVariableName}))
-#set ($functionVariableName = $formatUtils.firstLowerCase(${functionName}))
-	/* connector to composite $className info */
-    ${functionVariableName} : function(params) {
-        return fetchData(this.baseUrl+'/data/sdd/${sddInputRestClass}'+filter${functionVariableName}(params));
-    },
-
-#end
-#end
 
 	private handleError<T>(operation = 'operation', result?: T) {
 		return (error: any): Observable<T> => {
@@ -77,8 +35,58 @@ export default class ${className} extends ${modelAngularBaseAdapterClass} {
 		};
 	}
 
+	private log(message:string) {
+		//TODO
+	}
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+    //package $package.name
+#foreach ($query in $package.getQueries())
+#if(!$query.isIndirection())
+#if(!$queryUtils.isBackend($query))
+#if (!$query.isWrite())##TODO with POST
+##if($query.queryParams.hasOutputParam()) ##other with http.post
+#exposeAngularQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDInputBean()
+    /* connector to $domainClassName info */
+    ${tableVariableName} (params:model.${sddInputBeanClass}):Observable<model.${sddOutputBeanClass}[]> {
+		const p = new HttpParams({fromObject: params});
+##return this.http.get<model.${sddOutputBeanClass}[]>(`${this.baseUrl}/data/sdd/${sddInputBeanClass}`+filter${domainClassName}(params))
+		return this.http.get<model.${sddOutputBeanClass}W>(`${this.baseUrl}/data/sdd/${sddInputBeanClass}`,{params: p})
+			.pipe(
+				tap(_ => this.log('fetched ${sddOutputBeanClass}')),
+//				catchError(this.handleError<model.${sddOutputBeanClass}[]>('${sddOutputBeanClass}', []))
+			);
+    }
+#* temporary remove pivot
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+	/* pivot $pivotClass */
+	${tableVariableName}Get${pivotClasses} (params:model.${pivotClass}):Observable<model.${sddOutputBeanClass}[]> {
+##		return fetchData(this.baseUrl+'/data/sdd/${sddInputBeanClass}/get${pivotClasses}'+filter${domainClassName}(params));
+		return this.http.get<model.$tableClassName$pivotClass []>(`${this.baseUrl}/data/sdd/${sddInputBeanClass}/get${pivotClasses}`+filter${domainClassName}(params))
+				.pipe(
+						tap(_ => this.log('fetched $tableClassName$pivotClass')),
+						catchError(this.handleError<model.$tableClassName$pivotClass []>('$tableClassName$pivotClass', []))
+				);
+	}
+#end
+
+ *#
+#end
+#end
+#end
+#end
+#end
+##end
+
+
 }
 
+#* do no handle composite yet
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 #foreach ($composite in $package.getComposites())
 #exposeCompositeSpecific()
@@ -103,17 +111,21 @@ function filter${functionVariableName} (filter:model.${sddInputBeanClass}) {
 #end
 #end
 
+ *#
+
+#* remove appender
+
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 //$package.name
 #foreach ($query in $package.getQueries())
 #if(!$query.isIndirection())
 #if (!$queryUtils.isBackend($query))
+#if (!$query.isWrite())##TODO with POST
 #exposeQuerySpecific()
 #set($table=$query.inputBean)
 #set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
-#set($accessUrl=$kendoUIUtils.getAccessUrl($table.name))
 #exposeVariableEntitySpecific()
-
+#putImportSDDInputBean()
 /* filter for $domainClassName entity */
 function filter${domainClassName} (filter:model.${sddInputBeanClass}) {
 	if (filter) {
@@ -138,4 +150,7 @@ function filter${domainClassName} (filter:model.${sddInputBeanClass}) {
 #end
 #end
 #end
+#end
+
+*#
 

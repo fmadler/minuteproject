@@ -13,6 +13,9 @@ pnpm install append-query
 pnpm install sass
 pnpm install ember-cli-sass
 
+
+ember install ember-truth-helpers
+ember install ember-cli-string-helpers 
 ember install ember-concurrency
 ember install ember-basic-dropdown
 ember install ember-power-select
