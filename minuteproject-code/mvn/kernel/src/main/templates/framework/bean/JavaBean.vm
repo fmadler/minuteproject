@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 #if ($template.hasPropertyValue("direction","in"))
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 #end
@@ -34,7 +38,12 @@ $!updatedAreaImport
  *
  */
 @Data
-#if ($template.hasPropertyValue("direction","in"))
+@AllArgsConstructor
+#if ($template.hasPropertyValue("direction","out"))
+@NoArgsConstructor
+#end
+#if ($template.hasPropertyValue("direction","in") && $isNotVoidInput))
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 #end
 public class ${className} {

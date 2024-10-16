@@ -86,6 +86,7 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 	</template-target>
 
+	<!--
 	<template-target
 			name="REST java  set"
 			libdir="lib/SPRING_LIB.vm"
@@ -99,4 +100,5 @@ xs:schemaLocation="./mp-template-config.xsd">
 		</template>
 
 	</template-target>
+	-->
 </target>

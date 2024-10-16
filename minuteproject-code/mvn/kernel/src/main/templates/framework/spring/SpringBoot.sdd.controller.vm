@@ -24,12 +24,20 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import $sddOutputBeanCollectionImport;
 #if($isNotVoidInput)
@@ -59,8 +67,9 @@ public class ${className} {
         produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "create a Xml document from source")
     @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "$query.info", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-    @ApiResponse(responseCode = "500", description = "Error while handling request", content = @Content)})
+        @ApiResponse(responseCode = "200", description = "$query.info", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+        @ApiResponse(responseCode = "500", description = "Error while handling request", content = @Content)
+        })
 	@ResponseBody
     //public $sddOutputBeanCollectionClass execute (
     public ResponseEntity<Object> execute (
@@ -80,7 +89,8 @@ public class ${className} {
 #else
         $sddOutputBeanCollectionClass list = ${sddDaoInterfaceVariable}.execute();
 #end
-        return ResponseEntity.ok(RestPreconditions.checkFound(xmlDoc, HttpStatus.NOT_FOUND, "No $sddOutputBeanClass found"));
+        HttpHeaders responseHeaders = new HttpHeaders();
+        return new ResponseEntity<>(list, responseHeaders, HttpStatus.OK);
     }
 
 }

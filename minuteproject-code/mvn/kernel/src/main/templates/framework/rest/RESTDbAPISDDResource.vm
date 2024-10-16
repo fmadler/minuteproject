@@ -50,19 +50,6 @@
 #end
 #end
 ###
-#macro (daoParameters)
-#if($isNotVoidInput)
-        	${sddInputBeanVariable}
-#end
-#foreach($queryChunk in $query.getQueryChunks())
-#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
-#if($isNotVoidInput || $velocityCount>1)           ,#else           #end$chunkName
-#foreach($queryParams in $queryChunk.getQueryChunkParams())
-           ,${chunkName}_${queryParams.name}
-#end
-#end
-#end
-###
 #macro (resourceParameters)
 #foreach($column in $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
 #putColumnParamNaming()
