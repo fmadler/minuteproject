@@ -74,8 +74,9 @@
 #set ($templateSDDCompositeRestClass = "RESTDbAPISDDCompositeResource")
 #end
 
-#macro (exposeSprinBootTemplate)
+#macro (exposeSpringBootTemplate)
 #set ($templateSpringBootApplication = "SpringBootApplication")
+#set ($templateSpringJdbcTemplateRepository = "SpringJdbcTemplate.sdd.repository")
 #end
 
 #macro (exposeSpringModelSpecific)
@@ -134,9 +135,16 @@
 #end
 
 #macro (exposeSpringBootModelSpecific)
-#exposeSprinBootTemplate()
+#exposeSpringBootTemplate()
 #set ($springBootModelClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringBootApplication))
 #set ($springBootModelImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringBootApplication))
+#end
+
+#macro (exposeSpringBootQuerySpecific)
+#exposeSpringBootTemplate()
+#set ($springBootJdbcTemplateRepositoryClass = $commonUtils.getTemplateClassName($query, $template, $templateSpringJdbcTemplateRepository))
+#set ($springBootJdbcTemplateRepositoryVariable = $commonUtils.getJavaNameVariableFirstLetter($springBootJdbcTemplateRepositoryClass))
+#set ($springBootJdbcTemplateRepositoryImport = $commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateSpringJdbcTemplateRepository))
 #end
 
 #macro (putSpringModelLookup $techno)

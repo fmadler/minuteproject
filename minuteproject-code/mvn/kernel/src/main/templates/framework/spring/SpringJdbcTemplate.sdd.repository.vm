@@ -26,8 +26,19 @@ public class $className {##//implements
 #exposeQueryNativeAndChunks()
 #putSddQueryLookupMisc()
 
-   //@Override
-   List<$sddOutputBeanClass> execute ($sddInputBeanClass $sddInputBeanVariable) {
+   public List<$sddOutputBeanClass> execute (
+#if($isNotVoidInput)
+        $sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1)
+        String $chunkName
+#else
+        ,String $chunkName
+#end
+#end
+        ) {
       return jdbcTemplate.query(
             getStatement(
 #if($isNotVoidInput)
@@ -43,7 +54,6 @@ public class $className {##//implements
 #end
                 )
             ,
-                //array of params
             getParams(
 #if($isNotVoidInput)
                 $sddInputBeanVariable
@@ -58,7 +68,7 @@ public class $className {##//implements
 #end
                 )
             ,
-            (rs, rowNum) -> //inline rowMapper
+            (rs, rowNum) ->
 #if ($statementUtils.hasResult($outputBean))
                 new $sddOutputBeanClass(
 #foreach($column in $outputBean.columns)
@@ -70,9 +80,21 @@ public class $className {##//implements
                 )
 #end
       );
-   }
-    //@Override
-    protected Object[] getParams ($sddInputBeanClass $sddInputBeanVariable) {
+    }
+
+    protected Object[] getParams (
+#if($isNotVoidInput)
+        $sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1)
+    String $chunkName
+#else
+, String $chunkName
+#end
+#end
+        ) {
         return getParameters(
 #if($isNotVoidInput)
             $sddInputBeanVariable

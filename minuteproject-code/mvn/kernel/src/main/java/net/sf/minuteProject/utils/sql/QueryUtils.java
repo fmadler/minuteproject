@@ -428,7 +428,8 @@ public class QueryUtils {
 	}
 	
 	public static boolean isAdminContentType(Query query) {
-		return query.getContentType()!=null 
+		return query!=null
+				&& query.getContentType()!=null
 				&& (TableUtils.masterDataContentType.equals(query.getContentType())
 					|| TableUtils.referenceDataContentType.equals(query.getContentType()));
 	}

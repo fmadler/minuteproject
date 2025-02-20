@@ -829,7 +829,7 @@ $!updatedAreaEnd
 #end
 
 #macro(exposeGetParametersList)
-	public String getParameters(
+	public List getParameters(
 #if($isNotVoidInput)
 		$sddInputBeanClass $sddInputBeanVariable
 #end

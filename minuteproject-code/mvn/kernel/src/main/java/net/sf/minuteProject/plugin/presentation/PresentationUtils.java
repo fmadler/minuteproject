@@ -84,7 +84,8 @@ public class PresentationUtils {
 			resultRowLinkRootUrl = StringUtils.replace(resultRowLinkRootUrl, "#", "\\\\#"); // for
 																							// kendoui
 																							// escaping
-			return "javascript:getEnvUrl(`"+ resultRowLinkRootUrl +"`," + getKendoUiUrlParam(column, query) + ");";
+			//return "javascript:getEnvUrl(`"+ resultRowLinkRootUrl +"`," + getKendoUiUrlParam(column, query) + ");";
+			return resultRowLinkRootUrl + getKendoUiUrlParam(column, query);
 		} else {
 			return null;
 		}

@@ -42,7 +42,8 @@ $!updatedAreaImport
 #if ($template.hasPropertyValue("direction","out"))
 @NoArgsConstructor
 #end
-#if ($template.hasPropertyValue("direction","in") && $isNotVoidInput))
+#set ($isNotVoidInput = !$table.columns.isEmpty())
+#if ($template.hasPropertyValue("direction","in") && $isNotVoidInput)
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 #end

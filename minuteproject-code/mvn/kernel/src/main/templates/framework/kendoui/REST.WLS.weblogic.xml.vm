@@ -13,33 +13,17 @@ http://xmlns.oracle.com/weblogic/weblogic-web-app/1.2/weblogic-web-app.xsd">
 
     <wls:container-descriptor>
         <wls:prefer-application-packages>
-            <!-- javax.validation -->
             <wls:package-name>org.springframework.*</wls:package-name>
             <wls:package-name>org.hibernate.*</wls:package-name>
             <wls:package-name>javax.validation.*</wls:package-name>
             <wls:package-name>javax.validation.spi.*</wls:package-name>
-            <!-- jersey-bundle-*.jar -->
-            <wls:package-name>com.sun.jersey.*</wls:package-name>
-            <wls:package-name>org.glassfish.jersey.*</wls:package-name>
-            <wls:package-name>org.glassfish.hk2.*</wls:package-name>
-            <wls:package-name>org.jvnet.hk2.*</wls:package-name>
-            <wls:package-name>jersey.repackaged.org.objectweb.asm.*</wls:package-name>
-            <wls:package-name>com.sun.research.ws.wadl.*</wls:package-name>
-            <wls:package-name>com.sun.ws.rs.ext.*</wls:package-name>
-
-            <wls:package-name>org.codehaus.jackson.*</wls:package-name>
-
-            <!-- jettison-*.jar -->
-            <wls:package-name>org.codehaus.jettison.*</wls:package-name>
-
-            <!-- jsr311*.jar -->
-            <wls:package-name>javax.ws.rs.*</wls:package-name>
-
-            <!-- asm.jar -->
-            <wls:package-name>org.objectweb.asm.*</wls:package-name>
+            <wls:package-name>org.slf4j.*</wls:package-name>
+            <wls:package-name>ch.qos.logback</wls:package-name>
+            <wls:package-name>com.fasterxml.jackson</wls:package-name>
         </wls:prefer-application-packages>
     </wls:container-descriptor>
 #if($isCas)
+    <!-- $securityAuthenticationType -->
     <wls:security-role-assignment>
         <role-name>$mpUserRole</role-name>
         <principal-name>$mpUserRole</principal-name>

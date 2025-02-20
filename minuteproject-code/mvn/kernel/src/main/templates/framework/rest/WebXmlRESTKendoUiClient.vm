@@ -317,7 +317,7 @@
 	</login-config>
 
 #end
-#if ($securityAuthenticationType=="form") 
+#if ($isCas || $securityAuthenticationType=="form")
     <login-config>
         <auth-method>FORM</auth-method>
 		    <realm-name>$applicationRealm</realm-name>

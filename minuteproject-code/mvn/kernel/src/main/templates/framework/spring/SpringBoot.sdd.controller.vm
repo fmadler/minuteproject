@@ -2,6 +2,7 @@
 #exposeSDDSpring()
 #exposeRESTSDDURLServer()
 #putImportQuerySDDBean()
+#exposeSpringBootQuerySpecific()
 #addedAreas()
 #set ($size = $inputBean.columns.size())
 package $packageName;
@@ -26,6 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import $sddOutputBeanCollectionImport;
+import $springBootJdbcTemplateRepositoryImport;
+import $sddOutputBeanImport;
 #if($isNotVoidInput)
 import $sddInputBeanImport;
 #end
@@ -55,12 +58,16 @@ import $sddDaoInterfaceImport;
 @RequestMapping ("$restXmlServerUrl")
 @Controller
 @Slf4j
+@AllArgsConstructor
 @Tag(name = "${className} API", description = "${className} API")
 public class ${className} {
 
+#*
     @Autowired
     @Qualifier("$sddDaoInterfaceVariable")
     ${sddDaoInterfaceClass} $sddDaoInterfaceVariable;
+*#
+    private ${springBootJdbcTemplateRepositoryClass} $springBootJdbcTemplateRepositoryVariable;
 
     @GetMapping(path = "/todo",
         consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -78,6 +85,15 @@ public class ${className} {
         @RequestParam ("$columnVar") $columnType $columnVar #if($velocityCount!=$size),
 #end
 #end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkClass=$formatUtils.getJavaName($queryChunk.name))
+#set($chunkVar=$commonUtils.getJavaNameVariableFirstLetter($chunkClass))
+#if(!$isNotVoidInput && $velocityCount==1)
+        @RequestParam ("$chunkVar") String $chunkVar
+#else
+        ,@RequestParam ("$chunkVar") String $chunkVar
+#end
+#end
     ) {
 #if($isNotVoidInput)
 		$sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass ();
@@ -85,10 +101,22 @@ public class ${className} {
 #putColumnParamNaming()
 		${sddInputBeanVariable}.set$columnClass ($columnVar);
 #end
-        $sddOutputBeanCollectionClass list = ${sddDaoInterfaceVariable}.execute(${sddInputBeanVariable});
-#else
-        $sddOutputBeanCollectionClass list = ${sddDaoInterfaceVariable}.execute();
 #end
+        List<$sddOutputBeanClass> list = ${springBootJdbcTemplateRepositoryVariable}.execute
+            (
+#if($isNotVoidInput)
+                ${sddInputBeanVariable}
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkClass=$formatUtils.getJavaName($queryChunk.name))
+#set($chunkVar=$commonUtils.getJavaNameVariableFirstLetter($chunkClass))
+#if(!$isNotVoidInput && $velocityCount==1)
+                $chunkVar
+#else
+                ,$chunkVar
+#end
+#end
+            );
         HttpHeaders responseHeaders = new HttpHeaders();
         return new ResponseEntity<>(list, responseHeaders, HttpStatus.OK);
     }

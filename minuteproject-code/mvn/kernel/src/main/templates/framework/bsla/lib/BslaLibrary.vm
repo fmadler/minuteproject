@@ -557,7 +557,7 @@
 #if ($applicationRealm == "")
 #set ($applicationRealm = "myrealm")
 #end
-#set($isCas = $template.getPropertyValue("securityAuthenticationType","cas"))
+#set($isCas = $securityAuthenticationType.equals("cas"))
 #end
 
 #macro (exposeWebNature)
