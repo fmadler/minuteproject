@@ -1,0 +1,25 @@
+#generatorSpecific()
+#foreach ($model in $configuration.models())
+#exposeVariableModelSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+#exposeJdbc()
+#set ($jdbcUrl=$datasource.url)
+#set ($username=$datasource.username)
+#set ($password=$datasource.password)
+#set ($embeddedDatasource=$template.getPropertyValue("embedded-datasource",false))
+#set ($jdbcUrl=$formatUtils.escapeXml($embeddedDatasource.getPropertyValue("jdbcUrl")))
+#set ($username=$embeddedDatasource.getPropertyValue("username"))
+#set ($password=$embeddedDatasource.getPropertyValue("password"))
+
+#if ($embeddedDatasource)
+spring.datasource.jndi-name=jdbc/${model.name}DS
+#else
+spring.datasource.url=$jdbcUrl
+spring.datasource.driver-class-name=$datasource.driverClassName
+spring.datasource.username=$username
+spring.datasource.password=$password
+
+spring.datasource.hikari.connection-timeout=20000
+spring.datasource.hikari.maximum-pool-size=0
+#end
+#end

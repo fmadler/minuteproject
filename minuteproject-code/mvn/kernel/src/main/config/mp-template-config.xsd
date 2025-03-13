@@ -50,6 +50,8 @@
 		<xs:attribute name="technicalPackage" type="xs:string" />
 		<xs:attribute name="add-model-name" type="xs:boolean" />
 		<xs:attribute name="add-model-dir-name" type="xs:boolean" />
+		<xs:attribute name="add-package-name" type="xs:boolean" />
+		<xs:attribute name="is-indirection-compatible" type="xs:boolean" />
 		<xs:attribute name="file-extension" type="xs:string" />
 		<xs:attribute name="file-prefix" type="xs:string" />
 		<xs:attribute name="file-suffix" type="xs:string" />

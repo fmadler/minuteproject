@@ -1,6 +1,6 @@
 #exposeQuerySpecific()
 #exposeSDDSpring()
-#putImportQuerySDDBean()
+#putImportQuerySDDBeanV2()
 #exposeSpringdataModelSpecific()
 package $packageName;
 ## https://mkyong.com/spring-boot/spring-boot-jdbc-examples/
@@ -53,22 +53,7 @@ public class $className {##//implements
 #end
 #end
                 )
-            ,
-            getParams(
-#if($isNotVoidInput)
-                $sddInputBeanVariable
-#end
-#foreach($queryChunk in $query.getQueryChunks())
-#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
-#if(!$isNotVoidInput && $velocityCount==1)
-                $chunkName
-#else
-                , $chunkName
-#end
-#end
-                )
-            ,
-            (rs, rowNum) ->
+            , (rs, rowNum) ->
 #if ($statementUtils.hasResult($outputBean))
                 new $sddOutputBeanClass(
 #foreach($column in $outputBean.columns)
@@ -79,6 +64,19 @@ public class $className {##//implements
 #end
                 )
 #end
+            , getParams(
+#if($isNotVoidInput)
+            $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1)
+                $chunkName
+#else
+            , $chunkName
+#end
+#end
+            )
       );
     }
 

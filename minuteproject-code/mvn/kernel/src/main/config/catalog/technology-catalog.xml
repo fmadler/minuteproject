@@ -268,7 +268,7 @@
             <property name="rest-pom-maven-packaging" value="war"/>
         </technology>
 
-        <technology name="SpringBoot" model-type="rdbms"
+        <technology name="SpringBootOld" model-type="rdbms"
                     template-config-file-name="mp-template-config-springboot.xml"
                     default-outputdir="REST"
                     depends-on-targets="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,CloudFoundry-REST,tomcat,docker,SpringBoot.MavenMaster"
@@ -291,6 +291,30 @@
             <property name="graphql-enabled" value="true"/>
             <property name="maven-artifact-finalName-suffix" value="GraphQLApp"/>
 
+            <property name="rest-pom-maven-artifact-finalName-suffix" value="GraphQLApp"/>
+            <property name="rest-pom-maven-packaging" value="war"/>
+        </technology>
+
+        <technology name="SpringBoot" model-type="rdbms"
+                    template-config-file-name="mp-template-config-springboot.xml"
+                    default-outputdir="REST"
+                    depends-on-targets="SDD-BEANS.v2,REST-utils,tomcat,docker,SpringBoot.MavenMaster"
+                    depends-on-targets-old="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,CloudFoundry-REST,tomcat,docker,SpringBoot.MavenMaster"
+                    template-dir="@templateRoot@/framework/spring"
+                    status="released"
+                    description="Generates:\Springboot REST API and graphql API">
+            <frameworks>
+                <framework name="springboot" version="2+"></framework>
+            </frameworks>
+            <property name="springboot" value="2"></property>
+            <property name="swagger-openapi-version" value="3"></property>
+            <property name="add-jpa2-implementation" value="hibernate"></property>
+            <property name="add-domain-specific-method" value="true"></property>
+            <property name="add-cache-implementation" value="ehcache"></property>
+            <property name="use-temporal" value="true"></property>
+            <property name="add-backend-implementation" value="spring"></property>
+            <property name="graphql-enabled" value="true"/>
+            <property name="maven-artifact-finalName-suffix" value="GraphQLApp"/>
             <property name="rest-pom-maven-artifact-finalName-suffix" value="GraphQLApp"/>
             <property name="rest-pom-maven-packaging" value="war"/>
         </technology>
@@ -744,6 +768,15 @@
         </technology>
 
 
+        <technology name="SDD-BEANS.v2" model-type="rdbms"
+                    template-config-file-name="mp-template-config-SDD-beans.v2.xml"
+                    default-outputdir="REST" template-dir="@templateRoot@/framework/bean"
+                    status="released" description="Generates backend artifacts"
+                    is-generable="false">
+            <property name="add-xmlbinding" value="true"></property>
+            <property name="add-xml-format" value="lowercase-hyphen"></property>
+        </technology>
+
         <technology name="SDD-BEANS" model-type="rdbms"
                     template-config-file-name="mp-template-config-SDD-beans.xml"
                     default-outputdir="JPA2" template-dir="@templateRoot@/framework/bean"
@@ -920,6 +953,11 @@
                     template-dir="@templateRoot@/framework/docker" is-generable="true">
         </technology>
 
+        <technology name="REST-utils" target-name="REST-utils"
+                    template-config-file-name="mp-template-config-REST-utils.xml"
+                    default-outputdir="REST"
+                    template-dir="@templateRoot@/framework/rest" is-generable="false">
+        </technology>
 
         <!-- TODO move to custom catalog -->
         <technology name="REST-Custom" model-type="rdbms"

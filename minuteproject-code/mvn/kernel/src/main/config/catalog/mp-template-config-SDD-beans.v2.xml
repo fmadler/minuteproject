@@ -11,39 +11,31 @@
 		belongToPackage="true">
 
 		<!-- SDD beans -->	
-		<template name="SDDInputBean" templateFileName="JavaBean.vm" 
-			subdir="" outputsubdir="" technicalPackage="sdd.in"
+		<template name="SDDInputBeanV2" templateFileName="JavaBean.vm"
+			subdir="" outputsubdir="" technicalPackage="dto.in"
 			file-extension="java" file-prefix="" file-suffix="In" has-updatable-nature="true"
 			scope-specific-value="sdd-input-bean" >
 			<property name="direction" value="in"/>
 			<property name="java-validation" value="true"/>
 		</template>
 
-		<template name="SDDOutputBean" templateFileName="JavaBean.vm" 
-			subdir="" outputsubdir="" technicalPackage="sdd.out"
+		<template name="SDDOutputBeanV2" templateFileName="JavaBean.vm"
+			subdir="" outputsubdir="" technicalPackage="dto.out"
 			file-extension="java" file-prefix="" file-suffix="Out" has-updatable-nature="true"
 			scope-specific-value="sdd-output-bean" 
 			check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedOnNotScalar">
 			<property name="direction" value="out"/>
 		</template>	
 
-		<template name="SDDOutputBeanCollection" templateFileName="JavaBeanCollection.vm" 
-			subdir="" outputsubdir="" technicalPackage="sdd.out"
-			file-extension="java" file-prefix="" file-suffix="OutList" has-updatable-nature="true"
-			scope-specific-value="sdd-output-bean" 
-			check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedOnCardinalityMany">
-			<property name="JavaBeanTemplate" value="SDDOutputBean" />
-		</template>
-		
 		<!-- composite -->
-		<template name="SDDInputCompositeBean" templateFileName="JavaCompositeBean.vm" 
-			subdir="" outputsubdir="" technicalPackage="composite.in"
+		<template name="SDDInputCompositeBeanV2" templateFileName="JavaCompositeBean.vm"
+			subdir="" outputsubdir="" technicalPackage="dto.in"
 			file-extension="java" file-prefix="" file-suffix="In" has-updatable-nature="true"
 			scope-specific-value="sdd-input-composite-bean" >
 		</template>
 			
-		<template name="SDDOutputCompositeBean" templateFileName="JavaCompositeBean.vm" 
-			subdir="" outputsubdir="" technicalPackage="composite.out"
+		<template name="SDDOutputCompositeBeanV2" templateFileName="JavaCompositeBean.vm"
+			subdir="" outputsubdir="" technicalPackage="dto.out"
 			file-extension="java" file-prefix="" file-suffix="Out" has-updatable-nature="true"
 			scope-specific-value="sdd-output-composite-bean" >
 		</template>	

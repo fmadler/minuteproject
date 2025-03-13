@@ -1,7 +1,7 @@
 #exposeQuerySpecific()
 #exposeSDDSpring()
 #exposeRESTSDDURLServer()
-#putImportQuerySDDBean()
+#putImportQuerySDDBeanV2()
 #exposeSpringBootQuerySpecific()
 #addedAreas()
 #set ($size = $inputBean.columns.size())
@@ -46,7 +46,7 @@ import $sddOutputBeanImport;
 #if($isNotVoidInput)
 import $sddInputBeanImport;
 #end
-import $sddDaoInterfaceImport;
+##TODO remove import $sddDaoInterfaceImport;
 
 /**
  *

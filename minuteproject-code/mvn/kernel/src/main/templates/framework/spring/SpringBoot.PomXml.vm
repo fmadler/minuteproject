@@ -1,4 +1,5 @@
 #generatorSpecific()
+#exposeApplicationSpecific()
 #exposeBackendTechnology()
 #exposeMaven()
 #exposeMavenJersey()
@@ -30,8 +31,8 @@
     <dependencies>
 
         <!--
-        !!! make bsla spring boot dependent
-        -->
+        !!! make bsla spring boot dependent or migrate
+
         <dependency>
             <groupId>${groupId}</groupId>
 #if($isEJBBackend)
@@ -47,7 +48,7 @@
             	</exclusion>
             </exclusions>
         </dependency>
-
+-->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
@@ -104,17 +105,7 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
-    	<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
-		
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
@@ -133,46 +124,7 @@
             <scope>test</scope>
         </dependency>
         
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-			<scope>provided</scope>
-		</dependency>	
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.0</version>
-			<scope>provided</scope>			
-		</dependency>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>$javaeeApiVersion</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-	        <groupId>org.glassfish.jersey.core</groupId>
-	        <artifactId>jersey-server</artifactId>
-	        <version>${jersey.version}</version>
-#if(!$isTomcatTargetServer)
-	        <exclusions>
-		        <exclusion>
-			        <artifactId>javax.ws.rs-api</artifactId>
-			        <groupId>javax.ws.rs</groupId>
-		        </exclusion>
-##TODO dependent of hibernatejersey-media-multip
-                <exclusion>
-			        <artifactId>validation-api</artifactId>
-			        <groupId>javax.validation</groupId>
-		        </exclusion>
-	        </exclusions>
-#end
-#if($isGlassfishTargetServer)
-        	<scope>provided</scope>
-#end            
-        </dependency>
-#if($isTomcatTargetServer && $hasScheduler)        
+#if($isTomcatTargetServer && $hasScheduler)
 		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
 		<dependency>
 		    <groupId>javax.mail</groupId>
@@ -182,53 +134,7 @@
 #else
 			<!-- TUTO: POTENTIAL-ISSUE if target server is tomcat then no embedded mail jar can prevent deployment -->
 #end
-        <dependency>
-	        <groupId>org.glassfish.jersey.containers</groupId>
-	        <artifactId>jersey-container-servlet-core</artifactId>
-	        <version>${jersey.version}</version>
-#if(!$isTomcatTargetServer)
-        <exclusions>
-	        <exclusion>
-		        <artifactId>javax.ws.rs-api</artifactId>
-		        <groupId>javax.ws.rs</groupId>
-	        </exclusion>
-        </exclusions>
-#end
-#if($isGlassfishTargetServer)
-        <scope>provided</scope>
-#end            
-        </dependency>
-        
-        <!-- testing http rest request -->
-        <dependency>
-            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-            <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
-            <version>${jersey.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.test-framework</groupId>
-            <artifactId>jersey-test-framework-core</artifactId>
-            <version>${jersey.version}</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <!-- atmosphere -->
-		<dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-jersey</artifactId>
-			<version>${atmosphere.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jersey-server</artifactId>
-                    <groupId>com.sun.jersey</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jersey-servlet</artifactId>
-                    <groupId>com.sun.jersey</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+
 
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -258,78 +164,6 @@
             <version>17.0</version>
         </dependency>
 #end
-        <!-- swagger -->
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-jersey2-jaxrs</artifactId>
-            <version>1.6.11</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.glassfish.jersey.containers</groupId>
-                    <artifactId>jersey-container-servlet-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-multipart</artifactId>
-                </exclusion>
-##ship with hibernate
-                <exclusion>
-                    <groupId>org.javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-#if($isSpringBackend)
-        <dependency>
-            <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-spring3</artifactId>
-            <version>2.6</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-#end        
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-            <version>${jersey.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jersey-server</artifactId>
-                    <groupId>com.sun.jersey</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jersey-servlet</artifactId>
-                    <groupId>com.sun.jersey</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-sse</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <dependency>
-    		<groupId>org.glassfish.jersey.ext</groupId>
-    		<artifactId>jersey-bean-validation</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -372,29 +206,6 @@
 		</dependency>
 		
 #end
-#if($hasCorsFilter)
-#if($corsFilter=="thetransactioncompany")
-		<!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
-		<dependency>
-			<groupId>com.thetransactioncompany</groupId>
-			<artifactId>cors-filter</artifactId>
-			<version>2.5</version>
-		</dependency>
-#end
-#if($corsFilter=="apache")		
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-catalina</artifactId>
-            <version>8.0.5</version>
-#if($isTomcatTargetServer)
-			<scope>provided</scope>
-#else
-			<!-- TUTO: POTENTIAL-ISSUE if target server is tomcat then embedded tomcat jar can collide with runtime tomcat server jar -->
-#end
-#end
-
-        </dependency>
-#end
 #if($template.hasProperty("mvn-dep-groupId"))
 		<dependency>
 			<groupId>$template.getPropertyValue("mvn-dep-groupId")</groupId>
@@ -423,10 +234,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-#foreach ($model in $application.getModels())
 #exposeSpringBootModelSpecific()
                     <mainClass>${springBootModelImport}</mainClass>
-#end
+#*foreach ($model in $application.getModels())
+#exposeSpringBootModelSpecific()
+                    <mainClass>${springBootModelImport}</mainClass>
+#end*#
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -434,6 +247,13 @@
                         </exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -546,11 +366,11 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
+        <spring-boot-maven-plugin.version>2.7.11</spring-boot-maven-plugin.version>
 
         <jersey.version>${jerseyVersion}</jersey.version>
 		<guava.version>${guavaVersion}</guava.version>
-        <atmosphere.version>${atmosphereVersion}</atmosphere.version>
-        <jackson.version>${jacksonVersion}</jackson.version>
+        <jackson.version>2.18.3</jackson.version>
         <build.time>${maven.build.timestamp}</build.time>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 #if(!$hasMasterPom)

@@ -5,6 +5,46 @@ xs:schemaLocation="./mp-template-config.xsd">
 	<architecture-target name="springboot REST GRAPHQL API" description="springboot REST GRAPHQL API"/>
 
 	<template-target
+			name="Spring boot core resources"
+			outputdir="src/main/resources"
+			belongToPackage="true">
+
+		<template name="SpringBootApplication.prop" templateFileName="SpringBootApplication.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+		</template>
+
+		<template name="SpringBootApplication.jdbc-params.prop" templateFileName="SpringBootApplication.jdbc.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-params"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+			<property name="embedded-datasource" value="false"/>
+		</template>
+
+		<template name="SpringBootApplication.jdbc-cp.prop" templateFileName="SpringBootApplication.jdbc.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-cp"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+			<property name="embedded-datasource" value="true"/>
+		</template>
+		<!--
+		<template name="SpringBootApplication.jdbc-params.prop" templateFileName="SpringBootApplication.jdbc-params.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-params"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+		</template>
+
+		<template name="SpringBootApplication.jdbc-cp.prop" templateFileName="SpringBootApplication.jdbc-cp.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-cp"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+		</template>
+		-->
+
+	</template-target>
+
+	<template-target
 			name="Spring boot core files"
 			outputdir="src/main/java"
 			belongToPackage="true">
@@ -21,11 +61,13 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  scope-specific-value="model" add-model-name="true">
 		</template>
 
+		<!-- sdd are working on spring template
 		<template name="SpringBootPersistenceJNDI" templateFileName="SpringBootPersistenceJNDI.vm"
 				  subdir="" outputsubdir="" technicalPackage=""
 				  file-extension="java" file-prefix="" file-suffix="PersistenceJNDIConfig"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
+		-->
 
 		<template name="SpringBootWebFilterConfig" templateFileName="SpringBootWebFilterConfig.vm"
 				  subdir="" outputsubdir="" technicalPackage="web"
