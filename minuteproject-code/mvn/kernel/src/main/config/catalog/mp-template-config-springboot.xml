@@ -89,7 +89,7 @@ xs:schemaLocation="./mp-template-config.xsd">
 		</template>
 
 		<!-- query -->
-		<template name="SpringBoot.sdd.controller" templateFileName="SpringBoot.sdd.controller.vm"
+		<template name="SpringBoot.sdd.controller" templateFileName="SpringBoot.SDD.controller.vm"
 				  subdir="" outputsubdir="" technicalPackage="controller"
 				  file-extension="java" file-prefix="" file-suffix="Controller"
 				  add-package-name="false" add-business-package-dir-name="false"
