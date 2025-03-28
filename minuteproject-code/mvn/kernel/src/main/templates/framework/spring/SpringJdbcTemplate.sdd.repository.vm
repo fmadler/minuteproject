@@ -59,11 +59,47 @@ public class $className {##//implements
 #foreach($column in $outputBean.columns)
 #putColumnParamNaming()
 #set($columnType = $statementUtils.getJdbcType($column))
+#if (!$column.getSeparatorCharacters())
                     rs.get${columnType}("${column.name}")#if ($velocityCount!=$outputBean.columnCount),#end
 
+#else
+                    $columnType $columnVar = rs.get${columnType}("${column.name}");
+                    if ($columnVar != null) {
+                        ${sddOutputBeanVariable}.set${columnClass}(
+#set ($objectSeparatorChar=$commonUtils.getObjectSeparatorChar($column))
+#set ($attributeSeparatorChar=$commonUtils.getAttributeSeparatorChar($column))
+                            Arrays.stream(${columnVar}.split("\\\\${objectSeparatorChar}"))
+                                .map(u -> {
+                                    String[] uA = u.split("\\\\${attributeSeparatorChar}");
+${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnClass}();
+                                    if (uA.length==$column.structuredArray.size()) {
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldClass = $commonUtils.getJavaClassName($field.name))
+#set($vIndex = $velocityUtils.getIndexFromCount(${velocityCount}))
+                                        c.set$fieldClass(uA[${vIndex}]);
+#end
+                                    }
+                                    return c;
+                                })
+                                .collect(Collectors.toList())
+                            );
+                        }
+#end
 #end
                 )
 #end
+/*
+#if ($statementUtils.hasResult($outputBean))
+                    ${sddOutputBeanClass}.builder()
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+                    .$columnVar(rs.get${columnType}("${column.name}"))
+#end
+                    .build()
+#end
+*/
             , getParams(
 #if($isNotVoidInput)
             $sddInputBeanVariable

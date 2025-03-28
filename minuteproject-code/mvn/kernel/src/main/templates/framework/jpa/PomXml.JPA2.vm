@@ -204,7 +204,14 @@
     	  <artifactId>commons-beanutils</artifactId>
     	  <version>1.8.3</version>
     	</dependency>
-    	
+
+        <!-- apache commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+
         <dependency>
           <groupId>net.sf.minuteproject</groupId>
           <artifactId>mp-bsla-jpa</artifactId>
@@ -252,9 +259,11 @@
 ##		<hibernateVersion>6.0.13.Final</hibernateVersion>
 #end
 ##if does not work 6.0.13.Final switch to      <hibernateValidatorVersion>4.3.2.Final</hibernateValidatorVersion>
-      <hibernateValidatorVersion>6.0.13.Final</hibernateValidatorVersion>
+        <hibernateValidatorVersion>6.0.13.Final</hibernateValidatorVersion>
         <slf4jVersion>1.7.25</slf4jVersion>
+        <commons-lang3.version>3.3</commons-lang3.version>
     </properties>
+
     <build>
         <!--<finalName>$DbApiName</finalName>-->
         <resources>

@@ -1,4 +1,5 @@
 #exposeQuerySpecific()
+#putQueryCommons()
 #exposeSDDSpring()
 #exposeRESTSDDURLServer()
 #putImportQuerySDDBeanV2()
@@ -55,30 +56,22 @@ import $sddInputBeanImport;
  * <p>Description: class for ${className} service </p>
  *
  */
-@RequestMapping ("$restXmlServerUrl")
+@RequestMapping ("/sdd/${queryVariableName}")
 @Controller
 @Slf4j
 @AllArgsConstructor
 @Tag(name = "${className} API", description = "${className} API")
 public class ${className} {
 
-#*
-    @Autowired
-    @Qualifier("$sddDaoInterfaceVariable")
-    ${sddDaoInterfaceClass} $sddDaoInterfaceVariable;
-*#
     private ${springBootJdbcTemplateRepositoryClass} $springBootJdbcTemplateRepositoryVariable;
 
-    @GetMapping(path = "/todo",
-        consumes = {MediaType.APPLICATION_JSON_VALUE},
-        produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping
     @Operation(summary = "create a Xml document from source")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "$query.info", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+        @ApiResponse(responseCode = "200", description = "$queryVariableName", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
         @ApiResponse(responseCode = "500", description = "Error while handling request", content = @Content)
         })
 	@ResponseBody
-    //public $sddOutputBeanCollectionClass execute (
     public ResponseEntity<Object> execute (
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()

@@ -285,9 +285,9 @@ $readmeUtils.getReadme($template)
 #end
 
 #macro (exposeVelocitySpecific)
-	#exposeVelocityTemplate()
-	#set ($velocityMergerClass = $commonUtils.getTemplateClassName($model, $template, $templateVelocityMerger))
-	#set ($velocityMergerImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateVelocityMerger))
+#exposeVelocityTemplate()
+#set ($velocityMergerClass = $commonUtils.getTemplateClassName($model, $template, $templateVelocityMerger))
+#set ($velocityMergerImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateVelocityMerger))
 #end
 
 #macro(exposeVelocityTemplate)
@@ -641,7 +641,7 @@ $!updatedAreaEnd
 							${sddOutputBeanVariable}.set${columnClass}(
 #set ($objectSeparatorChar=$commonUtils.getObjectSeparatorChar($column))
 #set ($attributeSeparatorChar=$commonUtils.getAttributeSeparatorChar($column))
-								Arrays.asList(${columnVar}.split("\\\\${objectSeparatorChar}")).stream()
+								Arrays.stream(${columnVar}.split("\\\\${objectSeparatorChar}"))
 									.map(u -> {
 										String[] uA = u.split("\\\\${attributeSeparatorChar}");
 										${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnClass}();

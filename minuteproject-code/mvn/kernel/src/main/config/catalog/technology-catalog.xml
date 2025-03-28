@@ -268,33 +268,6 @@
             <property name="rest-pom-maven-packaging" value="war"/>
         </technology>
 
-        <technology name="SpringBootOld" model-type="rdbms"
-                    template-config-file-name="mp-template-config-springboot.xml"
-                    default-outputdir="REST"
-                    depends-on-targets="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,CloudFoundry-REST,tomcat,docker,SpringBoot.MavenMaster"
-                    template-dir="@templateRoot@/framework/spring"
-                    status="released"
-                    description="Generates:\Springboot REST API and graphql API">
-            <frameworks>
-                <framework name="springboot" version="2+"></framework>
-            </frameworks>
-            <!--
-            <property name="add-querydsl" value="2.1.2"></property>
-            -->
-            <property name="springboot" value="2"></property>
-            <property name="swagger-openapi-version" value="3"></property>
-            <property name="add-jpa2-implementation" value="hibernate"></property>
-            <property name="add-domain-specific-method" value="true"></property>
-            <property name="add-cache-implementation" value="ehcache"></property>
-            <property name="use-temporal" value="true"></property>
-            <property name="add-backend-implementation" value="spring"></property>
-            <property name="graphql-enabled" value="true"/>
-            <property name="maven-artifact-finalName-suffix" value="GraphQLApp"/>
-
-            <property name="rest-pom-maven-artifact-finalName-suffix" value="GraphQLApp"/>
-            <property name="rest-pom-maven-packaging" value="war"/>
-        </technology>
-
         <technology name="SpringBoot" model-type="rdbms"
                     template-config-file-name="mp-template-config-springboot.xml"
                     default-outputdir="REST"
@@ -314,8 +287,8 @@
             <property name="use-temporal" value="true"></property>
             <property name="add-backend-implementation" value="spring"></property>
             <property name="graphql-enabled" value="true"/>
-            <property name="maven-artifact-finalName-suffix" value="GraphQLApp"/>
-            <property name="rest-pom-maven-artifact-finalName-suffix" value="GraphQLApp"/>
+            <property name="maven-artifact-finalName-suffix" value="SpringBoot"/>
+            <property name="rest-pom-maven-artifact-finalName-suffix" value="SpringBoot"/>
             <property name="rest-pom-maven-packaging" value="war"/>
         </technology>
 

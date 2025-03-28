@@ -168,12 +168,7 @@
 		  </exclusion>
 	  </exclusions>
    </dependency>
-    <!-- apache commons -->
-    <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>${commons-lang3.version}</version>
-    </dependency>
+
 #end	
 	<!-- spring end -->
 #foreach($dependency in $dependencies)
@@ -262,8 +257,6 @@
 		<spring.version>4.2.2.RELEASE</spring.version>
 		<cglib.version>2.2.2</cglib.version>
 		<junit.version>4.10</junit.version>
-        <commons-lang3.version>3.3</commons-lang3.version>
-
 	</properties>
 	
 </project>
