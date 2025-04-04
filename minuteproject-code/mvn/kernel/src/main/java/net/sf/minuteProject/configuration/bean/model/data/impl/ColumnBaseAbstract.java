@@ -22,7 +22,7 @@ public abstract class ColumnBaseAbstract extends AbstractConfiguration implement
 	private String typeAlias;
 	private boolean isHidden=false, isTransient=false, isSearchable=true, isEditable=true;
 	private boolean isContext=false, isImplicit=false, hasBeenDuplicated=false, isArray = false, isStructuredArray=false, isOutputParam=false;
-	private String filterName, sessionParamName, separatorCharacters, arrayColumns, arrayElementName, arrayColumnsType;
+	private String filterName, sessionParamName, separatorCharacters, arrayColumns="", arrayElementName, arrayColumnsType;
 	private QueryParamLink queryParamLink;
 	private boolean useJwtSubject = false;
 

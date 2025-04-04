@@ -1,5 +1,4 @@
-#generatorSpecific()
-#foreach ($model in $configuration.models())
+#macro (springBootJdbcConfigProperties)
 #exposeVariableModelSpecific()
 #set ($datasource = $model.dataModel.basicDataSource)
 #exposeJdbc()
@@ -10,7 +9,6 @@
 #set ($jdbcUrl=$formatUtils.escapeXml($embeddedDatasource.getPropertyValue("jdbcUrl")))
 #set ($username=$embeddedDatasource.getPropertyValue("username"))
 #set ($password=$embeddedDatasource.getPropertyValue("password"))
-
 #if ($embeddedDatasource)
 spring.datasource.jndi-name=jdbc/${model.name}DS
 #else
@@ -21,5 +19,17 @@ spring.datasource.password=$password
 
 spring.datasource.hikari.connection-timeout=20000
 spring.datasource.hikari.maximum-pool-size=0
+#end
+#end
+#generatorSpecific()
+#exposeApplicationSpecific()
+#if($configuration.isSingleModel())
+#springBootJdbcConfigProperties()
+#end
+#foreach ($model in $application.getModels())
+#if ($application.getModels().size()==1)
+#springBootJdbcConfigProperties()
+#else
+    ## TODO multimodel in SB
 #end
 #end

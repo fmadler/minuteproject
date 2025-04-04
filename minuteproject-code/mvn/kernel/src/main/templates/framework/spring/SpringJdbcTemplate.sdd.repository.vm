@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import $sddInputBeanImport;
 import $sddOutputBeanImport;
 import org.apache.commons.lang3.StringUtils;
@@ -63,28 +65,7 @@ public class $className {##//implements
                     rs.get${columnType}("${column.name}")#if ($velocityCount!=$outputBean.columnCount),#end
 
 #else
-                    $columnType $columnVar = rs.get${columnType}("${column.name}");
-                    if ($columnVar != null) {
-                        ${sddOutputBeanVariable}.set${columnClass}(
-#set ($objectSeparatorChar=$commonUtils.getObjectSeparatorChar($column))
-#set ($attributeSeparatorChar=$commonUtils.getAttributeSeparatorChar($column))
-                            Arrays.stream(${columnVar}.split("\\\\${objectSeparatorChar}"))
-                                .map(u -> {
-                                    String[] uA = u.split("\\\\${attributeSeparatorChar}");
-${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnClass}();
-                                    if (uA.length==$column.structuredArray.size()) {
-#foreach($field in $column.structuredArray)
-#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
-#set($fieldClass = $commonUtils.getJavaClassName($field.name))
-#set($vIndex = $velocityUtils.getIndexFromCount(${velocityCount}))
-                                        c.set$fieldClass(uA[${vIndex}]);
-#end
-                                    }
-                                    return c;
-                                })
-                                .collect(Collectors.toList())
-                            );
-                        }
+                    get${columnClass}(rs.get${columnType}("${column.name}"))#if ($velocityCount!=$outputBean.columnCount),#end
 #end
 #end
                 )
@@ -115,6 +96,35 @@ ${sddOutputBeanClass}.${columnClass} c = ${sddOutputBeanVariable}.new ${columnCl
             )
       );
     }
+
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+#if ($column.getSeparatorCharacters())
+    private List<${sddOutputBeanClass}.${columnClass}> get${columnClass}($columnType $columnVar) {
+#set ($objectSeparatorChar=$commonUtils.getObjectSeparatorChar($column))
+#set ($attributeSeparatorChar=$commonUtils.getAttributeSeparatorChar($column))
+        return Arrays.stream(${columnVar}.split("\\\\${objectSeparatorChar}"))
+            .map(u -> {
+                String[] uA = u.split("\\\\${attributeSeparatorChar}");
+                ${sddOutputBeanClass} a = new ${sddOutputBeanClass}();
+                ${sddOutputBeanClass}.${columnClass} c = a.new ${columnClass}();
+                if (uA.length==${column.structuredArray.size()}) {
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldClass = $commonUtils.getJavaClassName($field.name))
+#set($vIndex = $velocityUtils.getIndexFromCount(${velocityCount}))
+                    c.set$fieldClass(uA[${vIndex}]);
+#end
+                }
+                return c;
+            })
+            .collect(Collectors.toList()
+        );
+    }
+
+#end
+#end
 
     protected Object[] getParams (
 #if($isNotVoidInput)
