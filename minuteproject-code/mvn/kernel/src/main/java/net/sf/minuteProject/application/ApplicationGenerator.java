@@ -3,6 +3,7 @@ package net.sf.minuteProject.application;
 import java.util.Date;
 import java.util.Map;
 
+import net.sf.minuteProject.report.ThreadSafeReporting;
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 
@@ -91,6 +92,7 @@ public class ApplicationGenerator extends AbstractGenerator {
 		Date endDate = new Date();
 		logger.info("end time = "+endDate);
 		logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
+		ThreadSafeReporting.report().reportEntries().forEach(u->logger.info(u));
 	}
 
 

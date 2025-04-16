@@ -91,15 +91,6 @@
             <version>2.4.18</version>
         </dependency>
 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-#if(!$hasMasterPom)
-			<version>${lombok.version}</version>
-#end
-			<scope>provided</scope>
-		</dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -237,18 +228,29 @@
     <build>
         <finalName>$finalName</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
 #exposeCompilerPlugin()
 #exposeApplicationPropertiesPlugin()
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+#if($configuration.isSingleModel())
 #exposeSpringBootModelSpecific()
                     <mainClass>${springBootModelImport}</mainClass>
-#*foreach ($model in $application.getModels())
+#end
+#foreach ($model in $application.getModels())
+#if ($application.getModels().size()==1)
 #exposeSpringBootModelSpecific()
                     <mainClass>${springBootModelImport}</mainClass>
-#end*#
+#else
+                    <!-- TODO multimodel -->
+#end
+#end
+
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

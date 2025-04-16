@@ -3,7 +3,7 @@ package net.sf.minuteProject.utils;
 public class MinuteProjectUtils {
 
 	public static String getVersion () {
-		return "0.9.11";
+		return "1.0.1";
 	}
 	
 	public static String getBuildDate () {

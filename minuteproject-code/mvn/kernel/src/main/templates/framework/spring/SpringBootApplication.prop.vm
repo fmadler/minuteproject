@@ -1,6 +1,10 @@
 #generatorSpecific()
 #exposeVariableApplicationSpecific()
+#if($configuration.isSingleModel())
 spring.application.name=$model.name
+#else
+spring.application.name=$application.name
+#end
 server.port=8081
 
 #OpenAPI custom properties

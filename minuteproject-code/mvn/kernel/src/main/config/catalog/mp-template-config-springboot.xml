@@ -51,14 +51,14 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 		<template name="SpringBootApplication" templateFileName="SpringBootApplication.vm"
 				  subdir="" outputsubdir="" technicalPackage=""
-				  file-extension="java" file-prefix="" file-suffix="BootApplication"
+				  file-extension="java" file-prefix="" file-suffix="Application"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 
-		<template name="SpringBootModelApplication" templateFileName="SpringBootModelApplication.vm"
+		<template name="SpringBootServletInitializer" templateFileName="SpringBootServletInitializer.vm"
 				  subdir="" outputsubdir="" technicalPackage=""
-				  file-extension="java" file-prefix="" file-suffix="BootApplication"
-				  scope-specific-value="model" add-model-name="true">
+				  file-extension="java" file-prefix="" file-suffix="ServletInitializer"
+				  scope-specific-value="model" add-model-name="false">
 		</template>
 
 		<!-- sdd are working on spring template

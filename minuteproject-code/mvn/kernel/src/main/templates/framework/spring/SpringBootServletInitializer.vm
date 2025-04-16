@@ -1,20 +1,24 @@
+#generatorSpecific()
 #exposeVariableModelSpecific()
+#exposeSpringBootApplicationSpecific()
 package $packageName;
 
+#if($configuration.isSingleModel())
+//isSingleModel true
+#else
+//    isSingleModel false
+#end
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-@SpringBootApplication
+// @SpringBootApplication
 public class $className extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return configureApplication(builder);
-    }
-
-    private static SpringApplicationBuilder configureApplication(SpringApplicationBuilder builder) {
-        return builder.sources(BootApplication.class);//.bannerMode(Banner.Mode.OFF);
+//        return builder.sources(${springBootApplicationClass}.class);//.bannerMode(Banner.Mode.OFF);
+        return builder.sources(Application.class);//.bannerMode(Banner.Mode.OFF);
     }
 
 }

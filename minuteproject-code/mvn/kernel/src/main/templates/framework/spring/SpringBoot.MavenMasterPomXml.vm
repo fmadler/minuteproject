@@ -99,7 +99,35 @@ $!updatedAreaEnd
 			<plugins>
 #exposeCompilerPlugin()
 #exposeJacocoPluginDep()
-#exposeSassPluginDep()
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>3.1.0</version>
+					<executions>
+						<execution>
+							<id>enforce-versions</id>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<banDuplicatePomDependencyVersions/>
+								</rules>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.openrewrite.maven</groupId>
+					<artifactId>rewrite-maven-plugin</artifactId>
+					<version>6.6.1</version>
+					<configuration>
+						<exportDatatables>true</exportDatatables>
+						<activeRecipes>
+							<recipe>org.openrewrite.java.RemoveUnusedImports</recipe>
+						</activeRecipes>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

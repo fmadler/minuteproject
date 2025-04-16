@@ -140,6 +140,25 @@
 #set ($springBootModelImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringBootApplication))
 #end
 
+#macro (exposeSpringBootApplicationSpecific)
+    // call exposeSpringBootApplicationSpecific
+#if($configuration.isSingleModel())
+ //   hi!
+#exposeSpringBootModelSpecific()
+#set ($springBootApplicationImport = ${springBootModelImport})
+#set ($springBootApplicationClass = ${springBootModelClass})
+#end
+#foreach ($model in $application.getModels())
+//    hi model
+#if ($application.getModels().size()==1)
+#set ($springBootApplicationImport = ${springBootModelImport})
+#set ($springBootApplicationClass = ${springBootModelClass})
+#else
+## TODO change the logic of the Spring App and servletInitializer
+#end
+#end
+#end
+
 #macro (exposeSpringBootQuerySpecific)
 #exposeSpringBootTemplate()
 #set ($springBootJdbcTemplateRepositoryClass = $commonUtils.getTemplateClassName($query, $template, $templateSpringJdbcTemplateRepository))

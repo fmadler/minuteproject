@@ -66,13 +66,15 @@ public class ${className} {
     private ${springBootJdbcTemplateRepositoryClass} $springBootJdbcTemplateRepositoryVariable;
 
     @GetMapping
-    @Operation(summary = "create a Xml document from source")
+    @Operation(summary = "${className}")
+#* when set does not provide the schema
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "$queryVariableName", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
         @ApiResponse(responseCode = "500", description = "Error while handling request", content = @Content)
         })
+*#
 	@ResponseBody
-    public ResponseEntity<Object> execute (
+    public ResponseEntity<List<$sddOutputBeanClass>> execute (
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()
         @RequestParam ("$columnVar") $columnType $columnVar #if($velocityCount!=$size),

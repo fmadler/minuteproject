@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,6 +16,10 @@ import java.util.Map;
 
 import net.sf.minuteProject.configuration.bean.*;
 import net.sf.minuteProject.configuration.bean.model.statement.*;
+import net.sf.minuteProject.report.ReportEntry;
+import net.sf.minuteProject.report.ReportEntryCategory;
+import net.sf.minuteProject.report.ReportEntryType;
+import net.sf.minuteProject.report.ThreadSafeReporting;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -71,14 +77,22 @@ public class QueryUtils {
 	private static QueryParams getOutputParams(Connection connection, Query query) throws SQLException {
 		String q = getFullQuerySample(query);
 
-		try (
-				PreparedStatement prest = connection.prepareStatement(q);
-				){
+		try (PreparedStatement prest = connection.prepareStatement(q)){
 			ResultSet rs = prest.executeQuery();
 			return getQueryParams(rs.getMetaData());
 		} catch (SQLException e) {
 			logger.error("error executing query : '"+query.getName()+"'\nSQL:\n"+q);
 			logger.error("error sql for query : '"+query.getName()+"'\nError:\n"+e.getMessage());
+			ThreadSafeReporting.report().add(
+				ReportEntry.builder()
+					.time(LocalDateTime.now())
+					.type(ReportEntryType.ERROR)
+					.category(ReportEntryCategory.SDD_SQL_QUERY)
+					.element(query.getName())
+					.elementValue(q)
+					.message(e.getMessage())
+					.build()
+			);
 			return new QueryParams();
 		}
 	}

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.minuteProject.report.ThreadSafeReporting;
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 
@@ -117,12 +118,14 @@ public class ModelGenerator extends AbstractGenerator {
 		try {
 			generator.generate();
 		} catch (MinuteProjectException e) {
+			logger.error("Minuteproject exception caught ",e);
 			generator.exit("");
 		}
 		Date endDate = new Date();
 		logger.info("end time = " + endDate);
 		logger.info("time taken : " + (endDate.getTime() - startDate.getTime())
 				/ 1000 + "s.");
+		ThreadSafeReporting.report().reportEntries().forEach(u->logger.info(u));
 	}
 
 	protected void generate(Configuration configuration)
