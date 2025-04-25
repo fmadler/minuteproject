@@ -35,6 +35,9 @@ $!updatedAreaEnd
 
 	<properties>
 #putRESTDependencyVersions()
+#if($swagger4angular)
+		<openapi-generator-maven-plugin.version>6.0.1</openapi-generator-maven-plugin.version>
+#end
 	</properties>
 	
 	<dependencyManagement>
@@ -128,6 +131,28 @@ $!updatedAreaEnd
 						</activeRecipes>
 					</configuration>
 				</plugin>
+#if($swagger4angular)
+				<plugin>
+					<groupId>org.openapitools</groupId>
+					<artifactId>openapi-generator-maven-plugin</artifactId>
+					<version>${openapi-generator-maven-plugin.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>generate</goal>
+							</goals>
+							<configuration>
+								<inputSpec>${project.basedir}/src/main/resources/openapi.json</inputSpec>
+								<generatorName>typescript-angular</generatorName>
+								<output>${project.build.directory}/generated-sources/openapi</output>
+								<configOptions>
+									<ngVersion>13.0.0</ngVersion>
+								</configOptions>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+#end
 			</plugins>
 		</pluginManagement>
 	</build>

@@ -25,6 +25,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,7 +49,10 @@ import $sddOutputBeanImport;
 #if($isNotVoidInput)
 import $sddInputBeanImport;
 #end
-##TODO remove import $sddDaoInterfaceImport;
+#if($queryUtils.isCache($query))
+import org.springframework.http.CacheControl;
+import java.util.concurrent.TimeUnit;
+#end
 
 /**
  *
@@ -77,16 +82,16 @@ public class ${className} {
     public ResponseEntity<List<$sddOutputBeanClass>> execute (
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()
-        @RequestParam ("$columnVar") $columnType $columnVar #if($velocityCount!=$size),
+        @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end) $columnType $columnVar #if($velocityCount!=$size),
 #end
 #end
 #foreach($queryChunk in $query.getQueryChunks())
 #set($chunkClass=$formatUtils.getJavaName($queryChunk.name))
 #set($chunkVar=$commonUtils.getJavaNameVariableFirstLetter($chunkClass))
 #if(!$isNotVoidInput && $velocityCount==1)
-        @RequestParam ("$chunkVar") String $chunkVar
+        @RequestParam (value="$chunkVar", required = false) String $chunkVar
 #else
-        ,@RequestParam ("$chunkVar") String $chunkVar
+        ,@RequestParam (value="$chunkVar", required = false) String $chunkVar
 #end
 #end
     ) {
@@ -113,7 +118,11 @@ public class ${className} {
 #end
             );
         HttpHeaders responseHeaders = new HttpHeaders();
-        return new ResponseEntity<>(list, responseHeaders, HttpStatus.OK);
+        return ResponseEntity.ok()
+#if($queryUtils.isCache($query))
+            .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic())
+#end
+            .body(list);
     }
 
 }

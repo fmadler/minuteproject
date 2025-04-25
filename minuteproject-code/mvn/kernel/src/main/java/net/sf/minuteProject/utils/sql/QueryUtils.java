@@ -520,7 +520,6 @@ public class QueryUtils {
 	public static boolean isToGenerateBasedOnNotScalar(Template template, GeneratorBean bean) {
 		return !isToGenerateBasedOnScalar(template, bean);
 	}
-
 	
 	public static boolean hasInputBeanAtLeastOneVisibleColumn(Table table) {
 		return Arrays.stream(table.getColumns()).filter(c -> !c.isImplicit()).findFirst().isPresent();

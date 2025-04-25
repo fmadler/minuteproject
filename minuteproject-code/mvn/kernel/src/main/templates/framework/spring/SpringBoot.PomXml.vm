@@ -286,7 +286,12 @@
                     </execution>
                 </executions>
             </plugin>
-
+#if($swagger4angular)
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+            </plugin>
+#end
         </plugins>
 		<resources>
 			<resource>
