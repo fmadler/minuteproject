@@ -77,6 +77,8 @@
 #macro (exposeSpringBootTemplate)
 #set ($templateSpringBootApplication = "SpringBootApplication")
 #set ($templateSpringJdbcTemplateRepository = "SpringJdbcTemplate.sdd.repository")
+#set ($templateSpringAuditLoggingAnnotation = "SpringBoot.annotation.AuditLogging")
+#set ($templateSpringLogback = "SpringBoot.logback")
 #end
 
 #macro (exposeSpringModelSpecific)
@@ -90,6 +92,12 @@
 #set($beanSpringModelServiceClass=$commonUtils.getTemplateClassName($model, $template, $templateSpringModelServiceInterface))
 #set($beanSpringModelServiceVariable=$commonUtils.getJavaNameVariableFirstLetter($beanSpringModelServiceClass))
 #set($beanSpringModelServiceImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringModelServiceInterface))  
+#end
+
+#macro (exposeSpringLoggingModelSpecific)
+#exposeSpringBootTemplate()
+#set ($auditLoggingAnnotationClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringAuditLoggingAnnotation))
+#set ($auditLoggingAnnotationImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateSpringAuditLoggingAnnotation))
 #end
 
 #macro (exposeSpringdataModelSpecific)
@@ -138,19 +146,19 @@
 #exposeSpringBootTemplate()
 #set ($springBootModelClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringBootApplication))
 #set ($springBootModelImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringBootApplication))
+##set ($templateSpringLogbackPath = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringLogback))
+#set($templateSpringLogbackPath=$commonUtils.getTemplateFileName($application, $template, $templateSpringLogback))
 #end
 
 #macro (exposeSpringBootApplicationSpecific)
-    // call exposeSpringBootApplicationSpecific
 #if($configuration.isSingleModel())
- //   hi!
 #exposeSpringBootModelSpecific()
 #set ($springBootApplicationImport = ${springBootModelImport})
 #set ($springBootApplicationClass = ${springBootModelClass})
 #end
 #foreach ($model in $application.getModels())
-//    hi model
 #if ($application.getModels().size()==1)
+#exposeSpringBootModelSpecific()
 #set ($springBootApplicationImport = ${springBootModelImport})
 #set ($springBootApplicationClass = ${springBootModelClass})
 #else

@@ -87,6 +87,7 @@ public class ApplicationGenerator extends AbstractGenerator {
 		try {
 			generator.generate();
 		} catch (MinuteProjectException e) {
+			logger.error(e);
 			generator.exit ("");
 		}
 		Date endDate = new Date();
@@ -206,8 +207,7 @@ public class ApplicationGenerator extends AbstractGenerator {
 		if (bean instanceof Function) {
 			context.put("function", bean);
 			context.put("table", ((Function)bean).getEntity(Direction.ANY)); //to give access to model
-//			context.put("table", bean);
-		}		
+		}
 		if (beanName.equals("view"))
 			context.put("table", bean);		
 		context.put("template", template);

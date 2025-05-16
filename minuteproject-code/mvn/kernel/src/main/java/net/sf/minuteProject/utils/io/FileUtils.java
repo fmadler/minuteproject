@@ -8,13 +8,18 @@ import static net.sf.minuteProject.utils.io.UpdatedAreaUtils.MP_MANAGED_UPDATABL
 import static net.sf.minuteProject.utils.io.UpdatedAreaUtils.MP_MANAGED_UPDATABLE_ENDING;
 
 import java.io.*;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import lombok.extern.log4j.Log4j;
 import net.sf.minuteProject.configuration.bean.Template;
@@ -57,15 +62,14 @@ public class FileUtils {
 		return FileUtils.getAbsolutePathFromPath(relDir, targetDir);
 	}
 
-	public static String getFileFullPathFromFileInRootClassPath(
-			String filePathInClassPath) {
-		URL url = Thread.currentThread().getContextClassLoader()
+	public static String getFileFullPathFromFileInRootClassPath2(String filePathInClassPath) {
+		final URL resource = Thread.currentThread().getContextClassLoader()
 				.getResource(filePathInClassPath);
-		if (url == null)
+		if (resource == null)
 			return filePathInClassPath;// "RESOURCE NOT IN THE PATH";
 		else {
 			try {
-				return new File(url.toURI()).getAbsolutePath();
+				return new File(resource.toURI()).getAbsolutePath();
 			} catch (URISyntaxException e) {
 				if (log.isDebugEnabled()) {
 					final String stackTrace = ExceptionUtils.getStackTrace(e);
@@ -77,12 +81,34 @@ public class FileUtils {
 		}
 	}
 
+	public static String getFileFullPathFromFileInRootClassPath(String filePath) throws MinuteProjectException{//withinJar
+		return getAbsolutePath(filePath).toString();
+	}
+
+	public static Path getAbsolutePath(String relativePath) throws MinuteProjectException {
+		try {
+			final URI uri = ClassLoader.getSystemResource(relativePath).toURI();
+			Path path = Paths.get(uri);
+
+			// Resolve the absolute path
+			Path absolutePath = path.toAbsolutePath().normalize();
+
+			// Check if the file exists
+			if (!Files.exists(absolutePath)) {
+				throw new MinuteProjectException("File not found: " + relativePath);
+			}
+
+			return absolutePath;
+		} catch (URISyntaxException e) {
+			throw new MinuteProjectException(e.getMessage());
+		}
+	}
 
 	public static File getFileFromFileInRootClassPath(
 			String filePathInClassPath) throws MinuteProjectException {
 		log.debug(">>>> filePathInClassPath "+filePathInClassPath);
 		URL url = Thread.currentThread().getContextClassLoader()
-				.getResource(filePathInClassPath);
+				.getSystemResource(filePathInClassPath);
 		log.debug(">>>> URL getFileFromFileInRootClassPath "+url.getFile());
 		if (url == null)
 			throw new MinuteProjectException("Missing file "+filePathInClassPath);

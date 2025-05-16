@@ -4,8 +4,8 @@
 #exposeRESTSDDURLServer()
 #putImportQuerySDDBeanV2()
 #exposeSpringBootQuerySpecific()
+#exposeSpringLoggingModelSpecific()
 #addedAreas()
-#set ($size = $inputBean.columns.size())
 package $packageName;
 
 $!updatedAreaImport
@@ -53,6 +53,7 @@ import $sddInputBeanImport;
 import org.springframework.http.CacheControl;
 import java.util.concurrent.TimeUnit;
 #end
+import $auditLoggingAnnotationImport;
 
 /**
  *
@@ -79,8 +80,11 @@ public class ${className} {
         })
 *#
 	@ResponseBody
+    @${auditLoggingAnnotationClass} (logLevel="INFO")
     public ResponseEntity<List<$sddOutputBeanClass>> execute (
-#foreach($column in $inputBean.columns)
+#set ($columnsNotDuplicatedNorImplicit = $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
+#set ($size = $columnsNotDuplicatedNorImplicit.size())
+#foreach($column in $columnsNotDuplicatedNorImplicit)
 #putColumnParamNaming()
         @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end) $columnType $columnVar #if($velocityCount!=$size),
 #end

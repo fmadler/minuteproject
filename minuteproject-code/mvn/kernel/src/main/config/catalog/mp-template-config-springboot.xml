@@ -28,19 +28,14 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  scope-specific-value="application" add-model-name="false" add-package-name="false">
 			<property name="embedded-datasource" value="true"/>
 		</template>
-		<!--
-		<template name="SpringBootApplication.jdbc-params.prop" templateFileName="SpringBootApplication.jdbc-params.prop.vm"
-				  subdir="" outputsubdir="" technicalPackage=""
-				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-params"
-				  scope-specific-value="application" add-model-name="false" add-package-name="false">
-		</template>
 
-		<template name="SpringBootApplication.jdbc-cp.prop" templateFileName="SpringBootApplication.jdbc-cp.prop.vm"
+		<template name="SpringBoot.logback" templateFileName="SpringBoot.logback.vm"
 				  subdir="" outputsubdir="" technicalPackage=""
-				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-cp"
-				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+				  file-extension="xml" file-prefix="" file-suffix="-logback"
+				  scope-specific-value="application" add-model-name="true"
+				  add-package-name="false" add-technical-dir-name="false"
+		>
 		</template>
-		-->
 
 	</template-target>
 
@@ -72,6 +67,18 @@ xs:schemaLocation="./mp-template-config.xsd">
 		<template name="SpringBootWebFilterConfig" templateFileName="SpringBootWebFilterConfig.vm"
 				  subdir="" outputsubdir="" technicalPackage="web"
 				  file-extension="java" file-prefix="" file-suffix="WebFilterConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.annotation.AuditLogging" templateFileName="SpringBoot.annotation.AuditLogging.vm"
+				  subdir="" outputsubdir="" technicalPackage="annotation"
+				  file-extension="java" file-prefix="" file-suffix="AuditLogger"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.aop.AuditLoggingAspect" templateFileName="SpringBoot.aop.AuditLoggingAspect.vm"
+				  subdir="" outputsubdir="" technicalPackage="aop"
+				  file-extension="java" file-prefix="" file-suffix="AuditLoggingAspect"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 

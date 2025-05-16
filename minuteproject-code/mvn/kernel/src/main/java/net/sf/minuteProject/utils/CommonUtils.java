@@ -457,7 +457,6 @@ public class CommonUtils {
 	public static String getArtifactRelativePathDirAndFullName (AbstractConfiguration bean, Template template, String targetTemplateName) {
 		return getArtifactRelativePathDir(bean, template, targetTemplateName) +
 		       "/"+ getTemplateFileName(bean, template, targetTemplateName);
-		//return getLevelTemplateFullClassPath(bean, template, targetTemplateName)+"."+templa;
 	}
 
 	/**
