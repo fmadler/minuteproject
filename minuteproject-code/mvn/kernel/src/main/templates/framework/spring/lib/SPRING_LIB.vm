@@ -79,6 +79,7 @@
 #set ($templateSpringJdbcTemplateRepository = "SpringJdbcTemplate.sdd.repository")
 #set ($templateSpringAuditLoggingAnnotation = "SpringBoot.annotation.AuditLogging")
 #set ($templateSpringLogback = "SpringBoot.logback")
+#set ($templateSpringLogbackLocal = "SpringBoot.logback.local")
 #end
 
 #macro (exposeSpringModelSpecific)
@@ -146,8 +147,10 @@
 #exposeSpringBootTemplate()
 #set ($springBootModelClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringBootApplication))
 #set ($springBootModelImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringBootApplication))
-#set($templateSpringLogbackPath=$commonUtils.getTemplateFileName($application, $template, $templateSpringLogback))
+#set($templateApplicationSpringLogbackPath=$commonUtils.getTemplateFileName($application, $template, $templateSpringLogback))
 #set($templateModelSpringLogbackPath=$commonUtils.getTemplateFileName($model, $template, $templateSpringLogback))
+#set($templateApplicationSpringLogbackLocalPath=$commonUtils.getTemplateFileName($application, $template, $templateSpringLogbackLocal))
+#set($templateModelSpringLogbackLocalPath=$commonUtils.getTemplateFileName($model, $template, $templateSpringLogbackLocal))
 #end
 
 #macro (exposeSpringBootApplicationSpecific)

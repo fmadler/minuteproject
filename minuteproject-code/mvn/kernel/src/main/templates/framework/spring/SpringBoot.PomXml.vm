@@ -31,25 +31,6 @@
     
     <dependencies>
 
-        <!--
-        !!! make bsla spring boot dependent or migrate
-
-        <dependency>
-            <groupId>${groupId}</groupId>
-#if($isEJBBackend)
-                <artifactId>${generatorBean.name}Bela</artifactId>
-#else
-                <artifactId>${generatorBean.name}Bsla</artifactId>
-#end     
-            <version>${version}</version>
-            <exclusions>
-            	<exclusion>
-            		<artifactId>servlet-api</artifactId>
-            		<groupId>org.apache.tomcat</groupId>
-            	</exclusion>
-            </exclusions>
-        </dependency>
--->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
@@ -145,11 +126,6 @@
             <version>17.0</version>
         </dependency>
 #end
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -367,7 +343,6 @@
 
         <jersey.version>${jerseyVersion}</jersey.version>
 		<guava.version>${guavaVersion}</guava.version>
-        <jackson.version>2.18.3</jackson.version>
         <build.time>${maven.build.timestamp}</build.time>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 #if(!$hasMasterPom)

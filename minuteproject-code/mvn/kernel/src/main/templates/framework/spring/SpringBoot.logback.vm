@@ -1,14 +1,5 @@
-#exposeVariableModelSpecific()
-#generatorSpecific()
-#exposeApplicationSpecific()
-<configuration>
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-#foreach ($model in $application.getModels())
-
+#macro (logBackModelConfig)
+#set($useDBAppender = $template.isPropertyOfValue("logback-use-DB-appender","true",false)))
     <appender name="fout-${model.name}" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- Specify the log file location -->
         <file>logs/${model.name}.log</file>
@@ -30,15 +21,16 @@
         </encoder>
     </appender>
 
+#if ($useDBAppender)
 #set ($datasource = $model.dataModel.basicDataSource)
 #exposeJdbc()
     <appender name="DB-${model.name}" class="ch.qos.logback.classic.db.DBAppender">
         <connectionSource class="ch.qos.logback.core.db.JNDIConnectionSource">
-#if(!$isTomcatTargetServer)
-            <jndiLocation>java:comp/env/jdbc/${model.name}DS</jndiLocation>
-#else
-            <jndiLocation>jdbc/${model.name}DS</jndiLocation>
-#end
+            #if(!$isTomcatTargetServer)
+                <jndiLocation>java:comp/env/jdbc/${model.name}DS</jndiLocation>
+            #else
+                <jndiLocation>jdbc/${model.name}DS</jndiLocation>
+            #end
         </connectionSource>
     </appender>
 
@@ -47,17 +39,34 @@
         <includeCallerData>true</includeCallerData>
     </appender>
 
+    <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE" >
+        <appender-ref ref="fout-${model.name}"/>
+    </logger>
+#end
 #exposeSpringBootTemplate()
 #set($rootPackage=$modelUtils.getPackageRoot($template, $templateSpringBootApplication))
     <logger name="${rootPackage}.${model.name}" level="INFO">
         <appender-ref ref="fout-${model.name}"/>
+#if ($useDBAppender)
         <appender-ref ref="ASYNC-${model.name}"/>
+#end
     </logger>
-
-
-    <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE" >
-        <appender-ref ref="fout-${model.name}"/>
-    </logger>
+#end
+#exposeVariableModelSpecific()
+#generatorSpecific()
+#exposeApplicationSpecific()
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+#if($configuration.isSingleModel())
+#logBackModelConfig()
+#else
+#foreach ($model in $application.getModels())
+#logBackModelConfig()
+#end
 #end
     <!-- -->
     <root level="ERROR">

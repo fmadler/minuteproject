@@ -34,7 +34,19 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  file-extension="xml" file-prefix="" file-suffix="-logback"
 				  scope-specific-value="application" add-model-name="true"
 				  add-package-name="false" add-technical-dir-name="false"
-		/>
+		>
+			<!-- use at config level <property name="logback-use-DB-appender" value="true"/>
+			-->
+		</template>
+
+		<template name="SpringBoot.logback.local" templateFileName="SpringBoot.logback.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="xml" file-prefix="" file-suffix="-logback-local"
+				  scope-specific-value="application" add-model-name="true"
+				  add-package-name="false" add-technical-dir-name="false"
+		>
+			<property name="logback-use-DB-appender" value="false"/>
+		</template>
 
 		<template name="SpringBoot.banner.txt" templateFileName="SpringBoot.banner.txt.vm"
 				  subdir="" outputsubdir="" technicalPackage=""

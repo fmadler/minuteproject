@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -137,6 +138,11 @@ public class Template extends TemplateTarget {
 	public boolean hasProperty(String name) {
 		String s = getPropertyValue(name);
 		return (s!=null);
+	}
+
+	public boolean isPropertyOfValue(String name, String value, boolean defaultValue) {
+		String s = getPropertyValue(name);
+		return (s!=null)? Objects.equals(s, value):defaultValue;
 	}
 	
 	public TemplateTarget getTemplateTarget() {

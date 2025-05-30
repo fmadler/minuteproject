@@ -23,6 +23,7 @@ spring.datasource.hikari.maximum-pool-size=100
 #end
 #generatorSpecific()
 #exposeApplicationSpecific()
+#exposeSpringBootModelSpecific()
 #if($configuration.isSingleModel())
 #springBootJdbcConfigProperties()
 #end
@@ -31,5 +32,20 @@ spring.datasource.hikari.maximum-pool-size=100
 #springBootJdbcConfigProperties()
 #else
     ## TODO multimodel in SB
+#end
+#end
+
+# Logging
+#if($configuration.isSingleModel())
+#if ($embeddedDatasource)
+logging.config=classpath:${templateModelSpringLogbackPath}
+#else
+logging.config=classpath:${templateModelSpringLogbackLocalPath}
+#end
+#else
+#if ($embeddedDatasource)
+logging.config=classpath:${templateApplicationSpringLogbackPath}
+#else
+logging.config=classpath:${templateApplicationSpringLogbackLocalPath}
 #end
 #end
