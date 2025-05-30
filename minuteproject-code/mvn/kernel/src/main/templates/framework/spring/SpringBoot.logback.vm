@@ -33,13 +33,17 @@
 #set ($datasource = $model.dataModel.basicDataSource)
 #exposeJdbc()
     <appender name="DB-${model.name}" class="ch.qos.logback.classic.db.DBAppender">
-        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+        <connectionSource class="ch.qos.logback.core.db.JNDIConnectionSource">
+#if(!$isTomcatTargetServer)
             <jndiLocation>java:comp/env/jdbc/${model.name}DS</jndiLocation>
+#else
+            <jndiLocation>jdbc/${model.name}DS</jndiLocation>
+#end
         </connectionSource>
     </appender>
 
     <appender name="ASYNC-${model.name}" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="DB" />
+        <appender-ref ref="DB-${model.name}" />
         <includeCallerData>true</includeCallerData>
     </appender>
 
@@ -49,12 +53,12 @@
         <appender-ref ref="fout-${model.name}"/>
         <appender-ref ref="ASYNC-${model.name}"/>
     </logger>
-#end
+
 
     <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE" >
-        <appender-ref ref="fout"/>
+        <appender-ref ref="fout-${model.name}"/>
     </logger>
-
+#end
     <!-- -->
     <root level="ERROR">
         <appender-ref ref="console"/>

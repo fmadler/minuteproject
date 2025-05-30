@@ -146,7 +146,6 @@
 #exposeSpringBootTemplate()
 #set ($springBootModelClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringBootApplication))
 #set ($springBootModelImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringBootApplication))
-##set ($templateSpringLogbackPath = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringLogback))
 #set($templateSpringLogbackPath=$commonUtils.getTemplateFileName($application, $template, $templateSpringLogback))
 #end
 

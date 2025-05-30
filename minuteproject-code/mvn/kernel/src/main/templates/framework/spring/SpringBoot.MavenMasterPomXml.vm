@@ -92,6 +92,12 @@ $!updatedAreaEnd
 	            <version>${powermock.version}</version>
 	            <scope>test</scope>
 	        </dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback.db</groupId>
+				<artifactId>logback-classic-db</artifactId>
+				<version>1.2.11.1</version>
+			</dependency>
         
 		</dependencies>
 	</dependencyManagement>

@@ -34,8 +34,14 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  file-extension="xml" file-prefix="" file-suffix="-logback"
 				  scope-specific-value="application" add-model-name="true"
 				  add-package-name="false" add-technical-dir-name="false"
-		>
-		</template>
+		/>
+
+		<template name="SpringBoot.banner.txt" templateFileName="SpringBoot.banner.txt.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="txt" file-prefix="" file-suffix="banner"
+				  scope-specific-value="application" add-model-name="false"
+				  add-package-name="false" add-technical-dir-name="false"
+		/>
 
 	</template-target>
 
