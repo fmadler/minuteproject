@@ -3,5 +3,4 @@ _____________________________________________
 |  Application: ${application.title}
 ##|  Version: ${parsedVersion.majorVersion}          - ${project.version}
 ##|  Build Time: ${build.time}
-|
 |____________________________________________

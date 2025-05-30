@@ -2,6 +2,7 @@
 #exposeApplicationSpecific()
 #exposeBackendTechnology()
 #exposeMaven()
+#exposeMavenModel()
 #exposeMavenJersey()
 #exposeMavenCommonDependencies()
 #putTargetServerDefinition()
@@ -101,38 +102,14 @@
             <version>2.4.18</version>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-#if(!$hasMasterPom)
-            <version>${junit.version}</version>
-#end
-            <scope>test</scope>
-        </dependency>
-        
+#addMavenDependencyJdbcDriver()
+
         <dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-#if(!$hasMasterPom)
-            <version>${powermock.version}</version>
-#end
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-#if(!$hasMasterPom)
-            <version>${powermock.version}</version>
-#end
-            <scope>test</scope>
-        </dependency>
         
 #if($isTomcatTargetServer && $hasScheduler)
 		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
@@ -144,12 +121,6 @@
 #else
 			<!-- TUTO: POTENTIAL-ISSUE if target server is tomcat then no embedded mail jar can prevent deployment -->
 #end
-
-
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-        </dependency>
 
 #if($botdetect)
         <!-- botdetect -->

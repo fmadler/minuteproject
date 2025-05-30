@@ -18,7 +18,7 @@ spring.datasource.username=$username
 spring.datasource.password=$password
 
 spring.datasource.hikari.connection-timeout=20000
-spring.datasource.hikari.maximum-pool-size=0
+spring.datasource.hikari.maximum-pool-size=100
 #end
 #end
 #generatorSpecific()
