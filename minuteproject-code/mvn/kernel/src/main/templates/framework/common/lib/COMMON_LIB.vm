@@ -869,7 +869,11 @@ $!updatedAreaEnd
 		List<Object> list = new ArrayList<>();
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()
+#if(!$column.isArray())
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.add(${sddInputBeanVariable}.get$columnClass());
+#else
+		if (${sddInputBeanVariable}.get$columnClass()!=null) list.addAll(${sddInputBeanVariable}.get$columnClass());
+#end
 #end
 ##injectGetStatementChunk()
 ##injectGetStatementFilter()

@@ -125,6 +125,8 @@ public class MavenUtils {
 	}
 	
 	public static Driver getDriver (Model model) {
+		if (model==null || model.getDataModel()==null)
+			return null;
 		return model.getDataModel().getDriver();
 	}
 

@@ -83,15 +83,12 @@
             <version>2.4.18</version>
         </dependency>
 
-#addMavenDependencyJdbcDriver()
-
         <dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
-        
 #if($isTomcatTargetServer && $hasScheduler)
 		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
 		<dependency>
@@ -282,6 +279,30 @@
     </reporting>
     
     <profiles>
+        <profile>
+            <id>jdbc-params</id>
+            <properties>
+                <environment>local</environment>
+            </properties>
+            <dependencies>
+#if($configuration.isSingleModel())
+                <dependency>
+                    <groupId>$driver.groupId</groupId>
+                    <artifactId>$driver.artifactId</artifactId>
+                    <version>$driver.version</version>
+                </dependency>
+#else
+#foreach ($model in $application.getModels())
+#exposeMavenModel()
+                <dependency>
+                    <groupId>$driver.groupId</groupId>
+                    <artifactId>$driver.artifactId</artifactId>
+                    <version>$driver.version</version>
+                </dependency>
+#end
+#end
+            </dependencies>
+        </profile>
 #foreach ($environment in $configuration.environments.environments)
         <profile>
             <id>${environment.name}</id>
