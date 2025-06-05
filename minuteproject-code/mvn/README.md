@@ -13,15 +13,15 @@ Minuteproject loads a configuration that indicates the target technologies to ap
   * pattern
 
 ```xml
-					<statement-model>
-						<enrichment>
-							<conventions>
-								<sdd-cache-convention 
-										type="apply-cache-to-content-type" 
-										pattern="reference-data"/>
-							</conventions>
-						</enrichment>
-        </statement-model>
+<statement-model>
+	<enrichment>
+		<conventions>
+			<sdd-cache-convention 
+				type="apply-cache-to-content-type" 
+				pattern="reference-data"/>
+		</conventions>
+	</enrichment>
+</statement-model>
 ```
 
 ## Development
