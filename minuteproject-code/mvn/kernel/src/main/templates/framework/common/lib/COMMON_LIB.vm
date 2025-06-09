@@ -835,13 +835,15 @@ $!updatedAreaEnd
 #foreach($column in $inputBean.columns)
 #if($column.isArray() && !$column.isFilter())
 #putColumnParamNaming()
+#*
 	   StringBuffer inSb$columnVar = new StringBuffer();
 	   for (int i = 0; i < ${sddInputBeanVariable}.get$columnClass().size(); i++) {
 	   	  inSb${columnVar}.append("?");
 	   	  if (i+1!=${sddInputBeanVariable}.get$columnClass().size())
 	   	  	inSb${columnVar}.append(",");
 	   }
-	   query = StringUtils.replace (query, "?...", inSb${columnVar}.toString());
+*#
+	   query = StringUtils.replace (query, "?...", String.join(",", Collections.nCopies(${sddInputBeanVariable}.get$columnClass().size(), "?")) );
 #end
 #end
 #injectGetStatementChunk()
@@ -928,6 +930,7 @@ $!updatedAreaEnd
 		return chunk;
 #else
 #putColumnParamNaming()
+#*
 	   StringBuffer inSb$columnVar = new StringBuffer();
 	   for (int i = 0; i < ${sddInputBeanVariable}.get$columnClass().size(); i++) {
 	   	  inSb${columnVar}.append("?");
@@ -935,6 +938,8 @@ $!updatedAreaEnd
 	   	  	inSb${columnVar}.append(",");
 	   }
 	   return StringUtils.replace (chunk, "?...", inSb${columnVar}.toString());//replaceOnce
+	*#
+	   return StringUtils.replace (chunk, "?...", String.join(",", Collections.nCopies(${sddInputBeanVariable}.get$columnClass().size(), "?")) );
 #end
 	}
 #end

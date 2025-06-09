@@ -1,3 +1,54 @@
+#macro (ehcacheModel)
+#foreach ($model in $configuration.models())
+#exposeVariableModelSpecific()
+#foreach ($table in ${entities})
+#exposeEntityCache()
+#if($hasCache)
+#exposeJPA2DomainObject($table)
+#exposeModelUpdatedAreas("cache-entity-${table.name}")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    <cache
+        name="$importDomainObjectUML"
+#if($useMaxEntriesLocalHeap)
+        maxEntriesLocalHeap="5000"
+#else
+        maxElementsInMemory="5000"
+#end
+        eternal="false"
+        timeToIdleSeconds="300"
+        timeToLiveSeconds="600"
+        overflowToDisk="false"
+    />
+#end
+$!updatedAreaEnd
+#end
+#end
+#end
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+<!-- package $package.name -->
+#foreach ($query in $package.getQueries())
+#if($query.isCache() && !$query.isWrite())
+#set($cacheName=$formatUtils.getJavaNameVariable(${query.name})+"Cache")
+    <cache
+        name="$cacheName"
+#if($useMaxEntriesLocalHeap)
+        maxEntriesLocalHeap="5000"
+#else
+        maxElementsInMemory="5000"
+#end
+        eternal="false"
+        timeToIdleSeconds="300"
+        timeToLiveSeconds="600"
+        overflowToDisk="false"
+    />
+#end
+#end
+#end
+#end
 #exposeApplicationUpdatedAreas("ehcache-node")
 $!updatedAreaBegin
 #if($isUpdated)
@@ -31,77 +82,35 @@ $!updatedAreaSnippet
     -->
     <defaultCache
 #if($useMaxEntriesLocalHeap)
-            maxEntriesLocalHeap="1000"
+        maxEntriesLocalHeap="1000"
 #else
-            maxElementsInMemory="1000"
+        maxElementsInMemory="1000"
 #end
-            eternal="false"
-            timeToIdleSeconds="300"
-            timeToLiveSeconds="300"
-            overflowToDisk="false"
-            diskPersistent="false"
-            diskExpiryThreadIntervalSeconds="300"
-            memoryStoreEvictionPolicy="LRU"
-            />
+        eternal="false"
+        timeToIdleSeconds="300"
+        timeToLiveSeconds="300"
+        overflowToDisk="false"
+        diskPersistent="false"
+        diskExpiryThreadIntervalSeconds="300"
+        memoryStoreEvictionPolicy="LRU"
+    />
 <!-- The unnamed query cache -->
    <cache
-    name="org.hibernate.cache.StandardQueryCache"
-    maxElementsInMemory="1000"
-    eternal="false"
-    timeToLiveSeconds="300"
-    overflowToDisk="false"
-   />
-#end
-$!updatedAreaEnd
-
-#foreach ($model in $configuration.models())
-#exposeVariableModelSpecific()
-#foreach ($table in ${entities})
-#exposeEntityCache()
-#if($hasCache)
-#exposeJPA2DomainObject($table)
-#exposeModelUpdatedAreas("cache-entity-${table.name}")
-$!updatedAreaBegin
-#if($isUpdated)
-$!updatedAreaSnippet
-#else
-   <cache
-    	name="$importDomainObjectUML"
-#if($useMaxEntriesLocalHeap)
-        maxEntriesLocalHeap="5000"
-#else
-        maxElementsInMemory="5000"
-#end
+        name="org.hibernate.cache.StandardQueryCache"
+        maxElementsInMemory="1000"
         eternal="false"
-        timeToIdleSeconds="300"
-        timeToLiveSeconds="600"
+        timeToLiveSeconds="300"
         overflowToDisk="false"
    />
 #end
 $!updatedAreaEnd
-#end
-#end
-#end
 
-#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
-	<!-- package $package.name -->
-#foreach ($query in $package.getQueries()) 
-#if($query.isCache() && !$query.isWrite())
-#set($cacheName=$formatUtils.getJavaNameVariable(${query.name})+"Cache")
-   <cache
-    	name="$cacheName"
-#if($useMaxEntriesLocalHeap)
-        maxEntriesLocalHeap="5000"
-#else
-        maxElementsInMemory="5000"
+#if($configuration.isSingleModel())
+#ehcacheModel()
 #end
-        eternal="false"
-        timeToIdleSeconds="300"
-        timeToLiveSeconds="600"
-        overflowToDisk="false"
-   />
-#end
-#end
+#foreach ($model in $application.getModels())
+##todo solve entry ambiguity between models
+#ehcacheModel()
 #end
 
 #addArea("custom-cache-definition")

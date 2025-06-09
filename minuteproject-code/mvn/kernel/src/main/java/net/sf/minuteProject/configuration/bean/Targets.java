@@ -2,6 +2,7 @@ package net.sf.minuteProject.configuration.bean;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import net.sf.minuteProject.exception.MinuteProjectException;
 import net.sf.minuteProject.utils.io.FileUtils;
 
 import net.sf.minuteProject.utils.property.PropertyUtils;
+import net.sf.minuteProject.utils.technology.TechnologyUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -104,10 +106,16 @@ public class Targets extends AbstractConfiguration {
 			// try default for dev (used in dev, MP as a workspace)
 			if (FileUtils.exists(developmentPath))
 				return developmentPath;
-			final File velocityTemplateFramework = FileUtils.getFileFromFileInRootClassPath("framework");
-			if (velocityTemplateFramework.exists()) {
-				return velocityTemplateFramework.getParentFile().getAbsolutePath();
+			final URI velocityTemplateFrameworkURI = FileUtils.getFileFromFileInRootClassPath("framework");
+			if (!velocityTemplateFrameworkURI.isOpaque()) {
+				final File velocityTemplateFramework = new File(velocityTemplateFrameworkURI);
+				if (velocityTemplateFramework.exists()) {
+					return velocityTemplateFramework.getParentFile().getAbsolutePath();
+				}
+			} else {
+				return TechnologyUtils.TEMPLATE_ROOT;
 			}
+
 			// try from MP_HOME (used by integration tool such as ANT)
 			String MpHomePath = System.getProperty(MP_HOME);
 			if (MpHomePath!=null && FileUtils.exists(MpHomePath))

@@ -55,6 +55,17 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  add-package-name="false" add-technical-dir-name="false"
 		/>
 
+		<!-- caching -->
+		<template name="EhCacheXml" templateFileName="EhCache.Xml.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="xml" file-prefix="ehcache" file-suffix=""
+				  application-specific="true" package-root=""
+				  add-model-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresence">
+			<property name="property-presence" value="add-cache-implementation" ></property>
+		</template>
+
+
 	</template-target>
 
 	<template-target
@@ -85,6 +96,12 @@ xs:schemaLocation="./mp-template-config.xsd">
 		<template name="SpringBootWebFilterConfig" templateFileName="SpringBootWebFilterConfig.vm"
 				  subdir="" outputsubdir="" technicalPackage="web"
 				  file-extension="java" file-prefix="" file-suffix="WebFilterConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.cache.config" templateFileName="SpringBoot.cache.config.vm"
+				  subdir="" outputsubdir="" technicalPackage="config"
+				  file-extension="java" file-prefix="" file-suffix="CacheConfig"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 

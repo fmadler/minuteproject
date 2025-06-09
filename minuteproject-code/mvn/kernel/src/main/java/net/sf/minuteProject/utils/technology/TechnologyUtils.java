@@ -6,9 +6,11 @@ import net.sf.minuteProject.loader.catalog.technologycatalog.node.Technology;
 
 public class TechnologyUtils {
 
+	public static final String TEMPLATE_ROOT = "@templateRoot@";
+
 	public static String getTechnologyTemplateDir (Technology technology, String rootDir){
 		if (rootDir==null)
 			return technology.getTemplateDir();
-		return StringUtils.replace(technology.getTemplateDir(), "@templateRoot@", rootDir);
+		return StringUtils.replace(technology.getTemplateDir(), TEMPLATE_ROOT, rootDir);
 	}
 }
