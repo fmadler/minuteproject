@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 import $sddInputBeanImport;
 import $sddOutputBeanImport;
 import org.apache.commons.lang3.StringUtils;
+#if($query.isWrite())
+import java.sql.Connection;
+import java.sql.CallableStatement;
+#end
 /**
  * Custom spring jdbc template for custom query.
  */
@@ -41,7 +45,34 @@ public class $className {##//implements
 #end
 #end
         ) {
-      return jdbcTemplate.query(
+#if($query.isWrite())
+        return jdbcTemplate.execute((Connection connection) -> {
+            CallableStatement cs = connection.prepareCall("{"+QUERY_NATIVE+"}");
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+#if ($column.isOutputParam())
+            cs.registerOutParameter($velocityCount, java.sql.Types.${column.type});
+#else
+#set($jdbcType = $statementUtils.getJdbcType($column))
+            cs.set$jdbcType($velocityCount, ${sddInputBeanVariable}.get${columnClass}());
+#end
+#end
+#if($query.queryParams.hasOutputParam())
+            cs.execute();
+            $sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+#if ($column.isOutputParam())
+            ${sddOutputBeanVariable}.set${columnClass}(cs.get${jdbcType}($velocityCount));
+#end
+#end
+            return Arrays.asList($sddOutputBeanVariable);
+#else
+            cs.executeUpdate();
+#end
+        }
+#else
+        return jdbcTemplate.query(
             getStatement(
 #if($isNotVoidInput)
                 $sddInputBeanVariable
@@ -94,6 +125,7 @@ public class $className {##//implements
 #end
 #end
             )
+#end
       );
     }
 

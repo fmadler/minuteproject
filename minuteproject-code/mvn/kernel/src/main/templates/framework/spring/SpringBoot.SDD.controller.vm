@@ -80,7 +80,7 @@ public class ${className} {
 	@ResponseBody
     @${auditLoggingAnnotationClass} (logLevel="INFO")
     public ResponseEntity<List<$sddOutputBeanClass>> execute (
-#set ($columnsNotDuplicatedNorImplicit = $tableUtils.getColumnsNotDuplicatedNorImplicit($inputBean))
+#set ($columnsNotDuplicatedNorImplicit = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
 #set ($size = $columnsNotDuplicatedNorImplicit.size())
 #foreach($column in $columnsNotDuplicatedNorImplicit)
 #putColumnParamNaming()
@@ -99,7 +99,7 @@ public class ${className} {
     ) {
 #if($isNotVoidInput)
 		$sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass ();
-#foreach($column in $inputBean.columns)
+#foreach($column in $columnsNotDuplicatedNorImplicit)
 #putColumnParamNaming()
 		${sddInputBeanVariable}.set$columnClass ($columnVar);
 #end
