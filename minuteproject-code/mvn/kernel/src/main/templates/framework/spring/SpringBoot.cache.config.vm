@@ -1,0 +1,24 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
+import net.sf.ehcache.config.Configuration;
+import net.sf.ehcache.config.ConfigurationFactory;
+
+@Configuration
+@EnableCaching
+public class $className {
+
+    @Bean
+    public net.sf.ehcache.CacheManager ehCacheManager() {
+        return net.sf.ehcache.CacheManager.newInstance(getClass().getResource("/ehcache.xml"));
+    }
+
+    @Bean
+    public EhCacheCacheManager cacheManager() {
+        return new EhCacheCacheManager(ehCacheManager());
+    }
+}

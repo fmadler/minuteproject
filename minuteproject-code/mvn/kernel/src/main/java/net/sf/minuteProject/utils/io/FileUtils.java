@@ -104,7 +104,7 @@ public class FileUtils {
 		}
 	}
 
-	public static File getFileFromFileInRootClassPath(
+	public static URI getFileFromFileInRootClassPath(
 			String filePathInClassPath) throws MinuteProjectException {
 		log.debug(">>>> filePathInClassPath "+filePathInClassPath);
 		URL url = Thread.currentThread().getContextClassLoader()
@@ -114,13 +114,14 @@ public class FileUtils {
 			throw new MinuteProjectException("Missing file "+filePathInClassPath);
 		else {
 			try {
-				return new File(url.toURI());
+				return url.toURI();
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 				throw new MinuteProjectException("Missing file "+filePathInClassPath);
 			}
 		}
 	}
+
 
 	public static String getAbsolutePathFromPath(String inputPathInFile,
 			String inputPathFromFile) {

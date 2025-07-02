@@ -23,3 +23,22 @@ It depends on the swagger version; could also be /data/openapi.json
 GraphiQL test
 ex: http://localhost:8080/<deployedApp>/data/graphql/graphiql
 
+## SpringBoot
+### Techno
+* Java
+* create REST endpoint for GET and POST methods
+
+### release
+Deployed as war or as spring-boot:run
+
+To use embedded connection pool for local test
+```bash
+mvn clean package spring-boot:run -Dspring-boot.run.profiles=jdbc-params -Pjdbc-params
+```
+* Maven build profile for
+    * including the jdbc driver
+* Springboot runtime profile jdbc-params for
+    * using jdbc connection params
+    * local logback storage
+    
+Then go to http://localhost:8081/swagger-ui/index.html
