@@ -275,17 +275,6 @@
             </plugin>
 #end
         </plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-#*
-		<filters>
-			<filter>${basedir}/target/application.properties</filter>
-		</filters>
-*#
     </build>
     <reporting>
         <plugins>

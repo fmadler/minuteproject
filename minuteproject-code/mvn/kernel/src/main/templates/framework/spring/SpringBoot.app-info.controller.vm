@@ -2,8 +2,6 @@
 #exposeVariableApplicationSpecific()
 package $packageName;
 
-package eu.europa.ec.digit.decide.consultation.ms.accessrights.controller;
-
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
