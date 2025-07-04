@@ -1,0 +1,43 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+package eu.europa.ec.digit.decide.consultation.ms.accessrights.controller;
+
+import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequestMapping(path = "/api/app-info", produces = "application/json;charset=utf-8")
+@CrossOrigin(origins = "*")
+@Slf4j
+@AllArgsConstructor
+@Tag(name = "Application Metadata", description = "Application Metadata info")
+public class ${className} {
+
+    @GetMapping
+    public Map<String, String> getAppInfo() {
+        Properties properties = new Properties();
+        try {
+            properties.load(getClass().getClassLoader().getResourceAsStream("app-info.properties"));
+        } catch (Exception e) {
+            log.error("Error loading app-info.properties",e);
+        }
+        return properties.entrySet().stream()
+            .collect(Collectors.toMap(
+            e -> String.valueOf(e.getKey()),
+            e -> String.valueOf(e.getValue())
+            ));
+    }
+
+}

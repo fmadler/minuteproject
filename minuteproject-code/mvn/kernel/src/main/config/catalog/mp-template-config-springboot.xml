@@ -9,6 +9,12 @@ xs:schemaLocation="./mp-template-config.xsd">
 			outputdir="src/main/resources"
 			belongToPackage="true">
 
+		<template name="SpringBoot.app-info.properties" templateFileName="SpringBoot.app-info.properties.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="app-info"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+		</template>
+
 		<template name="SpringBootApplication.prop" templateFileName="SpringBootApplication.prop.vm"
 				  subdir="" outputsubdir="" technicalPackage=""
 				  file-extension="properties" file-prefix="" file-suffix="application"
@@ -85,13 +91,12 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 
-		<!-- sdd are working on spring template
-		<template name="SpringBootPersistenceJNDI" templateFileName="SpringBootPersistenceJNDI.vm"
-				  subdir="" outputsubdir="" technicalPackage=""
-				  file-extension="java" file-prefix="" file-suffix="PersistenceJNDIConfig"
+
+		<template name="SpringBoot.app-info.controller" templateFileName="SpringBoot.app-info.controller.vm"
+				  subdir="" outputsubdir="" technicalPackage="controller"
+				  file-extension="java" file-prefix="" file-suffix="AppInfoController"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
-		-->
 
 		<template name="SpringBootWebFilterConfig" templateFileName="SpringBootWebFilterConfig.vm"
 				  subdir="" outputsubdir="" technicalPackage="web"

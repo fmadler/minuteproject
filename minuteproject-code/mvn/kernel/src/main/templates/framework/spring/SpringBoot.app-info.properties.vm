@@ -1,0 +1,8 @@
+app.name=${application.name}
+app.version=@project.version@
+app.build.planName=@build.shortPlanName@
+app.build.number=@build.buildNumber@
+app.build.plan.revision=@build.planRepository.revision@
+app.build.timestamp=@build.buildTimeStamp@
+app.build.repo.branchName=@build.repository.branch.name@
+
