@@ -21,20 +21,6 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  scope-specific-value="application" add-model-name="false" add-package-name="false">
 		</template>
 
-		<template name="SpringBootApplication.jdbc-params.prop" templateFileName="SpringBootApplication.jdbc.prop.vm"
-				  subdir="" outputsubdir="" technicalPackage=""
-				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-params"
-				  scope-specific-value="application" add-model-name="false" add-package-name="false">
-			<property name="embedded-datasource" value="false"/>
-		</template>
-
-		<template name="SpringBootApplication.jdbc-cp.prop" templateFileName="SpringBootApplication.jdbc.prop.vm"
-				  subdir="" outputsubdir="" technicalPackage=""
-				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-cp"
-				  scope-specific-value="application" add-model-name="false" add-package-name="false">
-			<property name="embedded-datasource" value="true"/>
-		</template>
-
 		<template name="SpringBoot.logback" templateFileName="SpringBoot.logback.vm"
 				  subdir="" outputsubdir="" technicalPackage=""
 				  file-extension="xml" file-prefix="" file-suffix="-logback"
@@ -71,6 +57,34 @@ xs:schemaLocation="./mp-template-config.xsd">
 			<property name="property-presence" value="add-cache-implementation" ></property>
 		</template>
 
+	</template-target>
+
+	<template-target
+			name="Spring boot core resources local"
+			outputdir="src/main/resources-local"
+			belongToPackage="true">
+		<template name="SpringBootApplication.jdbc-params.prop" templateFileName="SpringBootApplication.jdbc.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-params"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+			<property name="embedded-datasource" value="false"/>
+		</template>
+
+		<!-- TODO add gitignore -->
+	</template-target>
+
+
+	<template-target
+			name="Spring boot core resources remote"
+			outputdir="src/main/resources-remote"
+			belongToPackage="true">
+
+		<template name="SpringBootApplication.jdbc-cp.prop" templateFileName="SpringBootApplication.jdbc.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-cp"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+			<property name="embedded-datasource" value="true"/>
+		</template>
 
 	</template-target>
 

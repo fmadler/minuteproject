@@ -31,9 +31,14 @@ ex: http://localhost:8080/<deployedApp>/data/graphql/graphiql
 ### release
 Deployed as war or as spring-boot:run
 
+#### Local run
 To use embedded connection pool for local test
+
+Inside /REST directory
 ```bash
-mvn clean package spring-boot:run -Dspring-boot.run.profiles=jdbc-params -Pjdbc-params
+mvn clean package spring-boot:run -Dspring-boot.run.profiles=jdbc-params -Plocal
+# or
+mvn clean package spring-boot:run -DactiveProfiles=jdbc-params -Plocal
 ```
 * Maven build profile for
     * including the jdbc driver
@@ -42,3 +47,9 @@ mvn clean package spring-boot:run -Dspring-boot.run.profiles=jdbc-params -Pjdbc-
     * local logback storage
     
 Then go to http://localhost:8081/swagger-ui/index.html
+
+## Release run
+
+```bash
+mvn clean package -DactiveProfiles=jdbc-cp -Premote
+```
