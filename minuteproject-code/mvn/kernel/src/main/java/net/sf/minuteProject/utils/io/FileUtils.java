@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -87,7 +88,11 @@ public class FileUtils {
 
 	public static Path getAbsolutePath(String relativePath) throws MinuteProjectException {
 		try {
-			final URI uri = ClassLoader.getSystemResource(relativePath).toURI();
+			final URL systemResource = ClassLoader.getSystemResource(relativePath);
+			if (Objects.isNull(systemResource)) {
+				throw new MinuteProjectException("Relative path "+relativePath+" not found");
+			}
+			final URI uri = systemResource.toURI();
 			Path path = Paths.get(uri);
 
 			// Resolve the absolute path
@@ -100,6 +105,7 @@ public class FileUtils {
 
 			return absolutePath;
 		} catch (URISyntaxException e) {
+			e.printStackTrace();
 			throw new MinuteProjectException(e.getMessage());
 		}
 	}

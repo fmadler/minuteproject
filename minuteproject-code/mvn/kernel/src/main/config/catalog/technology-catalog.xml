@@ -24,6 +24,22 @@
             <property name="add-cache-implementation" value="ehcache"></property>
         </technology>
 
+        <technology name="JPA3" target-name="JPA3" model-type="rdbms"
+                    template-config-file-name="mp-template-config-JPA3.xml"
+                    default-outputdir="domain" depends-on-targets="BSLA_LIB,CACHE_LIB,SDD-BEANS"
+                    template-dir="@templateRoot@/framework/jpa" status="released"
+                    description="Generates:\JPA3 Domain entities with annotation\JPA3 metamodel for compilable criteria queries">
+            <frameworks>
+                <framework name="JPA" version="3"></framework>
+            </frameworks>
+            <!--
+            <property name="add-querydsl" value="2.1.2"></property>
+            -->
+            <!-- <property name="add-jpa2-implementation" value="hibernate"></property>-->
+            <property name="add-cache-implementation" value="ehcache"></property>
+        </technology>
+
+
         <technology name="environment" target-name="JPA2" model-type="rdbms"
                     template-config-file-name="mp-template-config-ENVIRONMENT.xml"
                     default-outputdir="JPA2" depends-on-targets="BSLA_LIB,CACHE_LIB,SDD-BEANS"
@@ -271,7 +287,7 @@
         <technology name="SpringBoot" model-type="rdbms"
                     template-config-file-name="mp-template-config-springboot.xml"
                     default-outputdir="REST"
-                    depends-on-targets="SDD-BEANS.v2,REST-utils,tomcat,docker,SpringBoot.MavenMaster"
+                    depends-on-targets="SDD-BEANS.v2,JPA3,REST-utils,tomcat,docker,SpringBoot.MavenMaster"
                     depends-on-targets-old="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,CloudFoundry-REST,tomcat,docker,SpringBoot.MavenMaster"
                     template-dir="@templateRoot@/framework/spring"
                     status="released"

@@ -1,0 +1,221 @@
+#exposeVariableEntitySpecific()
+#putJPA2TemplateDefinition()
+#exposeEntityCache()
+#exposeEnvironmentParams()
+#exposeJPA2Specifics()
+#addedAreas()
+#groovify()
+#set ($isInstanceReturned = $template.getPropertyValue("setter-return-instance",false))
+#set ($addNamedQueries = $template.getPropertyValue("add-named-queries",true))
+package $packageName;
+
+$!updatedAreaImport
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+import javax.validation.constraints.NotNull;
+
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+#if($addDomainSpecificMethod)
+import java.util.Map;
+import java.util.Map.Entry;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+#end
+import java.io.Serializable;
+import javax.persistence.*;
+#exposeJPA2Import()
+#exposeJPA2CompositeKeyImport()
+#exposeJPA2EnumImport()
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ */
+@Entity (name="${className}")
+@Table (name="\"${table.name}\"")
+@Data
+@AllArgsConstructor
+@Builder
+@NoArgsConstructor
+#set($nqVar = $jpa2Utils.getNamedQueryVariable($table))
+#if($hasCache && $isCacheEnabled)
+#if($jpa2ImplementationIsHibernate)
+@org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE)
+#end
+#if($jpa2ImplementationIsEclipseLink)
+//eclipseLink configuration missing? Please contribute by providing the snippet
+#end
+#end
+
+public class ${className} {
+
+## private static final long serialVersionUID = 1L;
+#putColumnDefaultValue()
+#if ($isEmbedded)
+    @EmbeddedId
+    public ${embeddedIdClass} $embeddedIdVariable; ##public for jpa2 mapping of fk referencing a field within embeddedId class
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+#if(!$isForeignKey)
+#putValidationConstraints()
+    @Column(name="\"$column.name\"" #if($isLengthPrecisionColumn), length=$column.size#end #if($column.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true#else, unique=false#end , insertable=false, updatable=false)
+    $accessor $columnType ${columnVar}_;
+#end
+#end
+#else
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+#if (!$isMany2Many)
+#if (!$isPkUserProvided && !$isView)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    @SequenceGenerator(name = "${table.name}SEQ", sequenceName ="$sequenceName", allocationSize=1 )
+#end
+#end
+    @Id @Column(name="\"$column.name\"" #if($isLengthPrecisionColumn),length=$column.size#end)
+#if (!$isMany2Many)
+#if (!$isPkUserProvided && !$isView)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="${table.name}SEQ") 
+#elseif ($databaseUtils.isPrimaryKeyPolicyIncrement($table))
+    @GeneratedValue(strategy = GenerationType.AUTO)
+#elseif ($databaseUtils.isPrimaryKeyPolicyIdentity($table))
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+#elseif ($databaseUtils.isPrimaryKeyPolicyUUID($table) && $jpa2ImplementationIsHibernate)
+    @GeneratedValue(generator = "system-uuid")
+    @org.hibernate.annotations.GenericGenerator(name = "system-uuid", strategy = "uuid")
+#end
+#end
+#end
+#end
+#putJPA2Temporal()
+    $accessor $columnType $columnVar;
+
+#end
+#end
+#foreach ($column in ${table.attributes})
+#fieldAnnotationAddedAreas()
+#updatedColumnAttributeAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+#putColumnParamNaming()
+#if($isEnum)
+#set ($enumColumn = $columnUtils.getColumn($table, $column.name))
+#set ($columnType = $enumUtils.getEnumType($template, $enumColumn))
+##set($columnType=$enumClassName)
+    @Enumerated #if($convertUtils.isStringType($column.type))(EnumType.STRING)
+    @Column(name="\"$column.name\"") 
+#end    
+#else
+#if ($isView)
+    @Column(name="\"$column.name\""  #if($isLengthPrecisionColumn), length=$column.size#end #if($isDecimalPrecisionColumn),precision=$columnUtils.getPrecision($column), scale=$column.scale#end #if($column.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true#else, unique=false#end , insertable=false, updatable=false)
+#else
+    @Column(name="\"$column.name\""  #if($isLengthPrecisionColumn), length=$column.size#end #if($isDecimalPrecisionColumn),precision=$columnUtils.getPrecision($column), scale=$column.scale#end #if($column.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true#else, unique=false#end)
+#end
+#if ($column.isLob())
+    @Lob @Basic(fetch=FetchType.LAZY) 
+#exposeLobProperties()
+#end
+#end
+#if ($column.isVersion())
+	@Version
+#end
+#putJPA2Temporal()
+#putValidationConstraints()
+    $accessor $columnType $columnVar; 
+#end
+#end
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#if($isFieldRelationshipPersistence)
+#set($insertableUpdatableRelationship=", insertable=false, updatable=false")
+#set($insertableUpdatableField=", insertable=true, updatable=true")
+#else
+#set($insertableUpdatableRelationship=", insertable=true, updatable=true")
+#set($insertableUpdatableField=", insertable=false, updatable=false")
+#end
+#if ($referenceUtils.isReferenceInPrimaryKey($reference) && $tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+#set($insertableUpdatableRelationship=", insertable=true, updatable=true")
+#set($insertableUpdatableField=", insertable=false, updatable=false")
+    @MapsId ("$localColumnName")
+#end
+#set($fetchType=$jpa2Utils.getFetchType($template, $reference))
+    @ManyToOne (fetch=FetchType.$fetchType #if ($isMandatory && !$table.isLinkEntity()), optional=false#end)
+    @JoinColumn(name="$localColumnName" #if($localColumn.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true #else, unique=false#end $insertableUpdatableRelationship)
+#exposeRelationship($table, $reference)
+#set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
+    $accessor $linkedTableClass ${colVar};  
+
+#set($column = $reference.localColumn)
+#putColumnParamNaming()
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#exposeEntityUpdatedAreas("${childrenListVariable}-field")
+#if(!$linktableDB.isManyToMany())
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#set ($importDomainObjectForeignTable = $commonUtils.getEntityLevelTemplateFullPath($model, $linktableDB, $template, $templateJPA2DomainObject))
+#set ($targetEntityClass="${importDomainObjectForeignTable}.class")
+#exposeEnrichedPk(${reference.column})
+#if (!$isEnrichedPk)
+#set ($foreignColumnVar = $formatUtils.getJavaNameVariable($columnDB.name))
+#else
+#set ($foreignColumnVar = $domainVariableName)
+#end
+#if($jpa2Utils.isEmbedded($linktableDB)) 
+#if($columnUtils.isPartOfCompositePrimaryKey($reference.foreignColumn))
+#set ($targetEmbeddedIdClass = $commonUtils.getTemplateClassName($linktableDB, $model, $templateJPA2EmbeddedId))
+#set ($targetEmbeddedIdVariable = $commonUtils.getJavaNameVariableFirstLetter($targetEmbeddedIdClass))
+#set($linkedColumnVariable = "${targetEmbeddedIdVariable}__.${linkedColumnVariable}")
+#end
+#end
+    @OneToMany (targetEntity=$targetEntityClass, fetch=FetchType.LAZY, mappedBy="$linkedColumnVariable"#if (!$reference.column.isRequired() || $reference.table.isLinkEntity()), cascade=CascadeType.REMOVE#end)//, cascade=CascadeType.ALL)
+    $accessor Set <$linkedTableClass> $childrenListVariable = new HashSet<$linkedTableClass>(); 
+
+#end
+#end
+#if(!$linktableDB.isManyToMany())
+$!updatedAreaEnd
+#end
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeEntityUpdatedAreas("m2m-$childrenListVariable")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+#end
+    @ManyToMany
+    @JoinTable(name="$linkedTableDBName", 
+        joinColumns=@JoinColumn(name="$targetColumn.name"), 
+        inverseJoinColumns=@JoinColumn(name="$linkReference.localColumnName") 
+    )
+    $accessor Set <$targetTableName> $childrenListVariable = new HashSet <$targetTableName> ();
+
+#end
+#updatedAreaEnd()
+#end
+
+}
