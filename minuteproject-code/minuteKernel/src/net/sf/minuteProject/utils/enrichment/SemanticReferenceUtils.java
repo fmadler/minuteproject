@@ -17,7 +17,7 @@ public class SemanticReferenceUtils {
 		return ColumnUtils.getColumn(table, sqlpath);
 	}
 	
-	static String getSemanticReferenceMethod (Table table, SemanticReference semanticReference) {
+	public static String getSemanticReferenceMethod (Table table, SemanticReference semanticReference) {
 		StringBuffer sb = new StringBuffer();
 		int cpt=0;
 		for (SqlPath sqlpath : semanticReference.getSqlPaths()) {
@@ -35,11 +35,5 @@ public class SemanticReferenceUtils {
 			return false;
 		return (table.getSemanticReference().getSqlPaths().size()>0)?true:false;
 	}
-/*
-	public static String getSemanticReferenceListAsString(Table table) {
-		if (!hasSemanticReference(table))
-			return "";
-		return StringUtils.asNameStringList (table.getSemanticReference().getSqlPaths(), "getPath");
-	}*/
 
 }

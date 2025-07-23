@@ -287,7 +287,7 @@
         <technology name="SpringBoot" model-type="rdbms"
                     template-config-file-name="mp-template-config-springboot.xml"
                     default-outputdir="REST"
-                    depends-on-targets="SDD-BEANS.v2,JPA3,REST-utils,tomcat,docker,SpringBoot.MavenMaster"
+                    depends-on-targets="SDD-BEANS.v2,JPA3,SpringData,REST-utils,tomcat,docker,SpringBoot.MavenMaster"
                     depends-on-targets-old="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,CloudFoundry-REST,tomcat,docker,SpringBoot.MavenMaster"
                     template-dir="@templateRoot@/framework/spring"
                     status="released"
@@ -711,7 +711,12 @@
         </technology>
 
         <!-- dependent tracks -->
-
+        <technology name="SpringData" model-type="rdbms"
+                    template-config-file-name="mp-template-config-SpringData.xml"
+                    default-outputdir="repository" depends-on-targets=""
+                    template-dir="@templateRoot@/framework/spring" status="release"
+                    description="Spring data">
+        </technology>
 
         <technology name="SpringService" model-type="rdbms"
                     template-config-file-name="mp-template-config-SpringService.xml"

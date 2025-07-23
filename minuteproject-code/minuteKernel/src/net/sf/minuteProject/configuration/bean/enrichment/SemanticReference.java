@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
 import net.sf.minuteProject.configuration.bean.AbstractConfiguration;
@@ -11,6 +12,7 @@ import net.sf.minuteProject.configuration.bean.enrichment.path.SqlPath;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.utils.FormatUtils;
 
+@Data
 public class SemanticReference extends AbstractConfiguration {
 
 	private List<SqlPath> sqlPaths;

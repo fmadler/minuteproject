@@ -35,7 +35,6 @@ public class EntityNamingConvention extends BeanNamingConvention<Table> {
 			}
 		}
 	}
-	
 
 	@Override
 	protected List<Table> getBeans(BusinessModel model) {
@@ -45,7 +44,6 @@ public class EntityNamingConvention extends BeanNamingConvention<Table> {
 		}
 		return tables;
 	}
-
 
 	public void setPatternToStrip (String s) {
 		setDefaultValue(s);
