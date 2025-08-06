@@ -35,17 +35,15 @@ public class EntityNamingConvention extends BeanNamingConvention<Table> {
 			}
 		}
 	}
-	
 
 	@Override
 	protected List<Table> getBeans(BusinessModel model) {
-		List<Table> tables = new ArrayList<Table>();
+		List<Table> tables = new ArrayList<>();
 		if (model.getBusinessPackage()!=null) {
 			return model.getBusinessPackage().getEntities();
 		}
 		return tables;
 	}
-
 
 	public void setPatternToStrip (String s) {
 		setDefaultValue(s);

@@ -86,6 +86,9 @@
 			<xs:element name="template" type="template" minOccurs="0"
 				maxOccurs="unbounded">
 			</xs:element>
+			<xs:element name="property" type="property" minOccurs="0"
+				maxOccurs="unbounded">
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" />
 		<xs:attribute name="libdir" type="xs:string" />
