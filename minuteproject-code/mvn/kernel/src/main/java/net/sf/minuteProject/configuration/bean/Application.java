@@ -2,6 +2,7 @@ package net.sf.minuteProject.configuration.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.sf.minuteProject.utils.ModelUtils;
 import net.sf.minuteProject.utils.StringUtils;
@@ -35,6 +36,10 @@ public class Application extends GeneratorQualifier{
 			}
 		}
 		return true;
+	}
+
+	public boolean hasBusinessModel() {
+		return getModels().stream().anyMatch(Model::hasBusinessModel);
 	}
 	
 	public void addModel (Model model) {

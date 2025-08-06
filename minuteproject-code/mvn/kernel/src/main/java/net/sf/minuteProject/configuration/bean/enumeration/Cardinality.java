@@ -1,11 +1,11 @@
 package net.sf.minuteProject.configuration.bean.enumeration;
 
 public enum Cardinality {
-	ONE_TO_ONE, ONE_TO_MANY;
+	ONE, MANY;
 	
 
 	public boolean isOneResult() {
-		return this == Cardinality.ONE_TO_ONE;
+		return this == Cardinality.ONE;
 	}
 	
 	public boolean isManyResults() {

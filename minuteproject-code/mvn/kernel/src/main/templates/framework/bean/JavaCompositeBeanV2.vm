@@ -57,8 +57,6 @@ public class ${thisClass} {
 #else
 #foreach($table in ${composite.entities})
 #putImportCompositeOutputSDDBean()
-##TODO if has cardinality => no holder
-    //$tableUtils.isCardinalityOneToOne($table)
 #if ($tableUtils.isCardinalityOneToOne($table))
 	private $sddOutputBeanClass $sddOutputBeanVariable;
 #else

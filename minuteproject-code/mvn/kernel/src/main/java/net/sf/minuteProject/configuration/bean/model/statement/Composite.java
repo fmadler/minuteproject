@@ -86,11 +86,12 @@ public class Composite extends AbstractConfiguration {
 		composite.setExecutionType(this.executionType);
 		composite.setPackage(this.getPackage());
 		composite.setQueries(getQueries());
-		for (CompositeQueryElement query : getQueries()) {
-			Query q = query.getQuery();
+		for (CompositeQueryElement compositeQueryElement : getQueries()) {
+			Query q = compositeQueryElement.getQuery();
 			Table table = q.getEntity(dir);
 			// table.setName(q.getName());
 			table.setPackage(q.getPackage());
+			table.setResultCardinality(compositeQueryElement.getCardinality());
 			composite.getEntities().add(table);
 		}
 		return composite;
@@ -107,14 +108,6 @@ public class Composite extends AbstractConfiguration {
 	}
 
 	public List<Column> getDistinctInputColumn() {
-		//https://stackoverflow.com/questions/23699371/java-8-distinct-by-property
-/*		
-		String [] arr = {"ABQ","ALB","CHI","CUN","PHX","PUJ","BWI"};
-        //final ImmutableList<String> arpts = ImmutableList.of("ABQ","ALB","CHI","CUN","PHX","PUJ","BWI");
-
-		List<String> arpts = Arrays.asList(arr);
-        arpts.stream().filter(distinctByKey(f -> f.substring(0,1))).forEach(s -> System.out.println(s));
-*/
 		return getInputComposite().getEntities()
 			.stream()
 			.flatMap(u -> Arrays.asList(u.getColumns())
@@ -130,11 +123,6 @@ public class Composite extends AbstractConfiguration {
 	    Map<Object,Boolean> seen = new ConcurrentHashMap<>();
 	    return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
 	}
-	/*
-	public static <Column> Predicate<Column> distinctColumn(Function<Column, ?> keyExtractor) {
-		return distinctByKey(keyExtractor);
-	}
-	*/
 
 	public String getTechnicalPackage(Template template) {
 		net.sf.minuteProject.configuration.bean.Package p = getPackage();

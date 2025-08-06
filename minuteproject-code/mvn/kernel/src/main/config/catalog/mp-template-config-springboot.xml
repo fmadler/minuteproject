@@ -184,8 +184,8 @@ xs:schemaLocation="./mp-template-config.xsd">
 		<property name="convertClobToString" value="true"/>
 		<property name="use-temporal" value="true"></property>
 
-		<template name="SpringMVCRestController" templateFileName="SpringMVCRestController.vm"
-				  file-extension="java" technicalPackage="rest" file-suffix="Resource"
+		<template name="pringBoot.entity.controller" templateFileName="SpringBoot.entity.controller.vm"
+				  file-extension="java" technicalPackage="rest" file-suffix="Controller"
 				  entity-specific="true" has-updatable-nature="true"
 				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
 			<property name="implement-interface" value="false"></property>

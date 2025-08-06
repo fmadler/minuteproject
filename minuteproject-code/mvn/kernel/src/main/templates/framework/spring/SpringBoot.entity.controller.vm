@@ -1,0 +1,84 @@
+#exposeSpringDomainObjectSpecific()
+#exposeRESTURLServer()
+#exposeSpringdataModelSpecific()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.*;
+import java.sql.*;
+
+import java.io.IOException;
+import javax.servlet.http.*;
+import java.util.List;
+import java.util.ArrayList;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.server.ResponseStatusException;
+
+import $entityRepositoryImport;
+import $importDomainObjectUML;
+## import $auditLoggingAnnotationImport;
+
+/**
+*
+* <p>Title: ${className}</p>
+*
+* <p>Description: class for ${className} REST endpoint </p>
+*
+*/
+@RequestMapping ("/entity/${tableVariableName}")
+@Controller
+@Slf4j
+@AllArgsConstructor
+@Tag(name = "${className} API", description = "${className} API")
+public class ${className} {
+
+	${entityRepositoryClass} $entityRepositoryVariable;
+
+## Only for master data
+    @RequestMapping(method = RequestMethod.GET)
+    @Transactional
+	@ResponseBody
+    public ResponseEntity<List<$tableClassName>> findAll () {
+		List<$tableClassName> list = ${entityRepositoryVariable}.findAll();
+		return ResponseEntity.ok(list);
+    }
+
+	@RequestMapping(value = "/{$primaryKeyVariable}", method = RequestMethod.GET)
+	@ResponseBody
+	@Transactional
+    public ResponseEntity<$tableClassName> findById (@PathVariable ("$primaryKeyVariable") $primaryKeyFullType $primaryKeyVariable) {
+		$tableClassName entity = ${entityRepositoryVariable}.findById($primaryKeyVariable)
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		return ResponseEntity.ok(entity);
+    }
+
+## TODO semantic search
+
+## TODO search by prototype/example
+}

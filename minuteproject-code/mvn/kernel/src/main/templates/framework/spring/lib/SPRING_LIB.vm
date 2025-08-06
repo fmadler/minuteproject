@@ -103,12 +103,16 @@
 
 #macro (exposeSpringdataModelSpecific)
 #exposeSpringdataTemplate()
-#set ($modelRepositoryClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringdataRepository))
-#set ($modelRepositoryImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringdataRepository))
+#set ($modelRepositoryClass = $commonUtils.getTemplateClassName($model, $template, $templateSpringdataModelRepository))
+#set ($modelRepositoryImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSpringdataModelRepository))
+#set ($entityRepositoryClass = $commonUtils.getTemplateClassName($table, $template, $templateSpringdataEntityRepository))
+#set ($entityRepositoryVariable = $commonUtils.getJavaNameVariableFirstLetter($entityRepositoryClass))
+#set ($entityRepositoryImport = $commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSpringdataEntityRepository))
 #end
 
 #macro (exposeSpringdataTemplate)
-#set ($templateSpringdataRepository = "SpringDataModelRepository")
+#set ($templateSpringdataModelRepository = "SpringDataModelRepository")
+#set ($templateSpringdataEntityRepository = "SpringDataEntityRepository")
 #end
 
 ### front end client

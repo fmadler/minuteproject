@@ -715,7 +715,7 @@ public class TableUtils {
 	}
 
 	public static boolean isCardinalityOneToOne(Table table) {
-		return table.getResultCardinality().equals("one-to-one");
+		return table.getResultCardinality().isOneResult();
 	}
 
 	public static List<Column> getColumnsNotDuplicatedNorImplicit(Table table) {
