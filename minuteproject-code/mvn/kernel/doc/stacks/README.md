@@ -31,7 +31,6 @@ ex: http://localhost:8080/<deployedApp>/data/graphql/graphiql
 ### release
 Deployed as war or as spring-boot:run
 
-#### Local run
 To use embedded connection pool for local test
 
 Inside /REST directory

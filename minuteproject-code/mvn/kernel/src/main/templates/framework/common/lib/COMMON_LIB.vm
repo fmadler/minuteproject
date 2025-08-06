@@ -211,6 +211,17 @@ $readmeUtils.getReadme($template)
 #set ($sddOutputBeanCollectionImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDOutputBeanCollection))
 #end
 
+#macro (putImportCompositeOutputSDDBeanV2)
+#templateCommonDefinitionV2()
+#set ($sddOutputBeanClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDOutputBean))
+#set ($sddOutputBeanClasses = $i18nUtils.plurialize(${sddOutputBeanClass}))
+#set ($sddOutputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanClass))
+#set ($sddOutputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDOutputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDOutputBeanCollection))
+#set ($sddOutputBeanCollectionVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanCollectionClass))
+#set ($sddOutputBeanCollectionImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDOutputBeanCollection))
+#end
+
 #macro (putImportCompositeRESTSDDBean)
 #templateCommonDefinition()
 #set ($sddInputRestClass = $commonUtils.getTemplateClassName($composite, $template, $templateSDDInputBean))
@@ -219,6 +230,13 @@ $readmeUtils.getReadme($template)
 
 #macro (putImportCompositeInputSDDBean)
 #templateCommonDefinition()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($table, $template, $templateSDDInputBean))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSDDInputBean))
+#end
+
+#macro (putImportCompositeInputSDDBeanV2)
+#templateCommonDefinitionV2()
 #set ($sddInputBeanClass = $commonUtils.getTemplateClassName($table, $template, $templateSDDInputBean))
 #set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
 #set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSDDInputBean))
@@ -260,8 +278,8 @@ $readmeUtils.getReadme($template)
 #macro(templateCommonDefinitionV2)
 #set ($templateSDDInputBean  = "SDDInputBeanV2")
 #set ($templateSDDOutputBean = "SDDOutputBeanV2")
-#set ($templateSDDInputCompositeBean  = "SDDInputCompositeBean")
-#set ($templateSDDOutputCompositeBean = "SDDOutputCompositeBean")
+#set ($templateSDDInputCompositeBean  = "SDDInputCompositeBeanV2")
+#set ($templateSDDOutputCompositeBean = "SDDOutputCompositeBeanV2")
 #end
 
 #macro (putImportSDDInputBean)

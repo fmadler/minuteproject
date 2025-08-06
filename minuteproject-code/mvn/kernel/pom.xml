@@ -368,6 +368,32 @@
             </plugin>
 
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <version>1.0.2</version> <!-- or latest -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <transformationSets>
+                        <transformationSet>
+                            <dir>${basedir}/src/main/config</dir>
+                            <includes>
+                                <include>mp-config.xsd</include>
+                            </includes>
+                            <stylesheet>${basedir}/src/main/config/xsd-to-md.xslt</stylesheet>
+                            <outputDir>${project.build.directory}/docs</outputDir>
+                            <!--<outputFileName>mp-config.md</outputFileName>-->
+                        </transformationSet>
+                    </transformationSets>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>

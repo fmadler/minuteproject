@@ -969,8 +969,8 @@
         <xs:attribute name="is-write" type="xs:boolean" default="false"/>
         <xs:attribute name="is-cache" type="xs:boolean" default="false"/>
         <xs:attribute name="execute-label" type="xs:string" default="execute"/>
-        <xs:attribute name="result-cardinality" type="xs:string" default="many"/>
-        <xs:attribute name="secure-user-role" type="xs:string" default="many"/>
+        <xs:attribute name="result-cardinality" type="xs:string" default="many-to-many"/>
+        <xs:attribute name="secure-user-role" type="xs:string" default="many-to-many"/>
         <xs:attribute name="scope" type="query-scope"/>
         <xs:attribute name="is-scalar" type="xs:boolean"/>
 

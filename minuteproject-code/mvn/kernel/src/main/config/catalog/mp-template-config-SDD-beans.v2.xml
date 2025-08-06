@@ -28,13 +28,13 @@
 		</template>	
 
 		<!-- composite -->
-		<template name="SDDInputCompositeBeanV2" templateFileName="JavaCompositeBean.vm"
+		<template name="SDDInputCompositeBeanV2" templateFileName="JavaCompositeBeanV2.vm"
 			subdir="" outputsubdir="" technicalPackage="dto.in"
 			file-extension="java" file-prefix="" file-suffix="In" has-updatable-nature="true"
 			scope-specific-value="sdd-input-composite-bean" >
 		</template>
 			
-		<template name="SDDOutputCompositeBeanV2" templateFileName="JavaCompositeBean.vm"
+		<template name="SDDOutputCompositeBeanV2" templateFileName="JavaCompositeBeanV2.vm"
 			subdir="" outputsubdir="" technicalPackage="dto.out"
 			file-extension="java" file-prefix="" file-suffix="Out" has-updatable-nature="true"
 			scope-specific-value="sdd-output-composite-bean" >
