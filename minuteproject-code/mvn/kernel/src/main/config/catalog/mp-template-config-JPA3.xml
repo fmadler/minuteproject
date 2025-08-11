@@ -157,7 +157,7 @@
 		package-root=""
 		belongToPackage="true">
 		
-		<template name="PomXml.JPA2" templateFileName="PomXml.JPA2.vm" 
+		<template name="PomXml.JPA3" templateFileName="PomXml.JPA3.vm"
 			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
 			file-extension="xml" file-prefix="pom" file-suffix="" 
 			application-specific="true" add-model-name="false">

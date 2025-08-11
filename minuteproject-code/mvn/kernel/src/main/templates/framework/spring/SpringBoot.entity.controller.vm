@@ -61,7 +61,7 @@ public class ${className} {
 	${entityRepositoryClass} $entityRepositoryVariable;
 
 ## Only for master data
-    @RequestMapping(method = RequestMethod.GET)
+	@GetMapping
     @Transactional
 	@ResponseBody
     public ResponseEntity<List<$tableClassName>> findAll () {
@@ -81,4 +81,7 @@ public class ${className} {
 ## TODO semantic search
 
 ## TODO search by prototype/example
+#foreach($col in $tableUtils.getSearchableColumns($table))
+	//$col.name
+#end
 }

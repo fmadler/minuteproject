@@ -75,8 +75,14 @@ The technologies requiring some identity column can then operate on top of views
     />
 ```
 
-#### ordering convnetion
+#### ordering convention
 ```xml
     <ordering-convention field-pattern="DISPLAY_ORDER"
                          field-pattern-type="endsWith" ordering="asc" />
+```
+
+#### entity-searchable-convention convention
+Indicate that columns are searchable and how to search on those column
+```xml
+	<entity-searchable-convention type="apply-searchable-equal-on-column" field-pattern-type="endsWith" field-pattern="web_path"/>
 ```

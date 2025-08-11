@@ -117,7 +117,7 @@
 #else
 			<!-- TUTO: POTENTIAL-ISSUE if target server is tomcat then no embedded mail jar can prevent deployment -->
 #end
-
+#*
 #if($botdetect)
         <!-- botdetect -->
         <dependency>
@@ -127,6 +127,7 @@
         </dependency>
 
 #end
+ *#
 #if($isGraphQLEnabled)
         <!-- graphql -->
         <dependency>
@@ -436,7 +437,7 @@
 #end
     </properties>
 
-#if($botdetect)
+#*if($botdetect)
     <repositories>
         <repository>
             <id>captcha</id>
@@ -445,4 +446,5 @@
         </repository>
     </repositories>
 #end
+ *#
 </project>

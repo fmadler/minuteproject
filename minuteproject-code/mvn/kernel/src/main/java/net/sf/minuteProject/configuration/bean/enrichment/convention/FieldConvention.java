@@ -1,7 +1,9 @@
 package net.sf.minuteProject.configuration.bean.enrichment.convention;
 
 import lombok.Data;
+import net.sf.minuteProject.configuration.bean.BusinessModel;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
+import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.ColumnUtils;
 import net.sf.minuteProject.utils.StringUtils;
 import net.sf.minuteProject.utils.parser.ParserUtils;
@@ -16,9 +18,6 @@ public abstract class FieldConvention extends ModelConvention{
 	private List<String> fieldPatternList;
 	
 	protected boolean match(Column column) {
-		/*if (!column.isRequired()) //for the moment only apply on not nullable column
-			return false;
-			*/
 		boolean matchFieldType = false;
 		boolean matchFieldPattern = false;
 		if (hasFieldType()) {
@@ -51,7 +50,7 @@ public abstract class FieldConvention extends ModelConvention{
 	protected boolean isValid() {
 		return hasFieldType() || (hasFieldPatternType() && hasFieldPattern()) ;
 	}
-	
+
 	protected boolean hasFieldType() {
 		return fieldType!=null;
 	}

@@ -308,11 +308,18 @@
             <xs:enumeration value="application"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="entity-content-type-convention-type">
         <xs:restriction base="xs:string">
             <xs:enumeration value="apply-content-type-to-entity-belonging-to-package"/>
             <xs:enumeration value="apply-content-type-to-entity-starting-with"/>
             <xs:enumeration value="apply-content-type-to-entity-containing"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="entity-searchable-convention-type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="apply-searchable-equal-on-column"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -362,6 +369,15 @@
         <xs:attribute name="pattern" type="xs:string"/>
         <xs:attribute name="content-type" type="content-type"/>
         <xs:attribute name="type" type="entity-content-type-convention-type"/>
+    </xs:complexType>
+
+    <xs:complexType name="entity-searchable-convention">
+        <xs:attribute name="description" type="xs:string"/>
+        <xs:attribute name="field-pattern" type="xs:string"/>
+        <xs:attribute name="field-pattern-type" type="pattern-assertion-type"/>
+        <xs:attribute name="field-type" type="xs:string"/>
+        <xs:attribute name="type" type="entity-searchable-convention-type"/>
+
     </xs:complexType>
 
     <xs:complexType name="default-value-convention">
@@ -522,6 +538,9 @@
                         minOccurs="0" maxOccurs="unbounded">
             </xs:element>
             <xs:element name="entity-content-type-convention" type="entity-content-type-convention"
+                        minOccurs="0" maxOccurs="unbounded">
+            </xs:element>
+            <xs:element name="entity-searchable-convention" type="entity-searchable-convention"
                         minOccurs="0" maxOccurs="unbounded">
             </xs:element>
             <xs:element name="default-value-convention" type="default-value-convention"

@@ -13,7 +13,13 @@
 			file-extension="xml" file-prefix="pom" file-suffix="" 
 			application-specific="true" add-model-name="false">
 			<property name="maven-artifact-finalName-suffix" value="App" />
-		</template>				
+		</template>
+		<template name="SpringBoot.README" templateFileName="SpringBoot.README.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="md" file-prefix="README" file-suffix=""
+				  application-specific="true" add-model-name="false">
+			<property name="embedded-datasource" value="true"/>
+		</template>
 	</template-target>
 	
 </target>	

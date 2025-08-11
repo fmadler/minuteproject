@@ -1360,11 +1360,6 @@
 								<set-next-rule methodname="addConvention"
 									paramtype="net.sf.minuteProject.configuration.bean.enrichment.convention.Convention" />
 								<set-properties-rule>
-									<!-- <alias attr-name="type" prop-name="type" /> <alias attr-name="default-primary-key-names" 
-										prop-name="defaultPrimaryKeyNames" /> <alias attr-name="exclude-primary-key-names" 
-										prop-name="excludePrimaryKeyNames" /> <alias attr-name="field-pattern-type" 
-										prop-name="fieldPatternType" /> <alias attr-name="allow-composite-primary-key" 
-										prop-name="allowCompositePk" /> -->
 									<alias attr-name="field-type" prop-name="fieldType" />
 									<alias attr-name="field-pattern" prop-name="fieldPattern" />
 									<alias attr-name="field-pattern-type" prop-name="fieldPatternType" />
@@ -1374,6 +1369,18 @@
 									<alias attr-name="allow-composite-primary-key" prop-name="allowCompositePk" />
 									<alias attr-name="max-fields" prop-name="maxFields" />
 									<alias attr-name="number-of-first-fields" prop-name="numberOfFirstFields" />
+								</set-properties-rule>
+							</pattern>
+							<pattern value="entity-searchable-convention">
+								<object-create-rule
+									classname="net.sf.minuteProject.configuration.bean.enrichment.convention.EntitySearchableConvention" />
+								<set-next-rule methodname="addConvention"
+									paramtype="net.sf.minuteProject.configuration.bean.enrichment.convention.Convention" />
+								<set-properties-rule>
+									<alias attr-name="field-type" prop-name="fieldType" />
+									<alias attr-name="field-pattern" prop-name="fieldPattern" />
+									<alias attr-name="field-pattern-type" prop-name="fieldPatternType" />
+									<alias attr-name="type" prop-name="type" />
 								</set-properties-rule>
 							</pattern>
 							<pattern value="property-convention">
@@ -3400,11 +3407,6 @@
 							<set-next-rule methodname="addConvention"
 								paramtype="net.sf.minuteProject.configuration.bean.enrichment.convention.Convention" />
 							<set-properties-rule>
-								<!-- <alias attr-name="type" prop-name="type" /> <alias attr-name="default-primary-key-names" 
-									prop-name="defaultPrimaryKeyNames" /> <alias attr-name="exclude-primary-key-names" 
-									prop-name="excludePrimaryKeyNames" /> <alias attr-name="field-pattern-type" 
-									prop-name="fieldPatternType" /> <alias attr-name="allow-composite-primary-key" 
-									prop-name="allowCompositePk" /> -->
 								<alias attr-name="field-type" prop-name="fieldType" />
 								<alias attr-name="field-pattern" prop-name="fieldPattern" />
 								<alias attr-name="field-pattern-type" prop-name="fieldPatternType" />
@@ -3414,6 +3416,18 @@
 								<alias attr-name="allow-composite-primary-key" prop-name="allowCompositePk" />
 								<alias attr-name="max-fields" prop-name="maxFields" />
 								<alias attr-name="number-of-first-fields" prop-name="numberOfFirstFields" />
+							</set-properties-rule>
+						</pattern>
+						<pattern value="entity-searchable-convention">
+							<object-create-rule
+									classname="net.sf.minuteProject.configuration.bean.enrichment.convention.EntitySearchableConvention" />
+							<set-next-rule methodname="addConvention"
+										   paramtype="net.sf.minuteProject.configuration.bean.enrichment.convention.Convention" />
+							<set-properties-rule>
+								<alias attr-name="field-type" prop-name="fieldType" />
+								<alias attr-name="field-pattern" prop-name="fieldPattern" />
+								<alias attr-name="field-pattern-type" prop-name="fieldPatternType" />
+								<alias attr-name="type" prop-name="type" />
 							</set-properties-rule>
 						</pattern>
 						<pattern value="property-convention">

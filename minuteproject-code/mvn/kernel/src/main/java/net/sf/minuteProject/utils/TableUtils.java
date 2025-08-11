@@ -747,4 +747,10 @@ public class TableUtils {
 				.filter(Column::isRequired);
 	}
 
+	public static List<Column> getSearchableColumns(Table table) {
+		return Arrays.asList(table.getColumns()).stream()
+				.filter(Column::isSearchable)
+				.collect(Collectors.toList());
+	}
+
 }
