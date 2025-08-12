@@ -25,7 +25,15 @@ xs:schemaLocation="./mp-template-config.xsd">
 			entity-specific="true"
 			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many"
 			has-updatable-nature="true">
-		</template>	
+		</template>
+
+		<template name="SpringDataEntitySpecifications" templateFileName="SpringDataEntitySpecifications.vm"
+			outputsubdir="" technicalPackage="repository.specs"
+			file-extension="java" file-prefix="" file-suffix="Specifications"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many"
+			has-updatable-nature="true">
+		</template>
 
 	</template-target>
 

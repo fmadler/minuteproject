@@ -26,5 +26,19 @@ public interface $className extends $modelRepositoryClass<$domainClassName, $pri
     );
     
 #end
+
+#*
+    public List<$tableClassName> findAllBy (
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+        #if($velocityCount>1),#end $columnType $columnVar
+#end
+    ) {
+        //TODO use entity manager
+        // foreach each not null input create a search = filter
+    }
+
+
+ *#
 $!updatedAreaImplementation
 }

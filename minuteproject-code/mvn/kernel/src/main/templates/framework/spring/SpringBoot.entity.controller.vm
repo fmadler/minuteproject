@@ -38,11 +38,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+
+import org.springframework.data.jpa.domain.Specification;
 
 import $entityRepositoryImport;
 import $importDomainObjectUML;
-## import $auditLoggingAnnotationImport;
+import $entitySpecificationsImport;
 
 /**
 *
@@ -61,17 +64,18 @@ public class ${className} {
 	${entityRepositoryClass} $entityRepositoryVariable;
 
 ## Only for master data
+#*
 	@GetMapping
-    @Transactional
 	@ResponseBody
     public ResponseEntity<List<$tableClassName>> findAll () {
 		List<$tableClassName> list = ${entityRepositoryVariable}.findAll();
 		return ResponseEntity.ok(list);
     }
 
+
+ *#
 	@RequestMapping(value = "/{$primaryKeyVariable}", method = RequestMethod.GET)
 	@ResponseBody
-	@Transactional
     public ResponseEntity<$tableClassName> findById (@PathVariable ("$primaryKeyVariable") $primaryKeyFullType $primaryKeyVariable) {
 		$tableClassName entity = ${entityRepositoryVariable}.findById($primaryKeyVariable)
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -81,7 +85,24 @@ public class ${className} {
 ## TODO semantic search
 
 ## TODO search by prototype/example
-#foreach($col in $tableUtils.getSearchableColumns($table))
-	//$col.name
+
+	@GetMapping
+	@ResponseBody
+	public ResponseEntity<List<$tableClassName>> findAllBy (
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+		#if($velocityCount>1),#end @RequestParam(value="$columnVar", required = false) $columnType $columnVar
 #end
+	) {
+		Specification<$tableClassName> spec = Specification.where(null);
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+		if ($columnVar != null) {
+			spec = spec.and(${entitySpecificationsClass}.has${columnClass}($columnVar));
+		}
+#end
+		List<$tableClassName> list = ${entityRepositoryVariable}.findAll(spec);
+		return ResponseEntity.ok(list);
+	}
+
 }

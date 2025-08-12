@@ -1,0 +1,35 @@
+#exposeVariableEntitySpecific()
+#exposeSpringdataModelSpecific()
+#addedAreas()
+#exposeImportParamsUML($table)
+package $packageName;
+
+import $importDomainObjectUML;
+import $modelRepositoryImport;
+
+import org.springframework.data.jpa.domain.Specification;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+/**
+ * Custom JPA specifications for {@link $domainEntity}.
+ */
+public class $className {
+
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+    public static Specification<$tableClassName> has${columnClass} (
+        $columnType $columnVar
+    ) {
+        return (root, query, criteriaBuilder) -> {
+            if ($columnVar == null) {
+                return criteriaBuilder.conjunction(); // Always true, so it doesn't affect the query
+            }
+            return criteriaBuilder.equal(root.get("$columnVar"), $columnVar);
+        };
+    }
+#end
+
+$!updatedAreaImplementation
+}
