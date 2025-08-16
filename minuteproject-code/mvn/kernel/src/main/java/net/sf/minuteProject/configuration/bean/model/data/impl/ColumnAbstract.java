@@ -27,7 +27,6 @@ public abstract class ColumnAbstract extends ColumnBaseAbstract implements Colum
 	public ColumnAbstract(Column column, Table table) {
 		this.column = column;
 		this.table = table;
-//		this.alias = column.getAlias();
 	}
 	
 	public String getGeneratedBeanName() {

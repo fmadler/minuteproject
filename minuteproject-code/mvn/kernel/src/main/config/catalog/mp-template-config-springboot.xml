@@ -162,6 +162,15 @@ xs:schemaLocation="./mp-template-config.xsd">
 			<property name="JavaBeanTemplate" value="SDDOutputBean" />
 		</template>
 
+		<template name="SpringBoot.sdd.composite.controller" templateFileName="SpringBoot.SDD.composite.controller.vm"
+				  subdir="" outputsubdir="" technicalPackage="controller"
+				  file-extension="java" file-prefix="" file-suffix="Controller"
+				  add-package-name="false" add-business-package-dir-name="true"
+				  scope-specific-value="composite" has-updatable-nature="true">
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>
+
+
 		<template name="SpringJdbcTemplate.sdd.repository" templateFileName="SpringJdbcTemplate.sdd.repository.vm"
 				  subdir="" outputsubdir="" technicalPackage="repository"
 				  file-extension="java" file-prefix="" file-suffix="JdbcTemplate"
@@ -169,9 +178,9 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  scope-specific-value="query"
 				  is-indirection-compatible="true"
 		>
-			<!-- is-indirection-compatible="true" -->
 			<property name="JavaBeanTemplate" value="SDDOutputBean" />
 		</template>
+
 
 	</template-target>
 

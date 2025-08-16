@@ -46,13 +46,14 @@ public class ${thisClass} {
 #end		
 #end
 	}
+
 #foreach($column in ${composite.distinctInputColumn})
 #putColumnParamNaming()
     private $columnType $columnVar;
 #end
 #foreach($table in ${composite.entities})
 #putImportCompositeInputSDDBean()
-    private $sddInputBeanClass $sddInputBeanVariable;
+    private final $sddInputBeanClass $sddInputBeanVariable;
 #end
 #else
 #foreach($table in ${composite.entities})
@@ -65,7 +66,6 @@ public class ${thisClass} {
 #end
 #end
 
-$!updatedAreaImplementation
 }
 
 /* the record way

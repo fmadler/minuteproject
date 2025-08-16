@@ -143,6 +143,9 @@ public class $className {##//implements
 #set($columnType = $statementUtils.getJdbcType($column))
 #if ($column.getSeparatorCharacters())
     private List<${sddOutputBeanClass}.${columnClass}> get${columnClass}($columnType $columnVar) {
+        if ($columnVar==null) {
+            return new ArrayList<>();
+        }
 #set ($objectSeparatorChar=$commonUtils.getObjectSeparatorChar($column))
 #set ($attributeSeparatorChar=$commonUtils.getAttributeSeparatorChar($column))
         return Arrays.stream(${columnVar}.split("\\\\${objectSeparatorChar}"))
