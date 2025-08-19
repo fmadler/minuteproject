@@ -16,3 +16,8 @@ springdoc.swagger-ui.path=/swagger-ui.html
 
 # activeProfiles
 spring.profiles.active=@activeProfiles@
+
+management.endpoints.web.exposure.include=health,info,logfile,loggers
+management.endpoint.loggers.enabled=true
+management.endpoint.logfile.enabled=true
+logging.file.name=logs/score.log

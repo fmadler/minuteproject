@@ -23,6 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
             .antMatchers("/graphql/**").permitAll()
+            .antMatchers("/actuator/**").permitAll()
             .and()
             .headers()
             .and()
