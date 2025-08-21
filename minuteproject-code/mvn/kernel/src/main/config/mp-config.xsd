@@ -221,6 +221,13 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="cardinality-type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="one"/>
+            <xs:enumeration value="many"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="query-scope">
         <xs:restriction base="xs:string">
             <xs:enumeration value="backend"/>
@@ -1000,13 +1007,13 @@
         <xs:attribute name="is-write" type="xs:boolean" default="false"/>
         <xs:attribute name="is-cache" type="xs:boolean" default="false"/>
         <xs:attribute name="execute-label" type="xs:string" default="execute"/>
-        <xs:attribute name="result-cardinality" type="xs:string" default="many-to-many"/>
+        <xs:attribute name="result-cardinality" type="cardinality-type" default="many"/>
         <xs:attribute name="secure-user-role" type="xs:string" default="many-to-many"/>
         <xs:attribute name="scope" type="query-scope"/>
         <xs:attribute name="is-scalar" type="xs:boolean"/>
 
         <!-- to use instead of result-cardinality -->
-        <xs:attribute name="card" type="xs:string" default="many"/>
+        <xs:attribute name="card" type="cardinality-type" default="many"/>
         <xs:attribute name="caching" type="caching-type" default="read-only"/>
 
         <xs:attribute name="content-type" type="content-type"/>

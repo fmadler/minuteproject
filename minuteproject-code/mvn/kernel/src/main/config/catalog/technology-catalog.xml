@@ -287,7 +287,7 @@
         <technology name="SpringBoot" model-type="rdbms"
                     template-config-file-name="mp-template-config-springboot.xml"
                     default-outputdir="REST"
-                    depends-on-targets="SDD-BEANS.v2,JPA3,SpringData,REST-utils,tomcat,docker,SpringBoot.MavenMaster"
+                    depends-on-targets="SDD-BEANS.v2,JPA3,SpringData,REST-utils,tomcat,docker,SpringBoot.MavenMaster,cas-security"
                     depends-on-targets-old="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,CloudFoundry-REST,tomcat,docker,SpringBoot.MavenMaster"
                     template-dir="@templateRoot@/framework/spring"
                     status="released"
@@ -389,12 +389,7 @@
             <property name="add-querydsl" value="2.1.2"></property>
             <property name="add-jpa2-implementation" value="eclipselink"></property>
             <property name="add-xml-format"
-                      value="lowercase-hyphen"></property>        <!-- java-variable, uppercase-underscore, lowercase-hyphen, java-class -->
-            <!--
-            <property name="add-ear-packaging" value="true"></property>
-            <property name="web-maven-template" value="PomXml.REST"></property>
-            <property name="ejb-maven-template" value="PomXml.BELA"></property>
-             -->
+                      value="lowercase-hyphen"></property>
         </technology>
 
         <technology name="JOOQ" model-type="rdbms"
@@ -723,6 +718,13 @@
                     default-outputdir="bsla" depends-on-targets="BSLA_LIB"
                     template-dir="@templateRoot@/framework/spring" status="release"
                     description="Spring service">
+        </technology>
+
+        <technology name="cas-security"
+                    template-config-file-name="mp-template-config-cas-security.xml"
+                    default-outputdir="REST"
+                    template-dir="@templateRoot@/framework/cas-security" status="release"
+                    description="Cas Security artifacts">
         </technology>
 
         <technology name="EJBService" model-type="rdbms"
