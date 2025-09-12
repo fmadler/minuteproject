@@ -1,3 +1,12 @@
+#macro(springdataspecification)
+		Specification<$tableClassName> spec = Specification.where(null);
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+		if ($columnVar != null) {
+			spec = spec.and(${entitySpecificationsClass}.has${columnClass}($columnVar));
+		}
+#end
+#end
 #exposeSpringDomainObjectSpecific()
 #exposeRESTURLServer()
 #exposeSpringdataModelSpecific()
@@ -38,6 +47,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -81,28 +93,36 @@ public class ${className} {
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 		return ResponseEntity.ok(entity);
     }
-
 ## TODO semantic search
-
 ## TODO search by prototype/example
 
 	@GetMapping
 	@ResponseBody
+#if ($tableUtils.isLiveBusinessDataContentType($table))
+	public ResponseEntity<Page<$tableClassName>> findAllBy (
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+		#if($velocityCount>1),#end @RequestParam(value="$columnVar", required = false) $columnType $columnVar
+#end
+		,@RequestParam(defaultValue = "0") int _page
+		,@RequestParam(defaultValue = "10") int _size
+	) {
+#springdataspecification()
+		Pageable pageable = PageRequest.of(_page, _size);
+		Page<$tableClassName> page = ${entityRepositoryVariable}.findAll(spec, pageable);
+		return ResponseEntity.ok(page);
+	}
+#else
 	public ResponseEntity<List<$tableClassName>> findAllBy (
 #foreach($column in $tableUtils.getSearchableColumns($table))
 #putColumnParamNaming()
 		#if($velocityCount>1),#end @RequestParam(value="$columnVar", required = false) $columnType $columnVar
 #end
 	) {
-		Specification<$tableClassName> spec = Specification.where(null);
-#foreach($column in $tableUtils.getSearchableColumns($table))
-#putColumnParamNaming()
-		if ($columnVar != null) {
-			spec = spec.and(${entitySpecificationsClass}.has${columnClass}($columnVar));
-		}
-#end
+#springdataspecification()
 		List<$tableClassName> list = ${entityRepositoryVariable}.findAll(spec);
 		return ResponseEntity.ok(list);
 	}
+#end
 
 }
