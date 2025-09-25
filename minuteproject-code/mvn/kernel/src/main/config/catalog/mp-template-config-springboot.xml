@@ -3,6 +3,8 @@ xmlns="http://minuteproject.sf.net/xsd/mp-template-config"
 xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
 xs:schemaLocation="./mp-template-config.xsd">	
 	<architecture-target name="springboot REST GRAPHQL API" description="springboot REST GRAPHQL API"/>
+	<plugin name="environmentUtils" className="net.sf.minuteProject.plugin.environment.EnvironmentUtils"></plugin>
+	<plugin name="graphqlUtils" className="net.sf.minuteProject.plugin.graphql.GraphQLUtils"></plugin>
 
 	<template-target
 			name="Spring boot core resources"
@@ -181,7 +183,6 @@ xs:schemaLocation="./mp-template-config.xsd">
 			<property name="JavaBeanTemplate" value="SDDOutputBean" />
 		</template>
 
-
 	</template-target>
 
 	<template-target
@@ -217,19 +218,105 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 	</template-target>
 
-	<!--
 	<template-target
-			name="REST java  set"
-			libdir="lib/SPRING_LIB.vm"
-			outputdir="src/main/java"
+			name="Graphql file"
+			outputdir="src/main/resources"
+			package-root=""
 			belongToPackage="true">
 
-		<template name="SpringBoot.SDD.Controller" templateFileName="SpringBoot.SDD.Controller.vm"
-				  file-extension="java" technicalPackage="controller" file-suffix="Controller"
-				  scope-specific-value="query" has-updatable-nature="true" >
-			<property name="add-message-format" value="message-format"></property>
+		<template name="GraphQL.schema" templateFileName="GraphQL.schema.vm"
+				  file-extension="graphql"
+				  file-prefix="api"
+				  add-model-dir-name="false"
+				  add-package-name="true" add-business-package-dir-name="false"
+				  package-root=""
+				  model-specific="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+		<template name="GraphQL.graphiql" templateFileName="GraphQL.graphiql.vm"
+				  file-extension="html"
+				  file-prefix="graphiql"
+				  add-model-dir-name="false"
+				  add-package-name="false" add-business-package-dir-name="false"
+				  package-root=""
+				  model-specific="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
 		</template>
 
 	</template-target>
-	-->
+
+	<template-target
+			name="Graphql file"
+			outputdir="src/main/java"
+			belongToPackage="true">
+
+		<template name="GraphQL.TimestampScalar" templateFileName="GraphQL.TimestampScalar.vm"
+				  subdir="" outputsubdir="" technicalPackage="graphql.scalar"
+				  file-extension="java" file-prefix="" file-suffix="TimestampScalar"
+				  scope-specific-value="model" has-updatable-nature="true"
+				  add-model-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="REST and GraphQL java SDD set"
+			libdir="lib/SPRING_LIB.vm"
+			outputdir="src/main/java"
+	>
+
+		<template name="Spring.GraphQL.service" templateFileName="Spring.GraphQL.service.vm"
+				  file-extension="java" technicalPackage="graphql" file-suffix="GraphQLService"
+				  scope-specific-value="model" has-updatable-nature="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+		<template name="SpringBoot.GraphQL.datafetcher" templateFileName="SpringBoot.GraphQL.datafetcher.vm"
+				  file-extension="java" technicalPackage="graphql.datafetcher" file-suffix="DataFetcher"
+				  add-package-name="true" add-business-package-dir-name="false"
+				  scope-specific-value="query" has-updatable-nature="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+
+		<template name="SpringBoot.GraphQL.endpoint" templateFileName="SpringBoot.GraphQL.endpoint.vm"
+				  subdir="" outputsubdir="" technicalPackage="rest"
+				  file-extension="java" file-prefix="" file-suffix="GraphQLRestAPI"
+				  scope-specific-value="model" has-updatable-nature="true" add-model-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+
+		<template name="SpringBoot.GraphQL.config" templateFileName="SpringBoot.GraphQL.config.vm"
+				  subdir="" outputsubdir="" technicalPackage="web"
+				  file-extension="java" file-prefix="" file-suffix="GraphiQlConfiguration"
+				  scope-specific-value="model" add-model-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+	</template-target>
+
 </target>

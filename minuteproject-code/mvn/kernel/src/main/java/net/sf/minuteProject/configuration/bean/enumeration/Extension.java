@@ -306,6 +306,7 @@ public enum Extension implements FileComment {
 			return true;
 		}
 	}
+	/*
 	,graphql {
 		public String lineCommentBeginning() {
 			return "\"\"\"";
@@ -323,9 +324,11 @@ public enum Extension implements FileComment {
 			return "\"\"\"";
 		}
 		public boolean licenceAtBeginning() {
-			return true;
+			return false;//it triggers a parsing error if you have to consecutive comment blocks
 		}
 	}
+
+	 */
 	;
 
 	private static final String CRLF = "\n";

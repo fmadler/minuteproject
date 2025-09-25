@@ -18,8 +18,6 @@ public class ReferenceDataUtils {
 //		if field tag contains checkconstraint => take from db
 //		tag enum 
 		if (bean instanceof Column) {
-//			Column column = (Column)bean;
-			//if (ColumnUtils.isUnique(column) && EnrichmentUtils.isToGenerateBasedOnTag(template, bean))
 			return EnrichmentUtils.isToGenerateBasedOnTag(template, bean);
 		}
 		return false;
@@ -30,10 +28,5 @@ public class ReferenceDataUtils {
 		if (s!=null) return FormatUtils.getJavaName(s);
 		return bean.getGeneratedBeanName();
 	}	
-	
-//	public static String getEnumName(Template template, GeneratorBean bean) {
-//		String s = EnrichmentUtils.getGenerateBasedOnTagAlias(template, bean);
-//		if (s!=null) return s;
-//		return bean.getGeneratedBeanName();
-//	}		
+
 }

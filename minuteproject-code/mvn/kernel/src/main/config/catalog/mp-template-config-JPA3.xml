@@ -50,8 +50,8 @@
 			file-extension="java"
       		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
       		<property name="convertClobToString" value="true"/>
-      		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property> 
-      		<property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2" ></property>    		
+      		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property>
+			<property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2"/>
       		<property name="DomainEntityJPA2EmbeddedId" value="DomainEntityJPA2EmbeddedId" ></property>   		
 		</template>
 		

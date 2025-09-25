@@ -12,12 +12,10 @@ public enum $className {
 #foreach ($prop in $propertyList)
 #exposeEnumerationSpecific()
     $enumName("$enumValue")#if( $velocityHasNext ),
-##set($propName=$restrictedCodeUtils.convertToValidJavaWithUpperCase($prop.name))
-##    $propName("$prop.name")#if( $velocityHasNext ),
 #end
 #end
 #end
-;
+    ;
 
     private final String value;
 
