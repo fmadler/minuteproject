@@ -52,6 +52,7 @@ public class ${className} {
     Resource graphiql;
 
     private GraphQL graphQL;
+    private GraphQLSchema schema;
 
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 #foreach ($query in $package.getPureQueries())
@@ -69,7 +70,7 @@ public class ${className} {
         // parse schema
         TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(schemaFile);
         RuntimeWiring wiring = buildRuntimeWiring();
-        GraphQLSchema schema = new SchemaGenerator().makeExecutableSchema(typeRegistry, wiring);
+        schema = new SchemaGenerator().makeExecutableSchema(typeRegistry, wiring);
         graphQL = GraphQL.newGraphQL(schema).build();
     }
 
@@ -99,4 +100,7 @@ public class ${className} {
         return graphiql;
     }
 
+    public GraphQLSchema getGraphQLSchema() {
+        return schema;
+    }
 }

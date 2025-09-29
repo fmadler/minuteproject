@@ -8,36 +8,54 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.SchemaPrinter;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 ##TODO move to application specific
-@RestController("/graphql")
+@RestController
 public class $className {
 
     @Autowired
     $sddModelSpringGraphQLServiceClass $sddModelSpringGraphQLServiceVariable;
 
-    @GetMapping("/graphiql")
+    @GetMapping("/graphiql-old")
     public ResponseEntity graphiql() throws IOException {
         Resource resource = ${sddModelSpringGraphQLServiceVariable}.getGraphiql();
         File schemaFile = resource.getFile();
         return ResponseEntity.ok(schemaFile);
     }
 
-    @PostMapping
+    @GetMapping("/graphiql")
+    @ResponseBody
+    public String getGraphiql() {
+        try {
+            Resource resource = ${sddModelSpringGraphQLServiceVariable}.getGraphiql();
+            InputStream inputStream = resource.getInputStream();
+            byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
+            return new String(bytes);
+        } catch (IOException e) {
+            return "<h1>Error: HTML file not found</h1>";
+        }
+    }
+
+    @PostMapping ("/data/graphql")
     public ResponseEntity<ExecutionResult> performQuery(String input) throws IOException {
         if (input==null) {
             return schema();
@@ -52,10 +70,10 @@ public class $className {
         return ResponseEntity.ok(execute);
     }
 
-    public Response schema() throws IOException{
-        Resource resource = ${sddModelSpringGraphQLServiceVariable}.getResource();
-        File schemaFile = resource.getFile();
-        return Response.ok(schemaFile, MediaType.TEXT_HTML).build();
+    public ResponseEntity schema() throws IOException{
+        GraphQLSchema schema = ${sddModelSpringGraphQLServiceVariable}.getGraphQLSchema();
+        String schemaPrinter =  new SchemaPrinter().print(schema);
+        return ResponseEntity.ok(schemaPrinter);
     }
 
     public static GraphQLInput mapToGraphQLInput (String input, GraphQLInput graphqlInput) {

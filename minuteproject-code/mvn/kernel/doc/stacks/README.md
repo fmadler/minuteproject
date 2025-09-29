@@ -47,6 +47,9 @@ mvn clean package spring-boot:run -DactiveProfiles=jdbc-params -Plocal
     
 Then go to http://localhost:8081/swagger-ui/index.html
 
+If graphql is enabled, test with GraphiQL at
+http://localhost:8080/<deployedApp>/graphiql
+
 ## Release run
 
 ```bash
