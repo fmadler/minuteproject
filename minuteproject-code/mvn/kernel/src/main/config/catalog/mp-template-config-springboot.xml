@@ -194,7 +194,7 @@ xs:schemaLocation="./mp-template-config.xsd">
 		<property name="convertClobToString" value="true"/>
 		<property name="use-temporal" value="true"></property>
 
-		<template name="pringBoot.entity.controller" templateFileName="SpringBoot.entity.controller.vm"
+		<template name="SpringBoot.entity.controller" templateFileName="SpringBoot.entity.controller.vm"
 				  file-extension="java" technicalPackage="rest" file-suffix="Controller"
 				  entity-specific="true" has-updatable-nature="true"
 				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">

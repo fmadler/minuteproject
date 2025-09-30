@@ -47,9 +47,9 @@
         driverclassname="oracle.jdbc.OracleDriver"
         default-url-structure="jdbc:oracle:thin:@${server-name}:${port-number}:${SID}" >
         <maven-artifact 
-        	mvn-artifact-id="ojdbc14" 
-            mvn-group-id="com.oracle"
-            mvn-version="10.0.2.0.0">
+        	mvn-artifact-id="ojdbc8"
+            mvn-group-id="com.oracle.database.jdbc"
+            mvn-version="19.18.0.0">
         </maven-artifact>
         <grammar>
            <escaping char-to-escape="'" escaping-char="\">

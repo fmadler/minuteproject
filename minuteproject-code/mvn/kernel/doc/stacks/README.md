@@ -23,6 +23,23 @@ It depends on the swagger version; could also be /data/openapi.json
 GraphiQL test
 ex: http://localhost:8080/<deployedApp>/data/graphql/graphiql
 
+## REST-BSLA
+
+### Build
+```bash
+mvn clean package
+```
+
+If you have the property target-server set to tomcat
+```bash
+mvn clean package -P tomcat-embedded-ds
+```
+
+### Deploy on tomcat 
+Copy REST/target/<app>.war to your tomcat /webapps directory
+Then go to http://localhost:8080/data/graphql/graphiql
+
+
 ## SpringBoot
 ### Techno
 * Java
