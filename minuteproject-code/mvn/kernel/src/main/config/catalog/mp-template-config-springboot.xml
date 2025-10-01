@@ -190,9 +190,6 @@ xs:schemaLocation="./mp-template-config.xsd">
 			libdir="lib/SPRING_LIB.vm"
 			outputdir="src/main/java"
 			belongToPackage="true">
-		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" />
-		<property name="convertClobToString" value="true"/>
-		<property name="use-temporal" value="true"></property>
 
 		<template name="SpringBoot.entity.controller" templateFileName="SpringBoot.entity.controller.vm"
 				  file-extension="java" technicalPackage="rest" file-suffix="Controller"
@@ -201,6 +198,9 @@ xs:schemaLocation="./mp-template-config.xsd">
 			<property name="implement-interface" value="false"></property>
 			<property name="add-message-format" value="message-format"></property>
 		</template>
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" />
+		<property name="convertClobToString" value="true"/>
+		<property name="use-temporal" value="true"></property>
 
 	</template-target>
 
