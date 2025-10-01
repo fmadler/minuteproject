@@ -149,6 +149,26 @@
             <artifactId>graphql-java-extended-scalars</artifactId>
             <version>17.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.graphql-java-kickstart</groupId>
+            <artifactId>graphql-spring-boot-starter</artifactId>
+            <version>11.1.0</version>
+        </dependency>
+
+    <!-- TODO add embadded graphiql
+        <dependency>
+            <groupId>com.graphql-java-kickstart</groupId>
+            <artifactId>graphiql-spring-boot-starter</artifactId>
+            <version>11.1.0</version>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>com.graphql-java-kickstart</groupId>
+            <artifactId>graphql-java-tools</artifactId>
+            <version>11.0.0</version>
+        </dependency>
 #end
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -315,6 +335,17 @@
     </reporting>
     
     <profiles>
+        <profile>
+            <id>git</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>pl.project13.maven</groupId>
+                        <artifactId>git-commit-id-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>local</id>
             <build>

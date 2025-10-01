@@ -4,10 +4,15 @@ package ${packageName};
 
 import $sddModelSpringGraphQLServiceImport;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
+import graphql.GraphQL;
+import graphql.introspection.IntrospectionQuery;
+import graphql.introspection.IntrospectionResultToSchema;
+
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.SchemaPrinter;
 import lombok.Data;
@@ -35,13 +40,6 @@ public class $className {
     @Autowired
     $sddModelSpringGraphQLServiceClass $sddModelSpringGraphQLServiceVariable;
 
-    @GetMapping("/graphiql-old")
-    public ResponseEntity graphiql() throws IOException {
-        Resource resource = ${sddModelSpringGraphQLServiceVariable}.getGraphiql();
-        File schemaFile = resource.getFile();
-        return ResponseEntity.ok(schemaFile);
-    }
-
     @GetMapping("/graphiql")
     @ResponseBody
     public String getGraphiql() {
@@ -56,24 +54,32 @@ public class $className {
     }
 
     @PostMapping ("/data/graphql")
-    public ResponseEntity<ExecutionResult> performQuery(String input) throws IOException {
+    public ResponseEntity<ExecutionResult> performQuery(@RequestBody String input) throws IOException {
         if (input==null) {
             return schema();
         }
         GraphQLInput gi = mapToGraphQLInput(input, new GraphQLRestAPI.GraphQLInput());
-        ExecutionInput ei = ExecutionInput.newExecutionInput()
+        ExecutionInput ei = gi.getVariables()!=null ?
+            ExecutionInput.newExecutionInput()
             .query(gi.getQuery())
             .variables(gi.getVariables())
-            .build();
+            .build()
+            :   ExecutionInput.newExecutionInput()
+            .query(gi.getQuery())
+            .build()
+        ;
         ExecutionResult execute = ${sddModelSpringGraphQLServiceVariable}.getGraphQL().execute(ei);
 
         return ResponseEntity.ok(execute);
     }
 
     public ResponseEntity schema() throws IOException{
-        GraphQLSchema schema = ${sddModelSpringGraphQLServiceVariable}.getGraphQLSchema();
-        String schemaPrinter =  new SchemaPrinter().print(schema);
-        return ResponseEntity.ok(schemaPrinter);
+        GraphQL graphql = ${sddModelSpringGraphQLServiceVariable}.getGraphQL();
+        ExecutionInput executionInput = ExecutionInput.newExecutionInput()
+            .query(IntrospectionQuery.INTROSPECTION_QUERY)
+            .build();
+        Map<String, Object> result = graphql.execute(executionInput).toSpecification();
+        return ResponseEntity.ok(result);
     }
 
     public static GraphQLInput mapToGraphQLInput (String input, GraphQLInput graphqlInput) {
