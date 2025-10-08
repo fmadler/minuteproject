@@ -991,7 +991,7 @@
             <xs:element name="query-links" type="query-links"/>
             <xs:element name="query-schedulers" type="query-schedulers"/>
             <xs:element name="query-post-processors" type="query-post-processors"/>
-            <xs:element name="query-params" type="query-params"/>
+            <xs:element name="query-params" type="query-params" minOccurs="0" maxOccurs="1"/>
             <xs:element name="query-pivots" type="query-pivots"/>
             <xs:element name="actions" type="actions"/>
         </xs:sequence>

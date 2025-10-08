@@ -10,6 +10,9 @@ spring.application.name=$application.name
 #end
 server.port=8081
 
+## for serialization when calling a SP that does not return any value
+spring.jackson.serialization.FAIL_ON_EMPTY_BEANS=false
+
 # OpenAPI custom properties
 springdoc.api-docs.path=/api-docs
 springdoc.swagger-ui.path=/swagger-ui.html

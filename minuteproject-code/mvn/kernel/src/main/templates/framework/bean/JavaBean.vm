@@ -39,11 +39,11 @@ $!updatedAreaImport
 @Data
 @AllArgsConstructor
 @Builder
-#if ($template.hasPropertyValue("direction","out"))
+#set ($isNotVoid = !$table.columns.isEmpty())
+#if ($template.hasPropertyValue("direction","out") && $isNotVoid)
 @NoArgsConstructor
 #end
-#set ($isNotVoidInput = !$table.columns.isEmpty())
-#if ($template.hasPropertyValue("direction","in") && $isNotVoidInput)
+#if ($template.hasPropertyValue("direction","in") && $isNotVoid)
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 #end
