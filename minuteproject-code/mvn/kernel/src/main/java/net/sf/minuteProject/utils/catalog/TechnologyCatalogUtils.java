@@ -23,7 +23,7 @@ public class TechnologyCatalogUtils extends CatalogUtils{
 			if (technology.getName().equalsIgnoreCase(name))
 				return technology;
 		}		
-		throw new MinuteProjectException("Bad target\nSpecified target "+name+"\nAvailable targets"+getAvailableTargetsDisplay(catalogDir));
+		throw new MinuteProjectException("Bad target\nSpecified target '"+name+"'\nAvailable targets"+getAvailableTargetsDisplay(catalogDir));
 	}
 	
 	private static String getAvailableTargetsDisplay(String catalogDir) throws MinuteProjectException {

@@ -1,4 +1,6 @@
 # Minuteproject
+## Working locally
+create a /src/main/private-resources folder where to put private MP configurations.
 ## Configuration
 Minuteproject loads a configuration that indicates the target technologies to apply.
 

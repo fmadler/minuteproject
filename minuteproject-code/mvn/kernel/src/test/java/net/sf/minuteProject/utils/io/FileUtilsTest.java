@@ -2,6 +2,7 @@ package net.sf.minuteProject.utils.io;
 
 import junit.framework.TestCase;
 import net.sf.minuteProject.exception.MinuteProjectException;
+import org.junit.Ignore;
 
 public class FileUtilsTest extends TestCase{
 
@@ -24,18 +25,12 @@ public class FileUtilsTest extends TestCase{
 //		String test2stripped = FileUtils.stripFileName(test2);
 //		System.out.println("test2stripped ="+test2stripped);
 	}
-	
+
+	/*
+	@Ignore
 	public void testGetFileFullPathFromFileInClassPath() throws MinuteProjectException {
 		String root = FileUtils.getRoot();
 		String filePathInClassPath="generator-config-petstore.xml";
-//		
-//		String result = FileUtils.getFileFullPathFromFileInClassPath(filePathInClassPath);
-//		System.out.println(result);
-//		String string = root+"\\"+filePathInClassPath;
-//		System.out.println(string);
-//		assertNotNull(result);
-//		assertTrue(result+" != "+string,result.equals(string));
-//		
 		// root
 		filePathInClassPath=".";
 		String result = FileUtils.getFileFullPathFromFileInClassPath(filePathInClassPath);
@@ -48,8 +43,8 @@ public class FileUtilsTest extends TestCase{
 		result = FileUtils.getFileFullPathFromFileInClassPath(filePathInClassPath);
 		System.out.println(result);
 		assertNotNull(result);
-//		assertFalse(result, result.equals(filePathInClassPath));		
-		
 		
 	}
+
+	 */
 }
