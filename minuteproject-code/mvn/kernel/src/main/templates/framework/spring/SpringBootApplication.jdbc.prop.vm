@@ -12,13 +12,13 @@
 #if ($embeddedDatasource)
 spring.datasource.jndi-name=jdbc/${model.name}DS
 #else
-spring.datasource.url=$jdbcUrl
-spring.datasource.driver-class-name=$datasource.driverClassName
-spring.datasource.username=$username
-spring.datasource.password=$password
+spring.datasource.${model.name}.jdbc-url=$jdbcUrl
+spring.datasource.${model.name}.driver-class-name=$datasource.driverClassName
+spring.datasource.${model.name}.username=$username
+spring.datasource.${model.name}.password=$password
+spring.datasource.${model.name}.hikari.connection-timeout=20000
+spring.datasource.${model.name}.hikari.maximum-pool-size=100
 
-spring.datasource.hikari.connection-timeout=20000
-spring.datasource.hikari.maximum-pool-size=100
 #end
 #end
 #generatorSpecific()
@@ -26,12 +26,13 @@ spring.datasource.hikari.maximum-pool-size=100
 #exposeSpringBootModelSpecific()
 #if($configuration.isSingleModel())
 #springBootJdbcConfigProperties()
-#end
+#else
 #foreach ($model in $application.getModels())
 #if ($application.getModels().size()==1)
 #springBootJdbcConfigProperties()
 #else
-    ## TODO multimodel in SB
+#springBootJdbcConfigProperties()
+#end
 #end
 #end
 

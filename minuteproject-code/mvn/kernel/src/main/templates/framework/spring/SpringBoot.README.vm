@@ -1,8 +1,13 @@
-# ${model.name} Spring Boot Application
+#exposeEnabledProperties()
+#exposeApplicationSpecific()
+#set($hash = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+# ${application.name} Spring Boot Application
 
 The application can be tested locally or package for deployment on a server
 
-## Local test
+$h2 Local test
 To use embedded connection pool for local test
 
 Inside /REST directory
@@ -19,8 +24,13 @@ mvn clean package spring-boot:run -DactiveProfiles=jdbc-params -Plocal
 * local logback storage
 
 Then go to http://localhost:8081/swagger-ui/index.html
+#if($isGraphQLEnabled)
 
-## Release
+$h3 Graphql thru graphiql app
+Go to http://localhost:8081/graphiql
+#end
+
+$h2 Release
 It builds a war to deploy on server such as tomcat
 
 ```bash

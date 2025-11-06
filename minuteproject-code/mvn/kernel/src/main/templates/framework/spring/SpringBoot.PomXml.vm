@@ -269,6 +269,7 @@
                     <mainClass>${springBootModelImport}</mainClass>
 #else
                     <!-- TODO multimodel -->
+                    <mainClass>${springBootModelImport}</mainClass>
 #end
 #end
 

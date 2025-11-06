@@ -120,6 +120,13 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 
+		<template name="SpringBoot.datasource.config" templateFileName="SpringBoot.datasource.config.vm"
+				  subdir="" outputsubdir="" technicalPackage="config"
+				  file-extension="java" file-prefix="" file-suffix="DatasourceConfig"
+				  scope-specific-value="model" add-model-name="true">
+			<!--TODO depends if it is multi/single-model -->
+		</template>
+
 		<template name="SpringBoot.cache.config" templateFileName="SpringBoot.cache.config.vm"
 				  subdir="" outputsubdir="" technicalPackage="config"
 				  file-extension="java" file-prefix="" file-suffix="CacheConfig"
@@ -319,4 +326,18 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 	</template-target>
 
+	<template-target
+			name="Spring boot scripts"
+			libdir="lib/SPRING_LIB.vm"
+			outputdir=""
+	>
+		<template name="SpringBoot.cmd.run" templateFileName="SpringBoot.cmd.run.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="sh" file-prefix="springboot-run" file-suffix=""
+				  application-specific="true" add-model-name="false"/>
+		<template name="SpringBoot.cmd.run" templateFileName="SpringBoot.cmd.run.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="cmd" file-prefix="springboot-run" file-suffix=""
+				  application-specific="true" add-model-name="false"/>
+	</template-target>
 </target>
