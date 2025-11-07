@@ -57,8 +57,18 @@ The technologies requiring some identity column can then operate on top of views
 #### entity content type convention
 
 ```xml
-    <entity-content-type-convention type="apply-content-type-to-entity-belonging-to-package" pattern="type,config" content-type="reference-data"/>
-    <entity-content-type-convention type="apply-content-type-to-entity-belonging-to-package" pattern="core" content-type="pseudo-static-data"/>
+    <entity-content-type-convention 
+        type="apply-content-type-to-entity-belonging-to-package" 
+        pattern="type,config" 
+        content-type="reference-data"/>
+    <entity-content-type-convention
+        type="apply-content-type-to-entity-belonging-to-package" 
+        pattern="core" 
+        content-type="pseudo-static-data"/>
+    <entity-content-type-convention
+            type="apply-content-type-to-entity-starting-with" 
+            pattern="V_"
+            content-type="live-business-data" />
 ```
 
 #### semantic-reference-convention

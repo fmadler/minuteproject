@@ -13,6 +13,8 @@
 ## Data Pattern
 ### Pagination
 It is worth applying pagination on live-business-data
+#### Track
+* SpringBoot on entities marked as live-business-data provides springdata jpa pagination
 
 ### Caching
 It is worth applying pagination on master-data, reference-dataf

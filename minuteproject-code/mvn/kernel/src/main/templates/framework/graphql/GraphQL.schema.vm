@@ -55,7 +55,7 @@
 #end
 #end
 #end
-#exposeEmberModelSpecific()
+##exposeEmberModelSpecific()
 schema {
 ## sdd queries
     query: Query

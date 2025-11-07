@@ -104,7 +104,7 @@ public class ${className} {
 #putColumnParamNaming()
 		#if($velocityCount>1),#end @RequestParam(value="$columnVar", required = false) $columnType $columnVar
 #end
-		,@RequestParam(defaultValue = "0") int _page
+		#if($tableUtils.getSearchableColumns($table).size()>0) , #end @RequestParam(defaultValue = "0") int _page
 		,@RequestParam(defaultValue = "10") int _size
 	) {
 #springdataspecification()
