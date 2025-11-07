@@ -161,10 +161,9 @@ $updatedAreaSnippet
     @JoinColumn(name="$localColumnName" #if($localColumn.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true #else, unique=false#end $insertableUpdatableRelationship)
 #exposeRelationship($table, $reference)
 #set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
-    $accessor $linkedTableClass ${colVar};  
+    $accessor $linkedTableClass ${colVar};
 
-#set($column = $reference.localColumn)
-#putColumnParamNaming()
+#end
 #foreach ($reference in $table.children)
 #putReferenceParams2()
 #exposeEntityUpdatedAreas("${childrenListVariable}-field")
@@ -193,10 +192,8 @@ $!updatedAreaSnippet
 
 #end
 #end
-#if(!$linktableDB.isManyToMany())
-$!updatedAreaEnd
 #end
-#end
+
 #foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
 #exposeM2MSpecific()
 #exposeEntityUpdatedAreas("m2m-$childrenListVariable")
@@ -208,14 +205,12 @@ $!updatedAreaSnippet
 #set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
 #end
     @ManyToMany
-    @JoinTable(name="$linkedTableDBName", 
-        joinColumns=@JoinColumn(name="$targetColumn.name"), 
-        inverseJoinColumns=@JoinColumn(name="$linkReference.localColumnName") 
+        @JoinTable(name="$linkedTableDBName",
+        joinColumns=@JoinColumn(name="$targetColumn.name"),
+        inverseJoinColumns=@JoinColumn(name="$linkReference.localColumnName")
     )
-    $accessor Set <$targetTableName> $childrenListVariable = new HashSet <$targetTableName> ();
+    $accessor Set <$targetTableName> $childrenListVariable = new HashSet <$targetTableName> ();//m2m-$childrenListVariable
 
-#end
-#updatedAreaEnd()
 #end
 
 }

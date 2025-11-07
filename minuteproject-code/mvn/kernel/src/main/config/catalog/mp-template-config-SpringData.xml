@@ -14,7 +14,7 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 		<template name="SpringDataModelRepository" templateFileName="SpringDataModelRepository.vm" 
 			outputsubdir="" technicalPackage="repository"
-			file-extension="java" file-prefix="" file-suffix="Repository" 
+			file-extension="java" file-prefix="" file-suffix="ModelRepository"
 			model-specific="true"
 			has-updatable-nature="true">
 		</template>	
