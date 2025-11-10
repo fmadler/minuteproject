@@ -327,6 +327,7 @@
     <xs:simpleType name="entity-searchable-convention-type">
         <xs:restriction base="xs:string">
             <xs:enumeration value="apply-searchable-equal-on-column"/>
+            <xs:enumeration value="apply-searchable-starts-with-on-column"/>
         </xs:restriction>
     </xs:simpleType>
 

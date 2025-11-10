@@ -14,6 +14,8 @@ import java.util.List;
 @Log4j
 public class EntitySearchableConvention extends FieldConvention {
 
+	public static final String APPLY_SEARCHABLE_EQUAL_ON_COLUMN ="apply-searchable-equal-on-column";
+	public static final String APPLY_SEARCHABLE_STARTS_WITH_ON_COLUMN ="apply-searchable-starts-with-on-column";
 	@Override
 	public void apply(BusinessModel model) {
 		if (isValid()) {
@@ -29,6 +31,8 @@ public class EntitySearchableConvention extends FieldConvention {
 	private void apply(Table table) {
 		for (Column column : table.getColumns()) {
 			if (match(column)) {
+				//todo add searchable granularity based on the searchable type
+
 				column.setSearchable(true);
 			}
 		}

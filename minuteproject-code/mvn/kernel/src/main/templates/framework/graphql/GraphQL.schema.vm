@@ -2,6 +2,46 @@
 #set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
 #set ($enumName = $formatUtils.getJavaName("${query.name}_${queryChunk.name}"))
 #end
+#macro(graphqlQueryEntityType $model)
+#exposeVariableModelDetailSpecific()
+#foreach ($package in $businessPackageViews)
+    """
+    Package $package.name model views
+    """
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecific()
+#set ($searchableSize = $tableUtils.getSearchableColumns($table).size())
+#if ($searchableSize>0)
+    ${tableVariableName}(
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+        $columnVar:$graphqlUtils.convertColumnType($column) #if ($velocityCount!=$searchableSize),
+#end
+#end
+
+    ): [${tableClassName}]
+#end
+#end
+#end
+#end
+#macro(graphqlQueryEntityTypeOut $model)
+#exposeVariableModelDetailSpecific()
+#foreach ($package in $businessPackageViews)
+    """
+    Package $package.name model views
+    """
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecific()
+type ${tableVariableName} {
+#foreach($column in $table.columns)
+#putColumnParamNaming()
+    $columnVar:$graphqlUtils.convertColumnType($column)
+#end
+}
+
+#end
+#end
+#end
 #macro(graphqlQueryMutationType $isWrite)
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 #set($pureQueries=$package.getPureQueries($isWrite))
@@ -70,6 +110,7 @@ scalar DateTime
 scalar Timestamp
 
 type Query {
+#graphqlQueryEntityType($model)
 #graphqlQueryMutationType(false)
 }
 
@@ -153,3 +194,5 @@ type $tableClassName$pivotClass {
 
 #end
 #end
+
+#graphqlQueryEntityTypeOut($model)

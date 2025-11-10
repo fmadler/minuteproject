@@ -283,7 +283,7 @@ xs:schemaLocation="./mp-template-config.xsd">
 			outputdir="src/main/java"
 	>
 
-		<template name="Spring.GraphQL.service" templateFileName="Spring.GraphQL.service.vm"
+		<template name="SpringBoot.GraphQL.service" templateFileName="SpringBoot.GraphQL.service.vm"
 				  file-extension="java" technicalPackage="graphql" file-suffix="GraphQLService"
 				  scope-specific-value="model" has-updatable-nature="true"
 				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
@@ -292,10 +292,20 @@ xs:schemaLocation="./mp-template-config.xsd">
 			<property name="property-presence-value" value="true"></property>
 		</template>
 
-		<template name="SpringBoot.GraphQL.datafetcher" templateFileName="SpringBoot.GraphQL.datafetcher.vm"
+		<template name="SpringBoot.GraphQL.SDD.datafetcher" templateFileName="SpringBoot.GraphQL.SDD.datafetcher.vm"
 				  file-extension="java" technicalPackage="graphql.datafetcher" file-suffix="DataFetcher"
 				  add-package-name="true" add-business-package-dir-name="false"
 				  scope-specific-value="query" has-updatable-nature="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+		<template name="SpringBoot.GraphQL.entity.datafetcher" templateFileName="SpringBoot.GraphQL.entity.datafetcher.vm"
+				  file-extension="java" technicalPackage="graphql.datafetcher" file-suffix="DataFetcher"
+				  add-package-name="true" add-business-package-dir-name="true"
+				  scope-specific-value="entity" has-updatable-nature="false"
 				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
 		>
 			<property name="property-presence" value="graphql-enabled"></property>
