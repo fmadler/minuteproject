@@ -1,5 +1,37 @@
 # Model enrichment
 
+## Entity
+### Semantic reference
+```xml
+    <entity name="CONFERENCE_MEMBER">
+        <semantic-reference>
+            <sql-path path="FIRST_NAME" />
+            <sql-path path="LAST_NAME" />
+        </semantic-reference>
+    </entity>
+```
+## Fields
+### Check constraints
+```xml
+    <entity name="CONFERENCE_MEMBER">
+        <field name="STATUS">
+            <property tag="checkconstraint" alias="conference_member_status">
+                <property name="PENDING" value="PENDING" />
+                <property name="ACTIVE" value="ACTIVE" />
+                <property name="DONE" value="DONE" />
+            </property>
+        </field>
+    </entity>
+```
+### Stereotype
+Stereotype are combination of validation and presentation info
+```xml
+    <entity name="CONFERENCE_MEMBER">
+        <field name="EMAIL">
+            <stereotype stereotype="EMAIL" />
+        </field>
+    </entity>
+```
 ## Conventions
 Conventions are a set of actions to apply to all the entities matching a specific pattern.
 
@@ -52,7 +84,11 @@ The technologies requiring some identity column can then operate on top of views
             default-primary-key-names="IDENTIFIER,ID" />
 ```
 ### Content enrichment
-#### searchable //TODO
+#### Searchable entity-searchable-convention convention
+Indicate that columns are searchable and how to search on those column
+```xml
+	<entity-searchable-convention type="apply-searchable-equal-on-column" field-pattern-type="endsWith" field-pattern="web_path"/>
+```
 
 #### entity content type convention
 
@@ -91,8 +127,37 @@ The technologies requiring some identity column can then operate on top of views
                          field-pattern-type="endsWith" ordering="asc" />
 ```
 
-#### entity-searchable-convention convention
-Indicate that columns are searchable and how to search on those column
+## Query result enrichment
+### cell graph enrichment
+A cell (row, column) of a sql result can contain some structured data that can be parsed into object (single or multiple).
+
+**Example** The field winners contains a collection of object (name: string, web_path:web_path)
 ```xml
-	<entity-searchable-convention type="apply-searchable-equal-on-column" field-pattern-type="endsWith" field-pattern="web_path"/>
+    <query-field name="winners"
+                 is-structured-array="true"
+                 separator-characters=",|"
+                 array-columns="name,web_path"
+                 array-columns-type="string,string">
+    </query-field>
+```
+#### When to use
+When you have a collection of collections such as a query returning a list of users and each user has a list of email addresses.
+
+Instead of going for an N+1 pitfall design: 
+> List of chosen user (1 query) + for those N users get for each the list of email addresses (N queries)
+
+Gather all those info into one query by using some sql aggregation functionalities (such as GROUP_CONCAT for mysql).
+On column will have this information that can be used by minuteproject enrichment to generate proper objects.
+
+```sql
+    select a, b, 
+        GROUP_CONCAT(distinct
+                     CONCAT_WS(
+                             '|',
+                             pl.name,
+                             pl.web_path
+                         )
+            ) winners
+    from player pl ...
+    group by a, b
 ```

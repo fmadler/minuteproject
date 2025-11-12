@@ -18,3 +18,17 @@ It is worth applying pagination on live-business-data
 
 ### Caching
 It is worth applying pagination on master-data, reference-dataf
+
+## Data query result
+### Tabular
+### Graph
+By using a cell (row, column) content as a structured data it can store a single or a collection of objects.
+This can constitute a graph.
+
+### Field Column
+#### Stereotype
+Stereotype are combination of validation and presentation info
+#### check constraint
+A field can contain only some values among a set. 
+A check constraint field is a candidate for master data hardcoded value, since a change in the constraint is a change of the model/business that requires another generation.
+

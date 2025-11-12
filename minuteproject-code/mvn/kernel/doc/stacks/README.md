@@ -43,7 +43,23 @@ Then go to http://localhost:8080/data/graphql/graphiql
 ## SpringBoot
 ### Techno
 * Java
-* create REST endpoint for GET and POST methods
+* create REST endpoints for GET and POST methods 
+    * SDD (spring jdbctemplate)
+        * queries
+            * cell graph enrichment
+        * store proc call
+        * composite: multiple queries via a single call using same input
+    * View with searchable fields (spring-data jpa)
+    * swagger-ui interface
+* create graphql endpoint
+    * SDD (spring jdbctemplate)
+        * queries
+            * cell graph enrichment
+        * store proc call (at least one input and one output params) 
+            * GraphQL Mutation
+    * View with searchable fields (spring-data jpa)
+    * graphql schema
+    * graphiql interface
 
 ### release
 Deployed as war or as spring-boot:run
@@ -67,8 +83,11 @@ Then go to http://localhost:8081/swagger-ui/index.html
 If graphql is enabled, test with GraphiQL at
 http://localhost:8080/<deployedApp>/graphiql
 
-## Release run
+#### Release run
 
 ```bash
 mvn clean package -DactiveProfiles=jdbc-cp -Premote
 ```
+
+## Openxava
+For quickly building a front end by reverse engineering the model
