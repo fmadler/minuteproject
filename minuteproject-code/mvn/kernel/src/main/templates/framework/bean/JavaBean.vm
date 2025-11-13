@@ -11,13 +11,14 @@ import java.util.ArrayList;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 #if ($template.hasPropertyValue("direction","in"))
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 #end
-import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -50,6 +51,27 @@ $!updatedAreaImport
 public class ${className} {
 #putEntityValidation()
 
+#foreach ($column in $table.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if ($columnUtils.hasCheckConstraint($column))
+#set($checkConstraints= $columnUtils.getCheckConstraintValues($column))
+#set($size= $checkConstraints.size())
+    @AllArgsConstructor
+    public enum ${columnClass}Enum {
+#foreach ($property in $checkConstraints)
+#set($propertyName = $formatUtils.getUppercaseUnderscore2($property.name))
+#set($propertyValue = $propertyUtils.getPropertyValue($property))
+        $propertyName ("$propertyValue")#if ($velocityCount!=$size),#else;#end
+
+#end
+        @Getter
+        public final String value;##$columnType value;
+     }
+#end
+#end
+#end
+
 #foreach($column in ${table.columns})
 #if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
@@ -60,6 +82,7 @@ public class ${className} {
 #end
 #end
 #end
+###### For Array column
 #foreach($column in ${table.columns})
 #if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
@@ -80,11 +103,16 @@ public class ${className} {
 #set($fieldVariable = $javaUtils.getJavaVariableNaming($commonUtils.getJavaVariableName($field.name)))
 		$fieldType $fieldVariable;
 #end
+
 	}
 ##TODO check dimensions if list or single element
     private List<$columnClass> ${columnVar};
 #else
-    private $columnType $columnVar;
+#if ($columnUtils.hasCheckConstraint($column))
+    private ${columnClass}Enum $columnVar;####
+#else
+    private $columnType $columnVar;####
+#end
 #end
 #if($hasDefaultValue)
 #set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
@@ -94,6 +122,9 @@ public class ${className} {
 #end
 #else
 #putFieldValidation()
+#if ($columnUtils.hasCheckConstraint($column))
+    private List<${columnClass}Enum> $columnVar;
+#else
     private String ${columnVar}Input;
     private List<$columnType> $columnVar;
 
@@ -101,17 +132,18 @@ public class ${className} {
         if (${columnVar}==null)
             ${columnVar} = new ArrayList<$columnType>();
         return ${columnVar};
-    }
-    
-    public void set$columnClass (String $columnVar) {
+        }
+
+        public void set$columnClass (String $columnVar) {
         this.${columnVar}Input = ${columnVar};
-    	if ($columnVar!=null) {
-    		for (String element : StringUtils.split($columnVar, ",")) {
+        if ($columnVar!=null) {
+            for (String element : StringUtils.split($columnVar, ",")) {
 #set($key=$convertUtils.getJavaTypeMaskExpressionFromStringInput($column, "element", true))
-        		get${columnClass}().add ($key);
-        	}
+                get${columnClass}().add ($key);
+            }
         }
     }
+#end
 #end
 #end
 #end

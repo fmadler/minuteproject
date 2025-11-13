@@ -899,7 +899,11 @@ $!updatedAreaEnd
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()
 #if(!$column.isArray())
+#if ($columnUtils.hasCheckConstraint($column))
+		if (${sddInputBeanVariable}.get$columnClass()!=null) list.add(${sddInputBeanVariable}.get$columnClass().getValue());
+#else
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.add(${sddInputBeanVariable}.get$columnClass());
+#end
 #else
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.addAll(${sddInputBeanVariable}.get$columnClass());
 #end

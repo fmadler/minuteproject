@@ -84,7 +84,9 @@ public class ${className} {
 #set ($size = $columnsNotDuplicatedNorImplicit.size())
 #foreach($column in $columnsNotDuplicatedNorImplicit)
 #putColumnParamNaming()
-        @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end) $columnType $columnVar #if($velocityCount!=$size),
+#set($hasCheckConstraint=$columnUtils.hasCheckConstraint($column))
+#set($isArray=$column.isArray())
+        @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end)#if ($hasCheckConstraint) #if($isArray) List<${sddInputBeanClass}.${columnClass}Enum> #else ${sddInputBeanClass}.${columnClass}Enum#end#else $columnType#end $columnVar #if($velocityCount!=$size),
 #end
 #end
 #foreach($queryChunk in $query.getQueryChunks())

@@ -69,7 +69,7 @@ public class FormatUtils {
 	public static String getUppercaseUnderscore2 (String name) {
 		if (name!=null) {
 			String underscoreName = StringUtils.replace(name, "-", "_");
-			underscoreName = StringUtils.replace(name, " ", "_");
+			underscoreName = StringUtils.replace(underscoreName, " ", "_");
 			return underscoreName.toUpperCase();
 		}
 		return "";

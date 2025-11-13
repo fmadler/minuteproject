@@ -12,7 +12,7 @@
 #exposeVariableEntitySpecific()
 #set ($searchableSize = $tableUtils.getSearchableColumns($table).size())
 #if ($searchableSize>0)
-    ${tableVariableName}(
+    ${tableVariableName} (
 #foreach($column in $tableUtils.getSearchableColumns($table))
 #putColumnParamNaming()
         $columnVar:$graphqlUtils.convertColumnType($column) #if ($velocityCount!=$searchableSize),
@@ -20,6 +20,8 @@
 #end
 
     ): [${tableClassName}]
+#else
+    ${tableVariableName}: [${tableClassName}]
 #end
 #end
 #end
@@ -79,9 +81,10 @@ type ${tableVariableName} {
 #foreach ($pivot in $query.pivots)
 #set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
 #set($pivotClasses = $i18nUtils.plurialize($pivotClass))
-    ${tableVariableName}${pivotClasses} (
-##foreach($column in $inputBean.columns)
 #set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
+#if ($columnList.size()>0)
+    ${tableVariableName}${pivotClasses} (
+    ##foreach($column in $inputBean.columns)
 #foreach($column in $columnList)
 ##if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
@@ -91,6 +94,9 @@ type ${tableVariableName} {
 #end
 
     ): [${tableClassName}${pivotClass}]
+#else
+    ${tableVariableName}${pivotClasses}: [${tableClassName}${pivotClass}]
+#end
 #end
 #end
 #end
@@ -123,6 +129,23 @@ type Mutation {
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 #set($pureQueries=$package.getPureQueries())
 #foreach ($query in $pureQueries)
+#set($table=$query.inputBean)
+## enum in checkconstraint
+#foreach ($column in $table.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if ($columnUtils.hasCheckConstraint($column))
+#set($checkConstraints= $columnUtils.getCheckConstraintValues($column))
+enum ${columnClass}Enum {
+#foreach ($property in $checkConstraints)
+#set($propertyName = $formatUtils.getUppercaseUnderscore2($property.name))
+    $propertyName
+#end
+}
+#end
+#end
+#end
+## enum in chunks
 #foreach($queryChunk in $query.getQueryChunks())
 #chunkInfo()
 enum ${enumName} {
