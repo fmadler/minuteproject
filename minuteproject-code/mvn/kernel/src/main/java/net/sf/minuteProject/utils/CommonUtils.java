@@ -637,7 +637,7 @@ public class CommonUtils {
 		if (template==null)
 			return "TEMPLATE_IS_NULL";
 		StringBuffer sb = new StringBuffer();
-		String sb1 = new String(CommonUtils.getPackageName(bean, template));
+		String sb1 = CommonUtils.getPackageName(bean, template);
     	String dir = FormatUtils.getDirFromPackage(sb1, template.isConvertPackageToDir());
     	if(!StringUtils.isEmpty(dir)) {
 	    	sb.append(dir);
