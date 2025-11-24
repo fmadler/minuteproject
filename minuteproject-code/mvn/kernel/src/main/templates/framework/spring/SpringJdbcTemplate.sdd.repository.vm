@@ -72,7 +72,7 @@ public class $className {##//implements
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()
 #if ($column.isOutputParam())
-        paramList.add(new SqlOutParameter("tochange$velocityCount", Types.${column.type}));
+        paramList.add(new SqlOutParameter("$columnVar", Types.${column.type}));
 #else
 #set($jdbcType = $statementUtils.getJdbcType($column))
         paramList.add(new SqlParameter(Types.${column.type}));
@@ -85,7 +85,6 @@ public class $className {##//implements
             throws SQLException {
 
                 CallableStatement cs = connection.prepareCall("{"+QUERY_NATIVE+"}");
-##            callableStatement.setString(1, removeSpecialUserIn.getUserId());
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()
 #if ($column.isOutputParam())
@@ -98,7 +97,16 @@ public class $className {##//implements
                 return cs;
             }
         }, paramList);
-        return Arrays.asList(new $sddOutputBeanClass());
+        $sddOutputBeanClass result = ${sddOutputBeanClass}.builder()
+#if ($statementUtils.hasResult($outputBean))
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+##set($columnType = $statementUtils.getJdbcType($column))
+            .$columnVar(($columnType) resultMap.get("$columnVar"))
+#end
+#end
+            .build();
+        return Arrays.asList(result);
 #*
         return jdbcTemplate.execute((Connection connection) -> {
             CallableStatement cs = connection.prepareCall("{"+QUERY_NATIVE+"}");

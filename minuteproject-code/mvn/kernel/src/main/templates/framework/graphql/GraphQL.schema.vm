@@ -60,13 +60,10 @@ type ${tableVariableName} {
 #putImportSDDInputBean()
 #if($isNotVoidInput || $query.getQueryChunks().size() > 0)
     ${tableVariableName}(
-##foreach($column in $inputBean.columns)
 #set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
 #foreach($column in $columnList)
-##if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
         $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
-##end
 #end
 #end
 #foreach($queryChunk in $query.getQueryChunks())
@@ -84,12 +81,9 @@ type ${tableVariableName} {
 #set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
 #if ($columnList.size()>0)
     ${tableVariableName}${pivotClasses} (
-    ##foreach($column in $inputBean.columns)
 #foreach($column in $columnList)
-##if (!$column.hasBeenDuplicated())
 #putColumnParamNaming()
         $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
-##end
 #end
 #end
 

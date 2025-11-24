@@ -753,4 +753,8 @@ public class TableUtils {
 				.collect(Collectors.toList());
 	}
 
+	public static boolean isVoidInput(Table table) {
+		return Stream.of(table.getColumns()).filter(c -> !c.isOutputParam()).findAny().isPresent();
+	}
+
 }

@@ -61,7 +61,8 @@ $readmeUtils.getReadme($template)
 #set ($classVariableName = $formatUtils.firstLowerCase(${className}))
 #set ($inputBean = $query.inputBean)
 #set ($outputBean = $query.outputBean)
-#set ($isNotVoidInput = !$inputBean.getColumns().isEmpty())
+##set ($isNotVoidInput = !$inputBean.getColumns().isEmpty())
+#set ($isNotVoidInput = $tableUtils.isVoidInput($inputBean))
 #set ($hasQueryChunkWithParams = $query.hasQueryChunkWithParams())
 #end
 
@@ -896,6 +897,7 @@ $!updatedAreaEnd
 #end
 	) {
 		List<Object> list = new ArrayList<>();
+#if($isNotVoidInput)
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()
 #if(!$column.isArray())
@@ -908,8 +910,7 @@ $!updatedAreaEnd
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.addAll(${sddInputBeanVariable}.get$columnClass());
 #end
 #end
-##injectGetStatementChunk()
-##injectGetStatementFilter()
+#end
 		return list;
 	}
 #end
