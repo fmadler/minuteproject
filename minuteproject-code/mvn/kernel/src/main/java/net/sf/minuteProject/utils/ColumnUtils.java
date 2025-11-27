@@ -260,36 +260,6 @@ public class ColumnUtils {
 		if (type.equals("TIMESTAMP"))
 			return (useTemporal)?"new java.util.Date()": "new Timestamp(new Date().getTime())";
 		return ConvertUtils.getJavaDefaultMask(column);
-//		if (type.equals("CHAR") || 
-//			type.equals("CHAR2") ||
-//			type.equals("VARCHAR") ||
-//			type.equals("VARCHAR2") ||
-//			type.equals("VARGRAPHIC") ||
-//			type.equals("VARGRAPHIC2") 
-//			//type.equals("CLOB")
-//				)
-//			return "\"\"";
-////		if (type.equals("INT") ||
-////			type.equals("SMALLINT") ||
-////			type.equals("INTEGER") )
-////			return "Integer.valueOf(\"-1\")";
-//		if (isInteger(column))
-//			return "Integer.valueOf(\"-1\")"; 
-////		if (type.equals("BIGINT") || 
-////			type.equals("LONG")   ||
-////			type.equals("NUMBER") ||
-////			type.equals("DECIMAL") )
-////			return "Long.valueOf(\"-1\")";
-//		if (isLong(column))
-//			return "Long.valueOf(\"-1\")";
-//		if (type.equals("FLOAT"))
-//			return "java.math.BigDecimal.valueOf(-1)";
-//		if (type.equals("DATE")) 
-//			return "new java.util.Date()";
-//		if (type.equals("CLOB") ||
-//			type.equals("BLOB"))
-//			return "null";
-//		return "\"\"";
 	}
 	
 	public static boolean isInteger(Column column) {

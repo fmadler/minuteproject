@@ -15,8 +15,10 @@ public class GraphQLUtils {
             return "Float";
         } else if (ColumnUtils.isTimeStampColumn(column)) {
             return "Timestamp";
-        } else if (ColumnUtils.isTimeColumn(column)) {
+        } else if (ColumnUtils.isDate(column)) {
             return "Date";
+        } else if (ColumnUtils.isTimeColumn(column)) {
+            return "DateTime";
         }
         return "String";
     }

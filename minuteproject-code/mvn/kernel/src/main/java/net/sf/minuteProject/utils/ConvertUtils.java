@@ -24,7 +24,8 @@ public class ConvertUtils {
 	public static final String JAVA_TIMESTAMP_TYPE 					=   "java.sql.Timestamp";			
 	public static final String JAVA_SQL_TIMESTAMP_TYPE 				=   "java.sql.Timestamp";			
 	public static final String JAVA_TIME_TYPE 						=   "java.sql.Time";			
-	public static final String JAVA_SQL_TIME_TYPE 					=   "java.sql.Time";			
+	public static final String JAVA_DATETIME_TYPE 					=   "java.util.Date";
+	public static final String JAVA_SQL_TIME_TYPE 					=   "java.sql.Time";
 	public static final String JAVA_BIGDECIMAL_TYPE 				=   "java.math.BigDecimal";
 	public static final String JAVA_BIGINTEGER_TYPE 				=   "java.math.BigInteger";
 	public static final String JAVA_STRING_TYPE 					=   "java.lang.String";	
@@ -79,7 +80,8 @@ public class ConvertUtils {
 	public static final String UML_DATE_TYPE 						=   "date";	
 	public static final String UML_TIMESTAMP_TYPE 					=   "timestamp";	
 	public static final String UML_TIME_TYPE 						=   "time";	
-	
+	public static final String UML_DATETIME_TYPE 					=   "datetime";
+
 	private static Logger logger = Logger.getLogger(ConvertUtils.class);
 	
 	public static String getDBFullTypeFromUMLType (String type) {
@@ -94,6 +96,7 @@ public class ConvertUtils {
 		if (UML_BOOLEAN_TYPE.equals(type)) return DB_BOOLEAN_TYPE;
 		if (UML_TIMESTAMP_TYPE.equals(type)) return DB_TIMESTAMP_TYPE;
 		if (UML_TIME_TYPE.equals(type)) return DB_TIME_TYPE;
+		//if (UML_DATETIME_TYPE.equals(type)) return DB_DATETIME_TYPE;
 		if (UML_BIGDECIMAL_TYPE.equals(type)) return DB_DOUBLE_TYPE;
 		if (UML_BIGINTEGER_TYPE.equals(type)) return DB_BIGINT_TYPE;
 		return DB_STRING_TYPE;
@@ -109,6 +112,7 @@ public class ConvertUtils {
 		if (UML_LONG_TYPE.equals(type)) return Types.FLOAT;
 		if (UML_DOUBLE_TYPE.equals(type)) return Types.DOUBLE;
 		if (UML_DATE_TYPE.equals(type)) return Types.DATE;
+		if (UML_DATETIME_TYPE.equals(type)) return Types.TIME;
 		if (UML_BOOLEAN_TYPE.equals(type)) return Types.BOOLEAN;
 		if (UML_TIMESTAMP_TYPE.equals(type)) return Types.TIMESTAMP;
 		//TODO numeric
@@ -133,6 +137,7 @@ public class ConvertUtils {
 		if (DB_DATE_TYPE.equals(type)) return UML_DATE_TYPE;
 		if (DB_TIMESTAMP_TYPE.equals(type)) return UML_TIMESTAMP_TYPE;
 		if (DB_TIME_TYPE.equals(type)) return UML_TIME_TYPE;
+		if (DB_DATETIME_TYPE.equals(type)) return UML_DATETIME_TYPE;
 		if (DB_LONG_TYPE.equals(type)) return UML_LONG_TYPE;
 		if (DB_BIGINT_TYPE.equals(type)) return UML_BIGINTEGER_TYPE;
 		if (DB_BOOLEAN_TYPE.equals(type)) return UML_BOOLEAN_TYPE;
@@ -159,6 +164,8 @@ public class ConvertUtils {
 			return  JAVA_INTEGER_TYPE;		
 		if (dBType.equals("TIME"))
 			return  JAVA_TIME_TYPE;
+		if (dBType.equals("DATETIME"))
+			return  JAVA_DATETIME_TYPE;
 		if (dBType.equals("DECIMAL"))
 			return  JAVA_BIGDECIMAL_TYPE;
 		if (dBType.equals("SMALLINT"))

@@ -8,6 +8,8 @@ package $packageName;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -37,7 +37,7 @@
 type ${tableVariableName} {
 #foreach($column in $table.columns)
 #putColumnParamNaming()
-    $columnVar:$graphqlUtils.convertColumnType($column)
+    $columnVar:$graphqlUtils.convertColumnType($column) //$column.type
 #end
 }
 
