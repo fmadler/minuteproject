@@ -50,6 +50,7 @@ import org.springframework.http.MediaType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -75,17 +76,6 @@ public class ${className} {
 
 	${entityRepositoryClass} $entityRepositoryVariable;
 
-## Only for master data
-#*
-	@GetMapping
-	@ResponseBody
-    public ResponseEntity<List<$tableClassName>> findAll () {
-		List<$tableClassName> list = ${entityRepositoryVariable}.findAll();
-		return ResponseEntity.ok(list);
-    }
-
-
- *#
 	@RequestMapping(value = "/{$primaryKeyVariable}", method = RequestMethod.GET)
 	@ResponseBody
     public ResponseEntity<$tableClassName> findById (@PathVariable ("$primaryKeyVariable") $primaryKeyFullType $primaryKeyVariable) {
@@ -108,7 +98,13 @@ public class ${className} {
 		,@RequestParam(defaultValue = "10") int _size
 	) {
 #springdataspecification()
-		Pageable pageable = PageRequest.of(_page, _size);
+#set($ordering=$orderingUtils.getFirstOrdering($table))
+#set($column=$ordering.column)
+#set($order=$formatUtils.lowerCase(${ordering.order.toString()}))
+#putColumnParamNaming()
+	//ordering $columnVar
+		Sort sort = Sort.by(Sort.Direction.ASC, "$columnVar");
+		Pageable pageable = PageRequest.of(_page, _size, sort);
 		Page<$tableClassName> page = ${entityRepositoryVariable}.findAll(spec, pageable);
 		return ResponseEntity.ok(page);
 	}

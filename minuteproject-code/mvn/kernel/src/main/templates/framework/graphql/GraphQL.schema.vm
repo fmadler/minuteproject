@@ -34,10 +34,10 @@
     """
 #foreach ($table in ${package.listOfViews})
 #exposeVariableEntitySpecific()
-type ${tableVariableName} {
+type ${tableClassName} {
 #foreach($column in $table.columns)
 #putColumnParamNaming()
-    $columnVar:$graphqlUtils.convertColumnType($column) //$column.type
+    $columnVar:$graphqlUtils.convertColumnType($column)
 #end
 }
 

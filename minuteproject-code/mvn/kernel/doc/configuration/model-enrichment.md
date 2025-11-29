@@ -1,5 +1,46 @@
 # Model enrichment
 
+## Model Scoping
+Generation can be scope to some DB objects such as tables or views.
+
+### Disabling entity generation
+At generator-config level
+```xml
+    <configuration>
+        <conventions>
+            <target-convention type="disable-business-model-generation" />
+        </conventions>
+    <configuration>
+```
+### Entity Scoping
+At model/business level
+```xml
+    <business-model>
+        <!-- exclude the generation for tables artifacts-->
+        <generation-condition exclude-tables="true">
+            <!-- exclude the generation for entity starting with v_sitemap -->
+            <condition type="exclude" startsWith="v_sitemap" />
+        </generation-condition>
+```
+## Model Factoring
+Provide naming and packaging convention to entities and fields
+### Package Factoring
+Entities (tables and views) can be grouped within some packages
+```xml
+    <business-model>
+        <!-- add default package -->
+        <business-package default="view">
+            <condition type="package" endsWith="_TYPE" result="type"></condition>
+            <condition type="package" startsWith="sales_" result="config"></condition>
+            <condition type="package" startsWith="V_" result="view"></condition>
+            <condition type="package" endsWith="_V" result="view"></condition>
+        </business-package>
+    </business-model>
+```
+
+### Entity Factoring
+It can be perform on individual basis or globally by [Structural Conventions](#structure-convention)
+
 ## Entity
 ### Semantic reference
 ```xml
@@ -38,7 +79,7 @@ Conventions are a set of actions to apply to all the entities matching a specifi
 Conventions can benefit from previous conventions definitions.
 Example:  One convention tags certain tables with a content-type, another convention use the content-type to perform further enrichment.
 
-### Structure convention
+### <a name="structure-convention"></a> Structure convention
 #### entity-naming-convention
 Allows to have generated artifacts different from the original DB entity name.
 DB conventions can be distinct from target code (ex: java) convention
@@ -105,7 +146,23 @@ Indicate that columns are searchable and how to search on those column
             type="apply-content-type-to-entity-starting-with" 
             pattern="V_"
             content-type="live-business-data" />
+    <entity-content-type-convention
+            type="apply-content-type-to-entity-containing"
+            pattern="view"
+            content-type="live-business-data" />
 ```
+3 types are available
+* apply-content-type-to-entity-belonging-to-package
+* apply-content-type-to-entity-starting-with
+* apply-content-type-to-entity-containing
+
+The content-type can have 4 values:
+* master-data
+* reference-data
+* pseudo-static-data
+* live-business-data
+
+Specifying some type can lead to specific generation described [here](../concept/data-description.md)
 
 #### semantic-reference-convention
 ```xml

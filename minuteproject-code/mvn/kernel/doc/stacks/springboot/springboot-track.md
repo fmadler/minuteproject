@@ -15,6 +15,11 @@ TODO
 TODO
 
 ## REST
+Supporting features
+* search equal (string, int, date) using searchable fields.
+* pagination (for live-business-date)
+* ordering
+
 ### Swagger testing
 #### Date time format
 Date time format is DateTimeFormat.ISO.DATE_TIME (yyyy-MM-dd'T'HH:mm:ss.SSSZ), example:

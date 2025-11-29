@@ -470,7 +470,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 
 	public List<Action> getActions() {
 		if (actions == null)
-			actions = new ArrayList<Action>();
+			actions = new ArrayList<>();
 		return actions;
 	}
 
@@ -480,7 +480,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	
 	public List<Action> getInputActions() {
 		if (inputActions == null)
-			inputActions = new ArrayList<Action>();
+			inputActions = new ArrayList<>();
 		return inputActions;
 	}
 	

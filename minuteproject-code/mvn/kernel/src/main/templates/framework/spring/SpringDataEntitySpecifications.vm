@@ -29,6 +29,19 @@ public class $className {
             return criteriaBuilder.equal(root.get("$columnVar"), $columnVar);
         };
     }
+
+#if ($columnUtils.isString($column) && !$isEnum)
+    public static Specification<$tableClassName> has${columnClass}StartsWith (
+        $columnType $columnVar
+    ) {
+        return (root, query, criteriaBuilder) -> {
+            if ($columnVar == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.like(root.get("$columnVar"), $columnVar+"%");
+        };
+    }
+#end
 #end
 
 $!updatedAreaImplementation
