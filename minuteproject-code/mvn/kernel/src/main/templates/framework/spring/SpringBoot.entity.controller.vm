@@ -21,8 +21,12 @@ import java.sql.*;
 
 import java.io.IOException;
 import javax.servlet.http.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -60,6 +64,14 @@ import $entityRepositoryImport;
 import $importDomainObjectUML;
 import $entitySpecificationsImport;
 
+#set($ordering=$orderingUtils.getFirstOrdering($table))
+#set($column=$ordering.column)
+#set($order=$formatUtils.lowerCase(${ordering.order.toString()}))
+#putColumnParamNaming()
+#set($orderColumn = $column)
+#set($orderColumnVar = $columnVar)
+#set($hasOrdering=$table.orderings.size()>0)
+
 /**
 *
 * <p>Title: ${className}</p>
@@ -94,17 +106,32 @@ public class ${className} {
 #putColumnParamNaming()
 		#if($velocityCount>1),#end @RequestParam(value="$columnVar", required = false) $columnType $columnVar
 #end
-		#if($tableUtils.getSearchableColumns($table).size()>0) , #end @RequestParam(defaultValue = "0") int _page
-		,@RequestParam(defaultValue = "10") int _size
-	) {
-#springdataspecification()
-#set($ordering=$orderingUtils.getFirstOrdering($table))
+		#if($tableUtils.getSearchableColumns($table).size()>0) , #end @RequestParam(defaultValue = "0", required = false) int _page
+		,@RequestParam(defaultValue = "10", required = false) int _size
+#foreach($ordering in $table.orderings)
 #set($column=$ordering.column)
 #set($order=$formatUtils.lowerCase(${ordering.order.toString()}))
 #putColumnParamNaming()
-	//ordering $columnVar
-		Sort sort = Sort.by(Sort.Direction.ASC, "$columnVar");
+		,@RequestParam(required = false) ${className}Order _order_${velocityCount}
+		,@RequestParam(required = false) Order _order_${velocityCount}_direction
+#end
+	) {
+#springdataspecification()
+#if ($hasOrdering)
+		final List<Sort> sorts = Stream.of(
+#foreach($ordering in $table.orderings)
+			getSort(_order_${velocityCount}, _order_${velocityCount}_direction)#if($velocityCount!=${table.orderings.size()}), #end
+
+#end
+			)
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.collect(Collectors.toList());
+		Sort sort = getSort(sorts);
 		Pageable pageable = PageRequest.of(_page, _size, sort);
+#else
+		Pageable pageable = PageRequest.of(_page, _size);
+#end
 		Page<$tableClassName> page = ${entityRepositoryVariable}.findAll(spec, pageable);
 		return ResponseEntity.ok(page);
 	}
@@ -118,6 +145,48 @@ public class ${className} {
 #springdataspecification()
 		List<$tableClassName> list = ${entityRepositoryVariable}.findAll(spec);
 		return ResponseEntity.ok(list);
+	}
+#end
+
+#if ($hasOrdering)
+	@Schema(description = "Sort column for ${className}", enumAsRef = true)
+	public enum ${className}Order {
+#foreach($ordering in $table.orderings)
+#set($column=$ordering.column)
+#putColumnParamNaming()
+		${columnVar},
+#end
+	}
+
+	//TODO set globally
+	private Optional<Sort> getSort(${className}Order column, Order order) {
+		if (Objects.isNull(column) || Objects.isNull(order)) {
+			return Optional.empty();
+		} else {
+			Sort sort = order==Order.ASC?Sort.by(column.name()).ascending():Sort.by(column.name()).descending();
+			return Optional.of(sort);
+		}
+	}
+
+	private Sort getSort(List<Sort> sorts) {
+		//Sort is immutable thus this implementation is not generic but limited to the 3 first orderings
+		if (sorts.size()==1) {
+			return sorts.get(0);
+		} else if (sorts.size()==2) {
+			Sort first = sorts.get(0);
+			Sort second = sorts.get(1);
+			return first.and(second);
+		} else if (sorts.size()>=3) {
+			Sort first = sorts.get(0);
+			Sort second = sorts.get(1);
+			Sort third = sorts.get(2);
+			return first.and(second).and(third);
+		}
+		return Sort.unsorted();
+	}
+
+	public enum Order {
+		ASC, DESC;
 	}
 #end
 
