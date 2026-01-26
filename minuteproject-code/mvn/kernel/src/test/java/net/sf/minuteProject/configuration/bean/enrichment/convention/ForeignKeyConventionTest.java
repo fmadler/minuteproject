@@ -8,7 +8,11 @@ import net.sf.minuteProject.utils.ColumnUtils;
 import net.sf.minuteProject.utils.TableUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
@@ -24,26 +28,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ForeignKeyConventionTest {
 
+    static class ApplyOnPatternRelevanceArgumentProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    Arguments.of("_ID", FIRST_TABLE, SECOND_TABLE_ID, Boolean.TRUE),
+                    Arguments.of("_ID", FIRST_TABLE, "LAST_TABLE_ID", Boolean.FALSE)
+            );
+        }
+    }
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class ApplyOnPatternRelevanceMethod {
-        Stream<Object[]> matchTableInput() {
-            return Stream.of(
-                    new Object[] {
-                            "_ID",
-                            FIRST_TABLE,
-                            SECOND_TABLE_ID,
-                            Boolean.TRUE},
-                    new Object[] {
-                            "_ID",
-                            FIRST_TABLE,
-                            "LAST_TABLE_ID",
-                            Boolean.FALSE}
-            );
-        }
 
         @ParameterizedTest
-        @MethodSource("matchTableInput")
+        @ArgumentsSource(ApplyOnPatternRelevanceArgumentProvider.class)
         void isConventionToApplyOnPatternRelevance(String columnEnding, String tableName, String columnName, boolean expectedTargetTableName) {
             ForeignKeyConvention foreignKeyConvention = new ForeignKeyConvention();
             final Table t = TableUtils.getTable(getDatabase(), tableName);
