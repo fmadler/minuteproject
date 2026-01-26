@@ -1,21 +1,20 @@
 package net.sf.minuteProject.configuration.bean.enrichment.convention;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.commons.lang.StringUtils;
-
+import lombok.Data;
 import net.sf.minuteProject.configuration.bean.BusinessModel;
 import net.sf.minuteProject.configuration.bean.enrichment.Entity;
 import net.sf.minuteProject.configuration.bean.enrichment.Field;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
-import net.sf.minuteProject.configuration.bean.model.data.Database;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.ForeignKeyUtils;
 import net.sf.minuteProject.utils.TableUtils;
+import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Data
 public class ForeignKeyConvention extends ModelConvention {
 
 	public static final String AUTODETECT_FOREIGN_KEY_BASED_ON_TARGET_PRIMARY_KEY_NAME = "autodetect-foreign-key-based-on-target-primary-key-name";
@@ -26,42 +25,6 @@ public class ForeignKeyConvention extends ModelConvention {
 	public String defaultSuffix, columnEnding, columnStarting;
 	private String fieldPatternType;
 
-	public String getFieldPatternType() {
-		return fieldPatternType;
-	}
-
-	public void setFieldPatternType(String fieldPatternType) {
-		this.fieldPatternType = fieldPatternType;
-	}
-
-	public String getDefaultSuffix() {
-		return defaultSuffix;
-	}
-
-	public void setDefaultValue(String defaultValue) {
-		this.defaultSuffix = defaultValue;
-	}
-
-	public void setDefaultSuffix(String defaultSuffix) {
-		this.defaultSuffix = defaultSuffix;
-	}
-
-	public String getColumnEnding() {
-		return columnEnding;
-	}
-
-	public void setColumnEnding(String columnEnding) {
-		this.columnEnding = columnEnding;
-	}
-
-	public String getColumnStarting() {
-		return columnStarting;
-	}
-
-	public void setColumnStarting(String columnStarting) {
-		this.columnStarting = columnStarting;
-	}
-
 	@Override
 	public void apply(BusinessModel model) {
 		if (AUTODETECT_FOREIGN_KEY_BASED_ON_SIMILARITY_AND_MAP.equals(type)) {
@@ -71,15 +34,15 @@ public class ForeignKeyConvention extends ModelConvention {
 				}				
 			}
 		}
-		if (AUTODETECT_FOREIGN_KEY_BASED_ON_TARGET_PRIMARY_KEY_NAME.equals(type)) {
+		else if (AUTODETECT_FOREIGN_KEY_BASED_ON_TARGET_PRIMARY_KEY_NAME.equals(type)) {
 			if (model.getBusinessPackage() != null) {
-				Map<String, Table> map = TableUtils.getPrimaryKeyTableMap(model);
+				List<Table> entities = model.getBusinessPackage().getEntities();
 				for (Table table : model.getBusinessPackage().getEntities()) {
-					applyFieldSimilarity(table, map);
+					applyFieldSimilarity(table, entities);
 				}
 			}
 		}
-		if (AUTODETECT_SELF_REFERENCE_FOREIGN_KEY_BASED_ON_COLUMN_NAME.equals(type)) {
+		else if (AUTODETECT_SELF_REFERENCE_FOREIGN_KEY_BASED_ON_COLUMN_NAME.equals(type)) {
 			if (model.getBusinessPackage() != null) {
 				for (Table table : model.getBusinessPackage().getEntities()) {
 					applySelfReferenceForeignKey(table);
@@ -119,38 +82,28 @@ public class ForeignKeyConvention extends ModelConvention {
 	private void applyEntitySimilarity(Table table) {
 		for (Field field : getForeignKeyFieldsNotInSelfReferencedPrimaryKey(table)){
 			ForeignKeyUtils.setForeignKey(table, field);
-			//remove attribute
-			
 		}
 		
 	}
-	private void applyFieldSimilarity(Table table, Map<String, Table> map) {
-		//foreach column get name
-		// check according to patterntype if it is to 
-		for (Column column : table.getAttributes()) {
-			Table target = matchTable(column, map);
-			if (target!=null) {
-				Field field = getForeignKeyField(column, table, target);
+
+	protected void applyFieldSimilarity(Table table, List<Table> entities) {
+		for (Column column : table.getColumns()) { //to be replaced by table.getAttributes()
+			Optional<Table> target = matchTable(column, entities);
+			if (target.isPresent()) {
+				Field field = getForeignKeyField(column, table, target.get());
 				ForeignKeyUtils.setForeignKey(table, field);
 			}
 		}
 	}
 
-	private Table matchTable(Column column, Map<String, Table> map) {
-		for (Entry<String, Table> entry : map.entrySet()) {
-			if (matchEntry(column, entry.getKey())) {
-				return entry.getValue();
-			}
-		}
-		return null;
-	}
-
-	private boolean matchEntry(Column column, String key) {
-		return net.sf.minuteProject.utils.StringUtils.checkExpression(column.getName(), fieldPatternType, key);
+	protected Optional<Table> matchTable(Column column, List<Table> entities) {
+		return entities.stream()
+				.filter(t -> column.getName().equalsIgnoreCase(t.getName()))
+				.findFirst();
 	}
 
 	private List<Field> getForeignKeyFieldsNotInSelfReferencedPrimaryKey(Table table) {
-		List<Field> list = new ArrayList<Field>();
+		List<Field> list = new ArrayList<>();
 		for (Column column : table.getColumns()) {
 			if (isConventionToApply(column)) { // 
 				Field f = getForeignKeyField(column, table);
@@ -176,7 +129,7 @@ public class ForeignKeyConvention extends ModelConvention {
 	private Table getTarget(Column column) {
 		Table table = column.getTable();
 		String tablename = getTargetEntityNameLowerCase(column);
-		Table target = TableUtils.getTable(table.getDatabase(), tablename);
+		Table target = TableUtils.getEntity(table.getDatabase(), tablename);
 		if (target == null) {
 			target = TableUtils.getTableFromAlias(table.getDatabase(), tablename);
 		}
@@ -211,9 +164,9 @@ public class ForeignKeyConvention extends ModelConvention {
 	private String getTargetEntityNameLowerCase(Column column) {
 		String key = column.getName().toLowerCase();
 		if (columnEnding != null && !"".equals(columnEnding))
-			key = StringUtils.stripEnd(key, columnEnding);
+			key = StringUtils.stripEnd(key, columnEnding.toLowerCase());
 		if (columnStarting != null && !"".equals(columnStarting))
-			key = StringUtils.stripStart(key, columnStarting);
+			key = StringUtils.stripStart(key, columnStarting.toLowerCase());
 		return key;
 	}
 
@@ -222,7 +175,7 @@ public class ForeignKeyConvention extends ModelConvention {
 		return isConventionToApplyOnPatternRelevance(column);
 	}
 	
-	private boolean isConventionToApplyOnPatternRelevance(Column column) {
+	protected boolean isConventionToApplyOnPatternRelevance(Column column) {
 		if ((columnEnding == null || "".equals(columnEnding)) &&
 			(columnStarting == null || "".equals(columnStarting))) return false;
 		String key = getTargetEntityNameLowerCase(column);

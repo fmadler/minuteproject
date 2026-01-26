@@ -1,15 +1,5 @@
 package net.sf.minuteProject.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import net.sf.minuteProject.configuration.bean.BusinessModel;
 import net.sf.minuteProject.configuration.bean.GeneratorBean;
 import net.sf.minuteProject.configuration.bean.Model;
 import net.sf.minuteProject.configuration.bean.Template;
@@ -28,9 +18,16 @@ import net.sf.minuteProject.configuration.bean.model.data.impl.UMLNotation.Table
 import net.sf.minuteProject.plugin.presentation.PresentationUtils;
 import net.sf.minuteProject.utils.enrichment.EnrichmentUtils;
 import net.sf.minuteProject.utils.parser.ParserUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TableUtils {
 
@@ -85,6 +82,11 @@ public class TableUtils {
 
 	public static Table getTable(Database database, String tablename) {
 		return getEntity(database, tablename);
+	}
+
+	public static Optional<Table> getTableByName(List<Table> entities, String tablename) {
+		return entities.stream().filter(u-> u.getName().equalsIgnoreCase(tablename))
+				.findFirst();
 	}
 
 	public static Table getTableFromAlias(Database database, String tablename) {
@@ -570,18 +572,6 @@ public class TableUtils {
 	public static int getNumberOfPrimaryColumns(Table table) {
 		return (table.getPrimaryKeyColumns() == null) ? 0 : table
 				.getPrimaryKeyColumns().length;
-	}
-
-	public static Map<String, Table> getPrimaryKeyTableMap(BusinessModel model) {
-		Map<String, Table> tables = new HashMap<String, Table>();
-		for (Table table : model.getBusinessPackage().getEntities()) {
-			if (table.hasPrimaryKey()) {
-				Column col = getPrimaryFirstColumn(table);
-				String pk = col.getName();
-				tables.put(pk, table);
-			}
-		}
-		return tables;
 	}
 
 	public static List<Column> getNotTechnicalColumns(Table table) {

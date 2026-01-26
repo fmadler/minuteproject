@@ -171,13 +171,6 @@ public class TableDDLUtils extends TableAbstract {
     	return (ForeignKey[])getForeignKeyList().toArray(new ForeignKey[getForeignKeyList().size()]);		
 	}
 
-//	protected List<ForeignKey> getForeignKeysList() {
-//    	if (foreignKeys == null) {
-//    		foreignKeys = new ArrayList<ForeignKey>();
-//    	}
-//    	return foreignKeys;
-//	}
-
 	public void setPrimaryKeys(Column[] virtualPrimaryKey) {
 		//reset primaryKeys
 		primaryKeys = null;

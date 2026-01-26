@@ -58,8 +58,6 @@ public class DatabaseDDLUtils implements Database
 		
 		if (isBusinessModelGenerationDisable(dataModel)) {
 			database = new org.apache.ddlutils.model.Database();
-			//database.setType();
-			//TODO set type
 		} else {
 			loadDatabase(dataModel);
 		}
