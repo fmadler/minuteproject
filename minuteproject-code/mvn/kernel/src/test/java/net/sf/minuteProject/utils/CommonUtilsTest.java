@@ -6,17 +6,18 @@ import net.sf.minuteProject.configuration.bean.Template;
 import net.sf.minuteProject.configuration.bean.TemplateTarget;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.TableDDLUtils;
-import junit.framework.TestCase;
-import static net.sf.minuteProject.utils.CommonUtils.*;
+import org.assertj.core.api.Assertions;
 
-public class CommonUtilsTest extends TestCase{
+import static net.sf.minuteProject.utils.CommonUtils.getClassName;
+
+public class CommonUtilsTest {
 
 	//TODO disable technical package, business package, model package
 	//TODO convention packaging order (technical, business, model combination)
 	public void testGetClassName() {
 		String s = getClassName(getSampleTable(), getSampleDomainTemplate());
 		System.out.println("s = "+s);
-		assertNotNull(s);
+		Assertions.assertThat(s).isNotNull();
 	}
 
 	private Template getSampleDomainTemplate() {

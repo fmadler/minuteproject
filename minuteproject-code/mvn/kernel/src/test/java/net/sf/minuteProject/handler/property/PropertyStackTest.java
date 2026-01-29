@@ -6,8 +6,8 @@ import java.util.Properties;
 import junit.framework.Assert;
 import net.sf.minuteProject.handler.property.PropertyStack;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PropertyStackTest {
 
@@ -22,7 +22,7 @@ public class PropertyStackTest {
 	public static final String bonsoirResult = "BonSOIR";
 	
 	PropertyStack propertyStack;
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		propertyStack = new PropertyStack();
 		Properties properties = new Properties();

@@ -2,7 +2,7 @@ package net.sf.minuteProject.utils;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FormatUtilsTest {
 

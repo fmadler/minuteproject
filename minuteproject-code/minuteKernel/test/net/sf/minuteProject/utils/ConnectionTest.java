@@ -5,7 +5,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import java.sql.*;
 
-public class ConnectionTest extends TestCase{
+public class ConnectionTest {
 
 	public void testIt () {
 		try {

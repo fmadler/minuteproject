@@ -3,14 +3,14 @@ package net.sf.minuteProject.configuration.bean;
 import static junit.framework.Assert.*;
 import net.sf.minuteProject.configuration.bean.system.Property;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TargetsTest {
 
 	Configuration configuration;
 	
-	@Before 
+	@BeforeEach
 	public void init() {
 		configuration = new Configuration();
 		Model model = new Model();

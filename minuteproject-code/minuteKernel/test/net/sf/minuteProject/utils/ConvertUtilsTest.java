@@ -9,8 +9,8 @@ import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.TableDDL
 import net.sf.minuteProject.model.db.type.FieldType;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 

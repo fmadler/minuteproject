@@ -7,8 +7,8 @@ import net.sf.minuteProject.model.data.criteria.constant.OperandType;
 import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
 import net.sf.minuteProject.model.data.criteria.order.OrderCriteria;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 

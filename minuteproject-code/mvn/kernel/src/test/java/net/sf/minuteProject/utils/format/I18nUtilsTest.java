@@ -1,9 +1,9 @@
 package net.sf.minuteProject.utils.format;
 
-import junit.framework.TestCase;
 import net.sf.minuteProject.plugin.format.I18nUtils;
+import org.assertj.core.api.Assertions;
 
-public class I18nUtilsTest extends TestCase {
+public class I18nUtilsTest  {
 
 	private static final String nameWithUnderscore = "TEST_TEST";
 	private static final String nameWithoutUnderscore = "TESTTEST";
@@ -22,28 +22,28 @@ public class I18nUtilsTest extends TestCase {
 	
 	public void testPlurialize () {
 		String s = I18nUtils.plurialize(ACTIVITY);
-		assertTrue(s+ " should be equal to "+ACTIVITIES, s.equals(ACTIVITIES));
+		Assertions.assertThat(s+ " should be equal to "+ACTIVITIES).isEqualTo(s.equals(ACTIVITIES));
 		s = I18nUtils.plurialize(Y);
-		assertTrue(s+ " should be equal to "+IES, s.equals(IES));
+		Assertions.assertThat(s+ " should be equal to "+IES).isEqualTo(s.equals(IES));
 	}
 	
 	public void testGetI18nFromDBNameStripPrefix () {
 		String s = I18nUtils.getI18nFromDBNameStripPrefix(nameWithUnderscore);
-		assertTrue("result = "+s+" while input = "+nameWithUnderscore,test.equals(s));
+		Assertions.assertThat("result = "+s+" while input = "+nameWithUnderscore).isEqualTo(test.equals(s));
 		s = I18nUtils.getI18nFromDBNameStripPrefix(nameWithoutUnderscore);
-		assertTrue(nameWithoutUnderscore.equals(s));
+		Assertions.assertThat(nameWithoutUnderscore.equals(s));
 		s = I18nUtils.getI18nFromDBNameStripPrefix(null);
 	}
 	
 	
 	public void testGetI18nFromDBNameStripSufix () {
 		String s = I18nUtils.getI18nFromDBNameStripSufix(nameWithoutUnderscore, true);
-		assertTrue("result = "+s+" while input = "+nameWithoutUnderscore, testtest.equals(s));
+		Assertions.assertThat("result = "+s+" while input = "+nameWithoutUnderscore).isEqualTo(testtest.equals(s));
 	}
 	
 	
 	public void testGetSingural () {
 		String s = I18nUtils.singularize(FINDER_FILTERS);
-		assertTrue("result = "+s+" while input = "+FINDER_FILTERS, FINDER_FILTER_lowercase.equals(s));
+		Assertions.assertThat("result = "+s+" while input = "+FINDER_FILTERS).isEqualTo(FINDER_FILTER_lowercase.equals(s));
 	}
 }

@@ -1,14 +1,10 @@
 package net.sf.minuteProject.file;
 
-import static org.mockito.Mockito.mock;
-import net.sf.minuteProject.configuration.bean.Model;
-import net.sf.minuteProject.configuration.bean.Target;
-import net.sf.minuteProject.configuration.bean.Targets;
-import net.sf.minuteProject.configuration.bean.Template;
-import net.sf.minuteProject.configuration.bean.TemplateTarget;
+import net.sf.minuteProject.configuration.bean.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.mockito.Mockito.mock;
 
 public class DirectoryTest {
 
@@ -21,7 +17,7 @@ public class DirectoryTest {
 	Template template;
 	Model model;
 	
-	@Before
+	@BeforeEach
 	public void init(){
 		targets = mock(Targets.class);
 		target = mock(Target.class);

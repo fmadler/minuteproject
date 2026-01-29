@@ -1,15 +1,13 @@
 package net.sf.minuteProject.configuration.bean.model.data;
 
-import java.util.List;
-
-import org.apache.ddlutils.model.Column;
-
-import net.sf.minuteProject.configuration.bean.BusinessPackage;
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.TableDDLUtils;
 import net.sf.minuteProject.utils.ComponentUtils;
-import junit.framework.TestCase;
+import org.apache.ddlutils.model.Column;
+import org.assertj.core.api.Assertions;
 
-public class ComponentTest extends TestCase{
+import java.util.List;
+
+public class ComponentTest {
 
 	//create components from table (with column)
 	public void testCreateComponentFromTable() {
@@ -26,7 +24,7 @@ public class ComponentTest extends TestCase{
 		table.setPackage(pack);
 		pack.setName("pack");
 		List<Component> list = ComponentUtils.getComponent(table);
-		assertTrue(list.size()==2);
+		Assertions.assertThat(list).hasSize(2);
 		Component component = list.get(0);
 ////		assertTrue(component.getName().equals("Test"));
 //		assertTrue(component.getColumns().length==1);

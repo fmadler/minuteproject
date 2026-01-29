@@ -4,8 +4,8 @@ import junit.framework.Assert;
 import static junit.framework.Assert.*;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 

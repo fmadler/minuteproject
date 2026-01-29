@@ -10,7 +10,7 @@ import net.sf.minuteproject.model.db.Column;
 import net.sf.minuteproject.model.db.type.FieldType;
 import net.sf.minuteproject.utils.query.QueryUtils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SampleTimeStampColumnFixtureTest extends DbInsertUpdateDeleteFixture{
 

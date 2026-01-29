@@ -7,12 +7,12 @@ import net.sf.minuteProject.configuration.bean.Template;
 import net.sf.minuteProject.configuration.bean.TemplateTarget;
 import static net.sf.minuteProject.utils.io.UpdatedAreaUtils.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import junit.framework.TestCase;
 
-public class UpdatedAreaUtilsTest extends TestCase {
+public class UpdatedAreaUtilsTest  {
 
 	Template template;
 	TemplateTarget templateTarget;

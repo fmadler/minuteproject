@@ -1,19 +1,13 @@
 package net.sf.minuteProject.utils.sql;
 
-import static org.junit.Assert.assertTrue;
+import net.sf.minuteProject.configuration.bean.model.statement.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import net.sf.minuteProject.configuration.bean.model.statement.Query;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryBody;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryFilter;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryPagination;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryParam;
-import net.sf.minuteProject.configuration.bean.model.statement.QueryParams;
+import static org.junit.Assert.assertTrue;
 
 public class QueryUtilsTest {
 
@@ -97,7 +91,7 @@ public class QueryUtilsTest {
 	
 	Query query1;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		query1=new Query();
 		query1.setQueryBody(getQueryBody(query1Jdbc));

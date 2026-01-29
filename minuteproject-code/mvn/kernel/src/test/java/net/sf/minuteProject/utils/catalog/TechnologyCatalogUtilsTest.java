@@ -1,24 +1,25 @@
 package net.sf.minuteProject.utils.catalog;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import net.sf.minuteProject.configuration.bean.Configuration;
 import net.sf.minuteProject.configuration.bean.Targets;
 import net.sf.minuteProject.exception.MinuteProjectException;
 import net.sf.minuteProject.loader.catalog.technologycatalog.node.Technologies;
 import net.sf.minuteProject.loader.catalog.technologycatalog.node.Technology;
 import net.sf.minuteProject.loader.catalog.technologycatalog.node.TechnologyCatalog;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class TechnologyCatalogUtilsTest {
 
 	Configuration configuration;
 	TechnologyCatalog technologyCatalog;
-	@Before
+	@BeforeEach
 	public void init() {
 		configuration = new Configuration();
 		Targets t = new Targets();

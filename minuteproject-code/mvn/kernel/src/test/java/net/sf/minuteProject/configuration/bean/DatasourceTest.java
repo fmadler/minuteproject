@@ -1,13 +1,12 @@
 package net.sf.minuteProject.configuration.bean;
 
-import junit.framework.Assert;
-import static junit.framework.Assert.*;
-
 import org.apache.commons.dbcp.BasicDataSource;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class DatasourceTest {
 
@@ -24,7 +23,7 @@ public class DatasourceTest {
 	public static final String databaseSIDKey = "${SID}";
 	
 	BasicDataSource bds;
-	@Before 
+	@BeforeEach
 	public void init() {
 		bds = mock(BasicDataSource.class);		
 	}

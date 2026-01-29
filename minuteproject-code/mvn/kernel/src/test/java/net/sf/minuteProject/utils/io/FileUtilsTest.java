@@ -1,10 +1,8 @@
 package net.sf.minuteProject.utils.io;
 
-import junit.framework.TestCase;
-import net.sf.minuteProject.exception.MinuteProjectException;
-import org.junit.Ignore;
+import org.assertj.core.api.Assertions;
 
-public class FileUtilsTest extends TestCase{
+public class FileUtilsTest {
 
 	public void testStripFileName() {
 		
@@ -15,7 +13,7 @@ public class FileUtilsTest extends TestCase{
 		
 		String filename = "../../test/test/myjava.java";
 		String stripped = FileUtils.stripFileName(filename);
-		assertTrue(stripped, stripped.equals("../../test/test"));
+		Assertions.assertThat(stripped).isEqualTo(stripped.equals("../../test/test"));
 		
 //		String filenameOnly = FileUtils.stripRelativePath(filename);
 //		assertTrue(filenameOnly, filenameOnly.equals("myjava.java"));
