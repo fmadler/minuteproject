@@ -67,16 +67,110 @@
 		<xs:attribute name="model-type" type="model-type" />
 		<xs:attribute name="package-root" type="xs:string" />
 		<xs:attribute name="add-technical-dir-name" type="xs:boolean" />
-		<xs:attribute name="scope-specific-value" type="xs:string" /><!-- todo enum-->
+		<xs:attribute name="scope-specific-value" type="scope-specific-value-type" /><!-- todo enum-->
 		<xs:attribute name="add-business-package-dir-name" type="xs:boolean" />
 		<xs:attribute name="has-updatable-nature" type="xs:boolean" />
 	</xs:complexType>
+
+     <xs:simpleType name="scope-specific-value-type">
+         <xs:restriction base="xs:string">
+             <xs:enumeration value="application" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 application: just one, generation at root level
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+             <xs:enumeration value="application-package" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 application-package: just one, generation at main package level
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+             <xs:enumeration value="model" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 model: one for each model, generation at model package level
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+             <xs:enumeration value="entity" >
+				 <xs:annotation>
+					 <xs:documentation>
+						entity: one for each entity, generation at model package + technical package + entity
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+             <xs:enumeration value="function" />
+			 <xs:enumeration value="composite" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 entity: one for each composite (target multiple queries), generation at model package + technical package + composite
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+			 <xs:enumeration value="query" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 entity: one for each query, generation at model package + technical package + query
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+			 <xs:enumeration value="sdd-input-bean" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 entity: one for each query input, generation at model package + technical package + query input
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+			 <xs:enumeration value="sdd-output-bean" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 entity: one for each query output, generation at model package + technical package + query output
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+			 <xs:enumeration value="sdd-input-composite-bean" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 entity: one for each composite input, generation at model package + technical package + composite input
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+			 <xs:enumeration value="sdd-output-composite-bean" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 entity: one for each composite output, generation at model package + technical package + composite output
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+			 <xs:enumeration value="function-input-entity" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 entity: one for each function input, generation at model package + technical package + function input
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+			 <xs:enumeration value="function-output-entity" >
+				 <xs:annotation>
+					 <xs:documentation>
+						 entity: one for each function output, generation at model package + technical package + function output
+					 </xs:documentation>
+				 </xs:annotation>
+			 </xs:enumeration>
+			 <xs:enumeration value="foreignkey" />
+			 <xs:enumeration value="transfer-entity" />
+			 <xs:enumeration value="action" />
+			 <xs:enumeration value="query-package" />
+			 <xs:enumeration value="query-pivot" />
+         </xs:restriction>
+     </xs:simpleType>
 
      <xs:simpleType name="model-type">
          <xs:restriction base="xs:string">
              <xs:enumeration value="any" />
              <xs:enumeration value="rdbms" />
-             <xs:enumeration value="cmis" />
              <xs:enumeration value="mongodb" />
          </xs:restriction>
      </xs:simpleType>

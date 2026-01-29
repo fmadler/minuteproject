@@ -2250,7 +2250,7 @@
 							<pattern value="query-display-new-column">
 								<object-create-rule
 									classname="net.sf.minuteProject.configuration.bean.model.statement.QueryDisplayNewColumn" />
-								<set-next-rule methodname="setQueryDisplayNewColumn"
+								<set-next-rule methodname="addQueryDisplayNewColumn"
 									paramtype="net.sf.minuteProject.configuration.bean.model.statement.QueryDisplayNewColumn" />
 								<set-properties-rule>
 									<alias attr-name="name" prop-name="name" />
@@ -2764,7 +2764,7 @@
 						<pattern value="actions/action-in">
 							<object-create-rule
 								classname="net.sf.minuteProject.configuration.bean.enrichment.Action" />
-							<set-next-rule methodname="addInAction"
+							<set-next-rule methodname="addInputAction"
 								paramtype="net.sf.minuteProject.configuration.bean.enrichment.Action" />
 							<set-properties-rule>
 								<alias attr-name="name" prop-name="name" />

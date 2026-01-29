@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Ensure the /target/classes directory exists
+mkdir -p "$1"
+mkdir -p "$1/classes"
+
+# Generate the git-commits.json file in /target/classes
+git log -n 400 --pretty=format:'{
+    "hash": "%H",
+    "abbreviated_hash": "%h",
+    "author_name": "%an",
+    "author_email": "%ae",
+    "date": "%ad",
+    "message": "%s"
+}' | jq -s . > "$1/classes/git-commits.json"

@@ -338,15 +338,12 @@ public class Template extends TemplateTarget {
 				getFileBuilderPlugin(getIsTemplateToGenerateMethodPluginName()), 
 				getIsTemplateToGenerateMethodFunctionName(),
 				bean);
-		if (!isToGenerate)
-			return false;
-		return true;
-	}
+        return isToGenerate;
+    }
 	
 	public boolean isToGenerate () {
 		if (isToGenerate!=null && isToGenerate.equals("false")) return false;
-		if (getCheckTemplateToGenerate()!=null && getCheckTemplateToGenerate().equals("false")) return false;
-		else return true;
+        return getCheckTemplateToGenerate() == null || !getCheckTemplateToGenerate().equals("false");
 	}
 	
 	private String getIsTemplateToGenerateMethodPluginName () {

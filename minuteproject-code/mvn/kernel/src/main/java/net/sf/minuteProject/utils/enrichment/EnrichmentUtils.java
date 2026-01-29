@@ -411,17 +411,22 @@ public class EnrichmentUtils {
 	}
 	
 	public static boolean isToGenerateBasedOnPropertyPresenceValue(Template template, GeneratorBean bean) {
-		Property property = retrievePropertyPresence(template, bean, "property-presence");
+		Property property = retrievePropertyPresence(template);
 		if (property!=null) {
 			String value = template.getPropertyValue("property-presence-value");
-			if (value!=null)
-				return (value.equals(property.getValue()));
+			if (value!=null) {
+				Property p = template.getPropertyByName(property.getName());
+				if (p!=null) {
+					return value.equals(p.getValue());
+				}
+			}
 		}
 		return false;
 	}
 
-	public static Property retrievePropertyPresence(Template template, GeneratorBean bean, String name) {
-		return template.getPropertyByName(template.getPropertyValue(name));
+	private static Property retrievePropertyPresence(Template template) {
+		String propertyValue = template.getPropertyValue("property-presence");
+		return template.getPropertyByName(propertyValue);
 	}
 	
 	public static boolean isToGenerateBasedOnPropertyNamePresence(Template template, GeneratorBean bean, String name) {

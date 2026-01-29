@@ -19,6 +19,12 @@ spring.datasource.${model.name}.password=$password
 spring.datasource.${model.name}.hikari.connection-timeout=20000
 spring.datasource.${model.name}.hikari.maximum-pool-size=100
 
+# Enable SQL logging
+spring.jpa.show-sql=true
+
+# Format the SQL for better readability
+spring.jpa.properties.hibernate.format_sql=true
+
 #end
 #end
 #generatorSpecific()
@@ -35,6 +41,8 @@ spring.datasource.${model.name}.hikari.maximum-pool-size=100
 #end
 #end
 #end
+# DB naming convention to avoid uppercase lowercase mismatch errors
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 # Logging
 #if($configuration.isSingleModel())

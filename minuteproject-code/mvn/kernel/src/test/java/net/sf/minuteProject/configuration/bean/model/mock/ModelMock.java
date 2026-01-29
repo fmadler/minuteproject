@@ -40,27 +40,27 @@ public class ModelMock {
         private boolean isPk;
     }
 
-    private static final DBColumn getDBColumn (String name, String jdbcTypeName, boolean isPk) {
+    private static DBColumn getDBColumn (String name, String jdbcTypeName, boolean isPk) {
         return DBColumn.builder().name(name).jdbcTypeName(jdbcTypeName).isPk(isPk).build();
     }
 
-    private static final DBColumn getPk() {
+    private static DBColumn getPk() {
         return getDBColumn("ID", "INTEGER", true);
     }
-    private static final DBColumn getName() {
+    private static DBColumn getName() {
         return getDBColumn("NAME", "VARCHAR", false);
     }
-    private static final DBColumn getSecondTableColumn() {
+    private static DBColumn getSecondTableColumn() {
         return getDBColumn(SECOND_TABLE, "INTEGER", false);
     }
-    private static final DBColumn getSecondTableIdColumn() {
+    private static DBColumn getSecondTableIdColumn() {
         return getDBColumn(SECOND_TABLE_ID, "INTEGER", false);
     }
 
-    private static final DBEntity getFirstTable() {
+    private static DBEntity getFirstTable() {
         return DBEntity.builder().name(FIRST_TABLE).columns(Arrays.asList(getPk(),getName(),getSecondTableColumn(), getSecondTableIdColumn())).build();
     }
-    private static final DBEntity getSecondTable() {
+    private static DBEntity getSecondTable() {
         return DBEntity.builder().name(SECOND_TABLE).columns(Arrays.asList(getPk(),getName())).build();
     }
 

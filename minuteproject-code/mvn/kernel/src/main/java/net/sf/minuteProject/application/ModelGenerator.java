@@ -373,8 +373,9 @@ public class ModelGenerator extends AbstractGenerator {
 		if (getModel().getStatementModel() != null
 				&& getModel().getStatementModel().getQueries() != null) {
 			for (Query query : getModel().getStatementModel().getQueries().getQueries()) {
-				if (isToGenerate(query, template))
+				if (isToGenerate(query, template)) {
 					writeTemplateResult(query, template);
+				}
 			}
 		}
 	}
@@ -384,8 +385,9 @@ public class ModelGenerator extends AbstractGenerator {
 		if (getModel().getStatementModel() != null
 				&& getModel().getStatementModel().getSddPackage() != null) {
 			for (Package pack : getModel().getStatementModel().getSddPackage().getQueryPackages()) {
-				if (isToGenerate(pack, template))
+				if (isToGenerate(pack, template)) {
 					writeTemplateResult(pack, template);
+				}
 			}
 		}
 	}
@@ -394,8 +396,9 @@ public class ModelGenerator extends AbstractGenerator {
 		if (getModel().getStatementModel()!=null && getModel().getStatementModel().getQueries()!=null) {
 			for (Query<QueryModel> query : getModel().getStatementModel().getQueries().getQueries()) {
 				for (QueryPivot pivot : query.getPivots()) {
-					if (isToGenerate(pivot, template))
+					if (isToGenerate(pivot, template)) {
 						writeTemplateResult(pivot, template);
+					}
 				}
 			}
 		}
@@ -418,9 +421,9 @@ public class ModelGenerator extends AbstractGenerator {
 
 	protected void generateArtifactsByModel(Template template)
 			throws MinuteProjectException {
-		if (isToGenerate(getModel(), template))
-//			if (isToGenerate(getModel(), template))
-				writeTemplateResult(getModel(), template);
+		if (isToGenerate(getModel(), template)) {
+			writeTemplateResult(getModel(), template);
+		}
 	}
 
 	protected void generateArtifactsByPackage(Template template)
@@ -448,8 +451,9 @@ public class ModelGenerator extends AbstractGenerator {
 			throws MinuteProjectException {
 		table = getDecoratedTable(table);
 		for (Column column : table.getColumns()) {
-			if (isToGenerate(column, template))
+			if (isToGenerate(column, template)) {
 				writeTemplateResult(column, template);
+			}
 		}
 	}
 
@@ -472,16 +476,18 @@ public class ModelGenerator extends AbstractGenerator {
 	protected void generateArtifactsByEntity(Table table, Template template)
 			throws MinuteProjectException {
 		table = getDecoratedTable(table);
-		if (isToGenerate(table, template))
+		if (isToGenerate(table, template)) {
 			writeTemplateResult(table, template);
+		}
 	}
 
 	protected void generateArtifactsByService(Template template)
 			throws MinuteProjectException {
 		for (Scope scope : getModel().getBusinessModel().getService()
 				.getScopes()) {
-			if (ServiceUtils.isToGenerate(template, scope))
+			if (ServiceUtils.isToGenerate(template, scope)) {
 				writeTemplateResult(scope, template);
+			}
 		}
 	}
 
@@ -506,7 +512,6 @@ public class ModelGenerator extends AbstractGenerator {
 
 	protected void generateArtifactsByForeignKey(ForeignKey foreignKey,
 			Template template) throws MinuteProjectException {
-		// if (isToGenerate(foreignKey, template))
 		writeTemplateResult(foreignKey, template);
 	}
 

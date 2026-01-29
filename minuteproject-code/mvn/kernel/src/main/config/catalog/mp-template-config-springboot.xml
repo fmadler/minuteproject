@@ -99,13 +99,16 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  subdir="" outputsubdir="" technicalPackage=""
 				  file-extension="java" file-prefix="" file-suffix="Application"
 				  scope-specific-value="model" add-model-name="false">
+			<!-- TODO scope-specific-value="application" with correct packagename "application-package"-->
 		</template>
 
 		<template name="SpringBootServletInitializer" templateFileName="SpringBootServletInitializer.vm"
 				  subdir="" outputsubdir="" technicalPackage=""
 				  file-extension="java" file-prefix="" file-suffix="ServletInitializer"
 				  scope-specific-value="model" add-model-name="false">
+			<!-- TODO scope-specific-value="application" with correct packagename "application-package"-->
 		</template>
+
 
 
 		<template name="SpringBoot.app-info.controller" templateFileName="SpringBoot.app-info.controller.vm"
@@ -220,6 +223,18 @@ xs:schemaLocation="./mp-template-config.xsd">
 		<template name="SpringBoot.PomXml" templateFileName="SpringBoot.PomXml.vm"
 				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
 				  file-extension="xml" file-prefix="pom" file-suffix=""
+				  application-specific="true" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.git-commit.sh" templateFileName="SpringBoot.git-commits.sh.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="sh" file-prefix="git-commits" file-suffix=""
+				  application-specific="true" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.git-commit.ps1" templateFileName="SpringBoot.git-commits.ps1.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="ps1" file-prefix="git-commits" file-suffix=""
 				  application-specific="true" add-model-name="false">
 		</template>
 
@@ -350,4 +365,5 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  file-extension="cmd" file-prefix="springboot-run" file-suffix=""
 				  application-specific="true" add-model-name="false"/>
 	</template-target>
+
 </target>

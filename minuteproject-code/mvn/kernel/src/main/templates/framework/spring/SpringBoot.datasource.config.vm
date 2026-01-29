@@ -23,4 +23,5 @@ public class $className {
     public JdbcTemplate ${classVariable}JdbcTemplate(@Qualifier ("${model.name}DataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
+    
 }

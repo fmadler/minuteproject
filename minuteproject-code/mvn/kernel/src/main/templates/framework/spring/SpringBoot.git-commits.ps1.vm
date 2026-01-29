@@ -1,0 +1,13 @@
+$OutputFile = 'target\classes\git-commits.json'
+
+$path = 'target\classes'
+# Check if folder not exists, and create it
+if (-not(Test-Path $path -PathType Container)) {
+    New-Item -path $path -ItemType Directory
+}
+git log -n 400 --pretty=format:'%H|%h|%an|%ae|%ad|%s' --date=iso |
+    ConvertFrom-Csv -Delimiter '|' -Header hash,abbreviated_hash,author_name,author_email,date,message |
+    ConvertTo-Json -Depth 3 |
+    Set-Content -Path $OutputFile -Encoding UTF8
+
+Write-Host "JSON written to $OutputFile"

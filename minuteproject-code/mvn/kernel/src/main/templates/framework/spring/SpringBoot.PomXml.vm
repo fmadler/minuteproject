@@ -337,6 +337,61 @@
     
     <profiles>
         <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.executor>powershell</script.executor>
+                <script.to.execute>${project.basedir}\git-commits.ps1</script.to.execute>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.executor>bash</script.executor>
+                <script.to.execute>${project.basedir}/git-commits.sh ${project.build.directory}</script.to.execute>
+            </properties>
+        </profile>
+        <profile>
+            <id>our-default-profile</id>
+            <activation>
+                <property>
+                    <name>!unsetDefaultProfile</name>
+                </property>
+            </activation>
+            <build>
+                <defaultGoal>exec:exec</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>default-cli</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <executable>${script.executor}</executable>
+                                    <commandlineArgs>${script.to.execute}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>git</id>
             <build>
                 <plugins>

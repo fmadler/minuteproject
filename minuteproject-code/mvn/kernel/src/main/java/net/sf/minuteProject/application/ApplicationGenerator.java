@@ -179,9 +179,10 @@ public class ApplicationGenerator extends AbstractGenerator {
 	}
 
 	private void generateArtifactsByApplication(Template template) throws MinuteProjectException {	
-		if (isToGenerate(application, template))
+		if (isToGenerate(application, template)) {
 			template.setAddModelDirName("false");
 			writeTemplateResult(application, template);
+		}
 	}
 	
 	protected void writeTemplateResult(GeneratorBean bean, Template template) throws MinuteProjectException {

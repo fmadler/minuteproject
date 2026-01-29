@@ -368,17 +368,14 @@ public abstract class AbstractGenerator implements Generator {
 		if (template.isToGenerateBasedOnModelType(bean)){
 			if (template.getCheckTemplateToGenerate() != null
 				&& template.getCheckTemplateToGenerate().equals("true")) {
-				if (!template.isToGenerate(bean)) {
-					return false;
-				}
+                return template.isToGenerate(bean);
 			} else {
 				return true;
 			}
 		} else {
 			return false;
 		}
-		return true;
-	}
+    }
 
 	private void appendTargets(Configuration configuration, Targets targets) {
 		List<Property> props = configuration.getTargets().getProperties();

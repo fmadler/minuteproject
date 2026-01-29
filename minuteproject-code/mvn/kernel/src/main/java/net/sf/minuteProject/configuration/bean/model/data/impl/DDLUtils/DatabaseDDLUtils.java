@@ -81,7 +81,7 @@ public class DatabaseDDLUtils implements Database
 	    platform.getModelReader().setDefaultCatalogPattern(dataModel.getSchema());
 	    platform.setDelimitedIdentifierModeOn(true);
 	    setType(platform);
-	    database = platform.readModelFromDatabase("TEST"); 
+	    database = platform.readModelFromDatabase("TEST");
 	    writeDatabase(database, dataModel);
 	    return this;
 	}

@@ -124,6 +124,22 @@ The technologies requiring some identity column can then operate on top of views
             type="apply-default-primary-key-otherwise-first-one"
             default-primary-key-names="IDENTIFIER,ID" />
 ```
+#### foreign key convention
+If some entities do not have fk by follow some naming conventions, those links (foreign keys) can be detected.
+> Tip: very useful when working with a set of views where you can apply relationship and map them in an ORM.
+> It creates virtual entities and an alternative graph that you DB table model.
+```xml
+	<foreign-key-convention 
+        type="autodetect-foreign-key-based-on-similarity-and-map"
+        column-ending="_id" />
+    <foreign-key-convention 
+        type="autodetect-foreign-key-based-on-similarity-and-map"
+        column-ending="id" />
+    <foreign-key-convention 
+        type="autodetect-self-reference-foreign-key-based-on-column-name"
+        column-ending="parent_id" />
+```
+
 ### Content enrichment
 #### Searchable entity-searchable-convention convention
 Indicate that columns are searchable and how to search on those column

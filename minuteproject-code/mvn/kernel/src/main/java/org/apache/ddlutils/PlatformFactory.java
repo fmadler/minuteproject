@@ -23,9 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import org.apache.ddlutils.DdlUtilsException;
-import org.apache.ddlutils.Platform;
-import org.apache.ddlutils.PlatformUtils;
 import org.apache.ddlutils.platform.axion.AxionPlatform;
 import org.apache.ddlutils.platform.cloudscape.CloudscapePlatform;
 import org.apache.ddlutils.platform.db2.Db2Platform;

@@ -145,7 +145,7 @@ enum ${columnClass}Enum {
 enum ${enumName} {
 #foreach($queryChunkValue in $queryChunk.queryChunkValues)
 #set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
-    $queryChunkValue.value
+    $chunkValueName
 #end
 }
 #end

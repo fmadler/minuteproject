@@ -32,7 +32,11 @@ Go to http://localhost:8081/graphiql
 
 $h2 Release
 It builds a war to deploy on server such as tomcat
-
+$h3 With embedded connection pool
+```bash
+mvn clean package -DactiveProfiles=jdbc-params -Plocal
+```
+$h3 With server CP
 ```bash
 mvn clean package -DactiveProfiles=jdbc-cp -Premote
 ```
