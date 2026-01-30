@@ -8,7 +8,7 @@ import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.Database
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.TableDDLUtils;
 import net.sf.minuteProject.model.db.type.FieldType;
 
-import org.junit.Assert;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ public class ConvertUtilsTest {
 	public void testColumnOracleVarchar() {
 		when(column.getType()).thenReturn(FieldType.VARCHAR.toString());
 		String s = ConvertUtils.getJavaTypeClassFromDBType(column);
-		Assert.assertTrue("s = "+s,s.equals("String"));
+		Assertions.assertThat(s).isEqualTo("String");
 	}
 	
 	@Test
@@ -42,7 +42,7 @@ public class ConvertUtilsTest {
 		when(column.getSize()).thenReturn("19");
 		
 		String s = ConvertUtils.getJavaTypeClassFromDBType(column);
-		Assert.assertTrue("s = "+s,s.equals("java.lang.Long"));
+		Assertions.assertThat(s).isEqualTo("java.lang.Long");
 	}
 	
 	@Test
@@ -51,16 +51,16 @@ public class ConvertUtilsTest {
 //		when(column.getSize()).thenReturn("19");
 		
 		String s = ConvertUtils.getJavaTypeClassFromDBType(column);
-		Assert.assertTrue("s = "+s,s.equals("Short"));
+		Assertions.assertThat(s).isEqualTo("Short");
 		
 		String s2 = ConvertUtils.getJavaTypeFromDBType("SMALLINT");
-		Assert.assertTrue("s = "+s2,s2.equals("Short"));
+		Assertions.assertThat(s2).isEqualTo("Short");
 	}
 	
 	@Test
 	public void testColumnBit() {
 		String s = ConvertUtils.getUMLTypeFromDBFullType("BIT");
-		Assert.assertTrue("s = "+s,s.equals(ConvertUtils.UML_BOOLEAN_TYPE));
+		Assertions.assertThat(s).isEqualTo(ConvertUtils.UML_BOOLEAN_TYPE);
 	}
 	
 	@Test
@@ -69,17 +69,8 @@ public class ConvertUtilsTest {
 		when(column.getTypeAlias()).thenReturn("NUMBER");
 		when(column.getSize()).thenReturn("19");
 		String s = ConvertUtils.getJavaTypeMask(column, "rowKey", true);
-		Assert.assertTrue("s = "+s,s.equals("Long.valueOf(rowKey)"));
-//		when(column.getType()).thenReturn("NUMBER");
-//		when(column.getSize()).thenReturn("5");
-//		s = ConvertUtils.getJavaTypeMask(column, "rowKey", true);
-//		Assert.assertTrue("s = "+s,s.equals("Integer.valueOf(rowKey)"));
-		
-		
-		
-//		column.setType("NUMBER");
-//		column.setTypeAlias("NUMBER");
-//		column.setSize("19");
+		Assertions.assertThat(s).isEqualTo("Long.valueOf(rowKey)");
+
 	}
 	
 	@Test
@@ -87,7 +78,7 @@ public class ConvertUtilsTest {
 		when(column.getType()).thenReturn("INTEGER");
 		when(column.getTypeAlias()).thenReturn("INTEGER");
 		String s = ConvertUtils.getJavaTypeMask(column, "1", true);
-		Assert.assertTrue("s = "+s,s.equals("Integer.valueOf(1)"));
+		Assertions.assertThat(s).isEqualTo("Integer.valueOf(1)");
 	}
 	
 	@Test
@@ -95,13 +86,13 @@ public class ConvertUtilsTest {
 		when(column.getType()).thenReturn("SMALLINT");
 		when(column.getTypeAlias()).thenReturn("SMALLINT");
 		String s = ConvertUtils.getJavaTypeMask(column, "rowKey", true);
-		Assert.assertTrue("s = "+s,s.equals("Short.valueOf(rowKey)"));
+		Assertions.assertThat(s).isEqualTo("Short.valueOf(rowKey)");
 
 		s = ConvertUtils.getJavaTypeMask(column, "1", true);
-		Assert.assertTrue("s = "+s,s.equals("Short.valueOf(1)"));
+		Assertions.assertThat(s).isEqualTo("Short.valueOf(1)");
 		
 		s = ConvertUtils.getJavaTypeMaskFormated(column, "1", true);
-		Assert.assertTrue("s = "+s,s.equals("Short.valueOf(\"1\")"));
+		Assertions.assertThat(s).isEqualTo("Short.valueOf(\"1\")");
 	}
 	
 }

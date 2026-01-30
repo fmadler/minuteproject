@@ -2,11 +2,13 @@ package net.sf.minuteProject.utils;
 
 import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
 public class ConnectionTest {
 
+	@Test
 	public void testIt () {
 		try {
 			ResultSet rs = getColumnsByFetch ("xxx");
@@ -15,6 +17,7 @@ public class ConnectionTest {
 			e.printStackTrace();
 		}
 	}
+
     public ResultSet getColumnsByFetch(String tableNamePattern) throws SQLException
     {
 

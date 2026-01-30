@@ -1,13 +1,12 @@
 package net.sf.minuteProject.utils.sql;
 
 import net.sf.minuteProject.configuration.bean.model.statement.*;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertTrue;
 
 public class QueryUtilsTest {
 
@@ -171,7 +170,7 @@ public class QueryUtilsTest {
 	@Test
 	public void simpleFullQuery() {
 		String s = QueryUtils.getFullQuerySample(query1);
-		assertTrue(s +" but expect :"+query1Full, query1Full.equals(s));
+		Assertions.assertThat(query1Full).isEqualTo(s);
 	}
 	
 	@Test
@@ -181,7 +180,7 @@ public class QueryUtilsTest {
 		query2.getQueryParams().addQueryParam(getQueryParam1());
 		query2.getQueryParams().addQueryParam(getQueryParam2());
 		String s = QueryUtils.getFullQuerySample(query2);
-		assertTrue(s+" but expect :"+query1FullFilter1, query1FullFilter1.equals(s));
+		Assertions.assertThat(query1FullFilter1).isEqualTo(s);
 	}
 	
 	@Test
@@ -192,7 +191,7 @@ public class QueryUtilsTest {
 		//query.getQueryFilters().get(0).g
 		((QueryFilter)query.getQueryFilters().get(0)).getQueryParams().addQueryParam(getQueryParam(query1Filter2Param2Type, query1Filter2Param2Sample));
 		String s = QueryUtils.getFullQuerySample(query);
-		assertTrue(s+" but expect :"+query1FullFilter2, query1FullFilter2.equals(s));
+		Assertions.assertThat(query1FullFilter2).isEqualTo(s);
 	}
 
 	
@@ -201,7 +200,7 @@ public class QueryUtilsTest {
 		//StringUtils.replace(query2Jdbc, query2FilterName1, query2FilterValue1);
 		Query query4 = getQueryWithFilter(query2Jdbc, query2FilterName1, query2FilterValue1, query2Filter1Param1Type, query2Filter1Param1Sample);
 		String s = QueryUtils.getFullQuerySample(query4);
-		assertTrue(s +" but expect :"+query2Full, query2Full.equals(s));
+		Assertions.assertThat(query2Full).isEqualTo(s);
 	}
 	
 	
@@ -214,7 +213,7 @@ public class QueryUtilsTest {
 		// when
 		String s = QueryUtils.getFullQuerySample(query);
 		//then
-		assertTrue(s +" but expect :"+query3Full_1Filter, query3Full_1Filter.equals(s));
+		Assertions.assertThat(query3Full_1Filter).isEqualTo(s);
 	}
 	
 	@Test
@@ -227,7 +226,7 @@ public class QueryUtilsTest {
 		// when
 		String s = QueryUtils.getFullQuerySample(query);
 		//then
-		assertTrue(s +" but expect :"+query3Full_2Filter, query3Full_2Filter.equals(s));
+		Assertions.assertThat(query3Full_2Filter).isEqualTo(s);
 	}
 	
 	@Test
@@ -241,7 +240,7 @@ public class QueryUtilsTest {
 		// when
 		String s = QueryUtils.getFullQuerySample(query);
 		//then
-		assertTrue(s +" but expect :"+query4Full_FilterWithDuplicate, query4Full_FilterWithDuplicate.equals(s));
+		Assertions.assertThat(query4Full_FilterWithDuplicate).isEqualTo(s);
 	}
 	
 	@Test
@@ -259,7 +258,7 @@ public class QueryUtilsTest {
 		// when
 		String s = QueryUtils.getFullQuerySample(query);
 		//then
-		assertTrue(s +" but expect :"+queryRegexFull, queryRegexFull.equals(s));
+		Assertions.assertThat(queryRegexFull).isEqualTo(s);
 	}
 	
 	@Test
@@ -272,7 +271,7 @@ public class QueryUtilsTest {
 		// when
 		String s = QueryUtils.getFullQuerySample(query);
 		//then
-		assertTrue(s +" but expect :"+queryInFull, queryInFull.equals(s));
+		Assertions.assertThat(queryInFull).isEqualTo(s);
 	}
 
 	
@@ -286,7 +285,7 @@ public class QueryUtilsTest {
 		// when
 		String s = QueryUtils.getFullQuerySample(query);
 		//then
-		assertTrue(s +" but expect :"+queryMultiParamFull, queryMultiParamFull.equals(s));
+		Assertions.assertThat(queryMultiParamFull).isEqualTo(s);
 	}
 
 	@Test
@@ -301,7 +300,7 @@ public class QueryUtilsTest {
 		// when
 		String s = QueryUtils.getFullQuerySample(query);
 		//then
-		assertTrue(s +" but expect :"+querySampleStoreProcOutputParamFull, querySampleStoreProcOutputParamFull.equals(s));
+		Assertions.assertThat(querySampleStoreProcOutputParamFull).isEqualTo(s);
 	}
 	
 	@Test
@@ -319,7 +318,7 @@ public class QueryUtilsTest {
 		// assert 
 		String s = QueryUtils.getFullQuerySample(query);
 		
-		assertTrue(s +" but expect :"+query1JdbcPaginationMysqlLimitFull, query1JdbcPaginationMysqlLimitFull.equals(s));
+		Assertions.assertThat(query1JdbcPaginationMysqlLimitFull).isEqualTo(s);
 
 	}
 	
@@ -339,22 +338,8 @@ public class QueryUtilsTest {
 		// assert 
 		String s = QueryUtils.getFullQuerySample(query);
 		
-		assertTrue(s +" but expect :"+query1JdbcPaginationMysqlLimitOffsetFull, query1JdbcPaginationMysqlLimitOffsetFull.equals(s));
+		Assertions.assertThat(query1JdbcPaginationMysqlLimitOffsetFull).isEqualTo(s);
 		
 	}
-		/*
-	@Test
-	public void queryWithMultiParams2() {
-		//given
-		Query query = getQuery(queryMultiParam2Jdbc);
-		query.getQueryParams().addQueryParam(getQueryParam(queryParam1Type, queryParam1Sample, 1));
-		query.getQueryParams().addQueryParam(getQueryParam(queryParam2Type, queryParam2Sample, 2));
-		query.getQueryParams().addQueryParam(getQueryParam(queryParam3Type, queryParam3Sample, 3));
-		// when
-		String s = QueryUtils.getFullQuerySample(query);
-		//then
-		assertTrue(s +" but expect :"+queryMultiParamFull, queryMultiParamFull.equals(s));
-	}
-	*/
+
 }
-	

@@ -37,12 +37,12 @@ public class TableUMLNotation extends TableAbstract {
 	
 	public Reference [] getChildren() {
 		if (children == null) {
-			children = new ArrayList<Reference>();
+			children = new ArrayList<>();
 //			for (int i = 0; i < super.getTable().getChildren().length; i++) {
 //				ReferenceUMLNotation referenceUMLNotation = new ReferenceUMLNotation (super.getTable().getChildren()[i]);
 //				children.add(referenceUMLNotation);
 //			}
-			for (Reference reference : super.getTable().getChildren()) {
+			for (Reference reference : this.getTable().getChildren()) {
 				ReferenceUMLNotation ref = new ReferenceUMLNotation (reference);
 //				Reference ref = ReferenceUtils.getReference(reference.getLocalColumn());
 				children.add(ref);

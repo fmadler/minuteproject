@@ -1,9 +1,11 @@
 package net.sf.minuteProject.utils.io;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class FileUtilsTest {
 
+	@Test
 	public void testStripFileName() {
 		
 		String test2 = "C:\\DEV\\JAVA\\mysourceforge\\MP\\minuteKernel\\bin\\generator-config-sample-views-WEB.xml";
@@ -13,15 +15,8 @@ public class FileUtilsTest {
 		
 		String filename = "../../test/test/myjava.java";
 		String stripped = FileUtils.stripFileName(filename);
-		Assertions.assertThat(stripped).isEqualTo(stripped.equals("../../test/test"));
-		
-//		String filenameOnly = FileUtils.stripRelativePath(filename);
-//		assertTrue(filenameOnly, filenameOnly.equals("myjava.java"));
-//		
-//		String test2 = "C:\\DEV\\JAVA\\mysourceforge\\MP\\minuteKernel\\bin\\generator-config-sample-views-WEB.xml";
-//		
-//		String test2stripped = FileUtils.stripFileName(test2);
-//		System.out.println("test2stripped ="+test2stripped);
+		Assertions.assertThat(stripped).isEqualTo("../../test/test");
+
 	}
 
 	/*

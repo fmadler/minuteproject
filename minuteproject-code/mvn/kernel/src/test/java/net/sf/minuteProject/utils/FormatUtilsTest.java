@@ -1,7 +1,6 @@
 package net.sf.minuteProject.utils;
 
-import static org.junit.Assert.assertTrue;
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class FormatUtilsTest {
@@ -33,49 +32,49 @@ public class FormatUtilsTest {
 	@Test
 	public void testGetterSetterVariable () {
 		String s = FormatUtils.getJavaVariableNameForGetterAndSetterFromJavaName(getterSetterClassName);
-		assertTrue ("error '"+s+"' should be equal to "+getterSetterClassName,s.equals(getterSetterClassName));
+		Assertions.assertThat (getterSetterClassName).isEqualTo(s);
 		s = FormatUtils.getJavaVariableNameForGetterAndSetterFromJavaName(getterSetterClassName2);
-		assertTrue ("error '"+s+"' should be equal to "+getterSetterClassName,s.equals(getterSetterVariableName2));
+		Assertions.assertThat (getterSetterVariableName2).isEqualTo(s);
 		s = FormatUtils.getJavaVariableNameForGetterAndSetterFromJavaName(getterSetterClassName3);
-		assertTrue ("error '"+s+"' should be equal to "+getterSetterClassName,s.equals(getterSetterVariableName3));
+		Assertions.assertThat (getterSetterClassName3).isEqualTo(s);
 	}
 	@Test
 	public void testFirstUpperCaseOnly () {
 		String s = FormatUtils.firstUpperCaseOnly("s");
-		assertTrue ("S".equals(s));
+		Assertions.assertThat ("S".equals(s));
 		s = FormatUtils.firstUpperCaseOnly("PRODUCTID");
-		assertTrue ("Productid".equals(s));
+		Assertions.assertThat ("Productid".equals(s));
 	}	
 	@Test
 	public void testGetInUnderscore () {
 		String s = FormatUtils.getInUnderscore("abc-def-ghi");
-		assertTrue (s, "abc_def_ghi".equals(s));
+		Assertions.assertThat ("abc_def_ghi").isEqualTo(s);
 	}	
 	@Test
 	public void testGetShortNameFromVerbose() {
 		String resultName1 = FormatUtils.getShortNameFromVerbose(name1);
-		assertTrue(resultName1, resultName1.equals(shortNameName1));
+		Assertions.assertThat(resultName1).isEqualTo(shortNameName1);
 
 		String resultName2 = FormatUtils.getShortNameFromVerbose(name2);
-		assertTrue(resultName2, resultName2.equals(shortNameName2));
+		Assertions.assertThat(resultName2).isEqualTo(shortNameName2);
 	}
 	@Test
 	public void testGetEachWordFirstLetterUpper() {
 		String resultName1 = FormatUtils.getShortNameFromVerbose(name1);
-		assertTrue(resultName1, resultName1.equals(shortNameName1));
+		Assertions.assertThat(resultName1).isEqualTo(shortNameName1);
 	}
 	@Test
 	public void testEliminateMultipleSequenceOfChar() {
 		String result = FormatUtils.eliminateMultipleSequenceOfChar(expressionToTrim1, '_', 'b', 'd');
-		assertTrue(result.equals("_basdasd_dasdsa_dadsd_"));
+		Assertions.assertThat(result.equals("_basdasd_dasdsa_dadsd_"));
 		result = FormatUtils.trimExpression(result, "_");
-		assertTrue(result.equals("basdasd_dasdsa_dadsd"));
+		Assertions.assertThat(result.equals("basdasd_dasdsa_dadsd"));
 	}
 
 	@Test
 	public void testStripToSizeRemovingBackend () {
 		String result = FormatUtils.stripToSizeRemovingLeft(expressionToTrim2, 30);
-		assertTrue (result.equals(expressionToTrim2Assert));
+		Assertions.assertThat (result.equals(expressionToTrim2Assert));
 	}
 	
 	@Test
@@ -91,6 +90,6 @@ public class FormatUtilsTest {
 	}
 	
 	private void assertEqualTrue(String result, String expectation) {
-		assertTrue("result ="+result+" , while expecting "+expectation , result.equals(expectation));	
+		Assertions.assertThat(result).isEqualTo(expectation);
 	}
 }

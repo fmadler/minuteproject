@@ -19,10 +19,12 @@ import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 #if($addDomainSpecificMethod)
 import java.util.Map;
@@ -130,7 +132,7 @@ $updatedAreaSnippet
     @Column(name="\"$column.name\""  #if($isLengthPrecisionColumn), length=$column.size#end #if($isDecimalPrecisionColumn),precision=$columnUtils.getPrecision($column), scale=$column.scale#end #if($column.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true#else, unique=false#end)
 #end
 #if ($column.isLob())
-    @Lob @Basic(fetch=FetchType.LAZY) 
+    @Lob @Basic(fetch=FetchType.LAZY) @ToString.Exclude @JsonIgnore
 #exposeLobProperties()
 #end
 #end
@@ -158,6 +160,8 @@ $updatedAreaSnippet
 #end
 #set($fetchType=$jpa2Utils.getFetchType($template, $reference))
     @ManyToOne (fetch=FetchType.$fetchType #if ($isMandatory && !$table.isLinkEntity()), optional=false#end)
+    @ToString.Exclude
+    @JsonIgnore
     @JoinColumn(name="$localColumnName" #if($localColumn.isRequired()), nullable=false#else, nullable=true#end #if($isColumnUnique), unique=true #else, unique=false#end $insertableUpdatableRelationship)
 #exposeRelationship($table, $reference)
 #set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
@@ -188,7 +192,9 @@ $!updatedAreaSnippet
 #end
 #end
     @OneToMany (targetEntity=$targetEntityClass, fetch=FetchType.LAZY, mappedBy="$linkedColumnVariable"#if (!$reference.column.isRequired() || $reference.table.isLinkEntity()), cascade=CascadeType.REMOVE#end)//, cascade=CascadeType.ALL)
-    $accessor Set <$linkedTableClass> $childrenListVariable = new HashSet<$linkedTableClass>(); 
+    @ToString.Exclude
+    @JsonIgnore
+    $accessor Set <$linkedTableClass> $childrenListVariable = new HashSet<$linkedTableClass>();
 
 #end
 #end

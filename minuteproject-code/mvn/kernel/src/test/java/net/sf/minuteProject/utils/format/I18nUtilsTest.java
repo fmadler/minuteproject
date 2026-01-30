@@ -2,6 +2,7 @@ package net.sf.minuteProject.utils.format;
 
 import net.sf.minuteProject.plugin.format.I18nUtils;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class I18nUtilsTest  {
 
@@ -18,32 +19,32 @@ public class I18nUtilsTest  {
 	private static final String Y = "y";
 	private static final String IES = "ies";	
 	
-	
-	
+
+	@Test
 	public void testPlurialize () {
 		String s = I18nUtils.plurialize(ACTIVITY);
-		Assertions.assertThat(s+ " should be equal to "+ACTIVITIES).isEqualTo(s.equals(ACTIVITIES));
+		Assertions.assertThat(s).isEqualTo(ACTIVITIES);
 		s = I18nUtils.plurialize(Y);
-		Assertions.assertThat(s+ " should be equal to "+IES).isEqualTo(s.equals(IES));
+		Assertions.assertThat(s).isEqualTo(IES);
 	}
-	
+	@Test
 	public void testGetI18nFromDBNameStripPrefix () {
 		String s = I18nUtils.getI18nFromDBNameStripPrefix(nameWithUnderscore);
-		Assertions.assertThat("result = "+s+" while input = "+nameWithUnderscore).isEqualTo(test.equals(s));
+		Assertions.assertThat(s).isEqualTo(test);
 		s = I18nUtils.getI18nFromDBNameStripPrefix(nameWithoutUnderscore);
-		Assertions.assertThat(nameWithoutUnderscore.equals(s));
+		Assertions.assertThat(nameWithoutUnderscore).isEqualTo(s);
 		s = I18nUtils.getI18nFromDBNameStripPrefix(null);
 	}
-	
-	
+
+	@Test
 	public void testGetI18nFromDBNameStripSufix () {
 		String s = I18nUtils.getI18nFromDBNameStripSufix(nameWithoutUnderscore, true);
-		Assertions.assertThat("result = "+s+" while input = "+nameWithoutUnderscore).isEqualTo(testtest.equals(s));
+		Assertions.assertThat(testtest).isEqualTo(s);
 	}
-	
-	
+
+	@Test
 	public void testGetSingural () {
 		String s = I18nUtils.singularize(FINDER_FILTERS);
-		Assertions.assertThat("result = "+s+" while input = "+FINDER_FILTERS).isEqualTo(FINDER_FILTER_lowercase.equals(s));
+		Assertions.assertThat(s).isEqualTo(FINDER_FILTER_lowercase);
 	}
 }

@@ -1,6 +1,6 @@
 package net.sf.minuteProject.plugin.maven;
 
-import org.junit.Assert;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class MavenDependencyTest {
@@ -20,9 +20,9 @@ public class MavenDependencyTest {
 	}
 
 	private void checkDependency(MavenDependency md, String artifactId, String groupId, String version, String scope) {
-		Assert.assertTrue("md.getArtifactId() = '"+md.getArtifactId()+"'", md.getArtifactId().equals(artifactId));
-		Assert.assertTrue("md.getGroupId() = '"+md.getGroupId()+"'", md.getGroupId().equals(groupId));
-		Assert.assertTrue("md.getVersion() = '"+md.getVersion()+"'", md.getVersion().equals(version));
-		Assert.assertTrue("md.getScope() = '"+md.getScope()+"'", md.getScope().equals(scope));
+		Assertions.assertThat(md.getArtifactId()).isEqualTo(artifactId);
+		Assertions.assertThat(md.getGroupId()).isEqualTo(groupId);
+		Assertions.assertThat(md.getVersion()).isEqualTo(version);
+		Assertions.assertThat(md.getScope()).isEqualTo(scope);
 	}
 }

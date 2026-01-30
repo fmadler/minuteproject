@@ -16,7 +16,6 @@ public class CommonUtilsTest {
 	//TODO convention packaging order (technical, business, model combination)
 	public void testGetClassName() {
 		String s = getClassName(getSampleTable(), getSampleDomainTemplate());
-		System.out.println("s = "+s);
 		Assertions.assertThat(s).isNotNull();
 	}
 

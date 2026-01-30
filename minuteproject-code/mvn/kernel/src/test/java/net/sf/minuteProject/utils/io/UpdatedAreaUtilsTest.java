@@ -29,7 +29,6 @@ public class UpdatedAreaUtilsTest  {
 		template.setFileExtension("java");
 		template.setUpdatable(true);
 		template.setHasUpdatableNature(true);
-
 	}
 	
 	private void populateUpdatedAreaWith (String key, String value){

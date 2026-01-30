@@ -375,35 +375,6 @@ public class TableDDLUtils extends TableAbstract {
     	}
     	return parents;	
     }
-    
-//    protected Reference [] getParentsWithLocalForeignKey() {
-//    	if (parents == null) {
-//    		parents = new ArrayList<Reference>();
-//    		for (int i = 0; i < getForeignKeys().length; i++) {
-//    			ForeignKey foreignKey = getForeignKeys()[i];
-//    			Reference reference = foreignKey.getFirstReference();
-//    			//reverse reference view: reference comes from enrichment
-//    			Reference ref = new ReferenceDDLUtils (new org.apache.ddlutils.model.Reference());
-//    			ref.setForeignColumn(reference.getLocalColumn());
-//    			ref.setForeignColumnName(reference.getLocalColumnName());
-//    			ref.setForeignTable(reference.getLocalTable());
-//    			ref.setForeignTableName(reference.getLocalTableName());
-//    			ref.setLocalColumn(reference.getForeignColumn());
-//    			ref.setLocalColumnName(reference.getForeignColumnName());
-//    			ref.setLocalTable(reference.getForeignTable());
-//    			ref.setLocalTableName(reference.getForeignTableName());
-//    			addReference(parents, reference);
-//    			log.info("reference "+reference);
-////    			log.info("ref       "+ref);
-//////${localColumnVariable} ${linkedTableVariable} ${linkedColumnVariable}
-//    			log.info("localColumnVariable = "+reference.getLocalColumnName());
-//    			log.info("linkedTableVariable = "+reference.getLocalTableName());
-//    			log.info("linkedColumnVariable = "+reference.getForeignColumnName());
-////    			addReference(parents, ref);
-//			}
-//    	}
-//    	return (Reference[])parents.toArray(new Reference[parents.size()]);	
-//    }
 
 	public void setForeignKey(ForeignKey foreignKey) {
 		getForeignKeyList().add(foreignKey);
@@ -430,8 +401,7 @@ public class TableDDLUtils extends TableAbstract {
      */
     public Reference [] getChildren() {
     	if (children == null) {
-    		children = new ArrayList<Reference>();
-//			String columnRef;
+    		children = new ArrayList<>();
 			Reference ref;
 			Reference reference;
 			Table [] tables = database.getEntities();

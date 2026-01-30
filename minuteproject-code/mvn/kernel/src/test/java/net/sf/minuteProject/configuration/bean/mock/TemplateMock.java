@@ -6,6 +6,8 @@ import net.sf.minuteProject.configuration.bean.system.Property;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TemplateMock {
 
@@ -26,16 +28,18 @@ public class TemplateMock {
     }
 
     public static Template getTemplateWithPropPresence(String propPresence, String propValue) {
-        Template template = new Template();
-        template.setTemplateTarget(getTemplateTarget());
-        List<Property> properties = Arrays.asList(getPropertyPropertyPresence(propPresence), getPropertyPropertyPresenceValue(propValue));
-        template.setProperties(properties);
-        return template;
+        return getTemplateWithPropPresenceWithProperty(propPresence, propValue);
     }
 
-    public static Template getTemplateWithPropPresenceWithProperty(String propPresence, String propValue, Property property) {
-        Template template = getTemplateWithPropPresence(propPresence, propValue);
-        template.addProperty(property);
+    public static Template getTemplateWithPropPresenceWithProperty(String propPresence, String propValue, Property ...properties) {
+        Template template = new Template();
+        template.setTemplateTarget(getTemplateTarget());
+        final List<Property> props = Arrays.asList(getPropertyPropertyPresence(propPresence), getPropertyPropertyPresenceValue(propValue));
+        final List<Property> collect = Stream.concat(
+                props.stream(),
+                Stream.of(properties)
+        ).collect(Collectors.toList());
+        template.setProperties(collect);
         return template;
     }
 
@@ -46,5 +50,9 @@ public class TemplateMock {
 
     public static Property getPropSecurityAuthenticationTypeCas() {
         return getProperty("securityAuthenticationType","cas");
+    }
+
+    public static Property getPropSecurityAuthenticationTypeBasic() {
+        return getProperty("securityAuthenticationType","basic");
     }
 }

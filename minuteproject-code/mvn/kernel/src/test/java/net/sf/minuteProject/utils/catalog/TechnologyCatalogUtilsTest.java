@@ -6,13 +6,11 @@ import net.sf.minuteProject.exception.MinuteProjectException;
 import net.sf.minuteProject.loader.catalog.technologycatalog.node.Technologies;
 import net.sf.minuteProject.loader.catalog.technologycatalog.node.Technology;
 import net.sf.minuteProject.loader.catalog.technologycatalog.node.TechnologyCatalog;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 
 public class TechnologyCatalogUtilsTest {
@@ -37,8 +35,8 @@ public class TechnologyCatalogUtilsTest {
 				"catalog", 
 				configuration.getTargets().getOutputdirRoot(), 
 				configuration.getTargets().getTemplatedirRoot());
-		assertNotNull(targets);
-		assertTrue(targets.getTargets().size()>0);
+		Assertions.assertThat(targets).isNotNull();
+		Assertions.assertThat(targets.getTargets().size()).isGreaterThan(0);
 	}
 	@Test
 	public void testTechnologyCatalog () throws MinuteProjectException {

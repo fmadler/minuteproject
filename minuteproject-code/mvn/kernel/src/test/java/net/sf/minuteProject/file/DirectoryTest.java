@@ -34,7 +34,6 @@ public class DirectoryTest {
 	@Test
 	public void testOutputdirFromTargets() {
 		targets.setOutputdirRoot(USER_OUTPUTDIR_Targets);
-		System.out.println(template.getOutputdir());
 
 	}
 	
@@ -42,7 +41,6 @@ public class DirectoryTest {
 	public void testOutputdirFromTargetsAndTarget() {
 		targets.setOutputdirRoot(USER_OUTPUTDIR_Targets);
 		target.setOutputdirRoot(USER_OUTPUTDIR_Targets);
-		System.out.println(template.getOutputdir());
 	}
 	
 	@Test
@@ -50,17 +48,7 @@ public class DirectoryTest {
 		targets.setOutputdirRoot(USER_OUTPUTDIR_Targets);
 		target.setOutputdirRoot(USER_OUTPUTDIR_Targets);
 		templateTarget.setOutputdirRoot(USER_OUTPUTDIR_TemplateTarget);
-		System.out.println(template.getOutputdir());
 		templateTarget.setOutputdir(USER_OUTPUTDIR_TemplateTarget);
-		System.out.println(template.getOutputdir());
 	}
-	
-//	@Test
-//	public void testColumnOracleBigInt() {
-//		when(column.getType()).thenReturn("NUMBER");
-//		when(column.getSize()).thenReturn("19");
-//		
-//		String s = ConvertUtils.getJavaTypeClassFromDBType(column);
-//		Assert.assertTrue("s = "+s,s.equals("java.lang.Long"));
-//	}
+
 }

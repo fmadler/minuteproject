@@ -1,11 +1,8 @@
 package net.sf.minuteProject.handler.property;
 
-
 import java.util.Properties;
 
-import junit.framework.Assert;
-import net.sf.minuteProject.handler.property.PropertyStack;
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,21 +33,21 @@ public class PropertyStackTest {
 		String input = "test${helloValue}";
 		String correctResult = "testHello";
 		String result = propertyStack.resolvePropertyValue (input);
-		Assert.assertTrue (result.equals(correctResult));
+		Assertions.assertThat (result).isEqualTo(correctResult);
 		testPropertyStackParser("${helloValue}${bonjourValue}", "HelloBonjour");
 		testPropertyStackParser("B${bonsoirValue}XX${bonjourValue}Z", "BBonSOIRXXBonjourZ");
 	}
 
 	public void testPropertyStackParser (String input, String correctResult) {
 		String result = propertyStack.resolvePropertyValue (input);
-		Assert.assertTrue (result.equals(correctResult));
+		Assertions.assertThat (result).isEqualTo(correctResult);
 	}
 	
 	@Test
 	public void testAddProperty () {
 		propertyStack.addProperty(sample, sampleValue);
 		String result = propertyStack.getProperties().getProperty(sample);
-		Assert.assertTrue(result.equals(sampleCorrectResult));
+		Assertions.assertThat (result).isEqualTo(sampleCorrectResult);
 	}
 	
 }

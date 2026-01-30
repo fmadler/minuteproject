@@ -18,14 +18,16 @@ public class EnrichmentUtilsTest {
 
     static class IsToGenerateBasedOnPropertyPresenceAndValueArgumentProvider implements ArgumentsProvider {
 
-        Template template = TemplateMock.getTemplateWithPropPresence("securityAuthenticationType", "cas");
-        //Template template2 = TemplateMock.getTemplateWithPropPresenceWithProperty("securityAuthenticationType", "cas", TemplateMock.getPropSecurityAuthenticationTypeCas());
+        Template templateNoPresence = TemplateMock.getTemplateWithPropPresence("securityAuthenticationType", "cas");
+        Template templateMatchPresence = TemplateMock.getTemplateWithPropPresenceWithProperty("securityAuthenticationType", "cas", TemplateMock.getPropSecurityAuthenticationTypeCas());
+        Template templateUnmatchPresence = TemplateMock.getTemplateWithPropPresenceWithProperty("securityAuthenticationType", "cas", TemplateMock.getPropSecurityAuthenticationTypeBasic());
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
-                    Arguments.of(template, new Application(), Boolean.FALSE)
-                    //,Arguments.of(template2, new Application(), Boolean.TRUE)
+                    Arguments.of(templateNoPresence, new Application(), Boolean.FALSE)
+                    ,Arguments.of(templateMatchPresence, new Application(), Boolean.TRUE)
+                    ,Arguments.of(templateUnmatchPresence, new Application(), Boolean.FALSE)
             );
         }
     }

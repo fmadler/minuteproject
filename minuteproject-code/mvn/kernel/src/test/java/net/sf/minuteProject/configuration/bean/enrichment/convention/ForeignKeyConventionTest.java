@@ -5,8 +5,11 @@ import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.ForeignKey;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.utils.ColumnUtils;
+import net.sf.minuteProject.utils.FormatUtils;
 import net.sf.minuteProject.utils.TableUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,9 +41,9 @@ public class ForeignKeyConventionTest {
             );
         }
     }
+
     @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class ApplyOnPatternRelevanceMethod {
+    public class ApplyOnPatternRelevanceMethod {
 
         @ParameterizedTest
         @ArgumentsSource(ApplyOnPatternRelevanceArgumentProvider.class)

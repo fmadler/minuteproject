@@ -1,7 +1,6 @@
 package net.sf.minuteProject.utils.parser;
 
-import static org.junit.Assert.assertTrue;
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ParserUtilsTest {
@@ -10,7 +9,7 @@ public class ParserUtilsTest {
 	public void testProperty() {
 		String s = "${xxx}";
 		String prop = ParserUtils.getProperty(s);
-		assertTrue(prop, prop.equals("xxx"));
+		Assertions.assertThat(prop).isEqualTo("xxx");
 	}
 
 }

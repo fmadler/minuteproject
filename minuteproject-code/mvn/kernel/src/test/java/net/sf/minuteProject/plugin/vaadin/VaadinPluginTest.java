@@ -6,7 +6,8 @@ import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.ColumnDDLUtils;
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.DatabaseDDLUtils;
 import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.TableDDLUtils;
-import org.junit.Assert;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +34,7 @@ public class VaadinPluginTest {
 		when(column.getType()).thenReturn("INTEGER");
 		when(column.getScale()).thenReturn(0);
 		String getConverter = VaadinPlugin.getConverter(column);
-		Assert.assertTrue("should be getInteger ; but get:  "+getConverter,"getInteger".equals(getConverter));
+		Assertions.assertThat("getInteger").isEqualTo(getConverter);
 	}
 
 	@Test
@@ -41,7 +42,7 @@ public class VaadinPluginTest {
 		when(column.getType()).thenReturn("CLOB");
 		when(column.getScale()).thenReturn(0);
 		String getConverter = VaadinPlugin.getConverter(column);
-		Assert.assertTrue("should be getString ; but get:  "+getConverter,"getString".equals(getConverter));
+		Assertions.assertThat("getString").isEqualTo(getConverter);
 	}
 
 	@Test
@@ -49,6 +50,6 @@ public class VaadinPluginTest {
 		when(column.getType()).thenReturn("BLOB");
 		when(column.getScale()).thenReturn(0);
 		String getConverter = VaadinPlugin.getConverter(column);
-		Assert.assertTrue("should be getBytes ; but get:  "+getConverter,"getBytes".equals(getConverter));
+		Assertions.assertThat("getBytes").isEqualTo(getConverter);
 	}
 }
