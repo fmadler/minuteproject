@@ -1,0 +1,53 @@
+updateTitle=Mettre à jour
+updateHeading=Mettre à jour
+entityUpdated=Entité modifiée
+entityDeleted=Entité supprimée
+save=Sauvegarder
+saveTitle=Sauvegarder
+delete=Supprimer
+deleteTitle=Suppression
+listTitle=Liste
+listHeading=Liste
+amountEntries=Nombre entrées
+execute=Executer
+manageSddTitle=SDD
+manageSddChartTitle=Graphique
+consult.title=Consulter
+consult.select.header=Sélectionner
+consult.select.criteria.header=Critères de sélection
+searchHeading=Rechercher
+displayAll=Tout afficher
+selectOr=ou
+editTitle=Editer
+closeTitle=Fermer
+cancelTitle=Annuler
+# errors
+PersistenceErrorOccured=Erreur dans la persistance des données
+# security
+logoffSoon1=Expiration
+logoffSoon2=Votre session va expirer
+moveCursor=Bouger votre curseur
+sessionExpire=La session a expirée
+saveAssociations=Sauvegarder l'association
+################
+administration=Administration
+listOf=Liste
+create=Créer
+createTitle=Créer
+createHeading=Creation
+entityCreated=Entité crée
+update=Rafraîchir
+add=Ajouter
+clear=Effacer
+yes=oui
+no=non
+
+confirmDeletionQuestion=Pouvez-vous confirmer la suppression?
+deletionProcess=Suppression
+ExportlistInPDFandExcel=Exporter la liste en PDF et Excel
+
+###### devops
+AdminLanguageMgt=Langue
+mp.devops.languageToCountryFlagAssociation=France
+###### devops ends
+

@@ -1,0 +1,42 @@
+	protected $tableClassName assignBlankToNull ($tableClassName $tableVariableName) {
+        if ($tableVariableName==null)
+			return null;
+#foreach ($column in ${table.attributes})
+#putColumnParamNaming()
+#if ($isEnum)
+        if (${tableVariableName}.get$columnClass()!=null && ${tableVariableName}.get$columnClass().equals(""))
+           ${tableVariableName}.set$columnClass((String)null);
+#elseif ($columnType=="String" && !$isEnum && !$isForeignKey)
+        if (${tableVariableName}.get$columnClass()!=null && ${tableVariableName}.get$columnClass().equals(""))
+           ${tableVariableName}.set$columnClass((String)null);
+#end
+#end
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#set($column = $reference.localColumn)
+#putColumnParamNaming()
+#if ($columnType=="String")
+#if($isForeignKey)     
+#set($columnClass="${columnClass}_")
+#end    
+        //foreign key ${column.name}
+        if (${tableVariableName}.get$columnClass()!=null && ${tableVariableName}.get$columnClass().equals(""))
+           ${tableVariableName}.set$columnClass((String)null);
+#end
+#end	
+		return ${tableVariableName};
+	}
+	
+	protected boolean isAllNull ($tableClassName $tableVariableName) {
+	    if ($tableVariableName==null)
+			return true;
+#foreach ($column in ${table.columns})
+#if($columnUtils.isColumnEmbeddedInEntity($column))
+#putColumnParamNaming()
+        if (${tableVariableName}.get$columnClass()!=null) 
+            return false;
+#end
+#end
+		return true;
+	}
+	

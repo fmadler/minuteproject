@@ -1,0 +1,71 @@
+#exposeEmberModelSpecific()
+schema {
+## sdd queries
+    query: Root
+## check what to do with composite queries
+}
+
+scalar Date
+
+type Root {
+## sdd queries signature
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#set($pureQueries=$package.getPureQueries())
+#if($pureQueries.size()>0)
+    """
+    Package $package.name
+    """
+#end
+#foreach ($query in $pureQueries)
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDInputBean()
+#if($isNotVoidInput)
+    ${tableVariableName}(
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+        $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$inputBean.columnCount),
+#end
+#end
+#end
+
+    ): [${sddOutputBeanClass}]
+#else
+    ${tableVariableName}: [${sddOutputBeanClass}]
+#end
+#end
+#end
+
+}
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#set($pureQueries=$package.getPureQueries())
+#if($pureQueries.size()>0)
+    """
+    Package $package.name
+    """
+#end
+#foreach ($query in $pureQueries)
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#set($table=$query.outputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDBean()
+
+type ${sddOutputBeanClass} {
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+    $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$inputBean.columnCount),
+#end
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+    $chunkName:String,
+#end
+}
+
+#end
+#end

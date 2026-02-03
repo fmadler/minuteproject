@@ -1,0 +1,6 @@
+_____________________________________________
+|
+|  Application: ${application.title}
+|  Version: @project.version@
+|  Build Time: @build.time@
+|____________________________________________

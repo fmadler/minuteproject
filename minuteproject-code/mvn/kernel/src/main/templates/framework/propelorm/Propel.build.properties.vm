@@ -1,0 +1,6 @@
+#exposePropelModelVariable()
+# Database driver
+propel.database = $propelUtils.getDatabaseName($model)
+
+# Project name
+propel.project = $propelRootPackage

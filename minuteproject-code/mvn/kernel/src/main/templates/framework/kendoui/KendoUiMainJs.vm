@@ -1,0 +1,325 @@
+#generatorSpecific()
+function openPopup(title, url, width, height) {
+    popup.wrapper.css({width: width, height: height});
+    popup.title(title);
+    popup.refresh(url);
+
+
+    // Patch for title of popup inside popups
+    if (popup.wrapper.css("padding-bottom") == "0px") {
+        popup.wrapper.css("padding-bottom", "10px");
+    }
+
+    popup.center().open();
+}
+
+var QueryString = retrieveUrlParamArray ();
+
+function retrieveUrlParamArray() {
+  // This function is anonymous, is executed immediately and 
+  // the return value is assigned to QueryString!
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+        // If first entry with this name
+    if (typeof query_string[pair[0]] === "undefined") {
+      query_string[pair[0]] = pair[1];
+        // If second entry with this name
+    } else if (typeof query_string[pair[0]] === "string") {
+      var arr = [ query_string[pair[0]], pair[1] ];
+      query_string[pair[0]] = arr;
+        // If third or later entry with this name
+    } else {
+      query_string[pair[0]].push(pair[1]);
+    }
+  } 
+    return query_string;
+}
+
+ function retrieveQueryStore (storage) {
+    // This function is anonymous, is executed immediately and
+    // the return value is assigned to QueryString!
+    var query_string = {};
+    var query = $(storage).val();
+    query = query.replace("?","&");
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        // If first entry with this name
+        if (typeof query_string[pair[0]] === "undefined") {
+            query_string[pair[0]] = pair[1];
+            // If second entry with this name
+        } else if (typeof query_string[pair[0]] === "string") {
+                var arr = [ query_string[pair[0]], pair[1] ];
+                query_string[pair[0]] = arr;
+                // If third or later entry with this name
+            } else {
+                query_string[pair[0]].push(pair[1]);
+            }
+        }
+        return query_string;
+    };
+   
+	function getContextPath() {
+		return window.location.pathname.substring(0, window.location.pathname.indexOf("/",${kendoUiUtils.websiteContextIndex($template)}));
+}
+
+var contextPath = getContextPath();
+
+function getMenuLink(link) {
+	return contextPath+link;
+}
+
+function resizeKendoDropDownList(e) {
+	var dropDown = $(e.sender.element),
+				dataWidth = dropDown.data("kendoDropDownList").list.width(),
+				listWidth = dataWidth - 10,
+				containerWidth = listWidth + 10;
+	dropDown.data("kendoDropDownList").list.width(listWidth);
+	dropDown.data("kendoDropDownList").list.css("white-space", "nowrap");
+	dropDown.closest(".k-widget").width(containerWidth);
+}
+
+
+function openNewPopup(templateId, text, width, height) {
+	width	= (typeof width		!== "undefined" ? width		: 500);
+	height 	= (typeof height 	!== "undefined" ? height	: "auto");
+	var popup = newPopup(templateId, text, width, height);
+	// Patch for title of popup inside popups - to fix ie
+	if (popup.wrapper.css("padding-bottom") == "0px") {
+		popup.wrapper.css("padding-bottom", "10px");
+	}
+
+	if (popup.element.css("padding-bottom") == "0px") {
+		popup.element.css("padding-bottom", "10px");
+	}
+	popup.center().open();
+	return popup;
+}
+
+
+function newPopup(templateId, text, width, height) {
+	$("#basicPopup").html("");
+	var popup = $("#basicPopup").data("kendoWindow");
+	if (typeof width != "undefined" && typeof height != "undefined") {
+		popup.wrapper.css({width: width, height: height});
+	} else {
+		popup.wrapper.css({width: 450, height: 170});
+	}
+	popup.title(false);
+	popup.content(kendo.template($("#"+templateId).html()));
+	$("#basicPopupText").html(text);
+	return popup;
+}
+
+
+function openBasicPopup(text, width, height) {
+	width	= (typeof width		!== "undefined" ? width		: 500);
+	height 	= (typeof height 	!== "undefined" ? height	: "auto");
+	var popup = newBasicPopup(text, width, height);
+	// Patch for title of popup inside popups - to fix ie
+	if (popup.wrapper.css("padding-bottom") == "0px") {
+		popup.wrapper.css("padding-bottom", "10px");
+	}
+
+	if (popup.element.css("padding-bottom") == "0px") {
+		popup.element.css("padding-bottom", "10px");
+	}
+	popup.center().open();
+	return popup;
+}
+
+function newBasicPopup(text, width, height) {
+	$("#basicPopup").html("");
+	var popup = $("#basicPopup").data("kendoWindow");
+	if (typeof width != "undefined" && typeof height != "undefined") {
+		popup.wrapper.css({width: width, height: height});
+	} else {
+		popup.wrapper.css({width: 450, height: 170});
+	}
+	popup.title(false);
+	popup.content(kendo.template($("#basicPopupTpl").html()));
+	$("#basicPopupText").html(text);
+	return popup;
+}
+
+function initPopup(e, iframe, cssClass) {
+	$(document).ready(function() {
+		var body = $("html, body");
+		var previousOverflow = body.css("overflow");
+		var previousMargin = body.css("margin-right");
+		cssClass = (typeof cssClass !== "undefined" ? cssClass : "popup");
+		e.kendoWindow({
+       		modal: true,
+       		resizable: true,
+       		iframe: iframe,
+		  		open: function(e) {
+		  			body.css("overflow", 		"hidden");
+		  			body.css("margin-right",	"8px");
+		  		},
+				close: function(e) {
+					body.css("overflow",		previousOverflow);
+					body.css("margin-right", 	previousMargin);
+				}
+    	}).parent().addClass(cssClass);
+	});
+	return e;
+}
+    
+function addQSParm(name, value) {
+	var re = new RegExp("([?&]" + name + "=)[^&]+", "");
+
+	function add(sep) {
+		myUrl += sep + name + "=" + encodeURIComponent(value);
+	}
+
+	function change() {
+		myUrl = myUrl.replace(re, "$1" + encodeURIComponent(value));
+	}
+	if (myUrl.indexOf("?") === -1) {
+		add("?");
+	} else {
+		if (re.test(myUrl)) {
+			change();
+		} else {
+			add("&");
+		}
+	}
+}
+
+function getReportTime() {
+	var d = new Date();
+	var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + d.getFullYear() + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+	return datestring;
+}
+	
+//kendoui
+function getItem(e, gridId) {
+	var grid = $("#"+gridId).data("kendoGrid");
+	grid.select( $(e.currentTarget).closest("tr"));
+	var rowId = grid.select().data("uid");
+	return grid.dataSource.getByUid(rowId);
+}
+
+function resolveUrl(key, param) {
+	let url = getEnvUrl(key, param);
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+
+/*
+*
+* ajax asynch
+*
+*/
+
+function ajaxSyncFetch(url, successCallBack, errorCallBack, cached) {
+    if (!cached) {
+        cached = false;
+    }
+    jQuery.ajax({
+        type: 'GET',
+        url: url,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        async: false,
+        cache: cached,
+        success: function(response)
+        {
+            successCallBack(response);
+        },
+        error: function(data) {
+            if (errorCallBack) {
+                errorCallBack(data);
+            } else {
+                window.console && console.log('error: ' + data);
+            }
+        }
+    });
+}
+
+function ajaxOrSessionStorageFetchKey(key, url) {
+    var json = window.sessionStorage.getItem(key);
+    if (json==undefined) {
+        ajaxSyncFetch(
+            url,
+            function (response) {
+                storeJsonString(key, response);
+            }
+        );
+    }
+}
+
+function ajaxOrSessionStorageFetch (url) {
+    ajaxOrSessionStorageFetchKey (url, url);
+}
+
+function storeJsonString (key, data) {
+    window.sessionStorage.setItem(key, JSON.stringify(data));
+}
+
+function retrieveJsonObject (key) {
+    return JSON.parse(window.sessionStorage.getItem(key));
+}
+
+function getEnvProperty(key) {
+	let applicationInfo = retrieveCacheJsonObject("/${generatorBean.name}/data/cisnet/applicationinfo");
+    let env = applicationInfo.environment;
+	return parseEnvInfo(env, key);
+}
+
+function retrieveCacheJsonObject(url) {
+	ajaxOrSessionStorageFetch(url);
+	return retrieveJsonObject(url);
+}
+
+function parseEnvInfo(env, key) {
+    for(var e in envInfo) {
+    	if (e == env) {
+            for(var k in envInfo[e]) {
+				if (k == key) {
+					return envInfo[e][k];
+				}
+            }
+		}
+    }
+    console.log("missing config for env : '"+env+"', key : "+key);
+    return "missing config for env : '"+env+"', key : "+key; 
+}
+
+function getEnvUrl(key, param) {
+	return getEnvProperty(key)+param;
+}
+
+function concatUrlWithParam(url, param) {
+	return url+param;
+}
+	
+const envInfo = {
+#foreach ($environment in $configuration.environments.environments)
+		"$environment.name" : {
+#foreach ($property in $environment.getProperties())
+			"$property.name":"$property.value",
+#end
+		},
+#end
+}
+	
+#foreach ($environment in $configuration.environments.environments)
+// env : $environment.name
+const $environment.name = {
+#foreach ($property in $environment.getProperties())
+		"$property.name":"$property.value",
+#end
+}
+##TODO for global
+#if ($environment.hasPropertyByName("global-url"))
+#set($globalUrls = $environment.getPropertyByName("global-url"))
+	${environment.name} = {};
+#foreach ($property in $globalUrls.getProperties())
+	${environment.name}.$formatUtils.getInUnderscore($property.name)="$property.value";
+#end
+#end
+#end

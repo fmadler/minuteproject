@@ -3,7 +3,7 @@ package net.sf.minuteProject.utils.format;
 import junit.framework.TestCase;
 import net.sf.minuteProject.plugin.format.I18nUtils;
 
-public class I18nUtilsTest extends TestCase {
+public class I18nUtilsTest  {
 
 	private static final String nameWithUnderscore = "TEST_TEST";
 	private static final String nameWithoutUnderscore = "TESTTEST";

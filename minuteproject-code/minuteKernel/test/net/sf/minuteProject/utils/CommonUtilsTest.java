@@ -9,7 +9,7 @@ import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.TableDDL
 import junit.framework.TestCase;
 import static net.sf.minuteProject.utils.CommonUtils.*;
 
-public class CommonUtilsTest extends TestCase{
+public class CommonUtilsTest {
 
 	//TODO disable technical package, business package, model package
 	//TODO convention packaging order (technical, business, model combination)

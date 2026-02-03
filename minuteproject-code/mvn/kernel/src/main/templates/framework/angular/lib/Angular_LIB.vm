@@ -1,0 +1,101 @@
+#macro (exposeAngularTemplate)
+#set ($templateAngularBaseAdapter = "AngularBaseAdapterTs")
+#set ($templateAngularAdapter = "AngularAdapterTs")
+#set ($templateAngularService = "AngularServiceTs")
+#set ($templateAngularRouter = "AngularRouterTs")
+#set ($templateAngularRouteIndexJs = "AngularRouteIndexJs")
+#set ($templateAngularComponentQueryDisplayHtml = "AngularComponent.query.display.html")
+#set ($templateAngularComponentQueryDisplayTs = "AngularComponent.query.display.ts")
+#set ($templateAngularComponentCompositeIndexHbs = "AngularComponentCompositeTs")
+#set ($templateAngularRouteCompositeIndexJs = "AngularRouteCompositeTs")
+#end
+
+#macro (exposeAngularCompositeSpecific)
+#exposeCompositeSpecific()
+#exposeAngularTemplate()
+#set ($modelAngularAdapterClass = $commonUtils.getTemplateClassName($model, $template, $templateAngularAdapter))
+#set ($importAngularCompositeComponentIndexFullPath = $commonUtils.getLevelTemplateFullPath($composite, $template, $templateAngularComponentCompositeIndexHbs))
+#set ($importAngularCompositeComponentRouteFullPath = $commonUtils.getLevelTemplateFullPath($composite, $template, $templateAngularRouteCompositeIndexJs))
+#set ($importAngularCompositeComponentIndexPath = $angularUtils.getComponentPath($importAngularCompositeComponentIndexFullPath))
+#end
+
+#macro (exposeAngularQuerySpecific)
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportQuerySDDBean()
+#putImportSDDInputBean()
+#exposeAngularTemplate()
+##set ($modelAngularAdapterClass = $commonUtils.getTemplateClassName($query.getQueryModel(), $template, $templateAngularAdapter))
+#set ($angularQueryComponentDisplayHtmlClass = $commonUtils.getTemplateClassName($query, $template, $templateAngularComponentQueryDisplayHtml))
+#set ($importAngularQueryComponentDisplayFullPath = $commonUtils.getLevelTemplateFullPath($query, $template, $templateAngularComponentIndexHbs))
+#set ($angularQueryComponentDisplayClass = $formatUtils.getJavaName($commonUtils.getTemplateClassName($query, $template, $templateAngularComponentQueryDisplayTs)))
+#set ($angularQueryComponentDisplayTsClass = "${sddInputBeanClass}DisplayComponent")
+#end
+
+#macro (exposeAngularModelSpecific)
+#exposeVariableModelSpecific()
+#exposeAngularTemplate()
+#exposeTypescriptTemplate()
+#set ($modelAngularAdapterClass = $commonUtils.getTemplateClassName($model, $template, $templateAngularAdapter))
+#set ($modelAngularAdapterImport = $commonUtils.getLevelTemplateFullClassPath($model, $template, $templateAngularAdapter))
+#set ($modelAngularBaseAdapterClass = $commonUtils.getTemplateClassName($model, $template, $templateAngularBaseAdapter))
+#set ($modelAngularBaseAdapterVariable = $commonUtils.getJavaNameVariableFirstLetter($modelAngularBaseAdapterClass))
+#set ($modelAngularBaseAdapterImport = $commonUtils.getLevelTemplateFullClassPath($model.application, $template, $templateAngularBaseAdapter))
+#set ($modelTypescriptSchemaImport = $commonUtils.getModelLevelTemplateFullClassPath($model, $template, $templateTypescriptTypeSchema))
+#end
+
+#macro(putAngularMenuPackage)
+##https://github.com/insanio/Angular.ex/tree/master/examples inspiration
+#set($displayableEntities = $presentationUtils.getDisplayableEntityFromPackage($package))
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#set($packageLabel=$i18nUtils.getPackageName($package))
+#set($subMenuVar = "submenu${package.name}")
+#set($tabVar = "tab${package.name}")
+#if(!$displayableEntities.isEmpty())
+<li> $packageLabel
+    <ul>
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$angularUtils.getAccessUrl($table.name))
+#exposeAngularEntitySpecific()
+#if($table.scope != 'BACKEND')
+        <li><a href="/$entityFullPath"> $tableLabel</a></li>
+#end
+#end
+#end
+    </ul>
+</li>
+#end
+#end
+
+#macro(putAngularMenuStructure)
+#foreach ($package in ${businessPackages})
+#putAngularMenuPackage()
+#end
+#foreach ($package in ${businessPackageViews})
+#putAngularMenuPackage()
+#end
+
+<!-- sdd package -->
+#foreach ($package in $model.getStatementModel().getSddPackage().getOrderedPackages())
+#if ($package.securityColor.hasMenuAccess)
+<li>$i18nUtils.getI18nFromDBObject(${package.displayName})
+    <ul>
+#foreach ($query in $package.getQueries()) 
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$angularUtils.getAccessUrl($table.name))
+##exposeVariableEntitySpecific()
+#exposeAngularSddSpecific()
+#if($table.scope != 'BACKEND')
+        <li><a onclick="javascript:location.href=getMenuLink('/$entityFullPath');return false;" href="/$entityFullPath"> $tableLabel</a></li>
+#end
+#end
+    </ul>
+</li>
+#end
+#end
+#end

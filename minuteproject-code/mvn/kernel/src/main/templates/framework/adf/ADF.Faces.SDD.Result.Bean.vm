@@ -1,0 +1,115 @@
+#exposeADFQuerySpecific()
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+import net.sf.minuteproject.adf.utils.ADFUtils;
+
+import net.sf.minuteproject.adf.utils.JSFUtils;
+
+import java.util.HashMap;
+import java.util.List;
+
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.faces.component.UIComponent;
+
+import javax.faces.context.FacesContext;
+
+import oracle.adf.view.rich.component.rich.fragment.RichRegion;
+import oracle.adf.view.rich.component.rich.layout.RichPanelTabbed;
+import oracle.adf.view.rich.component.rich.layout.RichShowDetailItem;
+import oracle.adf.view.rich.context.AdfFacesContext;
+import oracle.adf.model.BindingContext;
+import oracle.binding.BindingContainer;
+import oracle.binding.OperationBinding;
+
+import org.apache.myfaces.trinidad.event.AttributeChangeEvent;
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+public class $className {
+
+   private static Logger log =
+      Logger.getLogger(${className}.class.getName());
+
+   private UIComponent mainForm;
+##foreach (display split)
+   private RichRegion queryflowdefinition1;
+   private RichPanelTabbed tabs;
+
+   private static final String tab1_ID = "sdi1";
+
+##   public String search() {
+##     refreshSelectedTab();
+##
+##    return "";
+##  }
+##
+  public void search() {
+
+       BindingContext bindingCtx = BindingContext.getCurrent();
+       BindingContainer bindings = bindingCtx.getCurrentBindingsEntry();
+       Map mapParam = new HashMap();
+#if($isNotVoidInput)
+	   $sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass();
+       mapParam.put("${sddInputBeanVariable}", ${sddInputBeanVariable}); 
+#end
+       OperationBinding ob = bindings.getOperationBinding("get${sddOutputBeanCollectionClass}1");
+       ob.getParamsMap().putAll(mapParam);
+       ob.execute();
+       ${sddOutputBeanCollectionClass} result = (${sddOutputBeanCollectionClass})ob.getResult();     
+  }
+
+  public void setMainForm(UIComponent mainForm) {
+    this.mainForm = mainForm;
+  }
+
+  public UIComponent getMainForm() {
+    return mainForm;
+  }
+
+  public RichRegion getQueryflowdefinition1() {
+    return queryflowdefinition1;
+  }
+
+
+  public void setQueryflowdefinition1(RichRegion queryflowdefinition1) {
+    this.queryflowdefinition1 = queryflowdefinition1;
+  }
+
+  public void setTabs(RichPanelTabbed tabs) {
+    this.tabs = tabs;
+  }
+
+  public RichPanelTabbed getTabs() {
+    return tabs;
+  }
+
+  public void refreshSelectedTab() {
+    try {
+      List<UIComponent> coms = tabs.getChildren();
+      String disclosedID = "";
+      for (UIComponent com : coms) {
+        if (RichShowDetailItem.class.isAssignableFrom(com.getClass())) {
+          RichShowDetailItem item = RichShowDetailItem.class.cast(com);
+          if (item.isDisclosed()) {
+            disclosedID = item.getId();
+          }
+        }
+      }     
+      if (disclosedID.contains(tab1_ID)) {
+        JSFUtils.refreshRichRegionModel(queryflowdefinition1);
+      } 
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+}

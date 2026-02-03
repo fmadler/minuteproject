@@ -1,0 +1,49 @@
+#generatorSpecific()
+#exposeVariableModelSpecific()
+package $packageName;
+
+import org.apache.commons.beanutils.BeanUtils;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+public class FieldCompareValidator implements ConstraintValidator<FieldCompare, Object>
+{
+    private String firstFieldName;
+    private String secondFieldName;
+    private CompareOperatorEnum operatorFieldName;
+
+    @Override
+    public void initialize(final FieldCompare constraintAnnotation)
+    {
+        firstFieldName = constraintAnnotation.first();
+        secondFieldName = constraintAnnotation.second();
+        operatorFieldName = constraintAnnotation.operator();
+    }
+
+    @Override
+    public boolean isValid(final Object value, final ConstraintValidatorContext context)
+    {
+        try
+        {
+            final Object firstObj = BeanUtils.getProperty(value, firstFieldName);
+            final Object secondObj = BeanUtils.getProperty(value, secondFieldName);
+
+            Double first = Double.valueOf(firstObj.toString());
+            Double second = Double.valueOf(secondObj.toString());
+##TODO from ComparisonOperand enum
+            switch (operatorFieldName) {
+                case EQUALS: return first.equals(second);
+                case GREATER_THAN:return first > second;
+                case GREATER_OR_EQUAL_THAN:return first >= second;
+                case LESS_THAN:return first < second;
+                case LESS_OR_EQUAL_THAN:return first <= second;
+            }
+        }
+        catch (final Exception ignore)
+        {
+            // ignore
+        }
+        return true;
+    }
+}

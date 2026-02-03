@@ -1,0 +1,13 @@
+#exposeQuerySpecific()
+# list of input properties that can be used:
+#foreach($column in ${inputBean.columns})
+#putColumnParamNaming()
+-  $columnVar to use like $$columnVar
+#end
+
+------
+# list of output properties that can be used:
+#foreach($column in ${outputBean.columns})
+#putColumnParamNaming()
+-  $columnVar to use like $$columnVar
+#end

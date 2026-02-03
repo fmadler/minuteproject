@@ -1,0 +1,9 @@
+#macro (exposeTypescriptTemplate)
+#set ($templateTypescriptTypeSchema = "type.schema.ts")
+#end
+
+#macro (exposeTypescriptModelSpecific)
+#exposeVariableModelSpecific()
+#set ($modelTypescriptSchemaImport = $commonUtils.getModelLevelTemplateFullClassPath($model, $template, $templateTypescriptTypeSchema))
+#end
+

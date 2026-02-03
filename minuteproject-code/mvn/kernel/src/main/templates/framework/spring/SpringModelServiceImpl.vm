@@ -1,0 +1,141 @@
+#exposeBackendTechnology()
+#putJPA2TemplateDefinition()
+#exposeVariableModelSpecific()
+#exposeSpringModelSpecific()
+#addedAreas()
+#set($thisClassName="$className")
+package $packageName;
+
+$!updatedAreaImport
+
+import java.util.List;
+import java.util.ArrayList;
+
+import org.hibernate.Hibernate;
+
+#if ($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#else
+import javax.ejb.Stateless;	
+import javax.ejb.EJB;	
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+#end
+
+import net.sf.minuteProject.model.data.criteria.constant.QuerySortOrder;
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.constant.EntityMatchType;
+import net.sf.minuteProject.model.data.criteria.constant.OperandType;
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#exposeJPA2DomainObject($table)
+#exposeSpringBslaDomainObject()
+#if(!$isMany2Many)
+import $importDomainObjectUML;
+import $BslaDaoInterfaceImport;
+##import $BslaDaoExtInterfaceImport;
+#end
+#end
+
+import $beanSpringModelServiceImport;
+
+/**
+ *
+ * <p>Title: $thisClassName</p>
+ *
+ * <p>Description: Service layer Interface 
+ * It offers coarse grain methods over the fine grain DAO layer:
+ * It performs input and business validation.
+ * </p>
+ *
+ */
+#if ($isSpringBackend)
+@Service ("$beanSpringModelServiceVariable")
+@Transactional
+#else
+@Stateless (name="$beanSpringModelServiceVariable")	
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
+#end
+public class $thisClassName implements $beanSpringModelServiceClass {
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#exposeJPA2DomainObject($table)
+#exposeSpringBslaDomainObject()
+#if(!$isMany2Many)
+
+#if ($isSpringBackend)
+    @Autowired
+    @Qualifier("$BslaDaoInterfaceVariable")	
+#else
+	@EJB// (name="$BslaDaoInterfaceVariable")	
+#end
+	$BslaDaoInterfaceClass $BslaDaoInterfaceVariable;
+#* 
+#if ($isSpringBackend)
+    @Autowired
+    @Qualifier("$BslaDaoExtInterfaceVariable")	
+#else
+	@EJB// (name="$BslaDaoExtInterfaceVariable")	
+#end
+	$BslaDaoExtInterfaceClass $BslaDaoExtInterfaceVariable;
+*#	
+    public List<$tableClassName> getList ($tableClassName $tableVariableName) {
+        $tableClassName sortMask = new $tableClassName();
+#set($ordering=$orderingUtils.getFirstOrdering($table))
+#set($column=$ordering.column)
+#set($order=$ordering.order)
+#putColumnParamNaming()
+#if (!$columnUtils.isPartOfCompositePrimaryKey($column))
+#set($defaultStuffing = $columnUtils.getDefaultStuffingForColumn($column, $useTemporal))
+#if($columnUtils.isForeignKey($column))
+#set($columnClass = "${columnClass}_")
+#end
+        sortMask.set$columnClass($defaultStuffing);
+#end
+        return ${BslaDaoInterfaceVariable}.list($tableVariableName, sortMask, QuerySortOrder.$order);
+    }
+
+#*
+    public void loadAssociations ($tableClassName $tableVariableName) {
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#set($column = $reference.localColumn)
+#putColumnParamNaming()
+#set($tableDB = $reference.foreignTable)
+#set ($BslaDaoInterfaceClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectBslaDaoInterface))
+#set ($interfaceClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateJPA2DomainObject))
+#set ($BslaDaoInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($BslaDaoInterfaceClass))
+        if (${tableVariableName}.get${columnClass}_()!=null)
+           ${tableVariableName}.set${columnClass}(${BslaDaoInterfaceVariable}.load${interfaceClass}(${tableVariableName}.get${columnClass}_()));
+#end
+    }
+
+
+*#
+#end
+#if ($tableUtils.hasManyToManyRelationship($table))
+#asUML($table)
+    public $tableClassName getManyToManyList ($tableClassName $tableVariableName, String child) {
+#putOrmForeignAndPrimaryKeyColumn()
+       $tableClassName e = ${BslaDaoInterfaceVariable}.load${tableClassName}(${tableVariableName}.get$primaryKeyJavaNameClass());
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+       if ("$childrenListVariable".equals(child))
+	      Hibernate.initialize(e.get${childrenListClass}());
+#end
+       return e;
+	}
+#end
+#end
+
+$!updatedAreaImplementation
+
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+			<target-convention type="disable-timestamp-comment-marker" />
+		</conventions>
+		<context class="com.winy.context.ThreadContext" init="ThreadContext.get()">
+			<context-parameters>
+				<context-parameter name="userId" type="int"></context-parameter>
+			</context-parameters>
+			<!-- 
+			<profile class="SessionProfile" name="sessionProfile">
+				
+				<profile-parameters>
+					<profile-param name="userId" type ="int"></profile-param>
+				</profile-parameters>
+				<profile-filters>
+					<profile-filter name="filterByProfileEmail" value="email"></profile-filter>
+				</profile-filters>
+				<profile-matchers>
+					<profile-matcher name="manageWineryMatcher" value="email"></profile-matcher>
+				</profile-matchers>
+			</profile>
+			 -->
+		</context>
+		<model name="environment" version="1.0" package-root="eu.europa.ec.environment">
+			<description>
+				<CDATA>
+					This model illustrates:
+					Reverse-engineering on tables, views
+					SDD
+					Add ad-hoc forms and actions
+				</CDATA>
+			</description>
+			<data-model database-type="MYSQL">
+				<driver name="mysql" version="5.1.44" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/environment</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="v_apply_ppc" />
+					<condition type="exclude" startsWith="v_all_possible_ppc" />
+					<condition type="exclude" startsWith="private" />
+				</generation-condition>
+				<business-package default="project">
+
+				</business-package>
+				<enrichment>
+					<entity name="ENVIRONMENT" content-type="reference-data"/>
+					<entity name="APPLICATION" content-type="reference-data"/>
+					<conventions>
+						<entity-content-type-convention type="apply-content-type-to-entity-starting-with" pattern="I18N_" content-type="reference-data"/>
+						<entity-content-type-convention type="apply-content-type-to-entity-starting-with" pattern="REF_" content-type="reference-data"/>
+
+						<column-naming-convention type="apply-strip-column-name-suffix" pattern-to-strip="_ID" />
+						<reference-naming-convention type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+						<reference-naming-convention type="apply-many-to-many-aliasing" is-to-plurialize="true"/>
+						
+						<ordering-convention field-pattern="DISPLAY_ORDER" field-pattern-type="endsWith" ordering="asc" />
+						<ordering-convention field-pattern="RANKING"       field-pattern-type="endsWith" ordering="asc" />
+
+						<!-- stereotype email, URL -->
+						<stereotype-convention field-pattern="email" 		field-pattern-type="contains" 	stereotype="email" />
+						<stereotype-convention field-pattern="mail" 		field-pattern-type="endsWith" 	stereotype="mail" />
+						<stereotype-convention field-pattern="timestamp" 	field-pattern-type="contains" 	stereotype="datetime" />
+						<stereotype-convention field-pattern="_datetime" 	field-pattern-type="contains" 	stereotype="datetime" />
+						<stereotype-convention field-pattern="url" 			field-pattern-type="contains" 	stereotype="url" />
+						<stereotype-convention field-pattern="password" 	field-pattern-type="contains" 	stereotype="password" />
+						<stereotype-convention field-pattern="notes" 		field-pattern-type="equals" 	stereotype="text-html" />
+					
+						<!-- primary key conv -->
+						<column-naming-convention
+							type="apply-fix-primary-key-column-name-when-no-ambiguity-and-not-natural"
+							default-value="ID" />
+
+						<!-- strip prefix -->
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+							pattern-to-strip="ADMIN_,SEC_,BUS_" />
+
+						<!-- trigger -->
+						<property-convention scope="field" pattern="CREATION_DATE"
+							tag="trigger-insert-with-current-date" type="start-with" />
+
+						<view-primary-key-convention
+							type="apply-default-primary-key-otherwise-first-one"
+							default-primary-key-names="IDENTIFIER,ID" />
+
+						<!-- content type -->
+						<entity-content-type-convention
+							type="apply-content-type-to-entity-belonging-to-package" pattern="reference"
+							content-type="reference-data" />
+
+						<semantic-reference-convention
+							content-type="reference-data" field-pattern="NAME"
+							field-pattern-type="endsWith" max-number-of-fields="5" />
+
+					</conventions>
+				</enrichment>
+			</business-model>
+			<statement-model>
+				<queries>
+					<query name="all_environment" id="all_environment" package-name="environment">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[
+select * from v_access_overview
+]]>
+							</value>
+						</query-body>
+						<!--
+						<query-filters>
+							<query-filter name="filterstatus" and-where-connection="and"><value>
+								<![CDATA[p.status = ?]]></value>
+								<query-params>
+									<query-param name="status" 
+										type="string" sample="'xxx'">
+										<property tag="checkconstraint">
+											<property name="FINAL" />
+											<property name="DRAFT" />
+										</property>
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="filterrequester" and-where-connection="and"><value>
+								<![CDATA[p.publication_requester = ?]]></value>
+								<query-params>
+									<query-param name="requester" is-mandatory="false" type="string" sample="'37'" size="20" >
+										<query-param-link sdd-query-name="comrefuserlookup" field-name="user_lastname" field-key="user_login"/>
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="filterauthorisedby" and-where-connection="and"><value>
+								<![CDATA[p.authorised_by = ?]]></value>
+								<query-params>
+									<query-param name="authorised_by" is-mandatory="false" type="string" sample="'37'" size="20">
+										<query-param-link sdd-query-name="comrefuserlookup" field-name="user_lastname" semantic-reference-fields="user_firstname, user_lastname" field-key="user_login" display-mode="autocomplete" />
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="filteruniref" and-where-connection="and"><value>
+								<![CDATA[c.con_uniref like ?]]></value>
+								<query-params>
+									<query-param name="consultation_uniref" is-mandatory="false" 
+										type="string" sample="'37'" size="20">
+										<property name="like-mode" value="contains"></property>
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					-->
+					</query>
+				</queries>
+			
+			</statement-model>
+		</model>
+<!-- REST-Custom, Openxava, Fitnesse,  -->
+		<targets catalog-entry="Ember"
+			append-catalog-entry-dir-to-outputdir-root="true" outputdir-root="../../product/environment">
+			<property name="openxava-disable-sdd" value="true" />
+			<property name="environment" value="remote"/>
+			<property name="show-sql" value="false"/>
+		</targets>
+
+
+	</configuration>
+</generator-config>

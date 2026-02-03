@@ -1,0 +1,27 @@
+<target name="Spring graphql">
+	<architecture-target name="Spring" description="Spring  - REST / GraphQL API">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"></plugin>
+
+	<template-target 
+    	name="REST and GraphQL java SDD set"
+		libdir="lib/SPRING_LIB.vm"
+		outputdir="src/main/java"
+		>
+
+		<template name="Spring.GraphQL.service" templateFileName="Spring.GraphQL.service.vm"
+				  file-extension="java" technicalPackage="graphql" file-suffix="GraphQLService"
+				  scope-specific-value="model" has-updatable-nature="true" >
+		</template>
+
+		<template name="Spring.GraphQL.datafetcher" templateFileName="Spring.GraphQL.datafetcher.vm"
+				  file-extension="java" technicalPackage="graphql.datafetcher" file-suffix="DataFetcher"
+				  add-package-name="true" add-business-package-dir-name="false"
+				  scope-specific-value="query" has-updatable-nature="true" >
+		</template>
+
+	</template-target>
+
+</target>

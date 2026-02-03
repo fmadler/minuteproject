@@ -1,0 +1,91 @@
+#exposeVariableModelSpecific() 
+#exposeOXSpecific()
+#addedAreas()
+##<?xml version = "1.0" encoding = "ISO-8859-1"?>
+##<!DOCTYPE application SYSTEM "dtds/application.dtd">
+<application name="$applicationOX"> 
+	
+	<!-- 
+	A default module for each entity is assumed with the
+	controllers on <default-module/>
+	-->
+	
+	<default-module>		  
+		<!--<controller name="Typical"/>-->
+	</default-module>
+	
+#foreach ($model in $configuration.models())
+#exposeVariableModelSpecific()
+##exposeVariableModelDetailSpecific()
+#foreach($table in $model.businessModel.businessPackage.getEntities())
+#if(!$table.isManyToMany())
+   <!-- entity : $table.name of ${model.name}-->
+#exposeVariableEntitySpecific()
+  <module name="$tableClassName">
+	  <model name="$tableClassName"/>  
+#if(!$isView)
+	  <env-var name="XAVA_SEARCH_ACTION" value="MpTypical${model.name}.searchByViewKey"/>
+	  <controller name="MpTypical${model.name}"/>
+#else
+	  <controller name="MpSearchAndPrint"/>
+#end
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if ($columnUtils.hasFormulaStereotype($column))
+#set ($formula = $column.stereotype.formula)
+#set ($formulaName = $formatUtils.getJavaName($formula.name))
+	  <controller name="${columnVar}${formulaName}Controller"/>
+#end
+#end
+	</module>	
+#end
+#end
+
+    <!-- statement driven development SDD -->
+#if ($enableHibernateEhcache)
+#foreach ($query in $model.getStatementModel().getQueries().getQueries())
+#putImportQuerySDDBean()
+#set($table=$query.inputBean)
+	<module name="$sddInputBeanClass" >
+	    <model name="$sddInputBeanClass"/>
+	    <view name="base"/> 
+	    <controller name="$openXavaUtils.getControllerName($table)"/>
+	    <mode-controller name="DetailOnly"/>
+	</module>
+#end
+#end
+
+	<!-- transfer entities -->
+#foreach ($table in $model.businessModel.businessPackage.transferEntities)
+#exposeVariableEntitySpecific()
+	<module name="$tableClassName" >
+	    <model name="$tableClassName"/>
+	    <view name="base"/> 
+	    <controller name="$openXavaUtils.getControllerName($table)"/>
+#if ($table.isSearchable())
+	    <mode-controller name="SplitOnly"/>
+#else
+	    <mode-controller name="DetailOnly"/>
+#end
+	</module>
+#end
+
+	<!-- functions -->
+#foreach ($function in $database.functions)
+#set ($inout = $commonUtils.getDirection("INOUT"))
+#set ($table = $function.getEntity($inout))
+#exposeVariableEntitySpecific()
+	<module name="$tableClassName" >
+	    <model name="$tableClassName"/>
+	    <view name="base"/> 
+	    <controller name="$openXavaUtils.getControllerName($table)"/>  
+	    <mode-controller name="DetailOnly"/>
+	</module>
+#end
+		
+#end
+		
+#addArea("custom-application-nodes")
+
+</application>
+

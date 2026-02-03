@@ -1,0 +1,50 @@
+#exposeVariableEntitySpecific()
+#set($camelCaseConvention=$table.getNamingConvention().equalsIgnoreCase("camelcase"))
+#exposeEnvironmentParams()
+#putImportSDDBean()
+#addedAreas()
+package $packageName;
+
+import java.util.List;
+import java.util.ArrayList;
+
+#if($addXmlBinding)
+import javax.xml.bind.annotation.*;
+#end
+
+import $beanImport;
+
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Java Bean ${className} </p>
+## * <p>Naming convention $table.namingConvention - $table.name </p>
+ *
+ */
+#if($addXmlBinding)
+@XmlRootElement (name="${className}")
+#end
+public class ${className} {
+
+#if($addXmlBinding)
+#set($xmlElementValue=$jaxbUtils.getXmlElementValue($listVariable, $xmlFormat))
+#if ($camelCaseConvention)
+    @XmlElement (name="${listVariable}")
+#else
+    @XmlElement (name="${beanClass}")
+#end
+#end
+    private List<${beanClass}> $listVariable;
+
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+	
+#putSetterGetterAdder($className, $listVariable, ${beanClass}, ${beanVariable})
+
+$!updatedAreaImplementation
+}

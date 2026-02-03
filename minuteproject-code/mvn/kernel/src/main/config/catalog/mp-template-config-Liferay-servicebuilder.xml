@@ -1,0 +1,38 @@
+<target name="Liferay">		
+	<architecture-target name="Liferay" description="Liferay artifacts">
+	</architecture-target>	
+     <plugin name="liferayUtils" className="net.sf.minuteProject.plugin.liferay.LiferayUtils"></plugin>
+
+	<template-target 
+    	name="Liferay set"
+		libdir=""
+		outputdir="WEB-INF"
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="Liferay.service.builder.xml" templateFileName="Liferay.service.builder.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="service" file-suffix="" 
+			has-updatable-nature="true"
+			application-specific="true" add-model-name="false">
+		</template>
+
+	</template-target>	  	
+
+	<template-target 
+    	name="Liferay set"
+		libdir=""
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+
+		<template name="Liferay.service.builder.build.xml" templateFileName="Liferay.service.builder.build.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="build-sb" file-suffix="" 
+			has-updatable-nature="true"
+			application-specific="true" add-model-name="false">
+		</template>
+
+	</template-target>	  	
+  	         		
+</target>

@@ -1,0 +1,13 @@
+<target name="FILERAY LIB">		
+	<architecture-target name="REST architecture artifacts" description="REST architecture">
+	</architecture-target>	
+    <plugin name="liferayUtils" className="net.sf.minuteProject.plugin.liferay.LiferayUtils"></plugin>
+
+	<template-target 
+    	name="LIFERAY"
+		libdir="lib/LIFERAY_LIB.vm"
+		outputdir=""
+		belongToPackage="true">
+	</template-target>
+  	         		
+</target>

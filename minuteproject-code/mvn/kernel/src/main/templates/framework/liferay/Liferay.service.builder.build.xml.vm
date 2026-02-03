@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!DOCTYPE project>
+
+<project name="${model.name}" basedir="." default="deploy">
+	<import file="${LIFERAY_PLUGIN_SDK_HOME}/portlets/build-common-portlet.xml" />
+</project>

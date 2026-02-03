@@ -1,0 +1,36 @@
+<target name="flyway">
+
+	<template-target 
+    	name="Flyway config"
+		outputdir="MODEL/migration"
+		>
+	
+		<template name="Flyway.pom.xml" templateFileName="Flyway.pom.xml.vm"
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix=""
+			application-specific="true" add-model-name="false"
+			>
+		</template>
+		<template name="Flyway.config.properties" templateFileName="Flyway.config.properties.vm"
+			subdir="" outputsubdir="src/main/resources/config" technicalPackage="" has-updatable-nature="true"
+			file-extension="properties" file-prefix="local-config" file-suffix=""
+			application-specific="true" add-model-name="false"
+			>
+		</template>
+		<template name="Flyway.migration.clean.sql" templateFileName="Flyway.migration.clean.sql.vm"
+				  subdir="" outputsubdir="src/main/resources/clean" technicalPackage="" has-updatable-nature="true"
+				  file-extension="sql" file-prefix="beforeClean" file-suffix=""
+				  application-specific="true" add-model-name="false"
+		>
+		</template>
+		<template name="Flyway.migration.create_user.sql" templateFileName="Flyway.migration.create_user.sql.vm"
+				  subdir="" outputsubdir="src/main/resources/migration/init" technicalPackage="" has-updatable-nature="true"
+				  file-extension="sql" file-prefix="__create_defaultings" file-suffix=""
+				  application-specific="true" add-model-name="false"
+		>
+		</template>
+
+	</template-target>	
+
+
+</target>

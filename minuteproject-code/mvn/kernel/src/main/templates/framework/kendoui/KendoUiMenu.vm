@@ -1,0 +1,24 @@
+#generatorSpecific()
+##exposeVariableModelSpecific()
+#exposeKendoUIGeneratorBeanSpecific()
+<!DOCTYPE html>
+<html>
+<head>
+<title>$generatorBean.name site</title>
+
+#putKendoUIJSImport("")
+
+</head>
+<body>
+<script type="text/javascript">
+$(function () {
+
+    $(document).ready(function() {
+#putKendoUIMenu()
+    });
+
+});
+</script>
+<div id="menu"/>
+</body>
+</html>

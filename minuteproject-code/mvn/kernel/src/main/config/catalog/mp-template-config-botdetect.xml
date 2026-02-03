@@ -1,0 +1,20 @@
+<target name="botdetect">
+
+	<template-target 
+    	name="Botdetect config"
+		outputdir="REST/src/main/webapp/WEB-INF/"
+		>
+	
+		<template name="botdetect.xml" templateFileName="botdetect.xml.vm"
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="botdetect" file-suffix=""
+			application-specific="true" add-model-name="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+			>
+			<property name="property-presence" value="botdetect"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+		
+	</template-target>	
+
+</target>

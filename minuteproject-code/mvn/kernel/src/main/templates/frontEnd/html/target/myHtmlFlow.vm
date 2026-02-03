@@ -1,0 +1,18 @@
+$flow.name
+$flow.id
+
+#foreach($page in $flow.pageByRefsArray)
+page $page.name
+
+#foreach($window in $page.windowsArray)
+window $window.name
+
+#foreach($block in $window.blocksArray)
+block $block.name
+
+#end
+
+#end
+
+#end
+

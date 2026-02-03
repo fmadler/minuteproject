@@ -1,0 +1,123 @@
+#exposeOXVariableActionSpecific()
+#putJPA2TemplateDefinition()
+#set ($defaultImplementationCRUD=$action.hasDefaultImplementation())
+#set ($defaultImplementationIsInsert=$action.hasDefaultImplementation("insert"))
+#set ($defaultImplementationIsUpdate=$action.hasDefaultImplementation("update"))
+package $packageName;
+
+import javax.persistence.*;
+
+import $domainImport; 
+
+import org.openxava.jpa.*;
+import org.openxava.model.*;
+import org.openxava.util.*;
+import org.openxava.validators.*;
+import org.openxava.actions.*;
+import java.util.*;
+
+#exposeJPA2Import()
+
+$!updatedAreaImport
+
+public class ${className} extends ViewBaseAction {
+
+	public void execute() throws Exception {
+#exposeModelUpdatedAreas("execute")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+        //super.execute();
+        //TODO
+        Messages errors =
+            MapFacade.validate("${domainClassName}", getView().getValues());
+        if (errors.contains()) throw new ValidationException(errors);
+#if ($defaultImplementationCRUD)		
+        EntityManager em = XPersistence.getManager();
+        try {
+	        ${domainClassName} e = new ${domainClassName}();
+#if($defaultImplementationIsUpdate)
+#set($mask=$formatUtils.addDoubleQuotes("$primaryKeyVariable"))
+#set($entityMask=$columnUtils.getMask($primaryKeyFirstColumn, "getView().getValueString($mask)"))
+			e.set${primaryKeyJavaNameClass}($entityMask);
+			e = XPersistence.getManager().find(${domainClassName}.class, e.get${primaryKeyJavaNameClass}());
+            //check display condition
+#foreach ($field in ${action.actionCondition.fields})
+#set($column=$columnUtils.getColumn($table, $field.name))
+#putColumnParamNaming()
+#set($conditionColumnValue=$action.actionCondition.getConditionColumnValue($column, $field))
+		    if (!${conditionColumnValue}.equals(e.get${columnClass}()))
+				errors.add ("Condition ${action.actionCondition.name} not met!");
+#end
+#end
+	        if (errors.contains()) throw new ValidationException(errors);
+			// set init condition	
+			// copy field from form
+#foreach ($column in ${table.attributes})
+#putColumnParamNaming()
+#if(!$isForeignKey && !$column.isHidden() && $column.isEditable())
+#if(!$isPrimaryKey || $columnUtils.isNaturalPk($column))
+#set($oxGetViewValue=$openXavaUtils.getViewValue($column, $useTemporal))
+##set($fieldMask=$columnUtils.getMaskWithExpression($column, $oxGetViewValue, $useTemporal))
+		    e.set${columnClass}(${oxGetViewValue});
+#end
+#end
+#end
+	        // parent
+#foreach ($reference in $table.parents)
+#set($isEditable=$openXavaUtils.isRelationshipEditable($reference, $database))
+#if ($isEditable)
+#putReferenceParams2()
+#set($pkColumn = $referenceUtils.getPrimaryColumnForLinkTable($database, $linkedColumn))
+#set($linkedTablePrimaryKeyJavaNameClass = $formatUtils.firstUpperCaseOnly($linkedColumnVarAsInput))
+#set($linkedTablePrimaryKeyJavaVariable=$linkedColumnVarAsInput)
+#set($linkedTablePrimaryKeyJavaType=$commonUtils.getJavaTypeOnly($pkColumn))
+
+            Map ${localColumnVariable}Map = (Map)getView().getValue("${localColumnVariable}");
+            if (${localColumnVariable}Map!=null) {
+##	            	User validator = new User();
+##	            	validator.setId((Integer)(validatorId));
+##			    	e.setValidator(validator);
+                $linkedTablePrimaryKeyJavaType ${localColumnVariable}Id = ($linkedTablePrimaryKeyJavaType)${localColumnVariable}Map.get("${linkedTablePrimaryKeyJavaVariable}");
+                if (${localColumnVariable}Id != null) {
+    				$linkedTableClass ${localColumnVariable} = new $linkedTableClass();
+        			${localColumnVariable}.set${linkedTablePrimaryKeyJavaNameClass}(${localColumnVariable}Id);
+        		    e.set${localColumnClass}(${localColumnVariable});
+            	}
+            }
+##            $linkedTableClass ${localColumnVariable} = new $linkedTableClass();
+##			${localColumnVariable}.set${linkedTablePrimaryKeyJavaNameClass}(($linkedTablePrimaryKeyJavaType)((Map)getView().getValue("${localColumnVariable}")).get("${linkedTablePrimaryKeyJavaVariable}"));
+##		    e.set${localColumnClass}(${localColumnVariable});
+#end
+#end
+			// assign field
+#foreach ($field in ${action.fields})
+#set($column=$columnUtils.getColumn($table, $field.name))
+#putColumnParamNaming()
+#set($columnValue=$columnUtils.getMask($column, $field.value))
+		    e.set${columnClass}(${columnValue});
+#end
+#if($defaultImplementationIsUpdate || $defaultImplementationIsInsert)
+			XPersistence.getManager().persist(e); 
+#end
+			getView().reset();
+			resetDescriptionsCache();
+        } catch (Exception e) {
+            errors = new Messages();
+            errors.add(e.getMessage());
+            throw new ValidationException(errors);
+        }
+#else
+		addWarning ("Please implement me!)");
+#end
+        //TODO return list
+        addInfo("call ${className} done!");
+#end
+$!updatedAreaEnd
+
+	}
+
+$!updatedAreaImplementation
+
+}

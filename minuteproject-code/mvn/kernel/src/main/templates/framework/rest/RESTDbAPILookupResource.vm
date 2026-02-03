@@ -1,0 +1,77 @@
+#exposeVariableModelSpecific()
+#exposeBackendTechnology()
+#set($thisClassName=$className)
+#set($thisDomainVariableName=$classVariable)
+package $packageName;
+
+import io.swagger.annotations.*;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Date;
+import java.util.ArrayList;
+import  java.io.Serializable;
+#if($isSpringBackend)
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+#elseif($isEJBBackend)
+import javax.ejb.EJB;
+#end
+
+import javax.faces.model.SelectItem;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#if(!$isMany2Many)
+import $beanSpringServiceImport;
+#end
+#end
+#if($isSpringBackend)
+@Service ("${thisDomainVariableName}")
+#elseif($isEJBBackend)
+@javax.ejb.Stateless (name="${thisDomainVariableName}")	
+#end
+@Path("/model/${model.name}")
+@Produces(MediaType.APPLICATION_JSON)
+@Api(value="/entity/${model.name}", description = "operation about ${model.name}")
+public class $thisClassName implements Serializable{
+
+#foreach($table in $entities)
+#exposeVariableEntitySpecific()
+#exposeSpringServiceBindingSpecific()
+#if(!$isMany2Many)
+#if($isSpringBackend)
+    @Autowired 
+	@Qualifier("${beanSpringServiceVariable}")
+#elseif($isEJBBackend)
+    @EJB
+#end
+    private $beanSpringServiceClass $beanSpringServiceVariable;
+#end
+#end
+
+#putSpringModelLookup("REST")
+
+}

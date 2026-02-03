@@ -14,7 +14,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
 import org.apache.velocity.runtime.resource.util.StringResourceRepository;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VelocityTest {
 

@@ -1,0 +1,390 @@
+<target name="JSF - bsla">		
+	<architecture-target name="JSF primefaces" description="JSF primefaces architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="presentationUtils" className="net.sf.minuteProject.plugin.presentation.PresentationUtils"></plugin>
+	<plugin name="primefacesUtils" className="net.sf.minuteProject.plugin.jsf.PrimefacesUtils"></plugin>
+
+	<resource-target outputdir="src/main/webapp/icon">
+		<resource name="xsl-icon" resource-file-name="excel.png" />
+		<resource name="pdf-icon" resource-file-name="pdf.png" />
+	</resource-target>
+	
+	<!-- 
+	<resource-target srcdir="css/bootstrap" outputdir="src/main/webapp/css">
+		<resource name="bootstrap.min.css" resource-file-name="bootstrap.min.css" />
+	</resource-target>
+	 -->
+	 	
+	<template-target 
+    	name="JSF java set"
+		libdir="lib/JSF_LIB.vm,lib/EJB_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" />
+
+		<template name="JSFBeanManagerMenu" templateFileName="JSFPrimefacesMenuBean.vm" 
+			file-extension="java" technicalPackage="menu" file-suffix="Menu" 
+			model-specific="true" add-model-name="true" has-updatable-nature="true">
+		</template>
+		
+		<template name="JSFBeanManagerLanguage" templateFileName="JSFPrimefacesLanguageBean.vm" 
+			file-extension="java" technicalPackage="bean.language" file-suffix="LanguageManagedBean" 
+			model-specific="true" add-model-name="true" has-updatable-nature="true">
+		</template>
+		
+		<template name="JSFBeanManagerUser" templateFileName="JSF.PF.UserBean.vm" 
+			file-extension="java" technicalPackage="bean.user" file-suffix="UserManagedBean" 
+			model-specific="true" add-model-name="true" has-updatable-nature="true">
+		</template>
+		 
+		<template name="JSFBeanManagerController" templateFileName="JSFBeanManagerController.vm" 
+			subdir="" outputsubdir="" technicalPackage="controller"
+			file-extension="java" file-prefix="" file-suffix="Controller" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+							 
+		<template name="JSF.PF.Generic.LazyDataModel" templateFileName="JSF.PF.Generic.LazyDataModel.vm" 
+			subdir="" outputsubdir="" technicalPackage="datamodel"
+			file-extension="java" file-prefix="" file-suffix="LazyDataModel" 
+			model-specific="true" has-updatable-nature="true">
+		</template>
+		 
+		<template name="JSF.PF.Entity.LazyDataModel" templateFileName="JSF.PF.Entity.LazyDataModel.vm" 
+			subdir="" outputsubdir="" technicalPackage="datamodel"
+			file-extension="java" file-prefix="" file-suffix="LazyDataModel" 
+			entity-specific="true" has-updatable-nature="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			
+		</template>
+								 
+		<template name="JSFBeanManagerConverter" templateFileName="JSFBeanManagerConverter.vm" 
+			subdir="" outputsubdir="" technicalPackage="converter"
+			file-extension="java" file-prefix="" file-suffix="Converter" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<!-- <property name="add-backend-implementation" value="spring"></property> -->
+		</template>
+		
+		<!-- sdd -->
+		<template name="JSFSDDController" templateFileName="JSFSDDController.vm" 
+			subdir="" outputsubdir="" technicalPackage="controller"
+			file-extension="java" file-prefix="" file-suffix="Controller" 
+			scope-specific-value="query" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>
+<!-- 
+		<template name="EJB3DaoImpl" templateFileName="EJB3DaoImpl.vm" 
+			file-extension="java" technicalPackage="dao.impl" file-suffix="DaoEJB" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="implement-interface" value="false"></property>
+		</template>		 -->
+				
+	</template-target>
+
+  	<template-target 
+    	name="i18n set"
+		outputdir="src/main/resources"
+		belongToPackage="true">
+			 
+		<template name="JSFI18nProperties" templateFileName="I18nProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="i18n"
+			file-extension="properties" file-prefix="" file-suffix="" 
+			application-specific="true" has-updatable-nature="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="separator" value="_"/>
+		</template>
+			 
+		<template name="JSFI18nProperties_en" templateFileName="I18nProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="i18n"
+			file-extension="properties" file-prefix="" file-suffix="_en" 
+			application-specific="true" has-updatable-nature="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="separator" value="_"/>
+		</template>
+			 
+			 
+		<template name="JSFI18nProperties_es" templateFileName="I18nProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="i18n"
+			file-extension="properties" file-prefix="" file-suffix="_es" 
+			application-specific="true" has-updatable-nature="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="separator" value="_"/>
+     		<property name="language" value="es"/>
+		</template>
+			 
+		<template name="JSFI18nProperties_fr" templateFileName="I18nProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="i18n"
+			file-extension="properties" file-prefix="" file-suffix="_fr" 
+			application-specific="true" has-updatable-nature="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="separator" value="_"/>
+     		<property name="language" value="fr"/>
+		</template>
+
+	</template-target>
+
+
+  	<template-target 
+    	name="utils set"
+		outputdir="src/main/java"
+		belongToPackage="true">
+			 
+		<template name="JSFI18nBundle" templateFileName="JSFI18nBundle.vm" 
+			subdir="" outputsubdir="" technicalPackage="i18n"
+			file-extension="java" file-prefix="" file-suffix="I18n" 
+			model-specific="true" has-updatable-nature="true">
+		</template>
+		
+		<template name="JSFUtils" templateFileName="JSFUtils.vm" 
+			subdir="" outputsubdir="" technicalPackage="utils"
+			file-extension="java" file-prefix="JsfUtils" file-suffix="" 
+			model-specific="true" has-updatable-nature="true" add-model-name="false">
+		</template>
+		<template name="JSFSemanticReferenceUtils" templateFileName="JSFSemanticReferenceUtils.vm" 
+			subdir="" outputsubdir="" technicalPackage="utils"
+			file-extension="java" file-prefix="JsfSemanticReferenceUtils" file-suffix="" 
+			model-specific="true" has-updatable-nature="true" add-model-name="false">
+		</template>
+		<template name="JSFManagedBeanUtils" templateFileName="JSFManagedBeanUtils.vm" 
+			subdir="" outputsubdir="" technicalPackage="utils"
+			file-extension="java" file-prefix="JsfManagedBeanUtils" file-suffix="" 
+			model-specific="true" has-updatable-nature="true" add-model-name="false">
+		</template>
+        <template name="JSF.Spring.Lookup.Service" templateFileName="JSF.Spring.Lookup.Service.vm" 
+            technicalPackage="bean"
+            file-extension="java" file-prefix="" file-suffix="LookupDefaultingService"
+            has-updatable-nature="true" 
+            scope-specific-value="model">
+        </template> 
+        <template name="JSF.Enum.Lookup.Service" templateFileName="JSF.Enum.Lookup.Service.vm" 
+            technicalPackage="bean"
+            file-extension="java" file-prefix="" file-suffix="LookupEnumService"
+            has-updatable-nature="true" 
+            scope-specific-value="model">
+            <property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2" ></property>    		
+        </template> 
+
+		<template name="JSF.PF.LazyDataModel.Service" templateFileName="JSF.PF.LazyDataModel.Service.vm" 
+			subdir="" outputsubdir="" technicalPackage="bean"
+			file-extension="java" file-prefix="" file-suffix="LazyDataModelService" 
+			model-specific="true" has-updatable-nature="true">
+		</template>
+					      
+	</template-target>
+<!-- 
+  	<template-target 
+    	name="framework"
+		outputdir="src/main/java"
+		belongToPackage="true">
+			 
+		<template name="JSFFwkDateTsConverter" templateFileName="JSFFwkDateTsConverter.vm" 
+			subdir="" outputsubdir="" technicalPackage="fwk"
+			file-extension="java" file-prefix="DateTsConverter" file-suffix="" 
+			model-specific="true" has-updatable-nature="true" add-model-name="false">
+		</template>
+
+	</template-target>
+ -->
+ 		
+	<template-target 
+    	name="JSF xhtml set"
+		libdir="lib/JSF_LIB.vm"
+		outputdir="src/main/webapp/resources"
+		package-root=""
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" /> 
+		<property name="convertClobToString" value="true"/>
+			 
+		<template name="JSFXhtmlEntitySemanticReference" templateFileName="JSFXhtmlEntitySemanticReference.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="SemanticReference" 
+			entity-specific="true" add-business-package-dir-name="false"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+	</template-target> 	
+		
+	<template-target 
+    	name="JSF xhtml set"
+		libdir="lib/JSF_LIB.vm"
+		outputdir="src/main/webapp"
+		package-root=""
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" /> 
+		<property name="convertClobToString" value="true"/>
+			 
+		<template name="JSFXhtmlCreateEntity" templateFileName="JSFXhtmlCreateEntity.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="Create" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		<template name="JSFXhtmlListEntity" templateFileName="JSFXhtmlListEntity.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="List" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		<template name="JSFXhtmlListRowEntity" templateFileName="JSFXhtmlListRowEntity.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="ListRow" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+            <property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2" ></property>    
+
+		</template>
+
+		<template name="JSFXhtmlEditEntity" templateFileName="JSFXhtmlEditEntity.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="Edit" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+            <property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2" ></property>    
+		</template>
+
+		<template name="JSFXhtmlListLazyEntity" templateFileName="JSFXhtmlListLazyEntity.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="ListLazy" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		<template name="JSFXhtmlEntityPortlet" templateFileName="JSFXhtmlListLazyEntity.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="Portlet" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="is-portlet" value="true"></property>
+		</template>		
+		
+		<template name="JSFXhtmlListLazyEntityPortlet" templateFileName="JSFXhtmlListLazyEntityPortlet.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="ListLazyPortlet" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>		
+
+		<template name="JSFXhtmlError500" templateFileName="JSFXhtmlError500.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="500error" 
+			application-specific="true" add-model-name="false">
+		</template>
+		
+		<template name="JSFXhtmlError404" templateFileName="JSFXhtmlError404.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="404search" 
+			application-specific="true" add-model-name="false">
+		</template>
+
+		<template name="JSFXhtmlDecorator" templateFileName="JSFXhtmlDecorator.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="_Decorator" 
+			application-specific="true" add-model-name="false">
+		</template>
+
+		<template name="JSFXhtmlPortletDecorator" templateFileName="JSFXhtmlDecorator.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="_PortletDecorator" 
+			application-specific="true" add-model-name="false">
+			<property name="is-portlet" value="true"></property>
+		</template>
+		
+		<template name="JSFXhtmlMenu" templateFileName="JSFPrimefacesMenuXhtml.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="Menu" 
+			model-specific="true" add-model-dir-name="true" add-model-name="false">
+		</template>		
+
+		<template name="JSF.IdleMonitor.xhtml" templateFileName="JSF.IdleMonitor.xhtml.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="IdleMonitor" 
+			model-specific="true" add-model-dir-name="true" add-model-name="false">
+		</template>
+		
+		<template name="JSFXhtmlPrimefacesBreadcrumbs" templateFileName="JSFXhtmlPrimefacesBreadcrumbs.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="BreadCrumb" 
+			model-specific="true" add-model-dir-name="true" add-model-name="false" >
+		</template>
+		
+		<template name="JSFPrimefacesIndexXhtml" templateFileName="JSFPrimefacesIndexXhtml.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="index" 
+			application-specific="true" add-model-name="false" >
+		</template>
+		
+		<template name="JSFCssDefault" templateFileName="JSFPrimefacesCss.vm" 
+			file-extension="css" technicalPackage="css" file-suffix="style" 
+			model-specific="true" add-model-name="false" add-model-dir-name="false" >
+		</template>
+		
+		<!-- SDD -->
+        <template name="JSFXhtmlSDDInput" templateFileName="JSFXhtmlSDDInput.vm" 
+            file-extension="xhtml" technicalPackage="sdd" file-suffix="Input" 
+            scope-specific-value="query"/>
+
+        <template name="JSFXhtmlChart" templateFileName="JSFXhtmlChart.vm"
+			file-extension="xhtml" technicalPackage="sdd" file-suffix="Chart"
+			scope-specific-value="query" />
+
+    </template-target>
+
+	<template-target 
+    	name="JSF set"
+		libdir="lib/JSF_LIB.vm"
+		outputdir="src/main/webapp/WEB-INF"
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="JSFWebXml" templateFileName="JSFWebXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="web" 
+			application-specific="true" add-model-name="false" 
+			has-updatable-nature="true">
+		<!-- property given at higher level in technology-catalog 	
+		    <property name="add-backend-implementation" value="spring"></property> -->
+		</template>
+
+		<template name="JSFFaceConfigXml" templateFileName="JSFFaceConfigXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="faces-config" 
+			application-specific="true" add-model-name="false" 
+			has-updatable-nature="true">
+		<!-- 	add-backend-implementation
+		     <property name="add-backend-implementation" value="spring"></property> -->
+		</template>
+
+		<template name="JSFSpringConfig" templateFileName="JSFSpringConfig.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="application-context" 
+			application-specific="true" add-model-name="false" 
+			has-updatable-nature="true">
+		</template>
+<!-- replace in liferay track
+		<template name="JSFPortletXml" templateFileName="JSFPortlet.xml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="portlet" 
+			application-specific="true" add-model-name="false" 
+			has-updatable-nature="true">
+		</template>
+
+		<template name="JSFLiferay.display.xml" templateFileName="JSFLiferay.display.xml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="liferay-display" 
+			application-specific="true" add-model-name="false" 
+			has-updatable-nature="true">
+		</template> -->
+
+<!-- 		<template name="JSFBeanXml" templateFileName="JSFBeanXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="beans" 
+			application-specific="true" add-model-name="false" >
+		</template> -->
+						
+    </template-target>
+
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="PomXml.JSF" templateFileName="PomXml.JSF.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false"
+			has-updatable-nature="true">
+			<property name="maven-artifact-finalName-suffix" value="JSF" />
+<!-- 			<property name="add-backend-implementation" value="spring"></property> -->
+		</template>	
+					
+	</template-target>
+
+</target>

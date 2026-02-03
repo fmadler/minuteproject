@@ -1,0 +1,80 @@
+#exposeADFReleaseSpecific()
+#exposeADFSpring()
+release.dir=release
+build.dir=build
+oracle.original.sdo.dir=oracle-original/sdo
+#if ($isFrontEndRelease)
+#exposeADFFacesModelSpecific()
+#else
+sdo.ear=${releaseName}.ear
+sdo.war=${modelReleaseName}.war
+#end
+
+# 
+# properties used for Model script
+#
+oracle.jdeveloper.ojdeploy.path=$formatUtils.unixizePath(${JDEV_HOME})/jdev/bin/ojdeploy.exe
+oracle.jdeveloper.ant.library=$formatUtils.unixizePath(${JDEV_HOME})/jdev/lib/ant-jdeveloper.jar
+oracle.home=$JDEV_HOME
+
+# 
+# static properties
+#
+output.dir=classes
+javac.deprecation=off
+oracle.jdeveloper.deploy.profile.name=*
+javac.debug=on
+javac.nowarn=off
+
+#exposeFrontEndBackendBindingType()
+#if ($isFrontEndRelease)
+oracle.jdeveloper.project.name=$projectADFFacesViewControllerClass
+oracle.jdeveloper.deploy.outputfile=$formatUtils.unixizePath(${projectADFFacesViewControllerPhysicalDirPath})/deploy/${profile.name}
+oracle.jdeveloper.workspace.path=$formatUtils.unixizePath(${projectFEJwsPhysicalPath})
+oracle.jdeveloper.deploy.dir=$formatUtils.unixizePath(${projectFEJwsPhysicalDirPath})/deploy
+#else
+@rem input ${projectModelPhysicalDirPath} output = $formatUtils.unixizePath(${projectModelPhysicalDirPath})
+oracle.jdeveloper.project.name=$modelADFJprClass
+oracle.jdeveloper.deploy.outputfile=$formatUtils.unixizePath(${projectModelPhysicalDirPath})/deploy/${profile.name}
+oracle.jdeveloper.workspace.path=$formatUtils.unixizePath(${projectJwsPhysicalPath})
+oracle.jdeveloper.deploy.dir=$formatUtils.unixizePath(${projectModelPhysicalDirPath})/deploy
+#end
+
+
+# 
+# properties modified in oracle build scripts 
+#
+oracle-jdev-common-module-dir=$formatUtils.unixizePath(${WEBLOGIC_HOME})/oracle_common/modules
+oracle-weblogic-module-dir=$formatUtils.unixizePath(${WEBLOGIC_HOME})/modules
+
+#
+# backend specific
+#
+#if($isBindingSpring)
+${model.name}.backend=$backendlib
+#end
+
+#
+# deploy properties
+#
+#exposeModelUpdatedAreas("weblogic-properties")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+wls.username=$template.getPropertyValue("wls-username","weblogic")
+wls.password=$template.getPropertyValue("wls-password","weblogic")
+wls.hostname=$server-hostname
+wls.port=$server-port
+wls.deploy.target=$template.getPropertyValue("wls-deploy-target","AdminServer")
+#if ($isFrontEndRelease)
+##wls.deploy.name=${applicationName}_ViewController_webapp
+##wls.deploy.source=${applicationName}_ViewController_webapp.war
+wls.deploy.name=${releaseName}
+wls.deploy.source=${releaseName}.ear
+#else
+wls.deploy.name=${releaseName}
+wls.deploy.source=${releaseName}.ear
+#end
+$!updatedAreaEnd
+#end

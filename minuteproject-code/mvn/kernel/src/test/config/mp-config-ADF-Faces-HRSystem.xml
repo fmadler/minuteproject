@@ -1,0 +1,309 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="../config/mp-config.xsd">
+	<configuration>
+	    
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+        </conventions>	
+		<model name="hrsystem" version="1.0" package-root="org.mp.demo">
+			<data-model>
+			    <driver name="oracle" version="10.0.2.0.0" groupId="com.oracle" artifactId="ojdbc14"></driver>
+			    <fileSource name="hrsystem" dir="c:/MinuteProject/data">
+			    </fileSource>
+                <dataSource>    
+                    <driverClassName>oracle.jdbc.OracleDriver</driverClassName>
+                    <url>jdbc:oracle:thin:@localhost:1521:XE</url>
+                    <username>HR</username>
+                    <password>oracle</password> 
+                </dataSource>
+                <schema>HR</schema>
+                 <!--        
+			    <dataSource>	
+					<driverClassName>oracle.jdbc.OracleDriver</driverClassName>
+					<url>jdbc:oracle:thin:@localhost:1521:XE</url>
+					<username>HR</username>
+					<password>oracle</password>	
+				</dataSource>
+				<schema>HR</schema>
+ -->
+<!-- 				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="uuid" ></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>  -->
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="my_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+
+				<generation-condition exclude-views="true" default-type="exclude">
+					<condition type="include" startsWith="COUNTRIES" ></condition>
+					<condition type="include" startsWith="DEPARTMENTS" ></condition>
+					<condition type="include" startsWith="EMPLOYEES" ></condition>
+					<condition type="include" startsWith="JOB_HISTORY" ></condition>
+					<condition type="include" startsWith="JOBS" ></condition>
+					<condition type="include" startsWith="LOCATIONS" ></condition>
+					<condition type="include" startsWith="REGIONS" ></condition>
+					<condition type="include" startsWith="PS_TXN" ></condition>
+				</generation-condition>		
+				
+				<business-package default="hr">
+					<condition type="package" startsWith="EMPLOYEES" result="hr"></condition>
+					<condition type="package" startsWith="JOB_HISTORY" result="hr"></condition>
+					<condition type="package" startsWith="JOBS" result="hr"></condition>
+					
+					<condition type="package" startsWith="COUNTRIES" result="masterdata"></condition>
+					<condition type="package" startsWith="DEPARTMENTS" result="masterdata"></condition>
+					<condition type="package" startsWith="LOCATIONS" result="masterdata"></condition>
+					<condition type="package" startsWith="REGIONS" result="masterdata"></condition>
+
+					<condition type="package" startsWith="PS_TXN" result="txn"></condition>
+				</business-package>
+				
+				<enrichment>
+				   <conventions>
+				      <primary-key-convention type="apply-primary-key-on-entity-with-two-columns-only-and-foreign-key-otherwise-specified" />
+				      <primary-key-convention type="apply-default-primary-key-otherwise-first-one" />
+						<entity-content-type-convention type="apply-content-type-to-entity-belonging-to-package" pattern="masterdata" content-type="reference-data"/>
+						<!-- pick up primary only (if located first) 
+						<semantic-reference-convention content-type="reference-data"
+						    field-pattern="id" field-pattern-type="endsWith"
+						    max-number-of-fields="1" 
+						/>-->
+						<semantic-reference-convention content-type="reference-data"
+						    field-pattern="name,number,amount" field-pattern-type="endsWith" 
+						    force-default-semantic-reference-based-on-id-and-first-attribute-if-not-present="true"
+						    max-number-of-fields="5" 
+						/>
+				   </conventions>
+				</enrichment>
+			</business-model>
+            <statement-model>
+                <queries>
+                     <query name="employee abstract" id="employeeabstract">
+                         <query-body> <!-- dimensions column first -->
+                         <value>
+<![CDATA[SELECT e.first_name || ' ' || e.last_name Name,
+  l.city || ', ' || c.country_name Location
+FROM employees e, departments d, locations l, countries c
+WHERE e.department_id=d.department_id AND
+  d.location_id=l.location_id AND
+  l.country_id=c.country_id
+ORDER BY last_name]]>
+                            </value>
+                         </query-body>
+                     </query>
+                      <query name="job statistics" id="jobstats">
+                         <query-body> dimensions column first
+                         <value>
+<![CDATA[
+SELECT job_id as Job, COUNT(*) as Nb, MIN(salary)as Minimum, 
+  ROUND(AVG(salary), 0) as Average,  
+  MEDIAN(salary) as Median, MAX(salary) as Maximum, 
+  ROUND(STDDEV(salary)) as Std_Dev
+FROM employees
+GROUP BY job_id
+ORDER BY job_id]]>
+                            </value>
+                         </query-body>
+                     </query> 
+                      <query name="dept_above_average_salary" id="dept_above_average_salary" type="dashboard" category="bar-chart">
+                         <query-body>
+                         <value>
+<![CDATA[SELECT Department_Name Department, SUM(salary*12) All_Salaries 
+FROM employees, departments 
+where employees.Department_id = departments.Department_id 
+HAVING SUM(salary * 12) >= ? 
+GROUP BY Department_Name
+order by all_salaries desc]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="Amount" is-mandatory="true" type="INT" sample="100000" ></query-param>
+                         </query-params>
+                     </query>
+                </queries>
+            </statement-model>
+
+		</model>	
+		
+		<targets outputdir-root="c:/dev/ADF_MP_GENERATION/MP4HR" >
+
+ 			<target refname="ADF FACES" 
+			   name="ADF FACES"
+			   fileName="mp-template-config-ADF-Faces.xml" 
+			   outputdir-root="ADF-FACES"
+			   templatedir-root="../../minuteTemplate/template/framework/adf"
+			   templatedir-ref="../../minuteTemplate/template/framework/i18n">  
+			   
+			   <!-- 
+			   <property name="WEBLOGIC_HOME" value="C:/SERVER/APP/WLS_103/wlserver_10.3"></property>		   
+			   <property name="WLS_HOME" value="C:/SERVER/APP/WLS_103/wlserver_10.3"></property>
+
+			   <property name="JDEV_HOME" value="C:/SOFT/IDE/Oracle/Middleware/jdeveloper"></property>		   
+		   	   
+			   <property name="wls-username" value="weblogic"></property>		   
+			   <property name="wls-password" value="weblogic01"></property>		   
+			   <property name="wls-hostname" value="localhost"></property>		   
+			   <property name="wls-port" value="7201"></property>
+			   <property name="wls-deploy-target" value="AdminServer,soa_server1"></property>	
+			   
+			   <property name="adf-faces-custom-framework-home" value="c:\DEV\JSF\ADF\ADF-fwk"/>
+			   <property name="adf-faces-custom-framework-package-name" value="eu.adf.fwk"/>
+			   
+			   <property name="adf-faces-backend-binding" value="db-direct"/>			   
+			    -->	
+ 			   <property name="WEBLOGIC_HOME" value="D:/SOFT/SERVER/ORACLE/WLS/10.3.5.0-jdev-11.1.1.6.0"></property>		   
+			   <property name="WLS_HOME" value="D:/SOFT/SERVER/ORACLE/WLS/10.3.5.0-jdev-11.1.1.6.0/wlserver_10.3"></property>		   
+			   <property name="JDEV_HOME" value="D:/SOFT/SERVER/ORACLE/WLS/10.3.5.0-jdev-11.1.1.6.0/jdeveloper"></property>		   
+		   	   
+<!-- 			   <property name="WEBLOGIC_HOME" value="%WEBLOGIC_HOME%"></property>		   
+			   <property name="WLS_HOME" value="%WLS_HOME%"></property>		   
+			   <property name="JDEV_HOME" value="%JDEV_HOME%"></property>		 -->   
+		   	   
+			   <property name="wls-username" value="weblogic"></property>		   
+			   <property name="wls-password" value="weblogic01"></property>		   
+			   <property name="wls-hostname" value="localhost"></property>		   
+			   <property name="wls-port" value="7201"></property>
+			   <property name="wls-deploy-target" value="AdminServer"></property>	
+			   
+			   <property name="adf-faces-custom-framework-home" value="%MP_HOME%/target/mp-adf"/>
+			   <!-- 
+			   <property name="adf-faces-custom-framework-home" value="$MP_HOME/target/mp-adf"/>
+			    -->
+ 			   <property name="backend-lib" value="C:/DEV/ADF_MP_GENERATION/MP4HR/ADF-FACES/model-maven/JSF/target/hrsystemApp/WEB-INF/lib"/>
+<!-- 			   <property name="backend-lib" value="C:/DEV/COMMISSION/NIF2/work/svn2/Generator/MP4ADF-dependency/target/lib"/>
+			   <property name="mp4adf-src" value="C:/COMMISSION/NIF2/work/svn2/Generator/MP4ADF-dependency/target/fwk/src"/>
+			   			   		 -->
+			   <property name="activate-entity-criteria" value="true"/>
+			   <property name="adf-faces-backend-binding" value="spring"/>
+			   
+			   <property name="display-hide-auditing-field" value="true"/>
+
+			</target>  
+
+			
+			<target refname="SpringService" 
+			   name="SpringService" 
+			   fileName="mp-template-config-SpringService.xml" 
+			   outputdir-root="ADF-FACES/model-maven/bsla"
+			   templatedir-root="../../minuteTemplate/template/framework/spring">
+				<property name="passivate-based-on-toggle-field" value="true">
+					<property name="active" value="N"></property>
+				</property>
+			</target> 
+			
+			<target refname="BackendOnBsla" 
+			   name="default" 
+			   fileName="mp-template-config-JPA2-bsla.xml" 
+			   outputdir-root="ADF-FACES/model-maven/bsla"
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+				<property name="add-cache-implementation" value="ehcache"></property>
+			</target> 
+			
+						
+			<target refname="JPA2" 
+			   name="JPA2" 
+			   fileName="mp-template-config-JPA2.xml" 
+			   outputdir-root="ADF-FACES/model-maven/jpa2"
+			   templatedir-root="../../minuteTemplate/template/framework/jpa">
+               <property name="add-querydsl" value="2.1.2"></property>               
+               <property name="add-jpa2-implementation" value="hibernate"></property>
+               <property name="add-cache-implementation" value="ehcache"></property>
+               <property name="add-domain-specific-method" value="true"></property>		
+               <property name="use-temporal" value="true"></property>     			   
+               <property name="fetch-type" value="eager-when-parent-content-is-reference-data"></property>     			   
+               <property name="relationship-persistence" value="field"></property>
+			</target>
+            <target refname="SDD-beans" 
+                outputdir-root="ADF-FACES/model-maven/jpa2"
+               fileName="mp-template-config-SDD-beans.xml" 
+               templatedir-root="../../minuteTemplate/template/framework/bean">
+            </target>
+ 
+			<target refname="JSF" 
+			   name="JSF" 
+			   fileName="mp-template-config-JSF-Spring.xml" 
+			   outputdir-root="ADF-FACES/model-maven/JSF"
+			   templatedir-root="../../minuteTemplate/template/framework/jsf"
+			   templatedir-ref="../../minuteTemplate/template/framework/i18n,../../minuteTemplate/template/framework/ejb">
+			   <property name="add-jsf-implementation" value="primefaces"></property>		   			   	   			   
+			   <property name="web-xml-version" value="3.0"></property>		   			   	   			   
+			</target> 
+
+
+			<target refname="MavenMaster" 
+			   name="maven" 
+			   fileName="mp-template-config-maven.xml" 
+			   outputdir-root="ADF-FACES/model-maven"
+			   templatedir-root="../../minuteTemplate/template/framework/maven">
+			</target> 
+
+			<target refname="LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="CACHE-LIB" 
+			   fileName="mp-template-config-CACHE-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>
+			<target refname="SPRING-LIB" 
+			   fileName="mp-template-config-SPRING-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/spring">
+			</target>
+			<target refname="COMMON-LIB" 
+			   fileName="mp-template-config-COMMON-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/common">
+			</target>
+
+			<target refname="SDO" 
+			   name="SDO" 
+			   outputdir-root="ADF-SDO"
+			   fileName="mp-template-config-ADF-SDO.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/adf">  	
+			   <property name="WEBLOGIC_HOME" value="D:/SOFT/SERVER/ORACLE/WLS/10.3.5.0-jdev-11.1.1.6.0"></property>		   
+			   <property name="WLS_HOME" value="D:/SOFT/SERVER/ORACLE/WLS/10.3.5.0-jdev-11.1.1.6.0/wlserver_10.3"></property>		   
+			   <property name="JDEV_HOME" value="D:/SOFT/SERVER/ORACLE/WLS/10.3.5.0-jdev-11.1.1.6.0/jdeveloper"></property>	
+		   	   
+			   <property name="wls-username" value="weblogic"></property>		   
+			   <property name="wls-password" value="weblogic01"></property>		   
+			   <property name="wls-hostname" value="localhost"></property>		   
+			   <property name="wls-port" value="7201"></property>
+			   <property name="wls-deploy-target" value="AdminServer"></property>
+			   
+			   <property name="adf-faces-backend-binding" value="ws-sdo"/>
+			   
+			</target> 
+ 
+			<target 
+			   name="Selenium" 
+			   outputdir-root="ADF-TEST"
+			   fileName="mp-template-config-selenium.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/selenium">  
+			   <property name="target-techno" value="adf"></property>			   
+			   <property name="target-techno-type" value="front-end"></property>	
+			   <property name="wls-hostname" value="localhost"></property>		   
+			   <property name="wls-port" value="7201"></property>
+			</target>  
+			
+			<target refname="SQL" 
+			   name="SQL" 
+			   fileName="mp-template-config-sqlutils.xml" 
+			   templatedir-root="../../minuteTemplate/template/utils/db">  	
+			   <property name="user-field" value="userid"></property>		   
+			   <property name="add-version" value="true"></property>		   
+			</target> 
+
+			<target refname="LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="COMMON-LIB" 
+			   fileName="mp-template-config-COMMON-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/common">
+			</target>
+						
+		</targets>
+	</configuration>
+</generator-config>

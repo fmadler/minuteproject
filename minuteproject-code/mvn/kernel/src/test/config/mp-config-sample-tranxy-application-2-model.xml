@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<generator-config noNamespaceSchemaLocation="../config/mp-config.xsd">
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>
+		<application name="appli" version="1.0" package-root="net.sf.mp.demo">
+			<models>
+				<model name="tranxy">
+					<data-model>
+						<driver name="mysql" version="5.1.16" groupId="mysql"
+							artifactId="mysql-connector-java" />
+						<dataSource>
+							<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+							<url>jdbc:mysql://127.0.0.1:3306/tranxy</url>
+							<username>root</username>
+							<password>mysql</password>
+						</dataSource>
+						<primaryKeyPolicy oneGlobal="false">
+							<primaryKeyPolicyPattern name="autoincrementPattern" />
+						</primaryKeyPolicy>
+					</data-model>
+					<business-model>
+						<business-package default="tranxy">
+							<condition type="package" startsWith="trans" result="translation" />
+						</business-package>
+						<enrichment>
+							<conventions>
+								<!-- manipulate the structure and entities BEFORE manipulating the 
+									entities -->
+								<column-naming-convention type="apply-strip-column-name-suffix"
+									pattern-to-strip="ID" />
+								<reference-naming-convention
+									type="apply-referenced-alias-when-no-ambiguity"
+									is-to-plurialize="true" />
+								<reference-naming-convention type="apply-many-to-many-aliasing"
+									is-to-plurialize="true" />
+							</conventions>
+							<entity name="language_x_translator">
+								<field name="language_id" linkReferenceAlias="translating_language"
+									linkToTargetEntity="LANGUAGE" />
+								<field name="user_id" linkReferenceAlias="translator"
+									linkToTargetEntity="USER" />
+							</entity>
+							<entity name="request_key">
+								<field name="language_id" linkReferenceAlias="language"
+									linkToTargetEntity="LANGUAGE" />
+								<field name="translation_request_id" linkReferenceAlias="translation_request"
+									linkToTargetEntity="translation_request" />
+							</entity>
+							<entity name="LANGUAGE_X_SPEAKER">
+								<field name="LANGUAGE_ID" linkToTargetEntity="LANGUAGE"
+									linkToTargetField="IDLANGUAGE" linkReferenceAlias="spoken_language" />
+								<field name="user_id" linkReferenceAlias="speaker"
+									linkToTargetEntity="USER" />
+							</entity>
+							<entity name="APPLICATION">
+								<field name="TYPE">
+									<property tag="checkconstraint" alias="application_type">
+										<property name="OPENSOURCE" />
+										<property name="COPYRIGHT" />
+									</property>
+								</field>
+							</entity>
+						</enrichment>
+					</business-model>
+				</model>
+				<model name="devops">
+					<data-model>
+						<driver name="mysql" version="5.1.16" groupId="mysql"
+							artifactId="mysql-connector-java" />
+						<dataSource>
+							<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+							<url>jdbc:mysql://localhost:3306/mp_devops</url>
+							<username>root</username>
+							<password>mysql</password>
+						</dataSource>
+						<primaryKeyPolicy oneGlobal="false">
+							<primaryKeyPolicyPattern name="autoincrementPattern" />
+						</primaryKeyPolicy>
+					</data-model>
+					<business-model>
+						<business-package default="devops">
+							<condition type="package" startsWith="MP_I18N" result="i18n" />
+							<condition type="package" startsWith="MP_RIGHT" result="right" />
+						</business-package>
+						<enrichment>
+							<conventions>
+								<table-default-primary-key-convention
+									type="apply-default-primary-key-otherwise-first-one"
+									default-primary-key-names="ID" />
+								<view-primary-key-convention
+									type="apply-default-primary-key-otherwise-first-one"
+									default-primary-key-names="IDENTIFIER,ID" />
+							</conventions>
+						</enrichment>
+					</business-model>
+				</model>
+			</models>
+		</application>
+		<targets
+			catalog-entry="WS-JEE,REST-CXF-Spring,REST-JEE,REST-SpringMVC,Vaadin,Primefaces-Spring,OpenXava" />
+	</configuration>
+</generator-config>

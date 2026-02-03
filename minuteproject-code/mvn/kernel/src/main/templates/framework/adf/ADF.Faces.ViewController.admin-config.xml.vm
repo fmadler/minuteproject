@@ -1,0 +1,96 @@
+#exposeADFFacesModelSpecific()
+#exposeADFReleaseSpecific()
+#exposeADFCustomisation()
+#set($cpt=20)
+<?xml version="1.0" encoding="windows-1252" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+  <metadata-resource>$adminFlowADFFacesModelFullPath</metadata-resource>
+ 
+#foreach ($table in $entities)
+#exposeADFFacesEntitySpecific()
+#set($viewEditBeanFlowADFFacesClassName="viewEdit${domainVariableName}-flow")
+  <task-flow-call id="$viewEditBeanFlowADFFacesClassName">
+    <task-flow-reference>
+      <document>$viewEditADFFacesEntityFullPath</document>
+      <id>$viewEditBeanFlowADFFacesClassName</id>
+    </task-flow-reference>
+    <run-as-dialog>
+      <display-type id="__$cpt">
+        <inline-popup/>
+      </display-type>
+    </run-as-dialog>
+  </task-flow-call>
+  <view id="${domainVariableName}View">
+    <page>/$entityEntryADFFaceRelativePath</page>
+  </view>
+#set($cpt=$cpt+1) 
+#end
+
+#foreach ($table in $entities)
+#exposeADFFacesEntitySpecific()
+#set($viewEditBeanFlowADFFacesClassName="viewEdit${domainVariableName}-flow")
+  <control-flow-rule id="__$cpt">
+#set($cpt=$cpt+1) 
+    <from-activity-id id="__$cpt">${domainVariableName}View</from-activity-id>
+#set($cpt=$cpt+1) 
+    <control-flow-case id="__$cpt">
+#set($cpt=$cpt+1) 
+      <from-outcome id="__$cpt">details</from-outcome>
+#set($cpt=$cpt+1) 
+      <to-activity-id id="__$cpt">$viewEditBeanFlowADFFacesClassName</to-activity-id>
+    </control-flow-case>
+  </control-flow-rule>
+#set($cpt=$cpt+1)
+#end
+
+  <managed-bean id="__4">
+    <managed-bean-name id="__3">localMenuUtils</managed-bean-name>
+    <managed-bean-class id="__2">$menuUtilsImport</managed-bean-class>
+    <managed-bean-scope id="__1">backingBean</managed-bean-scope>
+    <managed-property id="__6">
+      <property-name id="__5">menuModelName</property-name>
+      <property-class>java.lang.String</property-class>
+      <value id="__7">$menuConfigADFFacesName</value>
+    </managed-property>
+    <managed-property id="__10">
+      <property-name id="__8">isRootMenu</property-name>
+      <property-class>java.lang.Boolean</property-class>
+      <value id="__9">false</value>
+    </managed-property>
+  </managed-bean>  
+  
+#foreach ($table in $entities)
+#exposeADFFacesEntitySpecific()  
+   <managed-bean id="__$cpt">
+#set($cpt=$cpt+1)
+    <managed-bean-name id="__$cpt">${backingBeanADFFacesVariableName}</managed-bean-name>
+#set($cpt=$cpt+1)
+    <managed-bean-class id="__$cpt">${backingBeanADFFacesImport}</managed-bean-class>
+#set($cpt=$cpt+1)
+    <managed-bean-scope id="__$cpt">view</managed-bean-scope>
+#set($cpt=$cpt+1)
+  </managed-bean>
+#if($todo)
+   <managed-bean id="__$cpt">
+#set($cpt=$cpt+1)
+    <managed-bean-name id="__$cpt">${viewEditEntityBeanVariable}</managed-bean-name>
+#set($cpt=$cpt+1)
+    <managed-bean-class id="__$cpt">${viewEditEntityBeanImport}</managed-bean-class>
+#set($cpt=$cpt+1)
+    <managed-bean-scope id="__$cpt">view</managed-bean-scope>
+#set($cpt=$cpt+1)
+  </managed-bean>
+#end
+#end
+#if($hasCasAuthentication)
+   <managed-bean id="__$cpt">
+#set($cpt=$cpt+1)
+    <managed-bean-name id="__$cpt">securityBean</managed-bean-name>
+#set($cpt=$cpt+1)
+    <managed-bean-class id="__$cpt">net.sf.minuteproject.adf.security.SecurityBean</managed-bean-class>
+#set($cpt=$cpt+1)
+    <managed-bean-scope id="__$cpt">view</managed-bean-scope>
+#set($cpt=$cpt+1)
+  </managed-bean>
+#end
+</adfc-config>

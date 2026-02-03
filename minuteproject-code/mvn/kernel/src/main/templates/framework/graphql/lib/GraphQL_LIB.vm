@@ -1,0 +1,11 @@
+#*
+does not seem to work, has some side effects on REST_LIB.vm ???
+#macro (exposeGraphQLTemplate)
+#set ($templateGraphQLSchema="GraphQL")
+#end
+
+#macro (exposeGraphQLInfo)
+#exposeGraphQLTemplate()
+#set($graphqlSddSchema=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateGraphQLSchema))
+#end
+*#

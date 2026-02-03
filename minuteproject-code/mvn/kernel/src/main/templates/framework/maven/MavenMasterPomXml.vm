@@ -1,0 +1,111 @@
+#generatorSpecific()
+#exposeMaven()
+#exposeMavenCommonDependencies()
+#exposeVariableModelSpecific()
+##<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>	
+    <groupId>${groupId}</groupId>
+    <artifactId>$artifactId</artifactId>
+    <version>${version}</version>
+    <name>$artifactId App</name>
+    <packaging>pom</packaging>	
+	<description>${generatorBean.name} Application</description>
+	<modules>
+#exposeModelUpdatedAreas("modules")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else		
+#foreach ($module in $mavenUtils.getModules($template))	
+		<module>$module.name</module>
+#end
+#end
+$!updatedAreaEnd
+	</modules>
+
+	<properties>
+#putRESTDependencyVersions()
+	</properties>
+	
+	<dependencyManagement>
+		<dependencies>
+
+			<!--jdk 11 ee removed packages-->
+			<!-- API, java.xml.bind module -->
+			<dependency>
+				<groupId>jakarta.xml.bind</groupId>
+				<artifactId>jakarta.xml.bind-api</artifactId>
+				<version>${jakarta.xml.bind-api.version}</version>
+			</dependency>
+
+			<!-- Runtime, com.sun.xml.bind module -->
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>${jaxb-runtime.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logbackclassic.version}</version>
+			</dependency>		
+				
+	        <dependency>
+	            <groupId>junit</groupId>
+	            <artifactId>junit</artifactId>
+	            <version>${junit.version}</version>
+	            <scope>test</scope>
+	        </dependency>
+
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-all</artifactId>
+				<version>1.3</version>
+				<scope>test</scope>
+			</dependency>
+
+	        <dependency>
+	            <groupId>org.powermock</groupId>
+	            <artifactId>powermock-module-junit4</artifactId>
+	            <version>${powermock.version}</version>
+	            <scope>test</scope>
+	        </dependency>
+        
+	        <dependency>
+	            <groupId>org.powermock</groupId>
+	            <artifactId>powermock-api-mockito</artifactId>
+	            <version>${powermock.version}</version>
+	            <scope>test</scope>
+	        </dependency>
+        
+		</dependencies>
+	</dependencyManagement>
+	
+#addArea("custom-maven-nodes")
+	<build>
+		<pluginManagement>
+			<plugins>
+#exposeCompilerPlugin()
+#exposeJacocoPluginDep()
+#exposeSassPluginDep()
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

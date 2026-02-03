@@ -1,0 +1,31 @@
+#exposeADFDataBindingControlSpecific()
+#exposeADFQuerySpecific()
+#putImportQuerySDDBean()
+#exposeADFFacesCommon()
+#set($entityADFVariable=$sddInputBeanVariable)
+#set($tableVariableName=$sddInputBeanVariable)
+<?xml version="1.0" encoding="UTF-8" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+##  <task-flow-definition id="${tableVariableName}-details-flow-definition">
+  <task-flow-definition id="$className">
+    <default-activity id="__4">${tableVariableName}Details</default-activity>
+    <data-control-scope id="__3">
+      <shared/>
+    </data-control-scope>
+    <input-parameter-definition id="__1">
+      <name id="__2">$sddOutputBeanVariable</name>
+      <value>#{pageFlowScope.${sddOutputBeanVariable}}</value>
+      <class>$sddOutputBeanImport</class>
+      <required/>
+    </input-parameter-definition>
+    <managed-bean id="__17">
+      <managed-bean-name id="__19">${queryBackingBeanADFFaceVariable}</managed-bean-name>
+      <managed-bean-class id="__18">${queryBackingBeanADFFaceImport}</managed-bean-class>
+      <managed-bean-scope id="__16">pageFlow</managed-bean-scope>
+    </managed-bean>
+    <view id="${tableVariableName}Details">
+      <page>/$queryInputJsffResultDetailADFFaceRelativePath</page>
+    </view>
+    <use-page-fragments/>
+  </task-flow-definition>
+</adfc-config>

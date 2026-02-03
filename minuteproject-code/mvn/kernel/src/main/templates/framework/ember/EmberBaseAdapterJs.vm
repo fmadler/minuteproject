@@ -1,0 +1,22 @@
+#exposeEmberModelSpecific()
+#if($isOctane)
+import JSONAPIAdapter from '@ember-data/adapter/json-api';
+
+import config from '../../config/environment';
+const { host, namespace } = config.${model.name}DS;
+const baseUrl = host+"/"+namespace;
+
+export default class ${className} extends JSONAPIAdapter { //${model.name}
+
+}
+
+#else
+import DS from 'ember-data';
+import config from '../../config/environment';
+const { host, namespace } = config.DS;
+const baseUrl = host+"/"+namespace;
+
+export default DS.JSONAPIAdapter.extend({
+   // baseUrl : baseUrl,
+});
+#end

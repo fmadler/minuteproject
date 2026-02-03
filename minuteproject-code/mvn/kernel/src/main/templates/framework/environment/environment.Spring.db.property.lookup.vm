@@ -1,0 +1,89 @@
+##TODO_ENV
+package ${package};
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.PlaceholderConfigurerSupport;
+import org.springframework.util.PropertyPlaceholderHelper;
+import org.springframework.util.StringValueResolver;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Properties;
+
+public class PropertyConfigurer extends PlaceholderConfigurerSupport {
+
+    private String query;
+
+##TODO if remote only & has env
+    private String datasourceJNDIName;
+
+    private final Properties properties;
+
+    public PropertyConfigurer(String datasourceJNDIName,String query) throws Exception{
+        this.query= query;
+        this.datasourceJNDIName = datasourceJNDIName;
+ //       this.query= ${getQuery};
+ //       this.datasourceJNDIName = ${getJNDI};
+        properties = new Properties();
+        init();
+    }
+
+    /**
+     * Initialise the internal Properties container looping through the ResultSet returned by the given query on
+     * the given DataSource.
+     *
+     * <p>
+     * The configured query needs to return a result set with two columns, named NAME and VALUE respectively. Those columns
+     * are used to populate the wrapped {@link java.utils.Properties} object.
+     * </p>
+     *
+     * @throws Exception if the execution of the passed query fails.
+     */
+    private void init() throws Exception{
+        Connection conn = getConnection();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while(rs.next()) {
+            properties.put(rs.getString(${environmentConfig.key}), rs.getString(${environmentConfig.value}));
+        }
+        conn.close();
+    }
+
+    /**
+     * Get the connection performing a lookup using the Local context.
+     *
+     * @return Connection
+     * @throws Exception
+     */
+    private Connection getConnection() throws Exception{
+        Context context = new InitialContext();
+        DataSource dataSource = (javax.sql.DataSource) context.lookup(datasourceJNDIName);
+        return dataSource.getConnection();
+    }
+
+    class BeanDirectoryResolver implements StringValueResolver {
+
+        private final PropertyPlaceholderHelper helper;
+
+        public BeanDirectoryResolver() {
+            helper = new PropertyPlaceholderHelper("${", "}");
+        }
+
+        public String resolveStringValue(String strVal) {
+            return helper.replacePlaceholders(strVal, properties);
+        }
+    }
+
+    @Override
+    protected void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props) throws BeansException {
+        StringValueResolver valueResolver = new BeanDirectoryResolver();
+        doProcessProperties(beanFactory, valueResolver);
+    }
+
+}

@@ -215,14 +215,18 @@ public abstract class AbstractGenerator implements Generator {
 		Configuration abstractConfiguration = getConfigurationRoot();
 		abstractConfiguration.setConfigurationFileInClassPath(configuration);
 		InputStream configurationInputStream = getConfigurationInputStream(configuration);
-		loadConfiguration(abstractConfiguration, configurationInputStream,
-				rules);
+		loadConfiguration(abstractConfiguration, configurationInputStream, rules);
 		return abstractConfiguration;
 	}
 
-	private InputStream getConfigurationInputStream(String configurationFileName) {
-		return getClass().getClassLoader().getSystemResourceAsStream(
-				configurationFileName);
+	private InputStream getConfigurationInputStream(String configurationFileName) throws IOException {
+		return Thread.currentThread().getContextClassLoader().getResource(configurationFileName).openStream();
+		//return this.getClass().getResourceAsStream(configurationFileName);
+
+		//return getClass().getClassLoader().getSystemResourceAsStream(
+		//		configurationFileName);
+
+
 	}
 
 	/**
@@ -519,8 +523,9 @@ public abstract class AbstractGenerator implements Generator {
 		ExtendedProperties extendedProperties = new ExtendedProperties();
 		extendedProperties.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH,
 				getTemplatePath(template));
+		final String templateRelativeLibPath = getTemplateRelativeLibPath(template);
 		extendedProperties.setProperty(Velocity.VM_LIBRARY,
-				getTemplateRelativeLibPath(template));
+				templateRelativeLibPath);
 		// extendedProperties.setProperty(RuntimeConstants.RESOURCE_LOADER,
 		// "string");
 		// extendedProperties.setProperty("classpath.resource.loader.class",StringResourceLoader.class.getName());
@@ -720,9 +725,9 @@ public abstract class AbstractGenerator implements Generator {
 		if (beanName.equals("componentddlutils"))
 			return "component";
 		if (beanName.equals("functionddlutils"))
-			return SCOPE_DATAMODEL_FUNCTION;
+			return "function";
 		if (beanName.equals("foreignkeyddlutils"))
-			return SCOPE_FOREIGNKEY_APPLICATION;
+			return "foreignkey";
 		if (beanName.equals("wsdlmodelmetro"))
 			return "wsdlmodel";
 		return beanName;

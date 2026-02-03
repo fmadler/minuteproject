@@ -1,0 +1,184 @@
+#generatorSpecific()
+#exposeVariableEntitySpecific()
+#exposeKendoUIModelSpecific()
+#exposeKendoUIApplicationSpecific()
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+
+#putKendoUIJSImport("../../../")
+
+</head>
+<body>
+
+<div id="menu"></div>
+
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+<script id="grid-template-$column.alias" type="text/x-kendo-template">
+ <span>
+   <span class="k-icon k-i-note" title="$columnVar"/>
+ </span>
+</script>
+#end
+
+<script type="text/javascript">
+
+$(function () {
+
+	  // menu
+#putKendoUIMenu()
+
+  var expandedRow;
+
+  function detailExpand(e) {
+   if (expandedRow != null && expandedRow[0] != e.masterRow[0]) {
+     var grid = $('#${tableVariableName}').data('kendoGrid');
+     grid.collapseRow(expandedRow);
+
+     }
+     expandedRow = e.masterRow;
+  }
+
+  $("#${tableVariableName}List").kendoGrid({ 
+   dataSource: {
+    error: function (e) {
+     if (e.errors !== false) {
+        $("#${tableVariableName}ListFooter").text(e.errors);
+     }
+    },
+	transport: {
+     read: {
+##      url: "../../data/entity/${tableClassName}/find", //todo inject url
+      url: contextPath+"/data/entity/${tableClassName}/find",
+      dataType: "json",
+      contentType: "application/json; charset=utf-8",
+      cache: false
+     }
+    },
+    schema: {
+     data: "result",
+     total: function(data) {
+         return data.totalResultCount;
+     }
+##     errors: "error"
+    },
+#*
+    sort: {
+     field: "$kendoUiUtils.getSortFields()",
+     dir: "$kendoUiUtils.getSortFields()"
+    },
+*# 
+    serverPaging: true,
+    serverSorting: true,
+    serverFiltering: true
+   },
+#*
+   columnMenu: {
+    messages: {
+     columns: "$kendoUiUtils.getMessageColumns($table)",
+     filter: "$kendoUiUtils.getMessageFilterColumns($table)",
+     sortAscending: "$kendoUiUtils.getMessageSortAscColumns($table)",
+     sortDescending: "$kendoUiUtils.getMessageSortDescColumns($table)"
+    }
+   },
+*# 
+##   detailTemplate: kendo.template($("#${tableVariableName}DetailTemplate").html()),
+##   detailInit: ${tableVariableName}ListDetailInit,
+##   detailExpand: ${tableVariableName}ListDetailExpand,
+##  dataBound: ${tableVariableName}ListDataBound,
+   groupable: false,
+   sortable: true,
+#*
+   filterable: {
+    messages: {
+     info: "$kendoUiUtils.getFilterableMessageInfo($table)",
+     filter: "$kendoUiUtils.getFilterableMessageFilter($table)",
+     clear: "$kendoUiUtils.getFilterableMessageClear($table)",
+     isTrue: "$kendoUiUtils.getFilterableMessageIsTrue($table)",
+     isFalse: "$kendoUiUtils.getFilterableMessageIsFalse($table)",
+     and: "$kendoUiUtils.getFilterableMessageAnd($table)",
+     or: "$kendoUiUtils.getFilterableMessageOr($table)"
+    },
+    operators: {
+     string: {
+      eq: "$kendoUiUtils.getOperatorStringEqual($table)",
+      neq: "$kendoUiUtils.getOperatorStringNotEqual($table)",
+      startswith: "$kendoUiUtils.getOperatorStringStartsWith($table)",
+      contains: "$kendoUiUtils.getOperatorStringContains($table)",
+      endswith: "$kendoUiUtils.getOperatorStringEndsWith($table)"
+     },
+     number: {
+      eq: "$kendoUiUtils.getOperatorNumberEquals($table)",
+      neq: "$kendoUiUtils.getOperatorNumberNotEquals($table)",
+      gte: "",
+      gt: "",
+      lte: "",
+      lt: ""
+     },
+	 date: {
+      eq: "",
+      neq: "",
+      gte: "",
+      gt: "",
+      lte: "",
+      lt: ""
+     }
+
+    }
+   },
+*#
+   scrollable: {
+    virtual: true
+   },
+   pageable: {
+     refresh: true,
+     pageSizes: 10, ##$kendoUiUtils.pageSizes,
+     pageSize: $kendoUiUtils.pageSize(),
+     buttonCount: true,##$kendoUiUtils.buttonCount,
+     messages: {
+      display: "entity $table.alias" ,##"$kendoUiUtils.getPageableMessageDisplay($table)",
+      empty: "no $table.alias found" ##"$kendoUiUtils.getPageableEmptyMessageDisplay($table)",
+      #*
+	  page: "$kendoUiUtils.getPageablePage($table)",
+      of: "$kendoUiUtils.getPageableMessageOf()",
+      itemsPerPage: "$kendoUiUtils.getPageableMessageItemPerPage($table)",
+      first: "$kendoUiUtils.getPageableMessageFirst($table)",
+      previous: "$kendoUiUtils.getPageableMessagePrevious($table)",
+      next: "$kendoUiUtils.getPageableMessageNext($table)",
+      last: "$kendoUiUtils.getPageableMessageLast($table)",
+      refresh: "$kendoUiUtils.getPageableMessageRefresh($table)"
+*#
+     }
+    },
+    columns: [
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+     {
+##      template: kendo.template($("#grid-template-$column.alias").html()),
+      title: '$column.alias',
+#if($isLengthPrecisionColumn)     
+##      width:$column.size,
+#end
+      field: "$columnVar"
+##///format: "{0: dd/MM/yyyy}",  $counter  $velocityCount
+##///filterable: false
+     }
+#if ($velocityCount!=$table.columnCount)
+    ,#end 
+##set($counter=$counter+1)
+#end
+     ]
+    });
+    
+  });
+</script>
+<div class="k-content">
+ <div id="headerMsg" class="msgLine">
+ </div>
+  <div id="${tableVariableName}List"></div>
+  <div id="${tableVariableName}ListFooter"></div>
+</div>
+</body>
+</html>

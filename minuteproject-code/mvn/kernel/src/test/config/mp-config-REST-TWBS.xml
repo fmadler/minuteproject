@@ -1,0 +1,107 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+			<target-convention type="disable-business-model-generation" />
+			<target-convention type="disable-package" />
+		</conventions>	
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo.jpa2">
+			<data-model database-type="HSQLDB">
+			    <driver name="hsqldb" version="1.8.0.7" groupId="hsqldb" artifactId="hsqldb"></driver>
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+ 					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url> 
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema 
+				<schema> </schema>
+				 -->
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+				<generation-condition default-type="exclude" exclude-views="false">
+					<condition type="exclude" startsWith="DUAL"></condition>
+					<condition type="exclude" startsWith="ID_GEN"></condition>
+				</generation-condition>		
+				<business-package default="pet">
+					<condition type="package" startsWith="PRODUCT" result="product"></condition>
+					<condition type="package" startsWith="ITEM" result="product"></condition>
+				</business-package>	
+				<enrichment>
+				   <conventions>
+				      <entity-naming-convention type="apply-strip-table-name-prefix" pattern-to-strip="SYS,FIN"/>
+				      <column-naming-convention type="apply-fix-primary-key-column-name-when-no-ambiguity" default-value="ID"/>
+				      <reference-naming-convention type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true"></reference-naming-convention>
+				   </conventions>
+				    <package name="product">
+				    	<entity-group entities="PRODUCT"></entity-group>
+				    	<entity-group entities="ITEM"></entity-group>
+				    </package>
+					<entity name="PRODUCT" alias="MY_GOOD_PRODUCT">
+					</entity>				    
+					<entity name="ITEM" alias="MY_GOOD_ITEM" comment="my item table">
+						<field name="PRODUCTID" alias="THIS_IS_MY_PRODUCT" comment="my product field reference"></field>					
+					</entity>				    
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <semantic-reference>
+					     <sql-path path="NAME"/>
+					   </semantic-reference>					
+					</entity>
+				</enrichment>					
+			</business-model>
+			<statement-model>
+                 <queries>
+                     <query name="get address street">
+                         <query-body><value><![CDATA[select * from address where addressid > ?]]></value></query-body>
+                         <query-params>
+                             <query-param name="identifier_Address" is-mandatory="false" type="INT" sample="-1"></query-param>
+                         </query-params>
+                     </query>
+			         <query name="address by zip" id="address_by_zip" >
+                         <query-body>
+                         <value>
+<![CDATA[select * from address where zip = ?]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="zip" is-mandatory="true" type="string" sample="'a'" is-id="true">
+								<property tag="checkconstraint">
+									<property name="CA" />
+									<property name="TX" />
+								</property>
+                             </query-param>
+                         </query-params>
+                     </query>
+                     
+                     <!-- query in enumeration -->
+			         <query name="address by zip in" id="address_by_multiple_zip" >
+                         <query-body>
+                         <value>
+<![CDATA[select * from address where zip in (?...)]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="zip" is-mandatory="true" type="string" sample="'a'" is-id="true" >
+								<property tag="checkconstraint">
+									<property name="CA" />
+									<property name="TX" />
+									<property name="NY" />
+								</property>
+                             </query-param>
+                         </query-params>
+                     </query>
+                     
+                 </queries>
+            </statement-model>
+		</model>	
+		<targets catalog-entry="REST-TWBS" >
+			<property name="target-server" value="tomcat"/>
+		</targets>
+	</configuration>
+</generator-config>

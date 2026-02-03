@@ -1,0 +1,1 @@
+mvn clean package spring-boot:run -Dspring-boot.run.profiles=jdbc-params -Plocal

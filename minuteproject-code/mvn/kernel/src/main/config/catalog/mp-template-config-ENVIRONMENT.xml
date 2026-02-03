@@ -1,0 +1,34 @@
+<target name="ENVIRONMENT">		
+	<architecture-target name="ENVIRONMENT" description="ENVIRONMENT artifacts">
+	</architecture-target>	
+    <plugin name="environmentUtils" className="net.sf.minuteProject.plugin.environment.EnvironmentUtils"></plugin>
+	<template-target 
+    	name="ENVIRONMENT set"
+		libdir=""
+		outputdir="src/main/resources"
+		belongToPackage="true">
+
+		<template name="environment.properties" templateFileName="environment.properties.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-prefix="environment" file-suffix="" 
+			add-model-dir-name="false"
+			scope-specific-value="environment"
+			has-updatable-nature="true"
+			file-name-builder-plugin="environmentUtils"
+			file-name-builder-method="getEnvironmentName"	
+			add-model-name="false"
+			file-extension="properties">
+		</template>
+
+		<template name="application.properties" templateFileName="application.properties.vm" 
+			file-prefix="application" 
+			add-model-dir-name="false"
+			scope-specific-value="application"
+			has-updatable-nature="true"
+			add-model-name="false"
+			file-extension="properties">
+		</template>
+		
+	</template-target>
+  	         		
+</target>

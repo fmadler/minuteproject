@@ -1,0 +1,31 @@
+<target name="Javax validation">		
+	<architecture-target name="Javax validation" description="java validation elements">
+	</architecture-target>	
+	<plugin name="validationUtils" className="net.sf.minuteProject.utils.validation.ValidationUtils"></plugin>	
+	
+	<template-target 
+    	name="annotations for validations"
+		libdir=""
+		outputdir="src/main/java"
+		belongToPackage="true">
+
+		<!-- annotation comparison -->	
+		<template name="Validation.FieldCompare.java" templateFileName="Validation.FieldCompare.java.vm" 
+			subdir="" outputsubdir="" technicalPackage="validation"
+			file-extension="java" file-prefix="" file-suffix="FieldCompare" has-updatable-nature="false"
+			add-model-name="false" model-specific="true" >
+		</template>	
+		<template name="Validation.FieldCompareValidator.java" templateFileName="Validation.FieldCompareValidator.java.vm" 
+			subdir="" outputsubdir="" technicalPackage="validation"
+			file-extension="java" file-prefix="" file-suffix="FieldCompareValidator" has-updatable-nature="false"
+			add-model-name="false" model-specific="true" >
+		</template>	
+		<template name="Validation.CompareOperatorEnum.java" templateFileName="Validation.CompareOperatorEnum.java.vm" 
+			subdir="" outputsubdir="" technicalPackage="validation"
+			file-extension="java" file-prefix="" file-suffix="CompareOperatorEnum" has-updatable-nature="false"
+			add-model-name="false" model-specific="true" >
+		</template>	
+
+    </template-target>
+
+</target>

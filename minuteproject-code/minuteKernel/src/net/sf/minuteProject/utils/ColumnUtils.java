@@ -322,6 +322,7 @@ public class ColumnUtils {
 		}
 		return false;
 	}
+
 	
 	public static Property getCheckConstraintProperty (Column column) {
 		return column.getPropertyByTag(CHECK_CONSTRAINT_PROPERTY_TAG);

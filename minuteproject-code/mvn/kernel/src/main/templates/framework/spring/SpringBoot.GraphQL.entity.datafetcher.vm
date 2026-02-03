@@ -1,0 +1,37 @@
+#exposeVariableEntitySpecific()
+#exposeSpringdataModelSpecific()
+#exposeImportParamsUML($table)
+package $packageName;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import $entityRepositoryImport;
+import $importDomainObjectUML;
+import $entitySpecificationsImport;
+
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
+import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.util.List;
+
+@Component
+@Slf4j
+@AllArgsConstructor
+public class ${className} implements DataFetcher<List<$domainClassName>> {
+
+    ${entityRepositoryClass} $entityRepositoryVariable;
+    @Override
+    public List<$domainClassName> get(DataFetchingEnvironment dataFetchingEnvironment) {
+
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+        $columnType $columnVar = dataFetchingEnvironment.getArgument("${columnVar}");
+#end
+#springdataspecification()
+        return ${entityRepositoryVariable}.findAll(spec);
+    }
+
+}

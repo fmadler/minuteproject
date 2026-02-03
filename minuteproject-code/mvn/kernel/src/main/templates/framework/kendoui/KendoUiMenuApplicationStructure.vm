@@ -1,0 +1,13 @@
+#generatorSpecific()
+<div class="k-content">
+<ul id="${generatorBean.name}-Menu">
+#foreach ($model in $configuration.models())
+#exposeVariableModelSpecific()
+<li>$i18nUtils.getI18nFromDBObject(${model.displayName})
+<ul>
+#putKendoUIMenuStructure()
+</ul>
+</li>
+#end
+</ul>
+</div>

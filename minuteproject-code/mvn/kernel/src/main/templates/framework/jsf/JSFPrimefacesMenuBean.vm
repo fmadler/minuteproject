@@ -1,0 +1,266 @@
+#exposeJSFModelSpecific()
+#set($thisClassName=$className)
+##exposeJSFEntitySpecific()
+#set ($applicationJSF=$configuration.name) 
+#set ($applicationLabel=$formatUtils.getJavaName($applicationJSF))
+package $packageName;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+#end
+#*
+import org.primefaces.model.*;
+import org.primefaces.component.menuitem.*;
+import org.primefaces.component.submenu.Submenu;
+*#
+import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlOutputLink;
+import javax.faces.component.html.HtmlOutputText;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.primefaces.component.accordionpanel.AccordionPanel;
+import org.primefaces.component.panel.Panel;
+import org.primefaces.component.tabview.Tab;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.MenuModel;
+
+import java.util.HashMap;
+import java.util.Map;
+
+#if($isSpringBackend)
+@Service ("${modelBeanManagerMenuJSFVariable}")
+@Transactional
+#elseif($isEJBBackend)
+@Named(value = "$modelBeanManagerMenuJSFVariable")
+@Default
+@RequestScoped
+#end
+public class ${className} {
+
+#set($index=0)
+
+#foreach ($package in ${businessPackages})
+#setJsfMenu4Access()
+#end
+
+#foreach ($package in ${businessPackageViews})
+#setJsfMenu4Access()
+#end
+#setJsfMenu4SDDAccess()
+#* 
+#foreach ($groups in $displayableEntityGroups)	
+#exposeJSFEntitySpecific()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+     public static String ${package.name}_INDEX = "$index"; 		
+     public static String ${table.name}_ACCESS_URL = "/${entityListLazyJSFLocation}"; 		
+#set($index=$index+1)
+#end
+*#
+    private MenuModel model;  
+	private AccordionPanel accordion;
+    private Map<String, MenuTuple> map;
+
+    private class MenuTuple {
+        private String packageIndex, url, entry, title;
+
+        private MenuTuple(String url, String packageIndex, String entry, String title) {
+            this.packageIndex = packageIndex;
+            this.url = url;
+            this.entry = entry;
+            this.title = title;
+        }
+
+        private String getPackageIndex() {
+            return packageIndex;
+        }
+
+        private String getUrl() {
+            return url;
+        }
+
+        private String getEntry() {
+            return entry;
+        }
+
+        private String getTitle() {
+            return title;
+        }
+    }
+  
+	public ${thisClassName}() { 
+        if (map==null)
+            populateMenuMap();
+	}
+
+    public void populateMenuMap () {
+        map = new HashMap<String, MenuTuple>();
+#foreach ($package in ${businessPackages})
+#setJsfMenu4Map()
+#end
+#foreach ($package in ${businessPackageViews})
+#setJsfMenu4Map()
+#end
+#setJsfMenu4SDDMap()
+    }
+	
+    public void load() {  
+        model = new DefaultMenuModel();  
+        accordion = new AccordionPanel();
+#foreach ($package in ${businessPackages})
+#setJsfMenu4Package()
+#end
+#foreach ($package in ${businessPackageViews})
+#setJsfMenu4Package()
+#end
+
+#if($model.hasStatementModel())
+	    // SDD
+        DefaultSubMenu sdd = new DefaultSubMenu();  
+        sdd.setLabel("SDD");
+        
+		Tab sddTab = new Tab();
+		sddTab.setTitle("SDD");
+		
+#foreach ($query in $model.getStatementModel().getQueries().getQueries()) 
+#exposeQuerySpecific()
+#exposeChartSpecific()
+#set($table=$query.inputBean)
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($domainClassName=$commonUtils.getJavaClassName($table))
+        DefaultMenuItem item${domainClassName} = new DefaultMenuItem();  
+        item${domainClassName}.setValue("$tableLabel");
+#if (!$isChartLayout)
+#set($sddJSFLocation=$commonUtils.getArtifactRelativePathDirAndFullName($table, $template, $templateSDDJSF))
+#else
+#set($sddJSFLocation=$commonUtils.getArtifactRelativePathDirAndFullName($table, $template, $templateChartJSF))
+#end
+        item${domainClassName}.setUrl("/${sddJSFLocation}");
+        sdd.addElement(item${domainClassName}); 
+#set($accessUrl=$primefacesUtils.getAccessUrl($table.name))
+		sddTab.getChildren().add(getPanel(getTuple (${accessUrl})));
+      
+#end
+        accordion.getChildren().add(sddTab) ;
+	    model.addElement(sdd);
+#end
+    }  
+      
+    public MenuModel getModel() {  
+	    if (model == null)
+			load();
+        return model;  
+    }     
+      
+	public void activateMenu() {
+		MenuTuple activeTuple = getCurrentTuple();
+		if (activeTuple!=null) {
+    	    accordion.setActiveIndex(activeTuple.getPackageIndex());
+    		activateTab(activeTuple);
+		}
+	}
+	
+    public AccordionPanel getAccordion() {  
+	    if (accordion == null)
+			load();
+		activateMenu();
+        return accordion;  
+    }     
+	
+    public void setAccordion(AccordionPanel accordion) {
+        this.accordion = accordion;
+    }
+
+	private void activateTab (MenuTuple tuple) {
+        desactivateTab();
+        UIComponent c = accordion.findComponent("menuTitle"+tuple.getEntry());
+        Panel p = (Panel)c;
+        p.setStyleClass(" ui-state-active ");
+    }
+	
+	private void desactivateTab () {
+        for (MenuTuple tuple : map.values()) {
+            UIComponent c = accordion.findComponent("menuTitle"+tuple.getEntry());
+            Panel p = (Panel)c;
+            p.setStyleClass(" ui-state-disactive ");
+        }
+    }
+
+	private Panel getPanel (MenuTuple tuple) {
+        Panel panel = new Panel();
+		panel.setId("menuTitle"+tuple.getEntry());
+		//panel.setStyleClass(" ui-state-disactive ");
+		HtmlOutputLink link = new HtmlOutputLink();
+        link.setValue(getContextPath()+tuple.getUrl()); 
+		HtmlOutputText h =new HtmlOutputText() ;
+        h.setValue(tuple.getTitle());
+        link.getChildren().add(h);
+        panel.getChildren().add(link);
+		return panel;
+	}
+	
+	private DefaultMenuItem getItem (String title, String url)	{
+	    DefaultMenuItem item = new DefaultMenuItem();  
+        item.setValue(title);  
+        item.setUrl(url); 
+		return item;
+    } 
+				
+    public MenuTuple getCurrentTuple() {
+        return getTuple(getServletPath());
+    }
+	
+    public MenuTuple getTuple(String url) {
+        return map.get(url);
+    }
+	
+    public String getRequestURL()
+    {
+        Object request = FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if(request instanceof HttpServletRequest)
+        {
+            return ((HttpServletRequest) request).getRequestURL().toString();
+        }else
+        {
+            return "";
+        }
+    }
+		
+    public String getServletPath()
+    {
+        Object request = FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if(request instanceof HttpServletRequest)
+        {
+            return ((HttpServletRequest) request).getServletPath();
+        }else
+        {
+            return "";
+        }
+    }
+	
+	
+    public String getContextPath()
+    {
+        Object request = FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if(request instanceof HttpServletRequest)
+        {
+            HttpServletRequest req = (HttpServletRequest) request;
+            return req.getContextPath();
+        }else
+        {
+            return "";
+        }
+    }
+	
+}  

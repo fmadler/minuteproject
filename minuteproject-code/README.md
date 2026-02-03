@@ -2,6 +2,13 @@
 
 # Work in progress
 ## Migration to maven 
+
+Run from Command line
+In mvn\kernel
+
+```bash
+mvn clean install 
+```
 ## Target technologies 
 ### Graphql stack generation 
 ### Springboot & Springdata 

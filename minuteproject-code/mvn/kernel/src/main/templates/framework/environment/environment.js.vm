@@ -1,0 +1,8 @@
+##to activate add -DenvTarget=xxx in the start command line 
+// Environment : $environment.name
+#generatorSpecific()
+var ${generatorBean.name} = new Object();
+${generatorBean.name}.name = "${environment.name}";
+#foreach($property in $environment.properties)
+${generatorBean.name}.$formatUtils.performGetJavaName(${property.name})="${property.value}";
+#end

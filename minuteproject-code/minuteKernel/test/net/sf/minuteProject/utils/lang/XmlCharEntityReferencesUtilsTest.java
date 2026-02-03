@@ -2,7 +2,7 @@ package net.sf.minuteProject.utils.lang;
 
 import junit.framework.TestCase;
 
-public class XmlCharEntityReferencesUtilsTest extends TestCase {
+public class XmlCharEntityReferencesUtilsTest  {
 
 	public static final String EXPECTED_RESULT_FINAL_CONVERSION = "Narrative Parts & Annexes";
 

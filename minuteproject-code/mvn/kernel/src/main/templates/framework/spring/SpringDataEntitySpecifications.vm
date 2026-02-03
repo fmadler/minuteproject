@@ -1,0 +1,62 @@
+#exposeVariableEntitySpecific()
+#exposeSpringdataModelSpecific()
+#addedAreas()
+#exposeImportParamsUML($table)
+package $packageName;
+
+import $importDomainObjectUML;
+import $modelRepositoryImport;
+
+import org.springframework.data.jpa.domain.Specification;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+/**
+ * Custom JPA specifications for {@link $domainEntity}.
+ */
+public class $className {
+
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+#set ($isEnum = $enumUtils.isEnumType($domainTemplate, $column))
+    public static Specification<$tableClassName> has${columnClass} (
+        $columnType $columnVar
+    ) {
+        return (root, query, criteriaBuilder) -> {
+            if ($columnVar == null) {
+                return criteriaBuilder.conjunction(); // Always true, so it doesn't affect the query
+            }
+            return criteriaBuilder.equal(root.get("$columnVar"), $columnVar);
+        };
+    }
+#if ($columnUtils.isString($column) && !$isEnum)
+
+    public static Specification<$tableClassName> has${columnClass}StartsWith (
+        $columnType $columnVar
+    ) {
+        return (root, query, criteriaBuilder) -> {
+            if ($columnVar == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.like(root.get("$columnVar"), $columnVar+"%");
+        };
+    }
+#end
+#if ($isEnum)
+
+    public static Specification<$tableClassName> isIn${columnClass} (
+        $columnType $columnVar
+    ) {
+        return (root, query, criteriaBuilder) -> {
+            if ($columnVar == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.like(root.get("$columnVar"), $columnVar+"%");
+        };
+    }
+#end
+#end
+
+$!updatedAreaImplementation
+}

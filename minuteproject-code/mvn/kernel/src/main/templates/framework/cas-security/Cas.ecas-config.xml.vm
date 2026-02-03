@@ -1,0 +1,31 @@
+#generatorSpecific()
+#exposeWebXmlSpecific()
+<?xml version="1.0" encoding="utf-8"?>
+<client-config xmlns="https://www.cc.cec/cas/schemas/client-config/ecas/1.8"
+xmlns:cas="https://www.cc.cec/cas/schemas/client-config/cas/2.0">
+
+    <configurationId>$finalName</configurationId>
+
+    <cas:serverName>127.0.0.1</cas:serverName>
+    <serverPort>7001</serverPort>
+    <ecasBaseUrl>https://webgate.acceptance.ec.europa.eu</ecasBaseUrl>
+    <cas:loginUrl>/cas/login</cas:loginUrl>
+    <cas:validateUrl>/cas/interinstitutionalValidate</cas:validateUrl>
+    <cas:proxyUrl>/cas/proxy</cas:proxyUrl>
+
+    <acceptStrengths>
+        <strength>STRONG</strength>
+    </acceptStrengths>
+
+    <requestingUserDetails>true</requestingUserDetails>
+
+    <groups>
+        <group>SG_CISNET</group>
+        <group>SG_CISNET_EEAS</group>
+    </groups>
+
+    <redirectionInterceptors>
+        <redirectionInterceptor>eu.cec.digit.ecas.client.http.ajax.JsonAjaxRedirectionInterceptor</redirectionInterceptor>
+    </redirectionInterceptors>
+
+</client-config>

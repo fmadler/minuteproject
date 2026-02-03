@@ -32,7 +32,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.minuteproject.fitnesse.fixture.DbInsertUpdateDeleteFixture;
 import net.sf.minuteproject.fitnesse.fixture.query.QueryOption;

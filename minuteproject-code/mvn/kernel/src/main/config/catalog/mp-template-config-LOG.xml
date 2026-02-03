@@ -1,0 +1,18 @@
+<target name="LOG">		
+
+<!-- TODO output dir dependent on the caller's technology -->
+	<template-target 
+    	name="Web log"
+		outputdir="REST/src/main/webapp/WEB-INF/classes"
+		>
+		<!-- Logback is outside any jar set into classes directory -->
+	
+		<template name="LogbackXml" templateFileName="LogbackXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="logback" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>
+		
+	</template-target>	
+
+</target>

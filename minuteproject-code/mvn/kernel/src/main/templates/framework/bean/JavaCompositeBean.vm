@@ -1,0 +1,72 @@
+#exposeCompositeSpecific()
+#set($thisClass=${className})
+#addedAreas()
+package $packageName;
+
+import lombok.Data;
+import java.util.List;
+
+#if($composite.isDirection($in))
+#foreach($table in ${composite.entities})
+#putImportCompositeInputSDDBean()
+import ${sddInputBeanImport};
+#end
+#else
+#foreach($table in ${composite.entities})
+#putImportCompositeOutputSDDBean()
+import ${sddOutputBeanCollectionImport};
+#end
+#end
+
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${thisClass}</p>
+ *
+ * <p>Description: Java Bean#if($composite.isDirection($in)) Input#else Output#end composite</p>
+ *
+ */
+@Data
+public class ${thisClass} {
+#if($composite.isDirection($in))
+
+	public ${thisClass} (
+#foreach($column in ${composite.distinctInputColumn})
+#putColumnParamNaming()
+		#if($velocityCount>1),#end $columnType $columnVar
+#end
+	) {
+#foreach($table in ${composite.entities})
+#putImportCompositeInputSDDBean()
+		this.$sddInputBeanVariable = new $sddInputBeanClass();
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+		this.${sddInputBeanVariable}.set${columnClass}(${columnVar});
+#end		
+#end
+	}
+#foreach($column in ${composite.distinctInputColumn})
+#putColumnParamNaming()
+    private $columnType $columnVar;
+#end
+#foreach($table in ${composite.entities})
+#putImportCompositeInputSDDBean()
+    private $sddInputBeanClass $sddInputBeanVariable;
+#end
+#else
+#foreach($table in ${composite.entities})
+#putImportCompositeOutputSDDBean()
+##TODO if has cardinality => no holder
+#if ($tableUtils.isCardinalityOne($table))
+	private $sddOutputBeanClass $sddOutputBeanVariable;
+#elseif($tableUtils.isCardinalityMany($table))
+	private List<$sddOutputBeanClass> ${sddOutputBeanVariable}s;##TODO plurialize
+#else
+	private $sddOutputBeanCollectionClass $sddOutputBeanCollectionVariable;
+    //private $sddOutputBeanClass $sddOutputBeanVariable;
+#end
+#end
+#end
+
+$!updatedAreaImplementation
+}

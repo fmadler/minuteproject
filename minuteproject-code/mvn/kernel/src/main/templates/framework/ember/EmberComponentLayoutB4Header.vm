@@ -1,0 +1,49 @@
+#generatorSpecific()
+##exposeVariableModelSpecific()
+#exposeKendoUIGeneratorBeanSpecific()
+<header class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="#" class="navbar-brand">{{#link-to 'application' }}<span class="glyphicon glyphicon-home"/>{{/link-to}}</a>
+      <a href="#" class="navbar-brand" id="ddl-language" data-toggle="dropdown" onclick={{action 'clickLanguage'}}><span class="fa fa-language dropdown-toggle"/></a>
+      <ul id="change-language" class="dropdown-menu" aria-labelledby="themes">
+      {{language/menu-list availableTranslation=availableTranslation}}
+      </ul>
+      {{# if hasShoppingCart}}
+          {{#link-to 'purchase.index' class="navbar-brand"}}
+            <span class="fa fa-shopping-cart"/>
+            {{snippet/badge-snippet color-class='label-danger' value=nbOfItemsInCart}}
+          {{/link-to}}
+      {{/if}}
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+        {{#link-to "search" tagName="li" }}
+          <a class='nav-item nav-link'><span class="fa fa-search"/></a>
+        {{/link-to}}
+        {{#link-to "wineries.index" tagName="li" }}
+          <a class='nav-item nav-link'>{{t "nav.wineries"}}</a>
+        {{/link-to}}
+        {{#link-to "countries.index" tagName="li" }}
+          <a class='nav-item nav-link'>{{t "nav.countries"}}</a>
+        {{/link-to}}
+        {{#link-to "appellations" tagName="li" }}
+          <a class='nav-item nav-link'>{{t "nav.appellations"}}</a>
+        {{/link-to}}
+        {{#link-to "grapes" tagName="li" }}
+          <a class='nav-item nav-link'>{{t "nav.grapes"}}</a>
+        {{/link-to}}
+        {{#link-to "payplans" tagName="li" }}
+          <a class='nav-item nav-link'>{{t "nav.prices"}}</a>
+        {{/link-to}}
+      </ul>
+    </div>
+  </div>
+</header>
+

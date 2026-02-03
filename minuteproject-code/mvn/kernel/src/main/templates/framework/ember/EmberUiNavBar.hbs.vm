@@ -1,0 +1,27 @@
+#generatorSpecific()
+##exposeVariableModelSpecific()
+#exposeKendoUIGeneratorBeanSpecific()
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <LinkTo @route="index" className="nav-item">
+    <FaIcon @icon="home"/> &nbsp;
+  </LinkTo>
+#foreach ($model in $application.getModels())
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+<BsDropdown as |dd|>
+  <dd.toggle>$package.name<span class="caret"></span></dd.toggle>
+  <dd.menu as |ddm|>
+#foreach ($query in $package.getQueries())
+#if(!$query.isIndirection())
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#set($queryClassName=$formatUtils.getLowcaseHyphen($table.name))
+    <ddm.item>
+      <ddm.linkTo @route="${package.name}.index-${queryClassName}">${queryClassName}</ddm.linkTo>
+    </ddm.item>
+#end
+#end
+  </dd.menu>
+</BsDropdown>
+#end
+#end
+</nav>

@@ -1,0 +1,63 @@
+#exposeJSFModelSpecific()
+#set($thisClassName=$className)
+#set ($applicationJSF=$configuration.name) 
+#set ($applicationLabel=$formatUtils.getJavaName($applicationJSF))
+// inspired by http://www.mkyong.com/jsf2/jsf-2-internationalization-example/
+package $packageName;
+
+import org.primefaces.component.selectonemenu.SelectOneMenu;
+
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+ 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+ 
+@ManagedBean(name="$modelBeanManagerLanguageJSFVariable")
+@SessionScoped
+public class ${className} implements Serializable{
+ 
+	private static final long serialVersionUID = 1L;
+ 
+	private String localeCode;
+ 
+	private static Map<String,Object> languages;
+
+	static{
+		languages = new LinkedHashMap<String,Object>();
+		languages.put("English", Locale.ENGLISH);
+		languages.put("Spanish", new Locale ("es"));
+		languages.put("French", Locale.FRENCH);
+	}
+ 
+	public Map<String, Object> getLanguagesInMap() {
+		return languages;
+	}
+ 
+	public String getLocaleCode() {
+        if (localeCode==null)
+            localeCode = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
+		return localeCode;
+	}
+ 
+	public void setLocaleCode(String localeCode) {
+		this.localeCode = localeCode;
+	}
+ 
+	public void localeCodeChanged(AjaxBehaviorEvent e){
+        SelectOneMenu selectOneMenu = (SelectOneMenu) e.getSource();
+        String newLocaleValue = (String) selectOneMenu.getValue();
+        for (Map.Entry<String, Object> entry : languages.entrySet()) {
+        	if(entry.getValue().toString().equals(newLocaleValue)){
+                Locale thisLocale = (Locale)entry.getValue();
+        		FacesContext.getCurrentInstance().getViewRoot().setLocale(thisLocale);
+                setLocaleCode(newLocaleValue);
+        	}
+        }
+	}
+ 
+}

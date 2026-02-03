@@ -1,0 +1,451 @@
+#generatorSpecific()
+#exposeBackendTechnology()
+#putJPA2TemplateDefinition()
+#exposeVariableModelSpecific()
+#exposeSpringModelSpecific()
+#exposeSDDSpring()
+#addedAreas()
+#set($thisClassName="$className")
+#set ($mailProperties=$template.getPropertyByName("mail-server"))
+#if ($mailProperties)
+#set ($smtpHost=$mailProperties.getPropertyValue("mail.smtps.host"))
+#set ($smtpAuth=$mailProperties.getPropertyValue("mail.smtps.auth"))
+#set ($smtpSocketFactoryClass=$mailProperties.getPropertyValue("javax.net.ssl.SSLSocketFactory"))
+#set ($smtpStartTlsEnable=$mailProperties.getPropertyValue("mail.smtp.starttls.enable"))
+#set ($smtpHost=$mailProperties.getPropertyValue("mail.smtps.host"))
+#set ($smtpSslTrust=$mailProperties.getPropertyValue("mail.smtp.ssl.trust"))
+#set ($smtpConnectUsername=$mailProperties.getPropertyValue("username"))
+#set ($smtpConnectPassword=$mailProperties.getPropertyValue("password"))
+#set ($smtpConnectUrl=$mailProperties.getPropertyValue("url"))
+#else
+#set ($smtpHost="localhost")
+#end
+package $packageName;
+
+$!updatedAreaImport
+
+import java.util.List;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import com.sun.mail.smtp.SMTPTransport;
+import jxl.Cell;
+import jxl.CellView;
+import jxl.Workbook;
+import jxl.format.CellFormat;
+import jxl.write.*;
+import jxl.write.Number;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
+
+import java.nio.file.*;
+
+import lombok.extern.slf4j.Slf4j;
+
+#foreach($query in $schedulerUtils.getQueryWithSchedulers($model))
+#set ($sddServiceInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateSDDServiceInterface))
+#set ($sddDaoInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateSDDDaoInterface))
+import $sddDaoInterfaceImport;
+#putImportQuerySDDBean()
+import $sddInputBeanImport;
+import $sddOutputBeanImport;
+import $sddOutputBeanCollectionImport;
+#end
+#foreach($queryId in $schedulerUtils.getSchedulerDistinctActionQueryIds($model))
+#exposeQueryTarget()
+#set ($sddServiceInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($targetQuery, $template, $templateSDDServiceInterface))
+import $sddServiceInterfaceImport;
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $targetQuery.getOutputBean(), $template, $templateSDDInputBean))
+import $sddInputBeanImport;
+#end
+
+/**
+ *
+ * <p>Title: $thisClassName</p>
+ *
+ * <p>Description: Scheduler of model $model.name
+ * </p>
+ *
+ */
+
+@Component
+@Slf4j
+##@Transactional
+public class $thisClassName {
+
+	private final String reportFileExt = ".xls";
+
+#foreach($queryId in $schedulerUtils.getSchedulerDistinctActionQueryIds($model))
+#exposeQueryTarget()
+#set ($sddServiceInterfaceClass = $commonUtils.getTemplateClassName($targetQuery, $template, $templateSDDServiceInterface))
+#set ($sddServiceInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddServiceInterfaceClass))
+	@Autowired 
+	$sddServiceInterfaceClass $sddServiceInterfaceVariable;
+
+#end
+#foreach($query in $schedulerUtils.getQueryWithSchedulers($model))
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#set ($inputBeanAtLeastOneVisibleColumn=$queryUtils.hasInputBeanAtLeastOneVisibleColumn($inputBean))
+#set ($sddServiceInterfaceClass = $commonUtils.getTemplateClassName($query, $template, $templateSDDServiceInterface))
+#set ($sddServiceInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddServiceInterfaceClass))
+#set ($sddDaoInterfaceClass = $commonUtils.getTemplateClassName($query, $template, $templateSDDDaoInterface))
+#set ($sddDaoInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddDaoInterfaceClass))
+    @Autowired
+    $sddDaoInterfaceClass $sddDaoInterfaceVariable;
+    
+#end
+#foreach($queryScheduler in $schedulerUtils.getSchedulerEntries($model))
+#if ($queryScheduler.hasProcessor())
+    @Autowired
+    $queryScheduler.processorName $formatUtils.getJavaNameVariable($queryScheduler.processorName);
+
+#end	
+#set ($schedulerAlias = $queryScheduler.name)
+#set ($query = $queryScheduler.query)
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#set ($sizeColumn = $inputBean.columns.size())
+#set ($inputBeanAtLeastOneVisibleColumn=$queryUtils.hasInputBeanAtLeastOneVisibleColumn($inputBean))
+#set ($sddServiceInterfaceClass = $commonUtils.getTemplateClassName($query, $template, $templateSDDServiceInterface))
+#set ($sddServiceInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddServiceInterfaceClass))
+#set ($sddDaoInterfaceClass = $commonUtils.getTemplateClassName($query, $template, $templateSDDDaoInterface))
+#set ($sddDaoInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddDaoInterfaceClass))
+    
+	public $sddOutputBeanCollectionClass callImplementation$schedulerAlias (
+#resourceSignature("", true, false)
+	) {
+#executeSddImplementation()	
+	}
+	
+#foreach($cron in $schedulerUtils.getCrons($queryScheduler))
+    @Scheduled(cron="$cron")
+#end
+    public void ${schedulerAlias}() throws IOException {
+    	String reportFileName = "${queryScheduler.name}"; 
+
+        $sddOutputBeanCollectionClass list = 
+            callImplementation$schedulerAlias (
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated() && !$column.isImplicit())
+#putColumnParamNaming()
+            	#if($velocityCount>1),#end $schedulerUtils.getParamValue($queryScheduler, $column.name)
+#end
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+              #if($inputBeanAtLeastOneVisibleColumn || $velocityCount>1),#end $schedulerUtils.getChunkValue($queryScheduler, $chunkName)
+#end
+		);
+#if ($queryScheduler.hasProcessor())
+#set ($processorCall = "$formatUtils.getJavaNameVariable($queryScheduler.processorName).process (reportFileName, list)")
+#else
+#foreach($action in $queryScheduler.actions)
+        for ($sddOutputBeanClass item : list.get${sddOutputBeanClass}s()) {
+#set ($queryId = $action.queryId)
+#exposeQueryTarget()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($targetQuery.getOutputBean(), $model, $templateSDDInputBean))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $targetQuery.getOutputBean(), $template, $templateSDDInputBean))
+#set ($sddServiceInterfaceClass = $commonUtils.getTemplateClassName($targetQuery, $template, $templateSDDServiceInterface))
+#set ($sddServiceInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($sddServiceInterfaceClass))
+        	$sddInputBeanClass input =	new $sddInputBeanClass();
+#foreach ($actionEntry in $action.actionFieldMapEntries)
+#set($fieldClass=$formatUtils.getJavaName($actionEntry.outputField))
+#set($toClass=$formatUtils.getJavaName($actionEntry.toActionField))
+#set($to=${actionEntry.toActionField})
+        	input.set${toClass}(item.get$fieldClass());
+#end
+        	${sddServiceInterfaceVariable}.execute(input);
+        }
+#end
+#end
+#if($queryScheduler.hasThresholdMinRecord())
+		if (list.get${sddOutputBeanClass}s().size()>=$queryScheduler.reportThresholdMinRecord) {
+			log.info("Report ${schedulerAlias} in preparation with "+list.get${sddOutputBeanClass}s().size()+" records");
+            performReportActions_${schedulerAlias}(reportFileName, list);
+##$processorCall;
+		}
+#else
+        performReportActions_${schedulerAlias}(reportFileName, list);
+##$processorCall;
+#end
+	}
+
+    private void performReportActions_${schedulerAlias} (String reportFileName, $sddOutputBeanCollectionClass list) throws IOException {
+#if ($schedulerUtils.isFileCopyTo($queryScheduler))
+        performReportAndCopy${schedulerAlias} (reportFileName, list);
+#end
+#if ($schedulerUtils.isFileCopyTo($queryScheduler))
+        performReportAndCopyToDir${schedulerAlias} (reportFileName, list);
+#end
+#if ($schedulerUtils.isSendByMail($queryScheduler))
+        performReportAndMailSend${schedulerAlias} (reportFileName, list);
+#end
+    }
+
+#if ($schedulerUtils.isFileCopy($queryScheduler))
+#if ($schedulerUtils.isFileCopyTo($queryScheduler))
+    private void performReportAndCopy${schedulerAlias} (String reportFileName, $sddOutputBeanCollectionClass list) throws IOException {
+        writeReport${schedulerAlias}(reportFileName, list);
+        String filename = getReportPath(reportFileName+reportFileExt);
+        copyFile(filename, "$queryScheduler.reportCopyFileTo");
+    }
+#end
+#if ($schedulerUtils.isFileCopyToDir($queryScheduler))
+    private void performReportAndCopyToDir${schedulerAlias} (String reportFileName, $sddOutputBeanCollectionClass list) throws IOException {
+        writeReport${schedulerAlias}(reportFileName, list);
+        String filename = getReportPath(reportFileName+reportFileExt);
+        copyFile(filename, "$queryScheduler.reportCopyFileToDir");
+    }
+#end
+#end
+
+#if ($schedulerUtils.isSendByMail($queryScheduler))
+	private void performReportAndMailSend${schedulerAlias} (String reportFileName, $sddOutputBeanCollectionClass list) {
+        writeReport${schedulerAlias} (reportFileName, list);
+        String from = "$queryScheduler.reportFrom";
+#foreach($to in $schedulerUtils.getReportTos($queryScheduler))
+        String to$velocityCount = "$to";
+#end
+        String host = "${smtpHost}";
+
+        //Get the session object
+        Properties properties = System.getProperties();
+        properties.setProperty("mail.smtp.host", host);
+#if ($mailProperties)        
+        //custom mail server
+        properties.put("mail.smtps.auth", "$smtpAuth");
+##        properties.put("mail.smtp.socketFactory.class", "$smtpSocketFactoryClass");
+        properties.put("mail.smtp.starttls.enable","$smtpStartTlsEnable");
+        properties.put("mail.smtp.ssl.trust", "$smtpHost");
+#end        
+        Session session = Session.getDefaultInstance(properties);
+
+        //compose the message
+        try{
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+#foreach($to in $schedulerUtils.getReportTos($queryScheduler))
+        	message.addRecipient(Message.RecipientType.TO,new InternetAddress(to$velocityCount));
+#end
+			List<${sddOutputBeanClass}> values = list.get${sddOutputBeanClass}s();
+			String reportValue = "";
+#if ($queryScheduler.isScalarColumnReport())
+#set($scalarColumn = $columnUtils.getColumn($queryScheduler.query.outputBean, $queryScheduler.reportScalarColumn))
+#set($scalarColumnJavaName = $formatUtils.getJavaName($scalarColumn.alias))
+			if (!values.isEmpty()) {
+				//$queryScheduler.reportScalarColumn 
+				reportValue = list.get${sddOutputBeanClass}s().get(0).get${scalarColumnJavaName}()+"";
+			}
+#else
+			reportValue = values.size()+"";
+#end
+#set($querySchedulerSentence = $formatUtils.getSentence(${queryScheduler.name}))
+#if($queryScheduler.hasOrigin())
+//origin
+#end
+#if($queryScheduler.hasEnvironment())
+            Properties props = new Properties();
+            props.load(getClass().getResourceAsStream("/application.properties"));
+            String environment = getEnvironment(props);
+#end
+			String subject = (StringUtils.isNotEmpty(reportValue))?"${querySchedulerSentence} report ("+reportValue+")":"${querySchedulerSentence} report";
+#if($queryScheduler.hasEnvironment())
+            message.setSubject("["+environment+"] " +subject);
+#else
+            message.setSubject(subject);
+#end
+            
+#if ($queryScheduler.isAlert())
+            message.setHeader("X-Priority", "1");
+#end
+            // attachment
+            BodyPart messageBodyPart = new MimeBodyPart();
+
+            // Now set the actual message
+            String bodyPart = subject+"\n";
+            
+#if ($queryScheduler.isReportAddOrigin())
+			bodyPart += "Origin: "+getReportPathServlet()+"\n";
+#end
+			messageBodyPart.setText(bodyPart);
+            // Create a multipar message
+            Multipart multipart = new MimeMultipart();
+
+            // Set text message part
+            multipart.addBodyPart(messageBodyPart);
+
+            // Part two is attachment
+            messageBodyPart = new MimeBodyPart();
+            String filename = getReportPath(reportFileName+reportFileExt);
+            DataSource source = new FileDataSource(filename);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(reportFileName+"-"+getDateTimeAppender()+reportFileExt);
+            multipart.addBodyPart(messageBodyPart);
+
+            // Send the complete message parts
+            message.setContent(multipart);
+
+#if ($mailProperties)
+            SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
+            t.connect("$smtpConnectUrl", "$smtpConnectUsername", "$smtpConnectPassword");
+            t.sendMessage(message, message.getAllRecipients());
+            t.close();
+#else
+            // Send message
+            Transport.send(message);
+#end
+
+        } catch (MessagingException #if($queryScheduler.hasEnvironment())| IOException #end ex) {
+        	ex.printStackTrace();
+        }
+    }
+	
+    private void writeReport$schedulerAlias (String name, $sddOutputBeanCollectionClass list) {
+
+        //1. Create an Excel file
+        WritableWorkbook myFirstWbook = null;
+        try {
+
+            File file = new File(getReportPath(name+reportFileExt));
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            myFirstWbook = Workbook.createWorkbook(file);
+
+            // create an Excel sheet
+            WritableSheet excelSheet = myFirstWbook.createSheet("$queryScheduler.name", 0);
+
+            // add something into the Excel sheet
+#foreach ($column in $query.getOutputBean().getColumns())
+#set ($xCpt = $velocityCount - 1)
+            excelSheet.addCell(new Label($xCpt, 0, "$column.name", getHeaderFont()));
+#end
+			int cpt = 1;
+			for ($sddOutputBeanClass c : list.get${sddOutputBeanClass}s()) {
+#foreach ($column in $query.getOutputBean().getColumns())
+#set ($xCpt = $velocityCount - 1)
+#putColumnParamNaming()
+#if($columnUtils.isTimeStampColumn($column))
+            	excelSheet.addCell(new Label($xCpt, cpt, c.get$columnClass()!=null?c.get$columnClass().toString():""));
+#elseif(!$columnUtils.isString($column))
+            	excelSheet.addCell(new Label($xCpt, cpt, c.get$columnClass()+""));
+#else 
+            	excelSheet.addCell(new Label($xCpt, cpt, c.get$columnClass()));
+#end
+#end
+				cpt++;
+			}
+
+			sheetAutoFitColumns(myFirstWbook.getSheet(0));
+            myFirstWbook.write();
+
+
+        } catch (IOException |  WriteException e) {
+            e.printStackTrace();
+        } finally {
+
+            if (myFirstWbook != null) {
+                try {
+                    myFirstWbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (WriteException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+	
+#end
+#end
+
+$!updatedAreaImplementation
+
+    @Autowired
+    private ServletContext servletContext;
+    private String getReportPathServlet () {
+        return servletContext.getRealPath("/");
+    }
+    
+    private WritableCellFormat getHeaderFont () throws WriteException {
+        WritableFont cellFont = new WritableFont(WritableFont.COURIER, 12);
+        cellFont.setBoldStyle(WritableFont.BOLD);
+        return new WritableCellFormat(cellFont);
+    }
+    
+    private String getTimeAppender() {
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return date.format(formatter);
+    }
+    
+    private String getDateTimeAppender() {
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        return date.format(formatter);
+    }
+
+    private void sheetAutoFitColumns(WritableSheet sheet) {
+        for (int i = 0; i < sheet.getColumns(); i++) {
+            Cell[] cells = sheet.getColumn(i);
+            int longestStrLen = -1;
+
+            if (cells.length == 0)
+                continue;
+
+        /* Find the widest cell in the column. */
+            for (int j = 0; j < cells.length; j++) {
+                if ( cells[j].getContents().length() > longestStrLen ) {
+                    String str = cells[j].getContents();
+                    if (str == null || str.isEmpty())
+                        continue;
+                    longestStrLen = str.trim().length();
+                }
+            }
+
+        /* If not found, skip the column. */
+            if (longestStrLen == -1)
+                continue;
+
+        /* If wider than the max width, crop width */
+            if (longestStrLen > 255)
+                longestStrLen = 255;
+
+            CellView cv = sheet.getColumnView(i);
+            cv.setSize(longestStrLen * 256 + 100); /* Every character is 256 units wide, so scale it. */
+            sheet.setColumnView(i, cv);
+        }
+    }
+
+
+    private static String getReportPath (String name) {
+        return System.getProperty("java.io.tmpdir")+"/"+name;
+    }
+
+    private static void copyFile(String from, String to) throws IOException {
+        Path src = Paths.get(from);
+        Path dest = Paths.get(to);
+        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+#putEnvironmentProperties()
+}

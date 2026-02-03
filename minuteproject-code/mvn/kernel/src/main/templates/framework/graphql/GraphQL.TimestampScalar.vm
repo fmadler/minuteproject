@@ -1,0 +1,50 @@
+#exposeVariableModelSpecific()
+package $packageName;
+
+import graphql.Internal;
+import graphql.language.IntValue;
+import graphql.schema.Coercing;
+import graphql.schema.GraphQLScalarType;
+
+import java.math.BigInteger;
+import java.util.GregorianCalendar;
+
+/**
+* Access this via {@link graphql.scalars.ExtendedScalars#Date}
+*/
+@Internal
+public class TimestampScalar  {
+
+    public static GraphQLScalarType INSTANCE;
+
+    static {
+        Coercing<Object, Object> coercing = new Coercing<Object, Object>() {
+            @Override
+            public Object serialize(Object input) {
+                return input;
+            }
+
+            @Override
+            public Object parseValue(Object input) {
+                GregorianCalendar calendar = new GregorianCalendar();
+                calendar.setTimeInMillis(((IntValue)input).getValue().multiply(new BigInteger("1000")).longValue());
+                return calendar;
+            }
+
+            @Override
+            public Object parseLiteral(Object input) {
+                GregorianCalendar calendar = new GregorianCalendar();
+                calendar.setTimeInMillis(((IntValue)input).getValue().multiply(new BigInteger("1000")).longValue());
+
+                return calendar;
+            }
+
+        };
+
+        INSTANCE = GraphQLScalarType.newScalar()
+            .name("Timestamp")
+            .description("An implementation of Timestamp Scalar")
+            .coercing(coercing)
+            .build();
+    }
+}

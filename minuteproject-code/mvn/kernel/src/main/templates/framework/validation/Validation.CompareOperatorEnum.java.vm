@@ -1,0 +1,12 @@
+#generatorSpecific()
+#exposeVariableModelSpecific()
+package $packageName;
+
+public enum CompareOperatorEnum {
+##TODO from ComparisonOperand enum
+    EQUALS,
+    GREATER_THAN,
+    GREATER_OR_EQUAL_THAN,
+    LESS_THAN,
+    LESS_OR_EQUAL_THAN;
+}

@@ -1,0 +1,10 @@
+name=My Minuteproject Portlets
+module-group-id=minuteproject
+module-incremental-version=1
+tags= 
+short-description=
+change-log=
+page-url=http://minuteproject.sf.net
+author=Liferay, Inc.
+licenses=LGPL
+liferay-versions=6.1.1

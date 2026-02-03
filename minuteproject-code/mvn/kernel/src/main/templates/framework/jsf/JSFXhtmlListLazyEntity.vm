@@ -1,0 +1,27 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#exposeSeparator()
+#exposePrimefacesConfig()
+#set($hasDisplayableChildren=$presentationUtils.hasDisplayableChildren($table))
+#set($refCnt=1)
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace">
+#if(!$isPortlet)
+<ui:composition template="$modelDecoratorJSFImport">
+#else
+	<ui:composition template="$modelPortletDecoratorJSFImport">
+#end
+	<ui:define name="title">
+		<h:outputText value="#{i18n.listTitle} #{i18n.of} ${tableClassName}" />
+	</ui:define>
+	<ui:define name="heading">
+		<h:outputText value="#{i18n.listHeading}" />
+	</ui:define>
+    <ui:define name="body">
+		<ui:include src="/$entityListPortletJSFLocation"/>
+    </ui:define>
+</ui:composition>
+</html>

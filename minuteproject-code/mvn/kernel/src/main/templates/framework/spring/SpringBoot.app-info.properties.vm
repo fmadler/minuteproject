@@ -1,0 +1,15 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+#exposeSpringBootModelSpecific()
+#if($configuration.isSingleModel())
+app.name=$model.name App
+#else
+app.name=${application.name} App
+#end
+app.version=@project.version@
+app.ci.build.planName=@build.shortPlanName@
+app.ci.build.number=@build.buildNumber@
+app.ci.build.plan.revision=@build.planRepository.revision@
+app.ci.build.timestamp=@build.buildTimeStamp@
+app.ci.build.repo.branchName=@build.repository.branch.name@
+app.mvn.build.time=@build.time@

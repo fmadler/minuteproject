@@ -1,0 +1,37 @@
+#exposeJSFModelSpecific()
+#set($thisClassName=$className)
+#set ($applicationJSF=$configuration.name) 
+#set ($applicationLabel=$formatUtils.getJavaName($applicationJSF))
+package $packageName;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+#end
+
+import java.util.HashMap;
+import java.util.Map;
+
+#if($isSpringBackend)
+@Service ("${modelBeanManagerUserJSFVariable}")
+@Transactional
+#elseif($isEJBBackend)
+@Named(value = "$modelBeanManagerUserJSFVariable")
+@Default
+@RequestScoped
+#end
+public class ${className} {
+
+	public void keepSessionAlive() {
+	
+	}
+
+}  

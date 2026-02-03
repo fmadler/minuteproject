@@ -1,0 +1,347 @@
+#generatorSpecific()
+#exposeVariableModelSpecific()
+#exposeWebSecurityProperties()
+#exposeMaven()
+#exposeBackendTechnology()
+##exposeRESTModelSpecific()
+#exposeWebXmlSpecific()
+#putTargetServerDefinition()
+#exposeKendoUIGeneratorBeanSpecific()
+#if ($webXmlVersion=="2.5")
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2.5"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+#elseif ($webXmlVersion=="3.0")
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="3.0"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+#end
+	<display-name>$generatorBean.name REST Application</display-name>
+    <servlet>
+        <servlet-name>$generatorBean.name Jersey Web Application</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+
+        <init-param>
+          <param-name>jersey.config.server.provider.packages</param-name>
+          	<param-value>
+#foreach ($model in $configuration.allModels)          
+#exposeRESTModelSpecific()
+          	$modelResourceJerseyImport;
+#end        
+          	io.swagger.jersey.listing
+          </param-value>
+        </init-param>
+		<init-param>
+			<param-name>jersey.config.server.provider.classnames</param-name>
+			<param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+		</init-param>
+		<init-param>
+			<param-name>jersey.config.beanValidation.enableOutputValidationErrorEntity.server</param-name>
+			<param-value>true</param-value>
+		</init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+#set($servletApiName="$generatorBean.name Jersey Web Application")
+    <servlet-mapping>
+        <servlet-name>$servletApiName</servlet-name>
+        <url-pattern>/data/*</url-pattern>
+    </servlet-mapping>
+
+#if($botdetect)
+	<!--add botdetect-->
+	<servlet>
+		<servlet-name>SimpleCaptchaEndpoint</servlet-name>
+		<servlet-class>com.captcha.botdetect.web.servlet.SimpleCaptchaServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SimpleCaptchaEndpoint</servlet-name>
+		<url-pattern>/simple-captcha-endpoint</url-pattern>
+	</servlet-mapping>
+
+#end
+#if($swagger)
+	<!-- add swagger -->
+	<servlet>
+		<servlet-name>DefaultJaxrsConfig</servlet-name>
+		<servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
+		<init-param>
+			<param-name>api.version</param-name>
+			<param-value>$version</param-value>
+		</init-param>
+		<init-param>
+			<param-name>swagger.api.basepath</param-name>
+			<param-value>/${finalName}/data</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
+	<filter>
+		<filter-name>jersey</filter-name>
+		<filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+          	<param-value>
+#foreach ($model in $configuration.allModels)          
+#exposeRESTModelSpecific()
+          	$modelResourceJerseyImport;
+#end        
+          	io.swagger.jersey.listing
+          </param-value>
+		</init-param>
+	</filter>
+	
+
+	<filter-mapping>
+		<filter-name>jersey</filter-name>
+		<url-pattern>/data</url-pattern>
+	</filter-mapping>
+	<!-- add swagger -->
+#end
+
+	
+#if($hasAtmosphereServlet)
+	<servlet>
+		<description>AtmosphereServlet</description>
+		<servlet-name>AtmosphereServlet</servlet-name>
+		<servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
+		<!--
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>my.atmosphere.jersey.conf.packages</param-value>
+		</init-param>
+		<init-param>
+			<param-name>org.atmosphere.websocket.messageContentType</param-name>
+			<param-value>application/json</param-value>
+		</init-param>
+		-->
+		<!-- If you want to use Servlet 3.0 -->
+		<async-supported>true</async-supported>
+		<!-- List of init-param -->
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AtmosphereServlet</servlet-name>
+		<!-- Any mapping -->
+		<url-pattern>/atmosphere/*</url-pattern>
+	</servlet-mapping>
+#end
+#*
+	<filter>
+		<filter-name>ApiOriginFilter</filter-name>
+		<filter-class>io.swagger.sample.util.ApiOriginFilter</filter-class>
+	</filter>
+	<servlet>
+		<servlet-name>Bootstrap</servlet-name>
+		<servlet-class>io.swagger.sample.Bootstrap</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<filter-mapping>
+		<filter-name>ApiOriginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+*#
+#if($hasCorsFilter)
+#if($corsFilter=="thetransactioncompany")
+	<!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
+	<filter>
+		<filter-name>CORS</filter-name>
+		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+		<init-param>
+			<param-name>cors.allowGenericHttpRequests</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.allowOrigin</param-name>
+			<param-value>*</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.allowSubdomains</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.supportedMethods</param-name>
+			<param-value>GET, POST</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.supportedHeaders</param-name>
+			<param-value>*</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.exposedHeaders</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.supportsCredentials</param-name>
+			<param-value>false</param-value><!-- since cors.allowOrigin * -->
+		</init-param>
+		<init-param>
+			<param-name>cors.maxAge</param-name>
+			<param-value>3600</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.tagRequests</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>CORS</filter-name>
+		<servlet-name>$servletApiName</servlet-name>
+	</filter-mapping>
+#end
+#if($corsFilter=="apache")	
+	<!-- add CORS -->
+	<filter>
+		<filter-name>CorsFilter</filter-name>
+		<filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+		<init-param>
+			<param-name>cors.allowed.origins</param-name>
+			<param-value>*</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.allowed.methods</param-name>
+			<param-value>GET,POST,HEAD,OPTIONS,PUT</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.allowed.headers</param-name>
+			<param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.exposed.headers</param-name>
+			<param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+		</init-param>
+#*
+		<!-- new apache CORS filter does not allow mix of cors.support.credentials=true with cors.allowed.origins *
+		<init-param>
+			<param-name>cors.support.credentials</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		-->
+*#
+		<init-param>
+			<param-name>cors.preflight.maxage</param-name>
+			<param-value>10</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CorsFilter</filter-name>
+		<servlet-name>$servletApiName</servlet-name>
+	</filter-mapping>
+#if($botdetect)
+	<filter-mapping>
+		<filter-name>CorsFilter</filter-name>
+		<servlet-name>SimpleCaptchaEndpoint</servlet-name>
+	</filter-mapping>
+#end
+	<!-- end CORS -->
+#end
+#end
+#set($filterName=$template.getPropertyValue("filter-name",""))
+#set($filterClass=$template.getPropertyValue("filter-class",""))
+#set($filterUrlPattern=$template.getPropertyValue("filter-url-pattern",""))
+#if ($filterName!="")
+	<filter>
+		<filter-name>$filterName</filter-name>
+		<filter-class>$filterClass</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>$filterName</filter-name>
+		<url-pattern>$filterUrlPattern</url-pattern>
+	</filter-mapping>
+#end
+#if($isSpringBackend)
+	<!-- The context params that read by ContextLoaderListener  -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			/WEB-INF/application-context.xml
+		</param-value>
+	</context-param>
+	
+	<!-- This listener will load other application context file in addition to springweb-servlet.xml -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+#end
+
+  <!-- Define a Security Constraint on this Application -->
+#if ($securityAuthenticationType!="none" && $securityAuthenticationType!="")
+	<security-constraint> <!-- $securityAuthenticationType -->
+		<web-resource-collection>
+			<web-resource-name>${generatorBean.name}</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+       <auth-constraint>
+           <role-name>$mpUserRole</role-name>
+       </auth-constraint>
+   </security-constraint>
+ <!-- $securityAuthenticationType -->
+#foreach ($model in $configuration.models())
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#if ($package.securityColor.hasRoles())
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>${package.name}</web-resource-name>
+			<url-pattern>/sdd/${package.name}</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+       <auth-constraint>
+           <role-name>$package.securityColor.roles</role-name>
+#if($isCas)
+			<role-name>$mpUserRole</role-name>
+#end 
+       </auth-constraint>
+#if($isCas)     
+		<user-data-constraint>
+			<description>Encryption is not required for this area application.</description>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+#end
+   </security-constraint>
+#end
+#end
+#end
+
+<!-- Define the Login Configuration for this Application -->
+#if ($securityAuthenticationType=="basic")   
+    <login-config>
+	   <auth-method>BASIC</auth-method>
+	   <realm-name>$applicationRealm</realm-name>
+	</login-config>
+
+#end
+#if ($securityAuthenticationType=="form") 
+    <login-config>
+        <auth-method>FORM</auth-method>
+		    <realm-name>$applicationRealm</realm-name>
+        <form-login-config>
+           <form-login-page>/$loginPath</form-login-page>
+           <form-error-page>/$loginErrorPath</form-error-page>
+        </form-login-config>
+    </login-config>
+	
+#end
+	<!-- Security roles referenced by this web application -->
+	<security-role>
+	  <description>
+	    The role that is required to log in to the Manager Application
+	  </description>
+	  <role-name>$mpUserRole</role-name>
+	</security-role>
+#foreach ($role in $configuration.distinctRoles())
+	<security-role>
+	  <description>
+	    The role that is required to log in to the Manager Application
+	  </description>
+	  <role-name>$role</role-name>
+	</security-role>
+#end
+#end
+
+    <welcome-file-list>
+        <welcome-file>$kendoUiMenuPath</welcome-file>
+    </welcome-file-list>
+
+</web-app>

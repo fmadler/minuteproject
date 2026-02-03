@@ -1,0 +1,22 @@
+<target name="Maven master pom">		
+	<architecture-target name="maven" />	
+	<plugin name="mavenUtils" className="net.sf.minuteProject.plugin.maven.MavenUtils"></plugin>
+
+	<template-target 
+	    templatedir = "template" 
+		tool="velocity"
+		outputdir=""
+		package-root="ear"
+		belongToPackage="true"
+		priority="10" >
+		<template name="MavenEarPomXml" templateFileName="MavenEarPomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresence"
+			application-specific="true" add-model-name="false">
+			<property name="property-presence" value="add-ear-packaging"></property>
+			<property name="maven-artifact-finalName-suffix" value="Ear"></property>
+		</template>
+	</template-target>	
+	
+</target>	

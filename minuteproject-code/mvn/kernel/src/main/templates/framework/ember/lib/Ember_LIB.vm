@@ -1,0 +1,110 @@
+#macro (exposeEmberSpecific)
+#set($isOctane=$template.getPropertyValue("ember-octane",true))
+#end
+
+#macro (exposeEmberCompositeSpecific)
+#exposeEmberSpecific()
+#exposeCompositeSpecific()
+#exposeEmberTemplate()
+#set ($modelEmberServiceClass = $commonUtils.getTemplateClassName($model, $template, $templateEmberService))
+#set ($importEmberCompositeComponentIndexFullPath = $commonUtils.getLevelTemplateFullPath($composite, $template, $templateEmberComponentCompositeIndexHbs))
+#set ($importEmberCompositeComponentRouteFullPath = $commonUtils.getLevelTemplateFullPath($composite, $template, $templateEmberRouteCompositeIndexJs))
+#set ($importEmberCompositeComponentIndexPath = $emberUtils.getComponentPath($importEmberCompositeComponentIndexFullPath))
+#end
+
+#macro (exposeEmberQuerySpecific)
+#exposeEmberSpecific()
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportQuerySDDBean()
+#putImportSDDInputBean()
+#exposeEmberTemplate()
+#set ($modelEmberServiceClass = $commonUtils.getTemplateClassName($model, $template, $templateEmberService))
+#set ($importEmberQueryComponentIndexFullPath = $commonUtils.getLevelTemplateFullPath($query, $template, $templateEmberComponentIndexHbs))
+#set ($importEmberQueryComponentRouteFullPath = $commonUtils.getLevelTemplateFullPath($query, $template, $templateEmberRouteIndexJs))
+#set ($importEmberQueryIndexPath = $emberUtils.getComponentPath($importEmberQueryComponentIndexFullPath))
+#set ($importEmberQueryComponentIndexClassPath = $emberUtils.getComponentClassPath($importEmberQueryComponentIndexFullPath))
+#set ($importEmberQueryIndexRouterFullPath = $emberUtils.getComponentRouterPath($importEmberQueryComponentRouteFullPath))
+#set ($importEmberQueryIndexRouterPath = $emberUtils.strip($importEmberQueryIndexRouterFullPath,'routes.'))
+#set ($importEmberQueryControllerIndexFullPath = $commonUtils.getLevelTemplateFullPath($query, $template, $templateEmberControllerIndexJs))
+#set ($importEmberQueryControllerIndexClassPath = $emberUtils.getComponentClassPath($importEmberQueryControllerIndexFullPath))
+#end
+
+
+#macro (exposeEmberModelSpecific)
+#exposeVariableModelSpecific()
+#exposeEmberSpecific()
+#exposeEmberTemplate()
+#set ($modelEmberServiceClass = $commonUtils.getTemplateClassName($model, $template, $templateEmberService))
+#set ($modelEmberBaseAdapterClass = $commonUtils.getTemplateClassName($model, $template, $templateEmberBaseAdapter))
+#set ($modelEmberBaseAdapterVariable = $commonUtils.getJavaNameVariableFirstLetter($modelEmberBaseAdapterClass))
+#set ($modelEmberBaseAdapterImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateEmberBaseAdapter))
+#end
+
+#macro (exposeEmberTemplate)
+#set ($templateEmberBaseAdapter = "EmberBaseAdapterJs")
+#set ($templateEmberAdapter = "EmberAdapterJs")
+#set ($templateEmberService = "EmberServiceJs")
+#set ($templateEmberRouter = "EmberRouterJs")
+#set ($templateEmberRouteIndexJs = "EmberRouteIndexJs")
+#set ($templateEmberComponentIndexHbs = "EmberComponentIndexHbs")
+#set ($templateEmberControllerIndexJs = "EmberControllerIndexJs")
+#set ($templateEmberComponentCompositeIndexHbs = "EmberComponentCompositeHbs")
+#set ($templateEmberRouteCompositeIndexJs = "EmberRouteCompositeJs")
+#end
+
+#macro(putEmberMenuPackage)
+##https://github.com/insanio/Ember.ex/tree/master/examples inspiration
+#set($displayableEntities = $presentationUtils.getDisplayableEntityFromPackage($package))
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#set($packageLabel=$i18nUtils.getPackageName($package))
+#set($subMenuVar = "submenu${package.name}")
+#set($tabVar = "tab${package.name}")
+#if(!$displayableEntities.isEmpty())
+<li> $packageLabel
+    <ul>
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$EmberUtils.getAccessUrl($table.name))
+#exposeEmberEntitySpecific()
+#if($table.scope != 'BACKEND')
+        <li><a href="/$entityFullPath"> $tableLabel</a></li>
+#end
+#end
+#end
+    </ul>
+</li>
+#end
+#end
+
+#macro(putEmberMenuStructure)
+#foreach ($package in ${businessPackages})
+#putEmberMenuPackage()
+#end
+#foreach ($package in ${businessPackageViews})
+#putEmberMenuPackage()
+#end
+
+<!-- sdd package -->
+#foreach ($package in $model.getStatementModel().getSddPackage().getOrderedPackages())
+#if ($package.securityColor.hasMenuAccess)
+<li>$i18nUtils.getI18nFromDBObject(${package.displayName})
+    <ul>
+#foreach ($query in $package.getQueries()) 
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$EmberUtils.getAccessUrl($table.name))
+##exposeVariableEntitySpecific()
+#exposeEmberSddSpecific()
+#if($table.scope != 'BACKEND')
+        <li><a onclick="javascript:location.href=getMenuLink('/$entityFullPath');return false;" href="/$entityFullPath"> $tableLabel</a></li>
+#end
+#end
+    </ul>
+</li>
+#end
+#end
+#end

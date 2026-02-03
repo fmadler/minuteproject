@@ -1,0 +1,12 @@
+#exposeVariableModelSpecific()
+package $packageName;
+##http://alex.nederlof.com/blog/2013/07/28/caching-using-annotations-with-jersey/
+import java.lang.annotation.*;
+import javax.ws.rs.NameBinding;
+
+@NameBinding
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(value = RetentionPolicy.RUNTIME)
+public @interface $className {
+	String cc() default "public, must-revalidate"; 
+}

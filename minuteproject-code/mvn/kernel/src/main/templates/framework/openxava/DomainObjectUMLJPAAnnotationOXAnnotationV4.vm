@@ -1,0 +1,568 @@
+#exposeVariableEntitySpecific()
+#groovify()
+#putJPA2TemplateDefinition()
+#exposeEnvironmentParams()
+#exposeOXDomainSpecific()
+#putImportParamsUML()
+#exposeEntityCache()
+#exposeEntityValidation()
+#addedAreas()
+#set($defaultViewExt="DEFAULT_VIEW")
+#set($attributecount=$attributes.length)
+package $packageName;
+
+$!updatedAreaImport
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+import javax.persistence.*;
+import org.openxava.annotations.*;
+import javax.validation.constraints.NotNull;
+import lombok.Data;
+
+#putEntityValidationImport()
+#exposeJPA2Import()
+#exposeJPA2CompositeKeyImport()
+#exposeJPA2EnumImport()
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ */
+@javax.persistence.Entity (name="${className}")
+#putEntityValidation()
+@Table (name="\"${table.name}\"") ##to tackle reserved key words
+@Data
+@Views${annotationListTagBeginning}
+#exposeEntityUpdatedAreas("view-base")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+	@View(
+		name="base",
+		members=
+        "" 	
+#foreach ($columnGroup in $tableUtils.extractFieldGroup($presentationUtils.getDisplayableAttributes($table), $table))
+#foreach ($column in $columnGroup)
+#putColumnParams()
+#columnJavaNaming()
+#if(!$column.isHidden())## && !$column.isTransient())
+        + "$columnVar #if ($velocityCount!=$columnGroup.size()),#else ; #end"
+#end
+#end
+#end
+		),
+#end
+#updatedAreaEnd()
+	@View(
+		name="Create", 
+		extendsView="base"
+	),
+	@View(
+		name="Update", 
+		extendsView="base",
+#writeViewChildrenMember()
+	),
+	@View(
+		name="DEFAULT", 
+		extendsView="base",
+#writeViewChildrenMember()
+	),
+    @View(name="${domainVariableName}${defaultViewExt}", 
+	   members=
+#if (!$tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+          "#foreach ($column in ${table.primaryKeyColumns}) #putColumnParams()$columnVar ;#end" 	
+#else
+          ""
+#end
+#foreach ($columnGroup in $tableUtils.extractFieldGroup(${table.attributes}, $table))
+#foreach ($column in $columnGroup)
+#putColumnParams()
+#columnJavaNaming()
+        + "$columnVar #if ($velocityCount!=$columnGroup.size()),#else ; #end"
+#end
+#end
+##TODO add parent ref
+##exposeViewParentSemanticRef()
+##exposeViewParentSemanticRefProperty()	
+	),
+#exposeEntityUpdatedAreas("view-reference")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    @View(name="reference", 
+#set($referenceList=$openXavaUtils.getReference($table))
+#if (!$hasSemanticReference && $referenceList.isEmpty())
+       extendsView="${domainVariableName}${defaultViewExt}"
+#else
+       members=
+#foreach($chunk in $referenceList)
+       "$chunk #if ($velocityCount!=$referenceList.size()); "+
+#else "
+#end
+#end 
+#end
+#end
+#updatedAreaEnd()
+    )
+${annotationListTagEnding}
+
+@Tabs${annotationListTagBeginning}
+@Tab(
+#exposeTabAll()
+#if ($hasTabAll)
+#exposeTabProperties()
+#else
+properties=""
+#end
+)
+#exposeTabSimple()
+#if($hasTabSimple),
+@Tab(
+name = "${className}Tab",
+#exposeTabSimple()
+#exposeTabProperties()
+)
+#end
+,
+@Tab(
+name = "${className}TabWithRef",
+#exposeTabWithRef()
+#if ($hasTabWithRef)
+#exposeTabProperties()
+#else
+properties=""
+#end
+)
+${annotationListTagEnding}
+#if($hasCache && $enableHibernateEhcache)
+@org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE)
+#end
+$!updatedAreaClassAnnotation
+public class ${className} {
+#putColumnDefaultValue()
+
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    @EmbeddedId
+##    $accessor ${embeddedIdClass} $embeddedIdVariable;
+    public ${embeddedIdClass} $embeddedIdVariable; ##public for jpa2 mapping of fk referencing a field within embeddedId class
+    
+#else
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    @SequenceGenerator(name = "${table.name}SEQ", sequenceName ="$sequenceName", allocationSize=1 )
+#end
+#end
+    #if (!$isPkUserProvided)@Hidden #end @Id @Column(name="\"$column.name\"" #if($isLengthPrecisionColumn),length=$column.size#end)
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="${table.name}SEQ") 
+#elseif ($databaseUtils.isPrimaryKeyPolicyIncrement($table))
+    @GeneratedValue(strategy = GenerationType.AUTO)
+#elseif ($databaseUtils.isPrimaryKeyPolicyIdentity($table))
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+#elseif ($databaseUtils.isPrimaryKeyPolicyUUID($table))
+    @GeneratedValue(generator = "system-uuid")
+    @org.hibernate.annotations.GenericGenerator(name = "system-uuid", strategy = "uuid")
+#end
+#end
+#end
+#end
+#putJPA2Temporal()
+    $accessor $columnType $columnVar; ##// pk not fk
+
+#end
+#end
+
+#foreach ($column in ${table.attributes})
+#fieldAnnotationAddedAreas
+#updatedColumnAttributeAreas()
+#updatedAreaBegin()
+#if($isUpdated)
+#updatedAreaContent()	
+#else
+#putColumnParams()
+#columnJavaNaming()
+#if ($column.isTransient())
+	@Transient
+#else
+#if ($isView)
+    @Column(name="\"$column.name\"",  #if($isLengthPrecisionColumn)length=$column.size,#end #if($isDecimalPrecisionColumn)scale=$column.scale,#end #if($column.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true,#else unique=false,#end insertable=false, updatable=false)
+#else
+    @Column(name="\"$column.name\"",  #if($isLengthPrecisionColumn)length=$column.size,#end #if($isDecimalPrecisionColumn)scale=$column.scale,#end #if($column.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true#else unique=false#end)
+#end
+#end
+#putFieldValidation()
+#if ($isMandatory)
+#if(!$columnUtils.hasTrigger($column))
+#if(!$columnUtils.isNumeric($column))
+    @Required
+#else
+	@NotNull (message="$i18nUtils.getI18nFromDBObject($column) must not be empty") //trick to allow zero use @NotNull instead of @Required
+#end
+#end
+#end
+#foreach ($property in $column.getPropertiesArray())
+#if($property.tag=="checkconstraint")
+    @Editor(forViews="base,Create,Update,DEFAULT,${domainVariableName}${defaultViewExt}", value="${className}${columnClass}ComboEditor")
+#end
+#end
+#if ($column.isLob())
+    @Lob
+##    @Editor (forViews="Create,Update,DEFAULT,${domainVariableName}${defaultViewExt}", value="${className}${columnClass}LobEditor")
+#exposeLobProperties()
+##if ($convertClobToString=="true")
+##set($columnType="String")
+##end
+#end
+#if ($columnUtils.hasStereotype($column))
+#set($stereotype=$openXavaUtils.getStereotype($column))
+    @Stereotype ("$stereotype")
+#elseif ($presentationUtils.isRichText($column)) //for backward compatibility (temporary)
+    @Stereotype ("HTML_TEXT")
+#end
+#putJPA2Temporal()
+#if($columnUtils.hasTrigger($column))
+    @ReadOnly(forViews="base,Create,Update,DEFAULT,${domainVariableName}${defaultViewExt}")
+#else
+#if(!$column.isEditable())
+	@ReadOnly
+#end
+#end
+#if ($column.isVersion())
+	@Version
+#end
+#if ($openXavaUtils.hasDefaultValueCalculator($column))
+	$openXavaUtils.getDefaultValueCalculator($column)
+#end
+    $accessor $columnType $columnVar;
+#end
+#updatedAreaEnd()
+
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeEntityUpdatedAreas("parent-$linkedTableClass")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#set($nomodify=!$openXavaUtils.isRelationshipEditable($reference, $database))
+##set($nomodify=false)
+#if ($referenceUtils.isReferenceInPrimaryKey($reference) && $tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    @MapsId ("$localColumnName")
+#end
+    @ManyToOne (fetch=FetchType.LAZY #if ($isMandatory && !$linktableDB.isLinkEntity()),optional=false#end) //remove optional=false to aggragate but leads to a side effect when going directly to the entity: required check is not performed=> if no set DB check constraint is raised...
+#if ($isView)
+    @JoinColumn(name="$localColumnName", #if($localColumn.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true,#else unique=false,#end insertable=false, updatable=false)
+#else
+#if(!$isMany2Many)
+#OxJPAFKisPK()
+    @JoinColumn(name="$localColumnName", referencedColumnName = "\"$reference.foreignColumnName\"", #if($localColumn.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true#else unique=false#end $insertableUpdatable )
+#else
+    @JoinColumn(name="$localColumnName", referencedColumnName = "\"$reference.foreignColumnName\"", #if($localColumn.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true,#else unique=false,#end insertable=false, updatable=false)
+#end
+#end
+    @ReferenceView ("reference") 
+#set($semanticReference = $linktableDB.semanticReference)
+##// semanticReference $semanticReference
+#if ($openXavaUtils.hasDescriptionList($linktableDB)) 
+#if ($semanticReference.semanticReferenceBeanPath.size()<2)
+    @DescriptionsList(
+       descriptionProperties=
+##foreach ($chunk in $semanticReference.semanticReferenceBeanPath)       
+#foreach ($chunk in $openXavaUtils.getListProperties($linktableDB))##semanticReference.semanticReferenceBeanPath)       
+       "$chunk#if ($velocityCount!=$semanticReference.semanticReferenceBeanPath.size()), "+
+#else "
+#end
+#end 
+       ,order=
+#set($ordering=$orderingUtils.getFirstOrdering($linktableDB))
+#set($column=$ordering.column)
+#set($order=$ordering.order)
+#putColumnParamNaming()
+       "$columnVar $order "
+##foreach ($chunk in $semanticReference.semanticReferenceSqlPath) 
+#foreach ($chunk in $openXavaUtils.getListProperties($linktableDB))
+//       "$chunk asc #if ($velocityCount!=$semanticReference.semanticReferenceBeanPath.size()), "+
+#else// "
+#end
+#end       
+    )
+#else 
+    @DescriptionsLists${annotationListTagBeginning}
+       @DescriptionsList(
+         forTabs="${className}TabWithRef", 
+         descriptionProperties=
+##foreach ($chunk in $semanticReference.semanticReferenceBeanPath)
+#foreach ($chunk in $openXavaUtils.getListProperties($linktableDB))
+            "$chunk#if ($velocityCount!=$semanticReference.semanticReferenceBeanPath.size()), "+
+#else "
+#end 
+#end       
+    )         
+    ${annotationListTagEnding}  
+#end
+#set($nomodify=true)
+##    @NoCreate
+##    @NoModify	
+#end 
+#if (!$authorizationUtils.hasSameColor($table, $linktableDB) && !$openXavaUtils.hasDescriptionList($linktableDB))    
+#set($nomodify=true)
+## ##   @NoCreate
+##    @NoModify	
+#end
+#if ($nomodify)
+    @NoCreate
+    @NoModify		
+#end
+#exposeEnrichedPk($localColumn)
+#if (!$isEnrichedPk)
+#set($colVar = ${localColumnVariable})
+#else
+#set($colVar = ${linkedTableVariable})
+#end
+    $accessor $linkedTableClass ${colVar};
+    
+#end
+#updatedAreaEnd()
+#end
+//children
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+#exposeEntityUpdatedAreas("child-$childrenListVariable")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#set ($importDomainObjectForeignTable = $commonUtils.getEntityLevelTemplateFullPath($model, $linktableDB, $template, $templateJPA2DomainObject))
+#set ($targetEntityClass="${importDomainObjectForeignTable}.class")
+#exposeEnrichedPk(${reference.column})
+#if (!$isEnrichedPk)
+#set ($foreignColumnVar = $formatUtils.getJavaNameVariable($columnDB.name))
+#else
+#set ($foreignColumnVar = $domainVariableName)
+#end
+##if linked part of composite pk => add variable of the embedded
+#if($jpa2Utils.isEmbedded($linktableDB)) 
+#if($columnUtils.isPartOfCompositePrimaryKey($reference.foreignColumn))
+#set ($targetEmbeddedIdClass = $commonUtils.getTemplateClassName($linktableDB, $model, $templateJPA2EmbeddedId))
+#set ($targetEmbeddedIdVariable = $commonUtils.getJavaNameVariableFirstLetter($targetEmbeddedIdClass))
+#set($linkedColumnVariable = "${targetEmbeddedIdVariable}__.${linkedColumnVariable}")
+#end
+#end
+    @OneToMany (targetEntity=$targetEntityClass, fetch=FetchType.LAZY, mappedBy="$linkedColumnVariable"#if (!$reference.column.isRequired() || $reference.table.isLinkEntity()), cascade=CascadeType.REMOVE#end)//, cascade=CascadeType.ALL)
+#set($listProperties=$openXavaUtils.getListProperties($reference))
+#if(!$listProperties.isEmpty())
+    @ListProperties(
+##if(!$hasSemanticReference)##todo check hassemanticreference for the parent!!
+       "#foreach ($chunk in $listProperties)   
+$chunk #if ($velocityCount!=$listProperties.size()),#else #end
+#end ")
+##else
+##set ($listOfSemanticReferenceAttribute = $semanticReference.getSemanticReferenceSqlPath())    
+##       "#foreach ($chunk in $listOfSemanticReferenceAttribute)   
+##$chunk #if ($velocityCount!=$listOfSemanticReferenceAttribute.size()),#else #end
+#####end")
+##end
+#end
+    $accessor Set <$linkedTableClass> $childrenListVariable = new HashSet<>(); 
+   
+#end
+#end
+#updatedAreaEnd()
+#end
+//m2m
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeEntityUpdatedAreas("m2m-$childrenListVariable")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+    @ManyToMany
+    @JoinTable(name="$linkedTableDBName",
+        joinColumns=@JoinColumn(name="$targetColumn.name"), 
+        inverseJoinColumns=@JoinColumn(name="$linkReference.localColumnName") 
+    )
+#set($listProperties=$openXavaUtils.getListProperties($linkReference))
+#if(!$listProperties.isEmpty())
+    @ListProperties(
+       "#foreach ($chunk in $listProperties)   
+$chunk #if ($velocityCount!=$listProperties.size()),#else #end
+#end ")
+#end
+    $accessor Set <$targetTableName> $childrenListVariable = new HashSet <> ();
+
+#end
+#updatedAreaEnd()
+#end
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+
+##patch for hibernate
+#if ($isMany2Many)
+    public ${className} get${className} () {
+    	return this;
+    }
+
+    public void set${className} (${className} ${variableName}) {
+    	new ${className}(
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       ${variableName}.get_${columnVar}()#if ($velocityCount!=$table.columnCount),
+#end
+#end 		
+		);
+    }
+#end    
+
+#* LOMBOK instead
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    public $embeddedIdClass get$embeddedIdClass() {
+        return $embeddedIdVariable;
+    }
+	
+    public void set$embeddedIdClass ($embeddedIdClass $embeddedIdVariable) {
+        this.$embeddedIdVariable =  $embeddedIdVariable;
+    }
+    
+#else 
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+#end
+    public $columnType get$columnClass() {
+        return $columnVar;
+    }
+	
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar =  $columnVar;
+    }
+    
+#end
+#end
+
+#foreach ($column in ${table.attributes})
+#updatedColumnGetterSetterAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#putColumnParams()
+#columnJavaNaming()
+#if ($column.isLob())
+#exposeLobProperties()
+##if ($convertClobToString=="true")
+##set($columnType="String")
+##end
+#end
+#if($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+#end
+    public $columnType get$columnClass() {
+        return $columnVar;
+    }
+	
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar =  $columnVar;
+    } 
+#end
+$!updatedAreaEnd
+
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeEnrichedPk($localColumn)
+#if (!$isEnrichedPk)
+    public $linkedTableClass get$localColumnClass () {  //
+    	return ${localColumnVariable};
+    }
+	
+    public void set${localColumnClass} ($linkedTableClass ${localColumnVariable}) {
+    	this.${localColumnVariable} = ${localColumnVariable};//this.${localColumnVariable} = ${linkedTableVariable};
+    }
+#else
+    public $linkedTableClass get${linkedTableClass} () {  //get$linkedTableVariable
+    	return ${linkedTableVariable};//${localColumnVariable};
+    }
+	
+   public void set${linkedTableClass} ($linkedTableClass ${linkedTableVariable}) {
+    	this.${linkedTableVariable} = ${linkedTableVariable};//this.${localColumnVariable} = ${linkedTableVariable};
+    }
+    
+#end 
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+    public Set<$linkedTableClass> get${childrenListClass}() {
+        if (${childrenListVariable} == null){
+            ${childrenListVariable} = new HashSet<>();
+        }
+        return ${childrenListVariable};
+    }
+
+    public void set${childrenListClass} (Set<$linkedTableClass> ${childrenListVariable}) {
+        this.${childrenListVariable} = ${childrenListVariable};
+    }	
+    
+    public void add${childrenListClass} ($linkedTableClass ${linkedTableVariable}) {
+    	    get${childrenListClass}().add($linkedTableVariable);
+    }
+    
+#end    
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+    public Set<$targetTableName> get${childrenListClass}() {
+        if (${childrenListVariable} == null){
+            ${childrenListVariable} = new HashSet<>();
+        }
+        return ${childrenListVariable};
+    }
+
+    public void set${childrenListClass} (Set<$targetTableName> ${childrenListVariable}) {
+        this.${childrenListVariable} = ${childrenListVariable};
+    }
+    	
+    public void add${childrenListClass} ($targetTableName ${childrenListVariable}) {
+        get${childrenListClass}().add($childrenListVariable);
+    }	
+
+#end
+*#
+/*
+It seems that while enabling PrePersist and PreUpdate there is a side effect in OX on Timestamp field 
+In MYSQL '' affected to LAST_MODIFICATION timestamp field 
+#putJPA2TriggerSnippet()
+*/
+$!updatedAreaImplementation
+
+}

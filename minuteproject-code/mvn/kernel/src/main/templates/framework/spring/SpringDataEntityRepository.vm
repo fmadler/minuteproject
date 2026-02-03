@@ -1,0 +1,44 @@
+#exposeVariableEntitySpecific()
+#exposeSpringdataModelSpecific()
+#addedAreas()
+#exposeImportParamsUML($table)
+package $packageName;
+
+import $importDomainObjectUML;
+import $modelRepositoryImport;
+$!updatedAreaImport
+/**
+ * Custom spring data select for {@link $domainEntity}.
+ */
+public interface $className extends $modelRepositoryClass<$domainClassName, $primaryKeyType> {
+
+#if ($hasSemanticReference)
+#set($semanticReference = $table.semanticReference)
+#set($semanticReferenceMethod = $semanticReferenceUtils.getSemanticReferenceMethod($table, $semanticReference))
+    public $tableClassName findBy$semanticReferenceMethod (
+#foreach ($chunk in $semanticReference.semanticReferenceBeanPath)    
+#set($column = $semanticReferenceUtils.convertPathToColumn($table, $chunk))
+#putColumnParams()
+        $columnType $columnVar $#if ($velocityCount!=$semanticReference.semanticReferenceBeanPath.size()),
+#else
+#end
+#end   
+    );
+    
+#end
+
+#*
+    public List<$tableClassName> findAllBy (
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+        #if($velocityCount>1),#end $columnType $columnVar
+#end
+    ) {
+        //TODO use entity manager
+        // foreach each not null input create a search = filter
+    }
+
+
+ *#
+$!updatedAreaImplementation
+}

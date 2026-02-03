@@ -1,0 +1,10 @@
+#generatorSpecific()
+## mysql
+
+CREATE SCHEMA IF NOT EXISTS `${generatorBean.name}` DEFAULT CHARACTER SET utf8 ;
+
+CREATE USER '${generatorBean.name}_crud'@'%' IDENTIFIED BY '${generatorBean.name}!_user$crud1_mp';
+
+GRANT ALL PRIVILEGES ON propertystore.* TO '${generatorBean.name}_crud'@'%';
+
+## end mysql

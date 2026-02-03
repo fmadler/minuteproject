@@ -1,0 +1,142 @@
+#exposeQuerySpecific()
+#putQueryCommons()
+#exposeSDDSpring()
+#exposeRESTSDDURLServer()
+#putImportQuerySDDBeanV2()
+#exposeSpringBootQuerySpecific()
+#exposeSpringLoggingModelSpecific()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.*;
+import java.sql.*;
+
+import java.io.IOException;
+import javax.servlet.http.*;
+import java.util.List;
+import java.util.ArrayList;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import $springBootJdbcTemplateRepositoryImport;
+import $sddOutputBeanImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+#if($queryUtils.isCache($query))
+import org.springframework.http.CacheControl;
+import java.util.concurrent.TimeUnit;
+#end
+import $auditLoggingAnnotationImport;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: class for ${className} service </p>
+ *
+ */
+@RequestMapping ("/sdd/${queryVariableName}")
+@Controller
+@Slf4j
+@AllArgsConstructor
+#set($packName = $formatUtils.firstUpperCase($query.package.name))
+@Tag(name = "${packName}")
+public class ${className} {
+
+    private ${springBootJdbcTemplateRepositoryClass} $springBootJdbcTemplateRepositoryVariable;
+
+#if ($query.isWrite())
+    @PostMapping
+#else
+    @GetMapping
+#end
+    @Operation(summary = "${className}")
+	@ResponseBody
+    @${auditLoggingAnnotationClass} (logLevel="INFO")
+##    @Tag(name = "${className} API", description = "${className} API")
+    public ResponseEntity<List<$sddOutputBeanClass>> execute (
+#set ($columnsNotDuplicatedNorImplicit = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
+#set ($size = $columnsNotDuplicatedNorImplicit.size())
+#foreach($column in $columnsNotDuplicatedNorImplicit)
+#putColumnParamNaming()
+#if($columnUtils.isTimeStampColumn($column))
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+#elseif($columnUtils.isTimeStampColumn($column))
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+#elseif ($columnUtils.isTimeColumn($column))
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+#end
+#set($hasCheckConstraint=$columnUtils.hasCheckConstraint($column))
+#set($isArray=$column.isArray())
+        @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end)#if ($hasCheckConstraint) #if($isArray) List<${sddInputBeanClass}.${columnClass}Enum> #else ${sddInputBeanClass}.${columnClass}Enum#end#else $columnType#end $columnVar #if($velocityCount!=$size),
+#end
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkClass=$formatUtils.getJavaName($queryChunk.name))
+#set($chunkVar=$commonUtils.getJavaNameVariableFirstLetter($chunkClass))
+#if(!$isNotVoidInput && $velocityCount==1)
+        @RequestParam (value="$chunkVar", required = false) String $chunkVar
+#else
+        ,@RequestParam (value="$chunkVar", required = false) String $chunkVar
+#end
+#end
+    ) {
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass ();
+#foreach($column in $columnsNotDuplicatedNorImplicit)
+#putColumnParamNaming()
+		${sddInputBeanVariable}.set$columnClass ($columnVar);
+#end
+#end
+        List<$sddOutputBeanClass> list = ${springBootJdbcTemplateRepositoryVariable}.execute
+            (
+#if($isNotVoidInput)
+                ${sddInputBeanVariable}
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkClass=$formatUtils.getJavaName($queryChunk.name))
+#set($chunkVar=$commonUtils.getJavaNameVariableFirstLetter($chunkClass))
+#if(!$isNotVoidInput && $velocityCount==1)
+                $chunkVar
+#else
+                ,$chunkVar
+#end
+#end
+            );
+        HttpHeaders responseHeaders = new HttpHeaders();
+        return ResponseEntity.ok()
+#if(!$query.isWrite() &&$queryUtils.isCache($query))
+            .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic())
+#end
+            .body(list);
+    }
+
+}

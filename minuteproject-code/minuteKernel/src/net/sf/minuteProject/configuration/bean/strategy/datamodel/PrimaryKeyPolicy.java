@@ -2,6 +2,7 @@ package net.sf.minuteProject.configuration.bean.strategy.datamodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.sf.minuteProject.configuration.bean.AbstractConfiguration;
 import net.sf.minuteProject.configuration.bean.DataModel;
@@ -41,7 +42,7 @@ public class PrimaryKeyPolicy extends AbstractConfiguration {
 	
 	public void addPrimaryKeyPolicyPattern (PrimaryKeyPolicyPattern primaryKeyPolicyPattern) {
 		if (primaryKeyPolicyPatterns==null)
-			primaryKeyPolicyPatterns = new ArrayList<PrimaryKeyPolicyPattern>();
+			primaryKeyPolicyPatterns = new ArrayList<>();
 		primaryKeyPolicyPattern.setPrimaryKeyPolicy(this);
 		primaryKeyPolicyPatterns.add(primaryKeyPolicyPattern);
 	}
@@ -53,10 +54,7 @@ public class PrimaryKeyPolicy extends AbstractConfiguration {
 		this.dataModel = dataModel;
 	}
 	
-	public PrimaryKeyPolicyPattern getFirstPrimaryKeyPolicyPattern() {
-		for (PrimaryKeyPolicyPattern primaryKeyPolicyPattern : getPrimaryKeyPolicyPatterns()) {
-			return primaryKeyPolicyPattern;
-		}
-		return null;
+	public Optional<PrimaryKeyPolicyPattern> getFirstPrimaryKeyPolicyPattern() {
+		return getPrimaryKeyPolicyPatterns().stream().findFirst();
 	}
 }

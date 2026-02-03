@@ -1,0 +1,11 @@
+##to activate add -DenvTarget=xxx in the start command line 
+#[[# ]]# Environment : $environment.name
+environment.name = $environment.name
+#foreach($property in $environment.properties)
+${property.name}=${property.value}
+#end
+build.number= ${build.number}
+build.time= ${build.time}
+build.id= ${build.id}
+application.version= ${project.version}
+vcs.version= ${vcs.revision}

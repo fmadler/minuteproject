@@ -1,0 +1,36 @@
+#exposeJSFModelSpecific()
+#exposePrimefacesConfig()
+#set($title="$model.name jsf web")
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace">
+
+<h:form id="languageMgt">
+<p:panelGrid columns="2" styleClass="ui-widget-content-borderless">
+
+    #{i18n.AdminLanguageMgt} 
+    <p:selectOneMenu value="#{${modelBeanManagerLanguageJSFVariable}.localeCode}">
+        <p:ajax listener="#{${modelBeanManagerLanguageJSFVariable}.localeCodeChanged}" />
+        <f:selectItems value="#{${modelBeanManagerLanguageJSFVariable}.languagesInMap}" />
+    </p:selectOneMenu>
+
+</p:panelGrid>
+</h:form>
+
+##    <p:menu model="#{${modelBeanManagerMenuJSFVariable}.model}"/> 
+	<p:accordionPanel binding="#{${modelBeanManagerMenuJSFVariable}.accordion}"/> 
+##	<p:layoutUnit position="west" size="175" header="Left" collapsible="true">
+	#* 
+    <p:accordionPanel>  
+    <p:tab title="package">  
+        <h:panelGrid columns="2" cellpadding="10">  
+            <h:outputText  
+                value="" />  
+        </h:panelGrid>  
+    </p:tab>  
+ 
+	</p:accordionPanel> 
+	*#
+</html>	

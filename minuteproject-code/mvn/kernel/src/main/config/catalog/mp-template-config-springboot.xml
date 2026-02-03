@@ -1,0 +1,369 @@
+<target name="springboot"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="./mp-template-config.xsd">	
+	<architecture-target name="springboot REST GRAPHQL API" description="springboot REST GRAPHQL API"/>
+	<plugin name="environmentUtils" className="net.sf.minuteProject.plugin.environment.EnvironmentUtils"></plugin>
+	<plugin name="graphqlUtils" className="net.sf.minuteProject.plugin.graphql.GraphQLUtils"></plugin>
+
+	<template-target
+			name="Spring boot core resources"
+			outputdir="src/main/resources"
+			belongToPackage="true">
+
+		<template name="SpringBoot.app-info.properties" templateFileName="SpringBoot.app-info.properties.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="app-info"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+		</template>
+
+		<template name="SpringBootApplication.prop" templateFileName="SpringBootApplication.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+		</template>
+
+		<template name="SpringBoot.logback" templateFileName="SpringBoot.logback.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="xml" file-prefix="" file-suffix="-logback"
+				  scope-specific-value="application" add-model-name="true"
+				  add-package-name="false" add-technical-dir-name="false"
+		>
+			<!-- use at config level <property name="logback-use-DB-appender" value="true"/>
+			-->
+		</template>
+
+		<template name="SpringBoot.logback.local" templateFileName="SpringBoot.logback.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="xml" file-prefix="" file-suffix="-logback-local"
+				  scope-specific-value="application" add-model-name="true"
+				  add-package-name="false" add-technical-dir-name="false"
+		>
+			<property name="logback-use-DB-appender" value="false"/>
+		</template>
+
+		<template name="SpringBoot.banner.txt" templateFileName="SpringBoot.banner.txt.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="txt" file-prefix="" file-suffix="banner"
+				  scope-specific-value="application" add-model-name="false"
+				  add-package-name="false" add-technical-dir-name="false"
+		/>
+
+		<!-- caching -->
+		<template name="EhCacheXml" templateFileName="EhCache.Xml.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="xml" file-prefix="ehcache" file-suffix=""
+				  application-specific="true" package-root=""
+				  add-model-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresence">
+			<property name="property-presence" value="add-cache-implementation" ></property>
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="Spring boot core resources local"
+			outputdir="src/main/resources-local"
+			belongToPackage="true">
+		<template name="SpringBootApplication.jdbc-params.prop" templateFileName="SpringBootApplication.jdbc.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-params"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+			<property name="embedded-datasource" value="false"/>
+		</template>
+
+		<!-- TODO add gitignore -->
+	</template-target>
+
+
+	<template-target
+			name="Spring boot core resources remote"
+			outputdir="src/main/resources-remote"
+			belongToPackage="true">
+
+		<template name="SpringBootApplication.jdbc-cp.prop" templateFileName="SpringBootApplication.jdbc.prop.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="properties" file-prefix="" file-suffix="application-jdbc-cp"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false">
+			<property name="embedded-datasource" value="true"/>
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="Spring boot core files"
+			outputdir="src/main/java"
+			belongToPackage="true">
+
+		<template name="SpringBootApplication" templateFileName="SpringBootApplication.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="java" file-prefix="" file-suffix="Application"
+				  scope-specific-value="model" add-model-name="false">
+			<!-- TODO scope-specific-value="application" with correct packagename "application-package"-->
+		</template>
+
+		<template name="SpringBootServletInitializer" templateFileName="SpringBootServletInitializer.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="java" file-prefix="" file-suffix="ServletInitializer"
+				  scope-specific-value="model" add-model-name="false">
+			<!-- TODO scope-specific-value="application" with correct packagename "application-package"-->
+		</template>
+
+
+
+		<template name="SpringBoot.app-info.controller" templateFileName="SpringBoot.app-info.controller.vm"
+				  subdir="" outputsubdir="" technicalPackage="controller"
+				  file-extension="java" file-prefix="" file-suffix="AppInfoController"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBootWebFilterConfig" templateFileName="SpringBootWebFilterConfig.vm"
+				  subdir="" outputsubdir="" technicalPackage="web"
+				  file-extension="java" file-prefix="" file-suffix="WebFilterConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.datasource.config" templateFileName="SpringBoot.datasource.config.vm"
+				  subdir="" outputsubdir="" technicalPackage="config"
+				  file-extension="java" file-prefix="" file-suffix="DatasourceConfig"
+				  scope-specific-value="model" add-model-name="true">
+			<!--TODO depends if it is multi/single-model -->
+		</template>
+
+		<template name="SpringBoot.cache.config" templateFileName="SpringBoot.cache.config.vm"
+				  subdir="" outputsubdir="" technicalPackage="config"
+				  file-extension="java" file-prefix="" file-suffix="CacheConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.annotation.AuditLogging" templateFileName="SpringBoot.annotation.AuditLogging.vm"
+				  subdir="" outputsubdir="" technicalPackage="annotation"
+				  file-extension="java" file-prefix="" file-suffix="AuditLogger"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.aop.AuditLoggingAspect" templateFileName="SpringBoot.aop.AuditLoggingAspect.vm"
+				  subdir="" outputsubdir="" technicalPackage="aop"
+				  file-extension="java" file-prefix="" file-suffix="AuditLoggingAspect"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBootWebSecurityConfig" templateFileName="SpringBootWebSecurityConfig.vm"
+				  subdir="" outputsubdir="" technicalPackage="web"
+				  file-extension="java" file-prefix="" file-suffix="WebSecurityConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<!-- commons -->
+		<template name="SpringBoot.rest.preconditions" templateFileName="SpringBoot.rest.preconditions.vm"
+				  subdir="" outputsubdir="" technicalPackage="controller"
+				  file-extension="java" file-prefix="" file-suffix="RestPreconditions"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<!-- query -->
+		<template name="SpringBoot.sdd.controller" templateFileName="SpringBoot.SDD.controller.vm"
+				  subdir="" outputsubdir="" technicalPackage="controller"
+				  file-extension="java" file-prefix="" file-suffix="Controller"
+				  add-package-name="false" add-business-package-dir-name="false"
+				  scope-specific-value="query"
+				  check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedRestStackRequired"
+				  is-indirection-compatible="true"
+		>
+			<!-- is-indirection-compatible="true" -->
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>
+
+		<template name="SpringBoot.sdd.composite.controller" templateFileName="SpringBoot.SDD.composite.controller.vm"
+				  subdir="" outputsubdir="" technicalPackage="controller"
+				  file-extension="java" file-prefix="" file-suffix="Controller"
+				  add-package-name="false" add-business-package-dir-name="true"
+				  scope-specific-value="composite" has-updatable-nature="true">
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>
+
+
+		<template name="SpringJdbcTemplate.sdd.repository" templateFileName="SpringJdbcTemplate.sdd.repository.vm"
+				  subdir="" outputsubdir="" technicalPackage="repository"
+				  file-extension="java" file-prefix="" file-suffix="JdbcTemplate"
+				  add-package-name="false" add-business-package-dir-name="false"
+				  scope-specific-value="query"
+				  is-indirection-compatible="true"
+		>
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="REST java set"
+			libdir="lib/SPRING_LIB.vm"
+			outputdir="src/main/java"
+			belongToPackage="true">
+
+		<template name="SpringBoot.entity.controller" templateFileName="SpringBoot.entity.controller.vm"
+				  file-extension="java" technicalPackage="rest" file-suffix="Controller"
+				  entity-specific="true" has-updatable-nature="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="implement-interface" value="false"></property>
+			<property name="add-message-format" value="message-format"></property>
+		</template>
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" />
+		<property name="convertClobToString" value="true"/>
+		<property name="use-temporal" value="true"></property>
+
+	</template-target>
+
+	<template-target
+			name="Springboot Maven"
+			outputdir=""
+			package-root=""
+			libdir="lib/REST_LIB.vm">
+
+		<template name="SpringBoot.PomXml" templateFileName="SpringBoot.PomXml.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="xml" file-prefix="pom" file-suffix=""
+				  application-specific="true" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.git-commit.sh" templateFileName="SpringBoot.git-commits.sh.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="sh" file-prefix="git-commits" file-suffix=""
+				  application-specific="true" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.git-commit.ps1" templateFileName="SpringBoot.git-commits.ps1.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="ps1" file-prefix="git-commits" file-suffix=""
+				  application-specific="true" add-model-name="false">
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="Graphql file"
+			outputdir="src/main/resources"
+			package-root=""
+			belongToPackage="true">
+
+		<template name="GraphQL.schema" templateFileName="GraphQL.schema.vm"
+				  file-extension="graphql"
+				  file-prefix="api"
+				  add-model-dir-name="false"
+				  add-package-name="true" add-business-package-dir-name="false"
+				  package-root=""
+				  model-specific="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+		<template name="GraphQL.graphiql" templateFileName="GraphQL.graphiql.vm"
+				  file-extension="html"
+				  file-prefix="graphiql"
+				  add-model-dir-name="false"
+				  add-package-name="false" add-business-package-dir-name="false"
+				  package-root=""
+				  model-specific="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="Graphql file"
+			outputdir="src/main/java"
+			belongToPackage="true">
+
+		<template name="GraphQL.TimestampScalar" templateFileName="GraphQL.TimestampScalar.vm"
+				  subdir="" outputsubdir="" technicalPackage="graphql.scalar"
+				  file-extension="java" file-prefix="" file-suffix="TimestampScalar"
+				  scope-specific-value="model" has-updatable-nature="true"
+				  add-model-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="REST and GraphQL java SDD set"
+			libdir="lib/SPRING_LIB.vm"
+			outputdir="src/main/java"
+	>
+
+		<template name="SpringBoot.GraphQL.service" templateFileName="SpringBoot.GraphQL.service.vm"
+				  file-extension="java" technicalPackage="graphql" file-suffix="GraphQLService"
+				  scope-specific-value="model" has-updatable-nature="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+		<template name="SpringBoot.GraphQL.SDD.datafetcher" templateFileName="SpringBoot.GraphQL.SDD.datafetcher.vm"
+				  file-extension="java" technicalPackage="graphql.datafetcher" file-suffix="DataFetcher"
+				  add-package-name="true" add-business-package-dir-name="false"
+				  scope-specific-value="query" has-updatable-nature="true"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+		<template name="SpringBoot.GraphQL.entity.datafetcher" templateFileName="SpringBoot.GraphQL.entity.datafetcher.vm"
+				  file-extension="java" technicalPackage="graphql.datafetcher" file-suffix="DataFetcher"
+				  add-package-name="true" add-business-package-dir-name="true"
+				  scope-specific-value="entity" has-updatable-nature="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+
+		<template name="SpringBoot.GraphQL.endpoint" templateFileName="SpringBoot.GraphQL.endpoint.vm"
+				  subdir="" outputsubdir="" technicalPackage="rest"
+				  file-extension="java" file-prefix="" file-suffix="GraphQLRestAPI"
+				  scope-specific-value="model" has-updatable-nature="true" add-model-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+
+		<template name="SpringBoot.GraphQL.config" templateFileName="SpringBoot.GraphQL.config.vm"
+				  subdir="" outputsubdir="" technicalPackage="web"
+				  file-extension="java" file-prefix="" file-suffix="GraphiQlConfiguration"
+				  scope-specific-value="model" add-model-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="graphql-enabled"></property>
+			<property name="property-presence-value" value="true"></property>
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="Spring boot scripts"
+			libdir="lib/SPRING_LIB.vm"
+			outputdir=""
+	>
+		<template name="SpringBoot.cmd.run" templateFileName="SpringBoot.cmd.run.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="sh" file-prefix="springboot-run" file-suffix=""
+				  application-specific="true" add-model-name="false"/>
+		<template name="SpringBoot.cmd.run" templateFileName="SpringBoot.cmd.run.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+				  file-extension="cmd" file-prefix="springboot-run" file-suffix=""
+				  application-specific="true" add-model-name="false"/>
+	</template-target>
+
+</target>

@@ -1,0 +1,60 @@
+#macro (springBootJdbcConfigProperties)
+#exposeVariableModelSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+#exposeJdbc()
+#set ($jdbcUrl=$datasource.url)
+#set ($username=$datasource.username)
+#set ($password=$datasource.password)
+#set ($embeddedDatasource=$template.getPropertyValue("embedded-datasource",false))
+#set ($jdbcUrl=$formatUtils.escapeXml($embeddedDatasource.getPropertyValue("jdbcUrl")))
+#set ($username=$embeddedDatasource.getPropertyValue("username"))
+#set ($password=$embeddedDatasource.getPropertyValue("password"))
+#if ($embeddedDatasource)
+spring.datasource.jndi-name=jdbc/${model.name}DS
+#else
+spring.datasource.${model.name}.jdbc-url=$jdbcUrl
+spring.datasource.${model.name}.driver-class-name=$datasource.driverClassName
+spring.datasource.${model.name}.username=$username
+spring.datasource.${model.name}.password=$password
+spring.datasource.${model.name}.hikari.connection-timeout=20000
+spring.datasource.${model.name}.hikari.maximum-pool-size=100
+
+# Enable SQL logging
+spring.jpa.show-sql=true
+
+# Format the SQL for better readability
+spring.jpa.properties.hibernate.format_sql=true
+
+#end
+#end
+#generatorSpecific()
+#exposeApplicationSpecific()
+#exposeSpringBootModelSpecific()
+#if($configuration.isSingleModel())
+#springBootJdbcConfigProperties()
+#else
+#foreach ($model in $application.getModels())
+#if ($application.getModels().size()==1)
+#springBootJdbcConfigProperties()
+#else
+#springBootJdbcConfigProperties()
+#end
+#end
+#end
+# DB naming convention to avoid uppercase lowercase mismatch errors
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# Logging
+#if($configuration.isSingleModel())
+#if ($embeddedDatasource)
+logging.config=classpath:${templateModelSpringLogbackPath}
+#else
+logging.config=classpath:${templateModelSpringLogbackLocalPath}
+#end
+#else
+#if ($embeddedDatasource)
+logging.config=classpath:${templateApplicationSpringLogbackPath}
+#else
+logging.config=classpath:${templateApplicationSpringLogbackLocalPath}
+#end
+#end

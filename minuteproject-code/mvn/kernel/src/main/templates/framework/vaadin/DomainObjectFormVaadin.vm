@@ -1,0 +1,436 @@
+#macro(putDefaultColumnFormEntry)
+					TextField field = (TextField) f;
+#if($columnUtils.isString($column))
+#set($size=$vaadinPlugin.getColumnLengthInPixel($column))
+				    field.setWidth("${size}");
+#else
+				    field.setWidth("200px");
+#end
+				    field.setNullRepresentation("");
+#end
+#putVaadinClassObjectAndPackage()
+#exposeSpringModelSpecific()
+#exposeSpringDomainObjectSpecific()
+#thisDomainObject()
+import java.util.Arrays;
+import java.util.Iterator;
+import java.sql.*;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.List;
+import java.util.ArrayList;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.data.util.BeanContainer;
+
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DefaultFieldFactory;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.Form;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+##import org.springframework.beans.factory.annotation.Autowired;
+##import org.springframework.beans.factory.annotation.Qualifier;
+##import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import $domainObjectApplicationImport;
+import $domainObjectContainerImport;
+import ${domainObjectListImport};
+import $beanSpringModelServiceImport;
+#exposeJPA2Import()
+#exposeJPA2EnumImport()
+import $thisDomainImport;
+
+@SuppressWarnings("serial")
+##@org.springframework.stereotype.Component
+public class ${className} extends Form implements ClickListener {
+
+	private ApplicationContext context;
+	
+##    @Autowired
+##    @Qualifier("$beanSpringModelServiceVariable")
+	$beanSpringModelServiceClass $beanSpringModelServiceVariable;
+
+	public static final Object[] NATURAL_COL_ORDER = new Object[] {
+#set($cnt=0)
+#foreach($column in ${table.columns})
+##foreach($column in $presentationUtils.getPotentialDisplayableColumns($table))
+#putColumnParamNaming()
+#if(!$isForeignKey)
+#if($columnUtils.isPartOfCompositePrimaryKey($column))
+#set($columnClass = "${columnClass}_")
+#end
+       #if ($cnt!=0),#end"$columnVar"
+#set($cnt=$cnt+1)
+#end
+#end
+##	
+##foreach($column in ${table.primaryKeyColumns})
+##putColumnParams()
+##if(!$isForeignKey)
+##       #if ($velocityCount!=1),#end"$columnVar"
+##end
+##end
+##foreach ($column in ${table.attributes})
+##putColumnParams()
+##	   ,"$columnVar"
+##end
+##foreach ($reference in $table.parents)
+##putReferenceParams2()
+##	   ,"$localColumnVariable"
+##end
+##
+	};
+	public static final Object[] DEFAULT_ALL_COL_ORDER = new Object[] {
+#foreach($column in ${table.columns})
+##foreach($column in $presentationUtils.getPotentialDisplayableColumns($table))
+#putColumParamNamingFkPrimitive()
+       #if ($velocityCount!=1),#end"$columnVar"
+#end
+	};
+			
+	HorizontalLayout createFormLayout = new HorizontalLayout();
+	private Button save = new Button("Save", (ClickListener) this);
+	private Button cancel = new Button("Cancel", (ClickListener) this);
+	private Button edit = new Button("Edit", (ClickListener) this);
+	private Button delete = new Button("Delete", (ClickListener) this);
+
+	private ${domainObjectListClass} list;
+	private $domainObjectApplicationClass $domainObjectApplicationVariable;
+	private boolean new${domainClassName}Mode = false;
+	private $importDomainObjectUML $domainVariableName = null;
+	private $domainObjectContainerClass $domainObjectContainerVariable = new $domainObjectContainerClass();
+
+	public ${className}($domainObjectApplicationClass $domainObjectApplicationVariable) {
+	    this();
+		this.$domainObjectApplicationVariable = $domainObjectApplicationVariable;
+	}
+
+	public void setList (${domainObjectListClass} list) {
+        this.list = list;
+    }
+	
+	public ${className}() {}
+
+    public void init() {
+		/*
+		 * Enable buffering so that commit() must be called for the form before
+		 * input is written to the data. (Form input is not written immediately
+		 * through to the underlying object.)
+		 */
+		//setWriteThrough(false);
+##        $SpringContextHelperClass helper = new ${SpringContextHelperClass}();
+##		ClassPathXmlApplicationContext bf = new ClassPathXmlApplicationContext("classpath:$pathSpringApplicationContextConfig");
+        context = WebApplicationContextUtils.
+                getRequiredWebApplicationContext(VaadinServlet.getCurrent().getServletContext());
+		$beanSpringModelServiceVariable = ($beanSpringModelServiceClass)context.getBean("$beanSpringModelServiceVariable");
+	
+		HorizontalLayout footer = new HorizontalLayout();
+		footer.setSpacing(true);
+		footer.addComponent(save);
+		footer.addComponent(cancel);
+		footer.addComponent(edit);
+		footer.addComponent(delete);
+		footer.setVisible(false);
+
+		setFooter(footer);
+
+		/*
+		 * Field factory for overriding how the component for city selection is
+		 * created
+		 */
+		setFormFieldFactory(new DefaultFieldFactory() {
+			@Override
+			public Field createField(Item item, Object propertyId,
+					Component uiContext) {
+				Field f = super.createField(item, propertyId, uiContext);
+#foreach($column in ${table.columns})
+#putColumParamNamingFkPrimitive()
+			   #if($velocityCount==1) if#else else if#end (propertyId.equals("${columnVar}")) {
+#if($isForeignKey)
+#set($reference=$referenceUtils.getReference($column))
+#set ($linkedColumnVariable = $formatUtils.getJavaNameVariable(${reference.foreignColumn.alias}))
+#set ($linkedTableClass = $formatUtils.getJavaName(${reference.foreignTable.alias}))
+                    // drop down list
+					ComboBox field = new ComboBox("$thisColumnVar");
+					BeanContainer<$primaryKeyType, $linkedTableClass> container = 
+                            new BeanContainer<$primaryKeyType, $linkedTableClass>(${linkedTableClass}.class);
+                    container.setBeanIdProperty("${linkedColumnVariable}");
+                    List<$linkedTableClass> l = ${beanSpringModelServiceVariable}.getList(new $linkedTableClass());
+                    container.addAll(l);
+                    field.setContainerDataSource(container);
+                    field.setItemCaptionPropertyId("display");
+                    field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+#if($isMandatory)
+                    field.setNullSelectionAllowed(false);
+#else
+                    field.setNullSelectionAllowed(true);
+#end
+                    field.setValue(l.get(0));
+#elseif($isEnum)
+                    ComboBox field = new ComboBox("$thisColumnVar");
+#if($isMandatory)
+                    field.setNullSelectionAllowed(false);
+#else
+                    field.setNullSelectionAllowed(true);
+#end
+                    for ($enumClassName value : ${enumClassName}.values()) {
+                        field.addItem(value);
+                    }	
+#elseif($columnUtils.isBoolean($column))
+					CheckBox field = (CheckBox) f;
+#elseif($columnUtils.isTime($column))
+					DateField field = (DateField) f;
+#elseif($presentationUtils.isTextArea($column))
+	                TextField tf = (TextField) f;
+	                TextArea field = new TextArea();
+					field.setValue(tf.getValue());
+					field.setCaption(tf.getCaption());
+				    field.setColumns($vaadinPlugin.getDisplayColumns($column));
+                    field.setRows($vaadinPlugin.getDisplayRows($column));
+#else
+#putDefaultColumnFormEntry()
+#end
+#if($hasTypeValidator)
+					//@TODO change it. 
+#end
+#if($isMandatory && !$columnUtils.isPkUserProvided($column))
+					field.setRequired(true);
+#end
+#if ($isPrimaryKey && !$columnUtils.isPkUserProvided($column))
+//					field.setReadOnly(true);
+					field.setVisible(false);
+#end				
+                    return field;
+				}    			
+#end	
+##TODO
+## date, Textarea, Richcontent
+## size
+## stereotype (email, money)
+##				field.setWidth("200px");
+#putDefaultColumnFormEntry()
+                    return field;
+			}
+		});
+	}
+
+	
+#*	
+	public void createFormLayout () {
+#foreach($column in ${table.columns})
+#putColumParamNamingFkPrimitive()
+#if($isForeignKey)
+#set ($reference=$referenceUtils.getReference($column))
+#set ($linkedColumnVariable = $formatUtils.getJavaNameVariable(${reference.foreignColumn.alias}))
+#set ($linkedTableClass = $formatUtils.getJavaName(${reference.foreignTable.alias}))
+        ComboBox ${columnVar}Field = new ComboBox("$thisColumnVar");
+		BeanContainer<$primaryKeyType, $linkedTableClass> container$velocityCount = 
+                new BeanContainer<$primaryKeyType, $linkedTableClass>(${linkedTableClass}.class);
+        container${velocityCount}.setBeanIdProperty("${linkedColumnVariable}");
+        List<$linkedTableClass> l${velocityCount} = ${beanSpringModelServiceVariable}.getList(new $linkedTableClass());
+        container${velocityCount}.addAll(l${velocityCount});
+
+        ${columnVar}Field.setContainerDataSource(container$velocityCount);
+        ${columnVar}Field.setItemCaptionPropertyId("display");
+        ${columnVar}Field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+
+        ${columnVar}Field.setRequired(true);
+        ${columnVar}Field.setNullSelectionAllowed(false);
+        ${columnVar}Field.setValue(l${velocityCount}.get(0));
+#else
+		TextField ${columnVar}Field = new TextField("${columnVar}");
+		${columnVar}Field.setNullRepresentation("");
+#end
+#if($hasTypeValidator)
+		//@TODO change it. 
+#end
+#if($isMandatory && !$columnUtils.isPkUserProvided($column))
+		${columnVar}Field.setRequired(true);
+#end
+#if ($column.isPrimaryKey && !$columnUtils.isPkUserProvided($column))
+		${columnVar}Field.setVisible(false);
+#end				
+        createFormLayout.addComponent(${columnVar}Field);   			
+#end	
+	}	
+*#	
+	public void buttonClick(ClickEvent event) {
+		Button source = event.getButton();
+
+		if (source == save) {
+			/* If the given input is not valid there is no point in continuing */
+			if (!isValid()) {
+				return;
+			}
+			${thisDomainObjectClass} var = get${domainClassName}FromForm ();
+	        ${domainObjectContainerVariable}.save (var);
+			list.loadData();
+##		    //${domainObjectApplicationVariable}.refresh();
+			if (new${domainClassName}Mode) {
+				new${domainClassName}Mode = false;
+			}
+			//setReadOnly(true);
+		} else if (source == cancel) {
+			if (new${domainClassName}Mode) {
+				new${domainClassName}Mode = false;
+				/* Clear the form and make it invisible */
+				setItemDataSource(null);
+			} else {
+				discard();
+			}
+			setReadOnly(true);
+		} else if (source == edit) {
+			setReadOnly(false);
+		} else if (source == delete) {
+			${thisDomainObjectClass} var = get${domainClassName}FromForm ();
+	        ${domainObjectContainerVariable}.delete (var);
+##		    //${domainObjectApplicationVariable}.refresh();
+		}
+	}
+
+	@Override
+	public void setItemDataSource(Item newDataSource) {
+		new${domainClassName}Mode = false;
+
+		if (newDataSource != null) {
+			List<Object> orderedProperties = Arrays.asList(DEFAULT_ALL_COL_ORDER);
+			super.setItemDataSource(newDataSource, orderedProperties);
+			setReadOnly(true);
+			getFooter().setVisible(true);
+		} else {
+			super.setItemDataSource(null);
+			getFooter().setVisible(false);
+		}
+	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		super.setReadOnly(readOnly);
+		save.setVisible(!readOnly);
+		cancel.setVisible(!readOnly);
+		edit.setVisible(readOnly);
+		delete.setVisible(readOnly);
+	}
+
+	public void add$domainClassName() {
+		$domainVariableName = new $importDomainObjectUML();
+		setItemDataSource(new BeanItem($domainVariableName));
+		new${domainClassName}Mode = true;
+		setReadOnly(false);
+	}
+
+	private ${thisDomainObjectClass} get${domainClassName}FromForm () {
+		$thisDomainObjectClass var = new $thisDomainObjectClass();
+#foreach($column in ${table.columns})
+#exposeFormParams()
+#if($isForeignKey)
+#set ($reference=$referenceUtils.getReference($column))
+#set ($linkedColumnVariable = $formatUtils.getJavaNameVariable(${reference.foreignColumn.alias}))
+#set ($linkedColumnClass = $formatUtils.getJavaName(${reference.foreignColumn.alias}))
+#set ($linkedTableClass = $formatUtils.getJavaName(${reference.foreignTable.alias}))
+#set ($linkedColumnType = $commonUtils.getJavaType($reference.foreignColumn))
+		if (getField("$columnVar").getValue()!=null) {
+		   $linkedColumnType v = $convertMethod(getField("$columnVar").getValue());
+		   $linkedTableClass e = new $linkedTableClass();
+		   e.set${linkedColumnClass}(v);
+		   var.set${thisColumnClass}(e);
+        }
+#else
+        if (getField("$columnVar").getValue()!=null)
+   		   var.set${columnClass}($convertMethod(getField("$columnVar").getValue()));
+#end
+#end
+#*
+#foreach($column in ${table.primaryKeyColumns})
+#putColumParamNamingFkPrimitive()
+#exposeFormParams()
+##if(!$isForeignKey && $columnUtils.isPkUserProvided($column))
+        if (getField("$columnVar").getValue()!=null)
+   		   ${domainVariableName}.set${columnClass}($convertMethod(getField("$columnVar").getValue()));
+##end
+#end
+#foreach ($column in ${table.attributes})
+#exposeFormParams()
+        if (getField("$columnVar").getValue()!=null)
+   		   ${domainVariableName}.set${columnClass}($convertMethod(getField("$columnVar").getValue())); 
+#end
+#foreach ($reference in $table.parents)
+#exposeFormParentParams()
+        if (getField("$localColumnVariable").getValue()!=null)
+   		   ${domainVariableName}.set${localColumnClass}_($convertMethod(getField("$localColumnVariable").getValue())); 
+#end
+*#
+		return var;
+	}
+    protected Short getShort (Object stringObject) {
+        return Short.valueOf (getString(stringObject));
+    }
+	
+    protected Integer getInteger(Object stringObject) {
+	   return Integer.valueOf(getString(stringObject));
+	}
+
+	protected String getString (Object stringObject) {
+        return stringObject.toString();
+    }
+
+    protected java.math.BigDecimal getBigDecimal (Object stringObject) {
+        return java.math.BigDecimal.valueOf(getDouble(stringObject));
+    }
+
+    protected Long getLong (Object stringObject) {
+        return Long.valueOf (getString(stringObject));
+    }
+
+    protected Double getDouble (Object stringObject) {
+        return Double.valueOf (getString(stringObject));
+    }
+
+    protected java.math.BigInteger getBigInteger (Object stringObject) {
+        return java.math.BigInteger.valueOf(getLong(stringObject));
+    }
+	
+	protected Date getDate (Object o) {
+	    return (Date)o;
+	}
+
+	protected Boolean getBoolean (Object stringObject) {
+	    return Boolean.valueOf(getString(stringObject));
+	}
+		
+	protected Blob getBlob (Object o) {
+	    return (Blob)o;
+	}	
+	
+	protected byte[] getBytes (Object o) {
+        return ((String)o).getBytes();
+    }
+	
+	protected Clob getClob (Object o) {
+	   return (Clob)o;
+	}	
+
+	protected Timestamp getTimestamp (Object o) {
+##       return (Timestamp)o; 
+	   return new Timestamp(((Date)o).getTime()); 
+##       return new Timestamp(Calendar.getInstance().getTimeInMillis());
+	}
+
+        
+}

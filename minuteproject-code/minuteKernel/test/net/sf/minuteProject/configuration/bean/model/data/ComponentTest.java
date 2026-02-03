@@ -9,7 +9,7 @@ import net.sf.minuteProject.configuration.bean.model.data.impl.DDLUtils.TableDDL
 import net.sf.minuteProject.utils.ComponentUtils;
 import junit.framework.TestCase;
 
-public class ComponentTest extends TestCase{
+public class ComponentTest {
 
 	//create components from table (with column)
 	public void testCreateComponentFromTable() {

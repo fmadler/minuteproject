@@ -1,0 +1,46 @@
+#exposeOXSpecific()
+#putOXTemplateDefinition()
+#!/bin/sh
+
+# copy me into a jenkins script shell invoker
+# of course the properties MP_HOME and OX_HOME must be set
+
+
+# GENDIR=$(cd `dirname $0`;pwd)
+# set GENDIR to your jenkins minuteproject's openxava job artifacts are
+# ex : GENDIR="/var/lib/jenkins/jobs/my openxava job/workspace/OPENXAVA"
+GENDIR=<toset>
+
+##create OX project
+cd $OX_HOME/workspace/OpenXavaTemplate
+ant -f CreateNewProject.xml -Dproject=$applicationOX
+
+cp $MP_HOME/target/mp-openxava/*.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib
+#if($embedJdbcDriver)
+cp $MP_HOME/application/lib/extra/*.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib	
+cp $OX_HOME/tomcat/lib/jta.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib	
+cp $OX_HOME/tomcat/lib/ejb.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib	
+#end
+##copy generated artifacts into $applicationOX workspace
+cd "$GENDIR"
+cp -R * ${OX_HOME}/workspace/$applicationOX 
+
+##overwrite tomcat context.xml
+cp other/tomcat/snippet/context.xml $OX_HOME/tomcat/conf
+
+##add jdbc driver dep in tomcat\lib
+cp $MP_HOME/application/lib/extra/*.jar $OX_HOME/tomcat/lib
+
+cd $OX_HOME/workspace/$applicationOX
+ant -f mp4openxava-build.xml
+
+## override addons
+cd "$GENDIR"
+cp -R web/naviox ${OX_HOME}/workspace/Addons/web/naviox
+cd $OX_HOME/workspace/$applicationOX
+ant
+
+cd $OX_HOME/workspace/$applicationOX
+ant generatePortlets
+
+cd "$GENDIR"

@@ -1,0 +1,47 @@
+#exposeADFDataBindingControlSpecific()
+#exposeADFQuerySpecific()
+#putImportQuerySDDBean()
+#exposeADFFacesCommon()
+#set($entityADFVariable=$sddInputBeanVariable)
+#set($tableVariableName=$sddInputBeanVariable)
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel"
+                version="11.1.1.61.92" id="$className"
+                Package="$packageName">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+   <methodIterator Binds="get${sddOutputBeanClass}Detail.result"
+                    DataControl="${dataControlRef}" RangeSize="100"
+                    BeanClass="${sddOutputBeanImport}"
+                    id="${sddOutputBeanVariable}Iterator" >
+    </methodIterator>
+#if($toImpl)
+    <accessorIterator MasterBinding="${sddOutputBeanVariable}Iterator"
+                      Binds="${sddOutputBeanVariable}" RangeSize="25"
+                      DataControl="${dataControlRef}"
+                      BeanClass="${sddInputBeanImport}"
+                      id="${sddOutputBeanVariable}Iterator"/>
+#end
+  </executables>
+  <bindings>
+    <methodAction id="get${sddOutputBeanClass}Detail" RequiresUpdateModel="true"
+                  Action="invokeMethod" MethodName="get${sddOutputBeanClass}Detail"
+                  IsViewObjectMethod="false" DataControl="${dataControlRef}"
+                  InstanceName="${dataControlRef}.dataProvider">
+      <NamedData NDName="${sddOutputBeanVariable}" NDValue="#{pageFlowScope.${sddOutputBeanVariable}}"
+                 NDType="${sddOutputBeanImport}"
+                 NDOption="1"/>
+    </methodAction>
+#foreach ($column in $outputBean.columns)  
+#putColumnParamNaming()
+    <attributeValues IterBinding="${sddOutputBeanVariable}Iterator"
+                     id="${columnVar}">
+      <AttrNames>
+        <Item Value="${columnVar}"/>
+      </AttrNames>
+    </attributeValues>
+#end 
+
+  </bindings>
+</pageDefinition>

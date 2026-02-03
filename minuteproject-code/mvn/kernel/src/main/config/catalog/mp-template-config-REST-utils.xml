@@ -1,0 +1,29 @@
+<target name="JPA2">		
+	<architecture-target name="JPA2" description="JPA2 architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="entitySecurityUtils" className="net.sf.minuteProject.utils.security.EntitySecurityUtils"/>
+	<plugin name="jpa2Utils" className="net.sf.minuteProject.plugin.jpa.Jpa2Utils"/>
+	<plugin name="persistenceUtils" className="net.sf.minuteProject.plugin.persistence.PersistenceUtils"/>
+	<plugin name="jaxbUtils" className="net.sf.minuteProject.utils.binding.JaxbUtils"></plugin>
+	<plugin name="extensionUtils" className="net.sf.minuteProject.utils.ExtensionUtils"></plugin>	
+
+	<template-target 
+    	name="REST set"
+		libdir=""
+		outputdir="src/main/java"
+		belongToPackage="true">
+
+		<template name="REST.jackson.serializer.date" templateFileName="REST.jackson.serializer.date.vm" 
+			subdir="" outputsubdir="" technicalPackage="utils"
+			file-prefix="" file-suffix="JacksonDateSerializer" 
+			add-model-dir-name="false"
+			model-specific="true" 
+			has-updatable-nature="true"			
+			add-model-name="false"
+			file-extension="java">
+		</template>
+
+	</template-target>
+  	         		
+</target>

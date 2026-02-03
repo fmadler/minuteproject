@@ -1,0 +1,26 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+#exposeSpringBootModelSpecific()
+#if($configuration.isSingleModel())
+application.title=$model.name App
+spring.application.name=$model.name
+#else
+application.title=$application.name App
+spring.application.name=$application.name
+#end
+server.port=8081
+
+## for serialization when calling a SP that does not return any value
+spring.jackson.serialization.FAIL_ON_EMPTY_BEANS=false
+
+# OpenAPI custom properties
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+
+# activeProfiles
+spring.profiles.active=@activeProfiles@
+
+management.endpoints.web.exposure.include=health,info,logfile,loggers
+management.endpoint.loggers.enabled=true
+management.endpoint.logfile.enabled=true
+logging.file.name=logs/score.log

@@ -1,0 +1,32 @@
+<Context>
+    <!-- 
+    	to use only if you do not configure a DS from command line (recommanded way)
+     --> 
+#foreach ($model in $configuration.models())
+#exposeVariableModelSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+#exposeJdbc()
+#exposeJPA2Specifics()     
+    <Resource
+            name="$datasourceName"
+            auth="Container"
+            type="javax.sql.DataSource"
+
+            url="$datasource.url"
+            username="$datasource.username"
+            password="$datasource.password"
+
+            driverClassName="$datasource.driverClassName"
+
+            maxActive="20"
+            maxIdle="1"
+            maxWait="10000"
+            removeAbandoned="true"
+            removeAbandonedTimeout="60"
+            logAbandoned="true"
+
+            validationQuery="SELECT 1"
+            testOnBorrow="true"
+            />
+#end
+</Context>

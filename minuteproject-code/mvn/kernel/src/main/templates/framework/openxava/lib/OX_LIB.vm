@@ -1,0 +1,227 @@
+#* 
+use BslaLibrary.vm columnJavaNaming instead of 
+#macro (columnJavaNaming)
+#if ($javaUtils.isReservedWord($columnVar))
+#set($columnVar="${columnVar}_Name")
+#set($columnClass="${columnClass}_Name")
+#end
+#end
+*#
+
+#macro (putColumnInfo)
+#set ($editorComboListFullPath=$commonUtils.getArtifactRelativePathDirAndFullName($column, $template, "OXComboListJSP"))
+#set ($editorComboListName=$commonUtils.getTemplateFileName($column, $template, "OXComboListJSP"))
+#end
+
+#macro (writeTabParentSemanticReference)
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#set($semanticReference = $linktableDB.semanticReference)
+#if ($tableUtils.isReferenceDataContentType($linktableDB))   
+#if($table.hasAttribute())
+     +", "+
+#end
+#foreach ($chunk in $semanticReference.semanticReferenceBeanPath)
+      "${linkedTableVariable}.$chunk#if ($velocityCount!=$semanticReference.semanticReferenceBeanPath.size()), "+
+#else "
+#end 
+#end 
+#end
+#end
+#end
+
+#macro (writeTabDefaultProperties)
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$column.isLob())
+     +", $columnVar "
+#end
+#end
+#end
+
+#macro (writeViewChildrenMember)
+        members=
+          "" 	
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#if(!(!$tableUtils.isReferenceDataContentType($linktableDB) && $tableUtils.isReferenceDataContentType($table)))        
+#if(!$linktableDB.isManyToMany())
+	    + "${childrenListVariable} { ${childrenListVariable} };" 
+#end
+#end
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+	    + "${childrenListVariable};"
+#end
+#end
+
+#macro (exposeOXhelp)
+#set($OXhelpDirectory=$openXavaUtils.getHelpDirectory())
+#set($OXhelpFileExtension=$openXavaUtils.getHelpFileExtension())
+#end
+
+#macro (exposeOXSpecific)
+#set ($configuration = $model.configuration)
+#set ($applicationOX=$configuration.name)
+#end
+
+#macro (exposeOXEntitySpecific)
+#putOXTemplateDefinition()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#if ($addSpringSecurity)
+#set($url=$openXavaUtils.getModuleUrlAbsoluteViaSlash(${applicationOX},${tableClassName}))
+#else
+#set($url=$openXavaUtils.getModuleUrl(${applicationOX},${tableClassName}))
+#end
+#end
+
+#macro (exposeTabAll)
+#set ($hasTabAll = $openXavaUtils.hasTabAll($table))
+#set ($tabinfos = $openXavaUtils.getTabAll($table))
+#end
+
+#macro (exposeTabSimple)
+#set ($hasTabSimple = $openXavaUtils.hasTabSimple($table))
+#set ($tabinfos = $openXavaUtils.getTabSimple($table))
+#end
+
+#macro (exposeTabWithRef)
+#set ($hasTabWithRef = $openXavaUtils.hasTabWithRef($table))
+#set ($tabinfos = $openXavaUtils.getTabWithRef($table))
+#end
+
+#macro (exposeViewParentSemanticRef)
+#set ($tabinfos = $openXavaUtils.getParentSemanticReferenceEntityVariable($table))
+#end
+
+#macro (exposeTabProperties)
+properties=
+#foreach($chunk in $tabinfos)
+    #if ($velocityCount!=1)+", #else "#end $chunk "
+#end
+#end
+
+#macro (exposeViewParentSemanticRefProperty)
+#foreach($chunk in $tabinfos)
+        + "$chunk ;"
+#end
+#end
+
+#macro (oldTab)
+@Tabs({
+@Tab(properties=""
+#writeTabDefaultProperties()
+#writeTabParentSemanticReference()	
+)#if($table.hasAttribute()),
+@Tab(
+name = "${className}Tab",
+properties=""
+#writeTabDefaultProperties()
+)
+#end
+,
+@Tab(
+name = "${className}TabWithRef",
+properties=""
+#writeTabDefaultProperties()
+#writeTabParentSemanticReference()	
+)
+})
+#end
+
+#macro (OxJPAFKisPK)
+#if($localColumn.isPrimaryKey())
+#set($insertableUpdatable=", insertable=false, updatable=false")
+#else
+#set($insertableUpdatable="")
+#end
+#end
+
+#macro (exposeOXDomainSpecific)
+#getTemplatePropertyValue("single-map-limitation")
+#if ($value.equals("true"))
+#set($putCascade="true")
+#set($parentVariableFromParentClass="true")
+#else
+#set($putCascade="false")
+#set($parentVariableFromParentClass="false")
+#end
+#end
+
+#macro (exposeOXActionSpecific)
+#exposeOXTemplate()
+#set ($actionClass = $commonUtils.getTemplateClassName($action, $template, $templateActionEntityOpenXava))
+#set ($actionVariable = $commonUtils.getJavaNameVariableFirstLetter($actionClass))
+#set ($actionImport = $commonUtils.getEntityLevelTemplateFullPath($action, $template, $templateActionEntityOpenXava))
+#end
+
+#macro (exposeOXTemplate)
+#set ($templateActionOpenXava = "ActionOX")
+#set ($templateActionEntityOpenXava = "ActionEntityOX")
+#set ($templateActionSDDOpenXava = "ActionOX.SDD.query")
+#end
+
+#macro (putOXTemplateDefinition)
+#set($addSpringSecurity=$template.getPropertyValue("add-spring-security",false))
+#set($hasABLNature=$template.hasPropertyValue("add-automated-business-logic",false))
+#set($enableHibernateEhcache=$template.hasPropertyValue("openxava-enable-hibernate-ehcache",false))
+#set($embedJdbcDriver=$template.hasPropertyValue("embed-driver",false))
+#set($autobizlogicVersion=$template.getPropertyValue("add-automated-business-logic","2.1.4"))
+#end
+
+#macro(exposeOXVariableActionSpecific)
+#set($isAction=$template.getPropertyValue("isAction",true))
+#if($isAction)
+#set($table=$action.parent)
+#end
+#exposeVariableEntitySpecific()
+#set ($templateOXTransferDomainObject="TransferDomainObjectUML")
+#set ($domainImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateOXTransferDomainObject))
+#if($isAction)
+#exposeVariableActionSpecific()
+#end
+#end
+
+#macro (exposeSDDOX)
+#set ($templateSDDInputBean = "SDDInputBean")
+#set ($domainImport = $commonUtils.getEntityLevelTemplateFullPath($model, $inputBean, $template, $templateSDDInputBean))
+#set ($tableClassName = $commonUtils.getTemplateClassName($inputBean, $template, $templateSDDInputBean))
+#end
+
+#macro (putOXTiles $title $content)
+#exposeVariableModelSpecific() 
+#set ($applicationOX=$configuration.name)
+#set ($applicationLabel=$formatUtils.getJavaName($applicationOX))
+<%@ include file="imports.jsp"%>
+
+<%
+if (request.getAttribute("style") == null) {	
+	request.setAttribute("style", org.openxava.web.style.Style.getInstance());
+}
+%>
+
+<jsp:useBean id="context" class="org.openxava.controller.ModuleContext" scope="session"/>
+<jsp:useBean id="style" class="org.openxava.web.style.Style" scope="request"/>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+	<title>${title}</title>
+	<link href="<%=request.getContextPath()%>/xava/style/<%=style.getCssFile()%>" rel="stylesheet" type="text/css"> 
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/xava/style/mp.css" />	
+</head>
+<body bgcolor="#ffffff">
+	<%-- layer for menu--%>
+	<div id="menu">
+		<%@ include file="../mp/menu.jsp"%>
+	</div>
+	$content
+	<div id="content">
+		<%@ include file="../mp/footer.jsp"%>
+	</div>
+</body>
+</html>	
+#end

@@ -1,0 +1,5 @@
+#set ($sddTargetInputBeanClass = $formatUtils.getJavaName(${query.getInputBean().getName()}))
+    <select class="form-control" id="$sddTargetInputBeanClass"
+            name="country" >
+        <option>Select...</option>
+    </select>

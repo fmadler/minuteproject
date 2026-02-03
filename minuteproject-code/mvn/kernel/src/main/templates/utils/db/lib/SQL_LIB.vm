@@ -1,0 +1,53 @@
+#macro(putTriggerTableHisto $action)
+INSERT INTO ${table.name}_H (
+#foreach($column in ${table.columns})
+#putColumnParams()
+#if($velocityCount>1),#else #end$column.name
+#end
+,AUD_NUMBER
+,AUD_ACTION
+,AUD_USER
+,AUD_DATE) 
+VALUES (
+#foreach($column in ${table.columns})
+#putColumnParams()
+#if($velocityCount>1),#else #end:new.$column.name
+#end
+,(SELECT NVL(MAX(AUD_NUMBER),0) + 1 FROM ${table.name}_H h 
+WHERE 
+#foreach($column in ${table.columns})
+#putColumnParams()
+#if($velocityCount>1) AND #else #end h.$column.name = :new.$column.name
+#end
+)
+,'$action'
+,NVL(:new.AUD_USER,'unknown')
+,SYSDATE
+); 
+#end
+
+#macro(createHistoryTable)
+CREATE TABLE ${table.name}_H (
+#createTableColumn()
+,AUD_NUMBER INTEGER
+,AUD_ACTION CHAR(3)
+,AUD_USER VARCHAR(20)
+,AUD_DATE TIMESTAMP
+) 
+; 
+#end
+
+#macro (createTable $tName)
+create table $tName (
+#createTableColumn()
+);
+#end
+
+#macro (createTableColumn)
+#foreach($column in ${table.columns})
+#putColumnParams()
+#set($columnSQLType=$sqlUtils.getSqlTypeFormat($column, $database.type))
+#set($columnSQLSize=$sqlUtils.getSqlTypeSizeFormat($column, $database.type))
+#if($velocityCount>1),#else #end$column.name $columnSQLType ##$columnSQLSize
+#end
+#end

@@ -1,0 +1,103 @@
+#generatorSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+#set ($networkName = $template.name+"_network")
+#exposeJdbc()
+version: '3'
+services:
+#if ($dockerUtils.hasDbScope($template))
+
+  flyway_clean:
+    image: flyway/flyway
+    command: -url=jdbc:mysql://db -schemas=${datasource.schema} -user=${datasource.username} -password=${datasource.password} -connectRetries=60 clean
+    volumes:
+      - ./MODEL/migration/src/main/resources/${application.name}/clean/:/flyway/sql
+    depends_on:
+      - db
+
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:mysql://db -schemas=${datasource.schema} -user=${datasource.username} -password=${datasource.password} -connectRetries=60 migrate
+    volumes:
+      - ./MODEL/migration/src/main/resources/${application.name}/migration/:/flyway/sql
+    depends_on:
+      - flyway_clean
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${datasource.password}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --lower_case_table_names=1
+    ports:
+      - 3307:3306
+  networks:
+    - ${networkName}
+#end
+#if ($dockerUtils.hasTomcatScope($template))
+  web:
+    image: tomcat:latest
+    # Environment variables do not appear to be getting loaded the first time Tomcat starts!
+    environment:
+      JDBC_URL: jdbc:mysql://db:3306/${datasource.schema}?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true
+      JDBC_USER: ${datasource.username}
+      JDBC_PASS: ${datasource.password}
+    ports:
+      - "80:8080"
+    volumes:
+      - ./APPS/__RELEASES/tomcat:/usr/local/tomcat/webapps
+    links:
+      - db
+    networks:
+      - ${networkName}
+#end
+#if ($dockerUtils.hasApacheScope($template))
+#end
+#if ($dockerUtils.hasElasticSearchScope($template))
+##https://hub.docker.com/r/dimmaryanto93/logstash-input-jdbc-mysql
+##or multiple nodes https://markheath.net/post/exploring-elasticsearch-with-docker
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    ports:
+      - 9300:9300
+      - 9200:9200
+    environment:
+      - transport.host=127.0.0.1
+      - cluster.name=docker-cluster
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - ${networkName}
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.6.0
+    ports:
+      - 5601:5601
+    networks:
+      - ${networkName}
+    depends_on:
+      - elasticsearch
+  logstash:
+    ##todo change with official logstash distrib
+    image: dimmaryanto93/logstash-input-jdbc-plugin:6.6.0
+    environment:
+      - LOGSTASH_JDBC_URL=$jdbcDriverClassName
+      - LOGSTASH_JDBC_DRIVER=$jdbcUrl
+      - LOGSTASH_JDBC_DRIVER_JAR_LOCATION=mysql-connector-java.jar
+      - LOGSTASH_JDBC_USERNAME=$jdbcUsername
+      - LOGSTASH_JDBC_PASSWORD=$jdbcPassword
+    ports:
+      - 9600:9600
+      - 5044:5044
+    networks:
+      - ${networkName}
+    volumes:
+      - ./DOCKER/LOGSTASH/logstash-input-jdbc.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
+      - kibana
+      - mysql
+volumes:
+  elasticsearch_data:
+  mysql_data:
+networks:
+  ${networkName}:
+#end

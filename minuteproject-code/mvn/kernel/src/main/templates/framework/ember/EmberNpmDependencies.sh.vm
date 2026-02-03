@@ -1,0 +1,71 @@
+ember new ui
+cd ui
+pnpm i ember-bootstrap
+pnpm i lodash
+ember install ember-cli-typescript@latest
+ember install @fortawesome/ember-fontawesome
+pnpm i --save-dev @fortawesome/free-solid-svg-icons
+
+pnpm install querystring
+pnpm install url
+pnpm install append-query
+
+pnpm install sass
+pnpm install ember-cli-sass
+
+
+ember install ember-truth-helpers
+ember install ember-cli-string-helpers 
+ember install ember-concurrency
+ember install ember-basic-dropdown
+ember install ember-power-select
+
+pnpm install ember-truth-helpers
+pnpm install ember-cli-string-helpers
+pnpm install ember-composable-helpers
+## TODO add in ember-cli-build.js
+#*
+https://github.com/dockyard/ember-composable-helpers
+module.exports = function(defaults) {
+  var app = new EmberApp(defaults, {
+    'ember-composable-helpers': {
+      only: ['inc', 'dec', 'pipe'],
+      except: ['filter-by']
+    }
+  });
+*#
+pnpm install cypress --save-dev
+
+
+##pnpm install ember-cli-sass
+# https://stackoverflow.com/questions/56179210/how-do-i-install-bootstrap-4-template-to-ember-web-project
+
+## https://github.com/FortAwesome/ember-fontawesome
+ember install @fortawesome/ember-fontawesome
+npm i --save-dev @fortawesome/free-solid-svg-icons
+
+
+## how to use fa icon directlty ?
+## npm install --save @fortawesome/fontawesome-free
+
+ember install ember-router-scroll
+
+ember install @ember/render-modifiers
+
+ember install ember-composable-helpers
+
+ember install tracked-built-ins
+
+
+##ember install ember-cli-fastboot
+
+# SEO
+
+##ember install ember-cli-head
+##ember install ember-page-title
+##ember install ember-cli-meta-tags
+
+   # faster rendition
+ember install ember-in-viewport
+
+ember install ember-local-storage

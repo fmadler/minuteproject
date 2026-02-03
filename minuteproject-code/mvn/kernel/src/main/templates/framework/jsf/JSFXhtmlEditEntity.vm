@@ -1,0 +1,97 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#exposeSeparator()
+#exposePrimefacesConfig()
+#set($hasDisplayableChildren=$presentationUtils.hasDisplayableChildren($table))
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="$primefacesNamespace"
+	xmlns:${model.name}="http://java.sun.com/jsf/composite/${model.name}">
+<!-- those two empty p : outputLabel are totally inbelievable but there seems to be needed 
+     when the artifact is used from a ui:include otherwise there is gap of one column and the
+	 label, field, validation are not aligned...&nbsp;
+-->
+<p:outputLabel> </p:outputLabel>
+<p:outputLabel> </p:outputLabel>
+
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided && !$isForeignKey)
+#putJSFColumnSnippet2()
+##$columnVar =  $column.alias
+#end
+#end
+#foreach ($columnGroup in $tableUtils.extractFieldGroup(${table.attributes}, $table))
+#foreach ($column in $columnGroup)
+#putColumnParams()
+#columnJavaNaming()
+#putJSFColumnSnippet2()
+#end
+#end
+#foreach ($reference in $tableUtils.getParentOrderByReferenceData($table))
+#putReferenceParams2()
+#set ($column=$localColumn)
+#putColumnParams()
+#columnJavaNaming()
+#if($tableUtils.isAdminContentType($linktableDB))
+#putJSFParentDropDownListSnippet()
+#else
+##TODO change childrenListClass is normally for children unique but not unique for parent lookup
+#putJSFParentAffectationSnippet($velocityCount)
+#end
+#end
+#foreach ($reference in $tableUtils.getParentOrderByReferenceData($table))
+#putReferenceParams2()
+#if(!$tableUtils.isAdminContentType($linktableDB))
+#set ($entityListRowJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($linktableDB, $template, $templateEntityListRowJSF))
+#set ($entityLinkControllerJSFClass = $commonUtils.getTemplateClassName($linktableDB, $model, $templateEntityControllerJSF))
+#set ($entityLinkControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityLinkControllerJSFClass))
+#set ($childrenListClass = $childrenListClass+$velocityCount)
+<p:outputPanel id="container${childrenListClass}" >
+ <p:dialog id="suc${childrenListClass}Dialog" message="#{i18n.affectionProcessMessage}" rendered="#{${entityControllerJSFVariable}.isRender${localColumnClass}()}"
+		header="#{i18n.affectionProcessHeader}" severity="alert" widgetVar="suc${childrenListClass}Dialog" appendTo="@(body)">
+	<h:form id="suc${childrenListClass}Form">
+    <p:dataTable value="#{${entityLinkControllerJSFVariable}.lazyModel}" 
+        id="table$childrenListClass" 
+        var="item" 
+        paginator="true" rows="10" 
+        lazy="true"
+		selection="#{${entityLinkControllerJSFVariable}.selected${linkedTableClass}}" selectionMode="single"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+        rowsPerPageTemplate="10,20,50"
+		emptyMessage="#{i18n.dataTableEmptyMessagePart1} $linkedTableClass #{i18n.dataTableEmptyMessagePart2}"> 
+
+        <f:facet name="header">  
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($linktableDB))
+#set($tableLabelVar=$commonUtils.getJavaNameVariableFirstLetter($tableLabel))
+#set($tableVariableNames=$i18nUtils.plurialize($tableLabelVar))
+            #{i18n.listOf} ${tableVariableNames}  
+        </f:facet>
+        <ui:include src="/$entityListRowJSFLocation">
+           <ui:param name="isSemanticReference" value="false" />
+         </ui:include>
+		 <p:column>
+            <p:commandButton value="#{i18n.affect}" id="affectButton${linkedColumnClass}" update="#{affectFormId}:lbl${localColumnClass}-#{idValue}" actionListener="#{${entityControllerJSFVariable}.desactivateRender${localColumnClass}}" title="#{i18n.affectTitle}" onclick="PF('suc${childrenListClass}Dialog').hide()" process="@this">
+				<f:setPropertyActionListener value="#{item.${linkedColumnVariable}}" target="#{${entityControllerJSFVariable}.selected${tableClassName}.${localColumnVariable}_}" />
+				<f:setPropertyActionListener value="#{item}" target="#{${entityControllerJSFVariable}.selected${tableClassName}.${localColumnVariable}}" />
+            </p:commandButton >
+		  </p:column>
+    </p:dataTable>
+   </h:form>
+ </p:dialog>
+</p:outputPanel>
+#end
+#end
+
+<!-- those two empty p : outputLabel are totally inbelievable but there seems to be needed 
+     when the artifact is used from a ui:include otherwise there is gap of one column and the
+	 label, field, validation are not aligned...&nbsp;
+-->
+<p:outputLabel> </p:outputLabel>
+<p:outputLabel> </p:outputLabel>
+
+</html>

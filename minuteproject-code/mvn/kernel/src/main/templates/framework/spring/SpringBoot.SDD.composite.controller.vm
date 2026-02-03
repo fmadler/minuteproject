@@ -1,0 +1,112 @@
+#exposeBackendTechnology()
+#putImportQuerySDDBeanV2()
+#exposeSpringLoggingModelSpecific()
+#exposeCompositeSpecific()
+#putImportCompositeSDDBeanV2()
+#set($thisClassName=$className)
+#exposeSDDCompositeSpring()
+#macro(resourceCompositeSignature $param $showType)
+## TODO remove duplicates
+#if (!$column.hasBeenDuplicated() && !$column.isImplicit())
+#putColumnParamNaming()
+#if($columnUtils.isTime($column))
+#set($columnType=$dateParamImport)
+#end
+			#if($velocityCount>1),#end @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end) #if($showType)#if(!$column.isArray())$columnType#else String#end #end$columnVar
+#end
+#end
+package $packageName;
+$!updatedAreaImport
+
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import $sddInputCompositeBeanImport;
+import $sddOutputCompositeBeanImport;
+#foreach ($q in $composite.getInputComposite().getQueries())
+#set ($query = $q.query)
+#exposeSpringBootQuerySpecific()
+import ${springBootJdbcTemplateRepositoryImport};
+#putImportQuerySDDBeanV2()
+import ${sddInputBeanImport};
+import ${sddOutputBeanImport};
+#end
+import $auditLoggingAnnotationImport;
+
+/**
+*
+* <p>Title: ${className}</p>
+*
+* <p>Description: ${className} Spring Controller </p>
+*
+*/
+@RequestMapping ("/sdd/composite/${sddInputCompositeBeanClass}")
+@Controller
+@Slf4j
+@AllArgsConstructor
+@Tag(name = "${className} API", description = "operation about ${sddInputCompositeBeanClass}")
+public class ${className} {
+
+#foreach ($q in $composite.getInputComposite().getQueries())
+#set ($query = $q.query)
+#exposeSpringBootQuerySpecific()
+    ${springBootJdbcTemplateRepositoryClass} $springBootJdbcTemplateRepositoryVariable;
+#end
+
+    @GetMapping
+    @Operation(summary = "${className}")
+    @ResponseBody
+    @${auditLoggingAnnotationClass} (logLevel="INFO")
+    public $sddOutputCompositeBeanClass execute (
+#foreach($column in ${composite.distinctInputColumn})
+#resourceCompositeSignature("RequestParam", true)
+#end
+    ) {
+        $sddInputCompositeBeanClass input =
+			new $sddInputCompositeBeanClass(
+#foreach($column in ${composite.distinctInputColumn})
+#putColumnParamNaming()
+				#if($velocityCount>1),#end $columnVar
+#end
+			);
+        $sddOutputCompositeBeanClass output = new $sddOutputCompositeBeanClass();
+#foreach ($q in $composite.getInputComposite().getQueries())
+#set ($query = $q.query)
+#set($hasQueryInputParam = ${query.getInputBean().getColumnCount()}>0)
+#exposeSpringBootQuerySpecific()
+#putImportQuerySDDBean()
+#if ($tableUtils.isCardinalityOneToOne($query.getOutputBean()))
+        ${sddOutputBeanClass} ${sddOutputBeanVariable} = ${springBootJdbcTemplateRepositoryVariable}.execute (#if($hasQueryInputParam)input.get${sddInputBeanClass}()#end).stream().findFirst().orElse(new $sddOutputBeanClass());
+        output.set${sddOutputBeanClass} (${sddOutputBeanVariable});
+#else
+        List<${sddOutputBeanClass}> ${sddOutputBeanVariable}s = ${springBootJdbcTemplateRepositoryVariable}.execute (#if($hasQueryInputParam)input.get${sddInputBeanClass}()#end);
+        output.set${sddOutputBeanClass}s (${sddOutputBeanVariable}s);
+#end
+#end
+        return output;
+    }
+
+}

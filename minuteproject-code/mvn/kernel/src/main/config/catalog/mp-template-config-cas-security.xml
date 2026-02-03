@@ -1,0 +1,51 @@
+<target name="springboot"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="./mp-template-config.xsd">	
+	<architecture-target name="cas security authentication" description="CAS Security Authentication"/>
+
+	<template-target
+			name="CAS resources"
+			outputdir="src/main/resources"
+			belongToPackage="true">
+
+		<template name="Cas.ecas-config.xml" templateFileName="Cas.ecas-config.xml.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="xml" file-prefix="" file-suffix="ecas-config"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="securityAuthenticationType"></property>
+			<property name="property-presence-value" value="cas"></property>
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="CAS server config"
+			outputdir="src/main/webapp/WEB-INF"
+			belongToPackage="true">
+
+		<template name="Cas.WebXml" templateFileName="Cas.WebXml.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="xml" file-prefix="" file-suffix="web"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="securityAuthenticationType"></property>
+			<property name="property-presence-value" value="cas"></property>
+		</template>
+
+		<template name="Cas.WeblogicXml" templateFileName="Cas.WeblogicXml.vm"
+				  subdir="" outputsubdir="" technicalPackage=""
+				  file-extension="xml" file-prefix="" file-suffix="weblogic"
+				  scope-specific-value="application" add-model-name="false" add-package-name="false"
+				  check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue"
+		>
+			<property name="property-presence" value="securityAuthenticationType"></property>
+			<property name="property-presence-value" value="cas"></property>
+		</template>
+
+	</template-target>
+
+</target>

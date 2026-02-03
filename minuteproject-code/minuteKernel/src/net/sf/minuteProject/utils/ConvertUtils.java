@@ -1,12 +1,9 @@
 package net.sf.minuteProject.utils;
 
 import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Calendar;
 
 import net.sf.minuteProject.configuration.bean.model.data.Column;
-import net.sf.minuteproject.model.db.type.FieldType;
+import net.sf.minuteProject.model.db.type.FieldType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

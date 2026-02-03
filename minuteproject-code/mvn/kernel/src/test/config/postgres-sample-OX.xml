@@ -1,0 +1,33 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+        </conventions>
+		<model name="sample" version="1.0" package-root="net.sf.mp.demo">
+			<data-model>
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.postgresql.Driver</driverClassName>
+					<url>jdbc:postgresql://localhost:5432:postgres?searchpath=public</url>
+					<username>postgres</username>
+					<password>postgres</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="project">
+					<condition type="package" startsWith="STAT" result="statistics"></condition>
+				</business-package>
+
+			</business-model>
+		</model>
+
+		<targets catalog-entry="OpenXava" />
+
+	</configuration>
+</generator-config>

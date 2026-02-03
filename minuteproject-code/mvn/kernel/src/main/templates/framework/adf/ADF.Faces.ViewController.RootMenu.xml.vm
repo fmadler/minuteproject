@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<menu xmlns="http://myfaces.apache.org/trinidad/menu">
+  <groupNode id="$model.name" label="$model.name"
+             idref="itemNode_HomePage">
+    <itemNode id="itemNode_HomePage" label="Home" action="gotoHomePage"
+              focusViewId="/homePage"/>
+    <sharedNode ref="#{administration_menu_model}"/>
+  </groupNode>
+</menu>

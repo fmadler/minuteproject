@@ -1,0 +1,126 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#exposeSeparator()
+#exposePrimefacesConfig()
+#set ($templateJPA2DomainObject=$template.getPropertyValue("DomainEntityUMLTemplate","DomainObjectUML"))
+#set($hasDisplayableChildren=$presentationUtils.hasDisplayableChildren($table))
+#set($refCnt=1)
+#set($thisEntityControllerJSFVariable = $entityControllerJSFVariable)
+#set($thisDomainObjectClass = $domainObjectClass)
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+#setJsfPrimefacesNamespace()
+>
+ <h:form id="form${tableClassName}"> 
+     <p:growl id="growl" showDetail="true"/>
+     <h:panelGroup id="dataPanel">  
+        <p:dataTable value="#{${entityControllerJSFVariable}.lazyModel}" 
+            id="${domainVariableName}Table" 
+            var="item" 
+            paginator="true" rows="10" 
+            lazy="true"
+			resizableColumns="true"
+			selection="#{${entityControllerJSFVariable}.selected${tableClassName}}" selectionMode="single"
+            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+            rowsPerPageTemplate="10,20,50"
+			emptyMessage="#{i18n.dataTableEmptyMessagePart1} ${tableClassName} #{i18n.dataTableEmptyMessagePart2}"> 
+            <p:ajax partialSubmit="true" event="rowSelect"
+                    listener="#{${entityControllerJSFVariable}.onRowSelect}"
+                    update=":form2:panel #if ($hasDisplayableChildren):form2:childrenTab#end"/> 
+            <f:facet name="header">  
+#set ($tableVariableNames=$i18nUtils.plurialize($tableVariableName))
+                #{i18n.listOf} ${tableVariableNames}  
+            </f:facet>
+            <ui:include src="/$entityListRowJSFLocation">
+               <ui:param name="isSemanticReference" value="false" />
+             </ui:include>
+        </p:dataTable>
+    </h:panelGroup>
+#setJsfPrimefacesTablePanelExport("${domainVariableName}Table")        
+   </h:form>
+#set($update=":form${domainClassName}:${domainVariableName}Table,:form2:panel#if($hasDisplayableChildren),:form2:childrenTab#end,:form${domainClassName}:growl")
+
+	<p:confirmDialog id="confirmDialog" showEffect="fade" hideEffect="fade" global="true" >
+		<h:form id="deletion">
+			<p:commandButton id="confirm" value="#{i18n.yes}" immediate="true" 
+				styleClass="ui-confirmdialog-yes" 
+				icon="ui-icon-check"
+				actionListener="#{${entityControllerJSFVariable}.deleteListener}" update="$update" />
+			<p:commandButton id="decline" value="#{i18n.no}" type="button" 
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close" /> 
+	   </h:form>
+	</p:confirmDialog>
+
+  	<h:form id="form2">
+		<p:panelGrid columns="3" id="panel" cellpadding="5" styleClass="ui-widget-content-borderless" columnClasses="mp-column-center">
+            <f:facet name="header" align="left">
+                <h:outputText value="#{i18n.${tableVariableName}} #{i18n.details} " />
+            	<p:commandButton value="#{i18n.save}" icon="ui-icon-disk"  actionListener="#{${entityControllerJSFVariable}.createOrUpdateListener}" update="$update" />  
+            	<p:commandButton value="#{i18n.clear}" immediate="true" icon="ui-icon-cancel" process="@this" actionListener="#{${entityControllerJSFVariable}.clearListener}" update=":form2:panel#if($hasDisplayableChildren),:form2:childrenTab#end" style="margin:5px;"/>
+            	<p:commandButton value="#{i18n.delete}" icon="ui-icon-trash" >
+                <p:confirm header="#{i18n.deletionProcess}" severity="alert" icon="ui-icon-alert" message="#{i18n.confirmDeletionQuestion}"/>
+                </p:commandButton>
+##setJsfPrimefacesTableExport("${domainVariableName}Detail")
+            </f:facet>
+            <ui:include src="/$entityEditJSFLocation">
+               <ui:param name="affectFormId" value=":form2" />
+               <ui:param name="idValue" value="$refCnt" />
+#set($refCnt=$refCnt+1)
+            </ui:include>
+        </p:panelGrid>
+		<h:panelGrid id="childrenPanel">
+#if ($hasDisplayableChildren)
+           <p:tabView id="childrenTab" orientation="top|bottom|left|right" cache="false" > 
+             <p:ajax event="tabChange" listener="#{${entityControllerJSFVariable}.onTabChange}"/>
+#foreach ($reference in $presentationUtils.getDisplayableChildren($table))
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+#set ($entityLinkControllerJSFClass = $commonUtils.getTemplateClassName($linktableDB, $model, $templateEntityControllerJSF))
+#set ($entityLinkControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityLinkControllerJSFClass))
+#set ($entityListRowJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($linktableDB, $template, $templateEntityListRowJSF))	
+#putPrimefacesChildrenAddEditCommand()
+#end
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#set ($entityLinkControllerJSFClass = $commonUtils.getTemplateClassName($targetTable, $model, $templateEntityControllerJSF))
+#set ($entityLinkControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityLinkControllerJSFClass))
+#set ($entityListRowJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($targetTable, $template, $templateEntityListRowJSF))	
+#set ($domainObjectClass = $commonUtils.getTemplateClassName($targetTable, $model, $templateJPA2DomainObject))
+#set($updateFromPopUp=":form2:childrenTab:child-${childrenListVariable}Panel,:form${domainClassName}:growl")
+#putPrimefacesM2MChildrenSelectRemoveCommand()
+#end
+			</p:tabView>
+#end
+		</h:panelGrid>
+	</h:form>
+
+#if ($hasDisplayableChildren)
+#foreach ($reference in $presentationUtils.getDisplayableChildren($table))
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+#set ($entityEditJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($linktableDB, $template, $templateEntityEditJSF))
+#set ($entityControllerJSFClass = $commonUtils.getTemplateClassName($linktableDB, $model, $templateEntityControllerJSF))
+#set ($entityControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityControllerJSFClass))
+#set($updateFromPopUp=":form2:childrenTab:child-${childrenListVariable}Panel,:form${domainClassName}:growl")
+#exposeImportParamsUML($linktableDB)
+#putPrimefacesChildrenAddEditDialog()
+#end
+#end
+
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#set ($entityEditJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($targetTable, $template, $templateEntityEditJSF))
+#set ($entityControllerJSFClass = $commonUtils.getTemplateClassName($targetTable, $model, $templateEntityControllerJSF))
+#set ($entityControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityControllerJSFClass))
+#set($updateFromPopUp=":form2:childrenTab:child-${childrenListVariable}Panel,:form${domainClassName}:growl")
+##exposeImportParamsUML($linktableDB)
+#set ($domainObjectClass = $commonUtils.getTemplateClassName($targetTable, $model, $templateJPA2DomainObject))
+#set ($entityListRowJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($targetTable, $template, $templateEntityListRowJSF))
+#putPrimefacesM2MChildrenSelectDeleteDialog()
+#end
+
+#end
+</html>

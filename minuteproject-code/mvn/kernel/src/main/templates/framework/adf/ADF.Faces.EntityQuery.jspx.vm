@@ -1,0 +1,93 @@
+#exposeADFFacesEntitySpecific()
+#exposeADFFacesCommon()
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <c:set var="viewcontrollerBundle"
+         value="#{adfBundle['view.I18N.viewBundle']}"/>
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+   <f:view xmlns:f="http://java.sun.com/jsf/core" xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+    <af:document title="query #{viewcontrollerBundle['${tableVariableName}']}" id="d1">
+        <af:messages id="m1"/>
+        <af:form id="f1">
+            <af:panelStretchLayout id="psl1">
+                <f:facet name="center">
+                    <!-- id="af_one_column_stretched"   -->
+                    <af:decorativeBox theme="dark" id="db2">
+                        <f:facet name="center">
+                            <af:decorativeBox theme="medium" id="db1">
+                                <f:facet name="center">
+                                    <af:panelGroupLayout layout="vertical" id="pgl1">
+                                        <af:panelGroupLayout layout="vertical" id="pgl4">
+                                            <af:panelHeader text="#{viewcontrollerBundle['${tableVariableName}']}" id="ph1">
+                                                <af:query id="qryId1" headerText="Search" disclosed="true"
+                                                          value="#{bindings.ImplicitViewCriteriaQuery.queryDescriptor}"
+                                                          model="#{bindings.ImplicitViewCriteriaQuery.queryModel}"
+                                                          queryListener="#{bindings.ImplicitViewCriteriaQuery.processQuery}"
+                                                          queryOperationListener="#{bindings.ImplicitViewCriteriaQuery.processQueryOperation}"/>
+                                            </af:panelHeader>
+                                        </af:panelGroupLayout>
+                                        <af:panelFormLayout id="pfl1" rows="5">
+#foreach ($column in $table.columns)  
+#putColumnParams()
+#adfEntityEditColumnDisplayForBindings("${columnVar}itdet")
+#end
+                                            <f:facet name="footer">
+                                                <af:panelGroupLayout layout="vertical" id="pgl2">
+                                                    <af:panelGroupLayout layout="horizontal" id="pgl3">
+                                                        <f:facet name="separator">
+                                                            <af:spacer width="10" height="1" id="s1"/>
+                                                        </f:facet>
+                                                        <af:commandButton actionListener="#{bindings.Commit.execute}"
+                                                                          text="Commit"
+                                                                          id="cb7"/>
+                                                        <af:commandButton actionListener="#{bindings.Rollback.execute}"
+                                                                          text="Rollback"
+                                                                          immediate="true" id="cb8">
+                                                            <af:resetActionListener/>
+                                                        </af:commandButton>
+                                                        <af:commandButton actionListener="#{bindings.First.execute}"
+                                                                          text="First"
+                                                                          disabled="#{!bindings.First.enabled}"
+                                                                          partialSubmit="true" id="cb1"/>
+                                                        <af:commandButton actionListener="#{bindings.Previous.execute}"
+                                                                          text="Previous"
+                                                                          disabled="#{!bindings.Previous.enabled}"
+                                                                          partialSubmit="true" id="cb2"/>
+                                                        <af:commandButton actionListener="#{bindings.Next.execute}"
+                                                                          text="Next"
+                                                                          disabled="#{!bindings.Next.enabled}"
+                                                                          partialSubmit="true" id="cb3"/>
+                                                        <af:commandButton actionListener="#{bindings.Last.execute}"
+                                                                          text="Last"
+                                                                          disabled="#{!bindings.Last.enabled}"
+                                                                          partialSubmit="true" id="cb4"/>
+                                                        <af:commandButton actionListener="#{bindings.CreateInsert.execute}"
+                                                                          text="CreateInsert"
+                                                                          disabled="#{!bindings.CreateInsert.enabled}"
+                                                                          id="CreateInsert"
+                                                                          partialTriggers="CreateInsert"/>
+                                                        <af:commandButton actionListener="#{bindings.Delete.execute}"
+                                                                          text="Delete"
+                                                                          disabled="#{!bindings.Delete.enabled}"
+                                                                          immediate="true" id="cb9"/>
+                                                    </af:panelGroupLayout>
+                                                    <af:commandButton text="Submit" id="cb5"/>
+                                                    <af:commandButton text="Back" id="cb6" action="back"/>
+                                                </af:panelGroupLayout>
+                                            </f:facet>
+                                        </af:panelFormLayout>
+                                    </af:panelGroupLayout>
+                                </f:facet>
+                            </af:decorativeBox>
+                        </f:facet>
+                    </af:decorativeBox>
+                </f:facet>
+            </af:panelStretchLayout>
+        </af:form>
+    </af:document>
+  </f:view>
+</jsp:root>

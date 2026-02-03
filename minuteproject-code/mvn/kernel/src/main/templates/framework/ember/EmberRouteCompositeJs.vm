@@ -1,0 +1,43 @@
+#exposeCompositeSpecific()
+#exposeEmberModelSpecific()
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+
+#set($emberClass=$emberUtils.getEmberClass($composite.name))
+#set($emberClassVariable=$emberUtils.getEmberClassVariable($composite.name))
+
+export default class Composite${emberClass}Route extends Route {
+	
+	titleToken= ['field.${composite.name}'];
+	
+	@service('${modelEmberServiceClass}') ${model.name}Service;
+	
+#if($composite.distinctInputColumn.size() > 0)
+	queryParams= {
+#foreach($column in ${composite.distinctInputColumn})
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+		$columnVar : {
+            refreshModel: true,
+            replace: true
+        },
+#end
+#end
+    };
+#end
+
+	model(params) {
+#if($inputBean.columns.size() > 0)
+#foreach($column in $inputBean.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParams()
+#columnJavaNaming()
+		if (params.$columnVar === '') params.$columnVar = null;
+#end
+#end
+#end
+		return this.${model.name}Service.${emberClassVariable}2(params);
+    }
+    
+}

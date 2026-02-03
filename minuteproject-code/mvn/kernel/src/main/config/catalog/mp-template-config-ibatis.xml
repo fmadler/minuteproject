@@ -1,0 +1,67 @@
+<target name="BackendOnBsla">		
+	<architecture-target name="bsla" description="basic springframework layer architecture"/>		
+
+		
+	<template-target 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		belongToPackage="true">
+		<!-- bsla templates -->			
+		<template name="BslaDomainObject" templateFileName="BslaDomainObject.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+		
+		<template name="BslaDaoInterface" templateFileName="BslaDaoInterface.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="Dao" 
+			entity-specific="true" package-specific="false" model-specific="false">
+			<property name="uml" value="false"/>
+		</template>
+	
+		<template name="BslaIbatisDaoSqlImpl" templateFileName="BslaIbatisDaoSqlImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.implementation.ibatis"
+			file-extension="java" file-prefix="" file-suffix="SqlMapDaoImpl" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>		
+		<template name="BslaIbatisDaoSqlMapConfig" templateFileName="BslaIbatisDaoSqlMapConfig.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.implementation.ibatis.xml"
+			file-extension="xml" file-prefix="" file-suffix="SqlMapDaoImpl" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>		
+		<template name="BslaIbatisDaoSqlMapXml" templateFileName="BslaIbatisDaoSqlMapXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.implementation.ibatis.xml"
+			file-extension="xml" file-prefix="" file-suffix="SqlMap" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+		<template name="BslaSpringConfigDaoIbatis" templateFileName="BslaSpringConfigDaoIbatis.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.configuration"
+			file-extension="xml" file-prefix="dao-ibatis-" file-suffix="" 
+			entity-specific="false" package-specific="true" model-specific="false">
+		</template>																
+		<template name="BslaSpringConfigDaoIbatis2" templateFileName="BslaSpringConfigDaoIbatis2.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.configuration"
+			file-extension="xml" file-prefix="spring-config-" file-suffix="-dao" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>					
+		<template name="BslaSpringConfig" templateFileName="BslaSpringConfig.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.configuration"
+			file-extension="xml" file-prefix="spring-config-" file-suffix="" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>					
+		<template name="BslaSpringDatabase" templateFileName="BslaSpringDatabase.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.configuration"
+			file-extension="xml" file-prefix="spring-config-" file-suffix="-database" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>			
+		<template name="BslaSpringProperties" templateFileName="BslaSpringProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.configuration"
+			file-extension="properties" file-prefix="spring-config-" file-suffix="" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+
+	</template-target>			
+ 					
+</target>	

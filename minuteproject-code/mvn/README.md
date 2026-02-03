@@ -1,7 +1,32 @@
 # Minuteproject
+## Working locally
+create a /src/main/private-resources folder where to put private MP configurations.
 ## Configuration
 Minuteproject loads a configuration that indicates the target technologies to apply.
 
+## Model enrichment
+* sdd-cache-convention
+  * type:
+      * apply-cache-to-entity-belonging-to-package
+      * apply-cache-to-entity-not-belonging-to-package
+      * apply-cache-to-content-type
+      * apply-cache-to-entity-starting-with
+      * apply-cache-to-entity-ending-with
+  * pattern
+
+```xml
+<statement-model>
+	<enrichment>
+		<conventions>
+			<sdd-cache-convention 
+				type="apply-cache-to-content-type" 
+				pattern="reference-data"/>
+		</conventions>
+	</enrichment>
+</statement-model>
+```
+
+## Development
 ### Target technologies
 The target technologies are defined in technology-catalog.xml
 

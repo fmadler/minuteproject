@@ -1,0 +1,8 @@
+<target name="REST GRAPHQL API"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="./mp-template-config.xsd">	
+	<architecture-target name="REST GRAPHQL API" description="REST GRAPHQL API">
+	</architecture-target>
+
+</target>

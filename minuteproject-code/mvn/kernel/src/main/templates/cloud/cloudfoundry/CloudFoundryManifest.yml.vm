@@ -1,0 +1,10 @@
+#generatorSpecific()
+# $generatorBean.name
+---
+applications:
+  - name: $cloudUtils.getApplicationName($template)
+    buildpack: java_buildpack
+##    path: target/xxx-1.0.0.BUILD-SNAPSHOT.jar
+    path: $cloudUtils.getReleaseFileName($template, $generatorBean) 
+    services:
+      - $cloudUtils.getDatabaseName($template)

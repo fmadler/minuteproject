@@ -1,0 +1,79 @@
+#putJPA2TemplateDefinition()
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#if($isSpringBackend)
+#exposeSpringDomainObjectSpecific()
+#elseif($isEJBBackend)
+#exposeEJBDomainObjectSpecific()
+#end
+#exposeSpringServiceDomainObject()
+#set ($EJBDaoImplClass = $SpringServiceInterfaceClass)
+#set ($EJBDaoImplVariable = $SpringServiceInterfaceVariable)
+#exposeSpringModelSpecific()
+package $packageName;
+
+import $importDomainObjectUML;
+import $SpringServiceInterfaceImport;
+import $genericLazyDataModelImport;
+import org.primefaces.model.SortOrder;
+
+import java.util.Date;
+import java.util.Map;
+
+public class ${className} extends $genericLazyDataModelClass <$tableClassName, ${EJBDaoImplClass}> {
+	
+    public ${className} (${EJBDaoImplClass} service) {
+        this.service = service;
+    }
+	
+    @Override
+    protected $tableClassName getSortMask(String sortField) {
+		$tableClassName esMask = new $tableClassName();
+		esMask.mask(sortField);
+		return esMask;
+    }
+
+    @Override
+    protected $tableClassName getFilterMask($tableClassName maskWhere, Map<String, Object> filters) {
+        $tableClassName ecMask = (maskWhere!=null)?maskWhere:new $tableClassName();
+        ecMask.mask(filters);
+		return ecMask;
+    }
+
+    @Override
+    protected Object getRowKeyImplementation($tableClassName element) {
+#if($columnUtils.isPartOfCompositePrimaryKey($primaryKeyFirstColumn))
+#set($primaryKeyVariable = $formatUtils.firstUpperCase($primaryKeyVariable))
+		return element.get${primaryKeyVariable}_();
+#else
+#if(!$columnUtils.isString($primaryKeyFirstColumn))
+        if (element.get$primaryKeyJavaNameClass()==null)
+           return null;
+        return element.get$primaryKeyJavaNameClass().toString();
+#else
+        return element.get$primaryKeyJavaNameClass();
+#end
+#end
+    }
+
+    @Override
+    protected $tableClassName serviceLoad(String rowKey) {
+#if($columnUtils.isPartOfCompositePrimaryKey($primaryKeyFirstColumn))
+        // not fully supported! cannot transform row in composite pk
+        return new $tableClassName();
+#else
+	   if (rowKey == null || "null".equals(rowKey)) return new $tableClassName();
+#if($columnUtils.isString($primaryKeyFirstColumn))
+        return service.load(rowKey);
+#else
+        return service.load($convertUtils.getJavaTypeMask($primaryKeyFirstColumn, "rowKey", $useTemporal));
+#end
+#end
+    }
+#*
+    @Override
+    protected ${beanSpringModelServiceClass} getService() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+*#
+}

@@ -1,0 +1,23 @@
+#exposeADFFacesModelSpecific()
+#exposeADFCustomisation()
+<?xml version="1.0" encoding="UTF-8" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+  <metadata-resource>/WEB-INF/$adminConfigADFFacesViewControllerFileName</metadata-resource>
+  <metadata-resource>/WEB-INF/$adminConfigADFFacesSiteMenuFileName</metadata-resource>
+#addArea("custom-config-definition")
+  <managed-bean id="__6">
+    <managed-bean-name id="__7">rootMenuUtils</managed-bean-name>
+    <managed-bean-class id="__8">$menuUtilsImport</managed-bean-class>
+    <managed-bean-scope id="__9">backingBean</managed-bean-scope>
+    <managed-property id="__10">
+      <property-name id="__11">menuModelName</property-name>
+      <property-class>java.lang.String</property-class>
+      <value id="__12">$rootMenuConfigADFFacesName</value>
+    </managed-property>
+    <managed-property id="__13">
+      <property-name id="__14">isRootMenu</property-name>
+      <property-class>java.lang.Boolean</property-class>
+      <value id="__15">true</value>
+    </managed-property>
+  </managed-bean>
+</adfc-config>

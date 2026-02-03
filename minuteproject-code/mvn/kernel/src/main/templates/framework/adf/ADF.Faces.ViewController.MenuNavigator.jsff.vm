@@ -1,0 +1,52 @@
+#exposeADFFacesModelSpecific()
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <div id="NavLeft">
+        <ul>
+#foreach ($package in ${businessPackages})
+#set($groupId="${package.name}Group")
+#set($groupLabel=$package.name)
+#set($groupIdRef="${package.name}Group")
+##            <af:forEach items="#{backingBeanScope.rootMenuUtils!=null? backingBeanScope.rootMenuUtils.treeList : backingBeanScope.localMenuUtils.treeList}" var="treeItem">
+                <li class="li_accordion_toggler_1">
+                        <f:facet name="parentNode">
+                            <af:group>
+                                <div class="accordion_toggler_1"><a href="javascript:void(0)">
+                                        <span><af:outputText value="$groupLabel"/></span></a>
+                                </div>
+                                <div class="accordion_content_1">
+                                    <ul class="sublev">       
+#foreach ($table in ${package.listOfTables})
+#exposeADFFacesEntitySpecific()
+##                                        <af:forEach items="#{treeItem.children}" var="treeItem2">                                        
+##                                                    <af:switcher id="s2"  facetName="leafNode2">
+  
+                                                    <f:facet name="leafNode2">
+                                                        <af:commandImageLink text="#{viewcontrollerBundle['${tableVariableName}']}"
+                                                                             action="goto${domainClassName}"
+                                                                             inlineStyle="background-image: none;"
+                                                                             immediate="true"></af:commandImageLink>
+                                                    </f:facet>
+##                                                </af:switcher>
+##                                        </af:forEach>
+#end
+                                    </ul>
+                                </div>
+                            </af:group>
+                        </f:facet>
+                </li>
+##            </af:forEach>
+#end
+        </ul>
+    </div>
+    
+    <af:resource type="javascript" source="/javascript/accordion_menu.js"/>
+    <af:resource type="css" source="/stylesheets/accordion_menu.css"/>
+    <!--oracle-jdev-comment:preferred-managed-bean-name:menuUtils-->
+</jsp:root>

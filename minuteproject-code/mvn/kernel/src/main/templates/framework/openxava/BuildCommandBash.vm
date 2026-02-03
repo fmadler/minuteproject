@@ -1,0 +1,67 @@
+#exposeOXSpecific()
+#putOXTemplateDefinition()
+#!/bin/sh
+while getopts e: flag
+do
+case "${flag}" in
+e) embedded=${OPTARG};;
+esac
+done
+echo "input for -e is ${embedded}"
+
+
+GENDIR=$(cd `dirname $0`;pwd)
+
+##create OX project
+cd $OX_HOME/workspace/OpenXava
+ant -f CreateNewProject.xml -Dproject=$applicationOX
+
+cp $MP_HOME/target/mp-openxava/*.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib
+#*if($embedJdbcDriver) NO more tomcat in OX dist use docker tomcat
+cp $MP_HOME/application/lib/extra/*.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib	
+cp $OX_HOME/tomcat/lib/jta.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib	
+cp $OX_HOME/tomcat/lib/ejb.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib	
+#end
+ *#
+##copy generated artifacts into $applicationOX workspace
+cd "$GENDIR"
+cp -R * ${OX_HOME}/workspace/$applicationOX 
+cp -R JPA2/src/main/java/* ${OX_HOME}/workspace/$applicationOX/src
+
+##for embedded tomcat
+#set ($embeddedDatasource=$template.getPropertyByName("embedded-datasource"))
+if [ ${embedded} ]
+then
+#if ($embeddedDatasource)
+# for embedded tomcat
+cp other/tomcat/embedded/context.xml $OX_HOME/workspace/$applicationOX/web/META-INF
+#end
+else
+## remove default embedded context
+rm $OX_HOME/workspace/score/web/META-INF/context.xml
+fi
+##overwrite tomcat context.xml NO more tomcat in OX dist use docker tomcat
+##cp other/tomcat/snippet/context.xml $OX_HOME/tomcat/conf
+##a
+##add jdbc driver dep in tomcat\lib
+##cp $MP_HOME/application/lib/extra/*.jar $OX_HOME/tomcat/lib
+##
+## start tomcat in appart process
+##cd $OX_HOME/tomcat/bin
+##./startup.sh
+
+cd $OX_HOME/workspace/$applicationOX
+ant -f mp4openxava-build.xml
+
+## override addons
+cd "$GENDIR"
+cp -R web/naviox ${OX_HOME}/workspace/Addons/web/naviox
+cd $OX_HOME/workspace/$applicationOX
+ant
+#* portlet generation not working
+cd $OX_HOME/workspace/$applicationOX
+ant generatePortlets
+ *#
+##
+##firefox http://localhost:8080/$applicationOX
+cd "$GENDIR"

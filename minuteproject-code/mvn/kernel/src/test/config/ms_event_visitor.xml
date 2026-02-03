@@ -1,0 +1,202 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+			<target-convention type="disable-timestamp-comment-marker" />
+		</conventions>
+		<!-- ec : event_customer micro-service -->
+		<model name="ev" version="1.0" package-root="org.minuteproject.ms">
+			<description>
+				<CDATA>
+					This model illustrates:
+					Reverse-engineering for event_customer micro-service
+				</CDATA>
+			</description>
+			<data-model database-type="MYSQL">
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/event_visitor</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="private" />
+				</generation-condition>
+				<business-package default="project">
+
+				</business-package>
+				<enrichment>
+					<entity name="EC_ENTRANCE_OPTION" content-type="reference-data"/>
+					<conventions>
+					<!-- 
+						<entity-content-type-convention type="apply-content-type-to-entity-starting-with" pattern="I18N_" content-type="reference-data"/>
+						<entity-content-type-convention type="apply-content-type-to-entity-starting-with" pattern="REF_" content-type="reference-data"/>
+ -->
+						<column-naming-convention type="apply-strip-column-name-prefix" pattern-to-strip="EC_" />
+						<column-naming-convention type="apply-strip-column-name-prefix" pattern-to-strip="EV_" />
+						<column-naming-convention type="apply-strip-column-name-suffix" pattern-to-strip="_ID" />
+						<reference-naming-convention type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+						<reference-naming-convention type="apply-many-to-many-aliasing" is-to-plurialize="true"/>
+						
+						<ordering-convention field-pattern="DISPLAY_ORDER" field-pattern-type="endsWith" ordering="asc" />
+						<ordering-convention field-pattern="RANKING"       field-pattern-type="endsWith" ordering="asc" />
+
+						<stereotype-convention field-pattern="email" 		field-pattern-type="contains" 	stereotype="email" />
+						<stereotype-convention field-pattern="mail" 		field-pattern-type="endsWith" 	stereotype="mail" />
+						<stereotype-convention field-pattern="timestamp" 	field-pattern-type="contains" 	stereotype="datetime" />
+						<stereotype-convention field-pattern="_datetime" 	field-pattern-type="contains" 	stereotype="datetime" />
+						<stereotype-convention field-pattern="url" 			field-pattern-type="contains" 	stereotype="url" />
+						<stereotype-convention field-pattern="password" 	field-pattern-type="contains" 	stereotype="password" />
+						<stereotype-convention field-pattern="notes" 		field-pattern-type="equals" 	stereotype="text-html" />
+					
+						<!-- primary key conv -->
+						<column-naming-convention
+							type="apply-fix-primary-key-column-name-when-no-ambiguity-and-not-natural"
+							default-value="ID" />
+
+						<!-- strip prefix -->
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+							pattern-to-strip="EV_,EC_" />
+
+						<!-- trigger -->
+						<property-convention scope="field" pattern="CREATION_DATE"
+							tag="trigger-insert-with-current-date" type="start-with" />
+
+						<view-primary-key-convention
+							type="apply-default-primary-key-otherwise-first-one"
+							default-primary-key-names="IDENTIFIER,ID" />
+
+						<!-- content type -->
+						<entity-content-type-convention
+							type="apply-content-type-to-entity-belonging-to-package" pattern="reference"
+							content-type="reference-data" />
+
+						<semantic-reference-convention
+							content-type="reference-data" field-pattern="NAME"
+							field-pattern-type="endsWith" max-number-of-fields="5" />
+
+					</conventions>
+				</enrichment>
+			</business-model>
+			<statement-model>
+				<queries>
+					<query name="visitor_request" id="visitor_request"
+						package-name="request">
+						<query-body>
+							<value>
+<![CDATA[
+call client_request (?, ?, ?, ?, ?, ?)
+	]]>
+							</value>
+						</query-body>
+						<query-params>
+							<query-param name="visitor_firstname" is-mandatory="true" type="string"
+								sample="'win'">
+								<validations>
+									<validation-range-char min='2' />
+								</validations>
+							</query-param>
+							<query-param name="visitor_lastname" is-mandatory="true" type="string"
+								sample="'win'">
+								<validations>
+									<validation-range-char min='2' />
+								</validations>
+							</query-param>
+							<query-param name="visitor_email" is-mandatory="true" type="string"
+								sample="'win'">
+								<validations>
+									<validation-range-char min='4' />
+								</validations>
+							</query-param>
+							<query-param name="language_code" is-mandatory="true" type="string"
+								sample="'fr'">
+								<validations>
+									<validation-range-char min='2' />
+								</validations>
+							</query-param>
+							<query-param name="event_web_path" is-mandatory="true" type="string"
+								sample="'my-path'" >
+								<validations>
+									<validation-range-char min='2' />
+								</validations>
+							</query-param>
+							<query-param name="request_type" is-mandatory="true" type="string"
+								sample="'PRESALE'" >
+								<!-- TODO constraint INVITATION, PRESALE, SALE -->
+								<validations>
+									<validation-range-char min='2' />
+								</validations>
+							</query-param>
+						</query-params>
+					</query>
+					<query name="remaining_entries" id="remaining_entries" package-name="event">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[
+select 
+ xx.id as event_proxy_id,
+ xx.event_id,
+ xx.event_web_path,
+ case when type = 'INVITATION' then nb else 0 end as nb_inviations, 
+ case when type = 'PRESALE' then nb else 0 end as nb_presales,
+ case when type = 'SALE' then nb else 0 end as nb_sales,
+ nb_of_presales_entry, 
+ nb_of_invitations, 
+ max_nb_of_tickets,
+ entry_price,
+ presale_entrance_fee
+from
+(
+ select count(*) nb, type, e.id, e.event_id, e.event_web_path, e.ec_entrance_option_id
+ from ec_event_proxy e, ec_visitor_x_event vxe, ec_entrance_request er
+ where vxe.ec_event_proxy_id = e.id and vxe.ec_entrance_request_id = er.id
+ group by type, e.id, e.event_id, e.event_web_path, e.ec_entrance_option_id
+) xx, ec_entrance_option eo
+where xx.ec_entrance_option_id = eo.id
+$whereeventid $whereeventwebpath
+]]>
+							</value>
+						</query-body>
+						<query-filters>
+							<query-filter name="whereeventid" and-where-connection="and"><value>
+								<![CDATA[xx.event_id = ? ]]></value>
+								<query-params>
+									<query-param name="event_id" 
+										type="int" sample="-1">
+									</query-param>
+								</query-params>
+							</query-filter>
+							<query-filter name="whereeventwebpath" and-where-connection="and"><value>
+								<![CDATA[xx.event_web_path = ? ]]></value>
+								<query-params>
+									<query-param name="event_web_path" 
+										type="string" sample="'abc'">
+									</query-param>
+								</query-params>
+							</query-filter>
+						</query-filters>
+					
+					</query>
+				</queries>
+			
+			</statement-model>
+		</model>
+<!-- REST-Custom, Openxava, Fitnesse,  -->
+		<targets catalog-entry="REST-Kendoui, Openxava, Ember"
+			append-catalog-entry-dir-to-outputdir-root="true" outputdir-root="../../product/event_visitor">
+			<property name="openxava-disable-sdd" value="true" />
+			<property name="environment" value="remote"/>
+			<property name="show-sql" value="false"/>
+		</targets>
+
+
+	</configuration>
+</generator-config>

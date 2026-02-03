@@ -2,7 +2,7 @@ package net.sf.minuteProject.utils.io;
 
 import junit.framework.TestCase;
 
-public class FileUtilsTest extends TestCase{
+public class FileUtilsTest {
 
 	public void testStripFileName() {
 		

@@ -1,0 +1,130 @@
+#exposeVariableModelSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_0_0.dtd">
+#exposeModelUpdatedAreas("service-builder-node")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#set($packageName=$model.packageRoot)
+<service-builder package-path="${packageName}.${model.name}">
+#end
+	<namespace>${model.name}</namespace>
+#foreach($table in ${entities})
+#asUML($table)
+#exposeVariableEntitySpecific()
+#if (!$isMany2Many)
+#exposeModelUpdatedAreas("entity-$domainClassName")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+	<entity name="$domainClassName" 
+		local-service="true" 
+		remote-service="true"
+        table="${table.name}"
+#if ($databaseUtils.isPrimaryKeyPolicyUUID($table))
+        uuid="true"
+        uuid-accessor="true"
+#end
+		>
+#end
+$!updatedAreaEnd	
+		<!-- PK fields -->
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+		<column name="$columnVar" 
+			type="$liferayUtils.getSbColumnType($column)" 
+			db-name="${column.name}"
+			primary="true" 
+#if(!$columnUtils.isNaturalPk($column) && !$databaseUtils.isPrimaryKeyPolicyUUID($table))
+#set($lrPkType=$liferayUtils.getSbPrimaryKeyType($column))
+		    id-type="$lrPkType"
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+            id-param="$sequenceName"
+#end
+#end
+         />
+		<!-- todo sequence, identity, increment -->
+#end		
+		<!-- attribute fields -->
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+#exposeModelUpdatedAreas("entity-${domainClassName}-field-$columnVar")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+		<column name="$columnVar" type="$liferayUtils.getSbColumnType($column)" db-name="${column.name}"/> 
+#end
+$!updatedAreaEnd
+#end
+		<!-- Relationships parents -->
+#foreach ($reference in ${table.parents})
+#putReferenceParams2()
+#exposeModelUpdatedAreas("entity-${domainClassName}-field-$localColumnVariable")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+		<column name="$localColumnVariable" type="$liferayUtils.getSbColumnType($localColumn)" db-name="${localColumnName}"/> 
+#end
+$!updatedAreaEnd
+#end	
+#foreach ($reference in ${table.children})
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+#exposeModelUpdatedAreas("entity-${domainClassName}-field-$localColumnVariable")
+        <column
+            name="$childrenListVariable"
+            type="Collection"
+            entity="$linkedTableClass"
+        />
+#end
+$!updatedAreaEnd
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+	    <!-- with m2m relationship it is not yet clear how I can do it with
+		     service builder since join and inversejoin column are missing
+        <column
+            name="$childrenListVariable"
+            type="Collection"
+            entity="$linkedTableClass"
+			mapping-table="$linkedTableDBName" 
+			
+			missing info to make correct association in ORM
+			    joinColumns=@JoinColumn(name="$targetColumn.name"), 
+        		inverseJoinColumns=@JoinColumn(name="$linkReference.localColumnName") 
+        />
+		-->
+#end
+#set($ordering=$orderingUtils.getFirstOrdering($table))
+#set($column=$ordering.column)
+#set($order=$formatUtils.lowerCase(${ordering.order.toString()}))
+#putColumnParamNaming()
+		<!-- Order -->
+		<order>
+			<order-column name="$columnVar" order-by="$order" />
+		</order>	
+		<!-- Finder methods -->
+#if($tableUtils.hasSemanticReference($table))
+#exposeModelUpdatedAreas("entity-${domainClassName}-semantic-ref")
+		<finder name="SemanticReference" return-type="Collection">
+#foreach($column in $tableUtils.getSemanticReferenceColumns($table))
+#putColumnParams()
+			<finder-column name="$columnVar" />
+#end
+        </finder>
+$!updatedAreaEnd
+#end		
+
+		<!-- References -->
+
+	</entity>
+#end
+#end
+</service-builder>

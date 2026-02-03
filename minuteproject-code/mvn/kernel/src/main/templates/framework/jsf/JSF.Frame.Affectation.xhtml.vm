@@ -1,0 +1,55 @@
+#exposeJSFModelSpecific()
+#exposePrimefacesConfig()
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"   
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:p="$primefacesNamespace"
+   xmlns:composite="http://minuteproject.sf.net/jsf/composite/affectationSubUc">
+   <composite:interface>
+      <composite:attribute name="containerId" />
+      <composite:attribute name="sucDialogId" />
+      <composite:attribute name="isRender" />
+      <composite:attribute name="passwordValue" />
+      <composite:attribute name="loginButtonLabel" />
+      <composite:attribute name="loginButtonAction" 
+         method-signature="java.lang.String login()" />
+   </composite:interface>
+   <composite:implementation>
+    <p:outputPanel id="#{cc.attrs.containerId}" >
+     <p:dialog id="#{cc.attrs.sucDialogId}" message="#{i18n.affectionProcessMessage}" rendered="#{${entityControllerJSFVariable}.isRender${localColumnClass}()}"
+    		header="#{i18n.affectionProcess}" severity="alert" widgetVar="#{cc.attrs.sucDialogId}" appendTo="@(body)">
+    	<h:form id="suc${childrenListClass}Form">
+        <p:dataTable value="#{${entityLinkControllerJSFVariable}.lazyModel}" 
+            id="table$childrenListClass" 
+            var="item" 
+            paginator="true" rows="10" 
+            lazy="true"
+    		selection="#{${entityLinkControllerJSFVariable}.selected${linkedTableClass}}" selectionMode="single"
+            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+            rowsPerPageTemplate="10,20,50"
+    		emptyMessage="#{i18n.dataTableEmptyMessagePart1} $linkedTableClass #{i18n.dataTableEmptyMessagePart2}"> 
+    
+            <f:facet name="header">  
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($linktableDB))
+#set($tableLabelVar=$commonUtils.getJavaNameVariableFirstLetter($tableLabel))
+#set($tableVariableNames=$i18nUtils.plurialize($tableLabelVar))
+    ##            #{i18n.listOf} #{i18n.${tableLabelVar}s}  
+                #{i18n.listOf} ${tableVariableNames}  
+            </f:facet>
+            <ui:include src="/$entityListRowJSFLocation">
+               <ui:param name="isSemanticReference" value="false" />
+             </ui:include>
+    		 <p:column>
+                <p:commandButton value="#{i18n.affect}" id="affectButton${linkedColumnClass}" update="#{affectFormId}:lbl${localColumnClass}-#{idValue}" actionListener="#{${entityControllerJSFVariable}.desactivateRender${localColumnClass}}" title="#{i18n.affectTitle}" onclick="PF('#{cc.attrs.sucDialogId}').hide()" process="@this">
+    				<f:setPropertyActionListener value="#{item.${linkedColumnVariable}}" target="#{${entityControllerJSFVariable}.selected${tableClassName}.${localColumnVariable}_}" />
+    				<f:setPropertyActionListener value="#{item}" target="#{${entityControllerJSFVariable}.selected${tableClassName}.${localColumnVariable}}" />
+                </p:commandButton >
+    		  </p:column>
+        </p:dataTable>
+       </h:form>
+     </p:dialog>
+    </p:outputPanel>
+   </composite:implementation>
+</html>

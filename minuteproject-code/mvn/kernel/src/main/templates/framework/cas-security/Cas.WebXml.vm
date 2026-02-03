@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <filter>
+        <filter-name>RequestThreadContextFilter</filter-name>
+        <filter-class>eu.cec.digit.ecas.client.webservices.RequestThreadContextFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RequestThreadContextFilter</filter-name>
+        <url-pattern>/</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>ProxyTicketReceptor</servlet-name>
+        <servlet-class>eu.cec.digit.ecas.client.proxy.EcasProxyTicketReceptor</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ProxyTicketReceptor</servlet-name>
+        <url-pattern>/ecasProxyTicketReceptor</url-pattern>
+    </servlet-mapping>
+    <!-- Sets up proxy ticket caches -->
+    <listener>
+        <listener-class>eu.cec.digit.ecas.client.proxy.ProxyCacheInit</listener-class>
+    </listener>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>secure-resources</web-resource-name>
+            <description>Require users to authenticate</description>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>Ensures that the principal is authenticated</description>
+            <role-name>*</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <description>Encryption is not required for the application in general.</description>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+</web-app>

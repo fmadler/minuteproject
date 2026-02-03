@@ -1,0 +1,153 @@
+#generatorSpecific()
+#exposeVariableEntitySpecific()
+#addedAreas()
+#putJPA2TemplateDefinition()
+#set ($useTemporal = true)
+package $packageName;
+
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+#if ($template.hasPropertyValue("direction","in"))
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+#end
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+#putEntityValidationImport()
+
+import org.apache.commons.lang3.StringUtils;
+#set ($applicationJsonDateSerializerImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, "REST.jackson.serializer.date"))
+#set ($applicationJsonDateSerializerClass  = $commonUtils.getTemplateClassName($model, $template, "REST.jackson.serializer.date"))
+import $applicationJsonDateSerializerImport;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: ${domainClassName} Java Bean </p>
+ *
+ */
+@Data
+@AllArgsConstructor
+@Builder
+#set ($isNotVoid = !$table.columns.isEmpty())
+#if ($template.hasPropertyValue("direction","out") && $isNotVoid)
+@NoArgsConstructor
+#end
+#if ($template.hasPropertyValue("direction","in") && $isNotVoid)
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+#end
+public class ${className} {
+#putEntityValidation()
+
+#foreach ($column in $table.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if ($columnUtils.hasCheckConstraint($column))
+#set($checkConstraints= $columnUtils.getCheckConstraintValues($column))
+#set($size= $checkConstraints.size())
+    @AllArgsConstructor
+    public enum ${columnClass}Enum {
+#foreach ($property in $checkConstraints)
+#set($propertyName = $formatUtils.getUppercaseUnderscore2($property.name))
+#set($propertyValue = $propertyUtils.getPropertyValue($property))
+        $propertyName ("$propertyValue")#if ($velocityCount!=$size),#else;#end
+
+#end
+        @Getter
+        public final String value;##$columnType value;
+     }
+#end
+#end
+#end
+
+#foreach($column in ${table.columns})
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#simpleDateClass()
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+    private final $columnType $defaultConstant = $defaultValue;
+#end
+#end
+#end
+###### For Array column
+#foreach($column in ${table.columns})
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#simpleDateClass()
+#if (!$column.isArray())
+#if($columnUtils.isTimeStampColumn($column))
+	@JsonSerialize (using=${applicationJsonDateSerializerClass}.class)
+#elseif ($columnUtils.isTimeColumn($column))
+#else
+#end
+#putInputBeanValidationConstraints()
+#putFieldValidation()
+#if ($column.getSeparatorCharacters())
+	@Data
+	public class $columnClass {
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldVariable = $javaUtils.getJavaVariableNaming($commonUtils.getJavaVariableName($field.name)))
+		$fieldType $fieldVariable;
+#end
+
+	}
+##TODO check dimensions if list or single element
+    private List<$columnClass> ${columnVar};
+#else
+#if ($columnUtils.hasCheckConstraint($column))
+    private ${columnClass}Enum $columnVar;####
+#else
+    private $columnType $columnVar;####
+#end
+#end
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.alias)")
+    public $columnType get${columnClass}(){
+    	return $columnVar!=null?$columnVar:$defaultConstant;
+    }
+#end
+#else
+#putFieldValidation()
+#if ($columnUtils.hasCheckConstraint($column))
+    private List<${columnClass}Enum> $columnVar;
+#else
+    private String ${columnVar}Input;
+    private List<$columnType> $columnVar;
+
+    public List<${columnType}> get${columnClass} () {
+        if (${columnVar}==null)
+            ${columnVar} = new ArrayList<$columnType>();
+        return ${columnVar};
+        }
+
+        public void set$columnClass (String $columnVar) {
+        this.${columnVar}Input = ${columnVar};
+        if ($columnVar!=null) {
+            for (String element : StringUtils.split($columnVar, ",")) {
+#set($key=$convertUtils.getJavaTypeMaskExpressionFromStringInput($column, "element", true))
+                get${columnClass}().add ($key);
+            }
+        }
+    }
+#end
+#end
+#end
+#end
+$!updatedAreaImplementation
+}

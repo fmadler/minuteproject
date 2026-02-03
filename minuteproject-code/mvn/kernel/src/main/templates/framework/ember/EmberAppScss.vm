@@ -1,0 +1,15 @@
+#exposeApplicationSpecific()
+#addedAreas()
+/*
+Scss ember app
+*/
+$!updatedAreaImport
+
+@import "${applicationName}";
+
+@import "ember-bootstrap/bootstrap";
+
+@import 'ember-basic-dropdown';
+
+@import "ember-power-select";
+

@@ -1,0 +1,40 @@
+#exposeADFBuildSpecific()
+    <!-- Setting TaskDefinition -->
+    <taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy">
+        <classpath>
+    		<pathelement location="${WLS_HOME}/server/lib/weblogic.jar"/>
+        </classpath>
+    </taskdef>
+
+    <!-- Deploying Applications  -->
+    <target name="deploy">
+    <wldeploy action="deploy"
+              name="${wls.deploy.name}"
+              source="${releaseDir}${wls.deploy.source}"
+              user="${wls.username}"
+              nostage="true"
+              password="${wls.password}"
+              verbose="true"
+              adminurl="t3://${wls.hostname}:${wls.port}" targets="${wls.deploy.target}" />
+    </target>
+    
+    <!-- Redeploying Applications  -->
+    <target name="redeploy">
+    <wldeploy action="redeploy"
+              name="${wls.deploy.name}"
+              user="${wls.username}"
+              password="${wls.password}"
+              verbose="true"
+              adminurl="t3://${wls.hostname}:${wls.port}" targets="${wls.deploy.target}" />
+    </target>
+    
+    <!-- Uneploying Applications  -->
+    <target name="undeploy">
+    <wldeploy action="undeploy"
+              name="${wls.deploy.name}"
+              failonerror="false"
+              user="${wls.username}"
+              password="${wls.password}"
+              verbose="true"
+              adminurl="t3://${wls.hostname}:${wls.port}" targets="${wls.deploy.target}" />
+    </target>

@@ -1,0 +1,73 @@
+#exposeADFDataBindingControlSpecific()
+#exposeADFFacesDataControlModelSpecific()
+#exposeADFQuerySpecific()
+#putImportQuerySDDBean()
+#exposeADFFacesCommon()
+#set($table=$query.inputBean)
+#set($queryClassName=$commonUtils.getJavaClassName($table))
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel"
+                version="11.1.1.61.92" id="$className"
+                Package="${packageName}">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <taskFlow id="queryflowdefinition1"
+##    <taskFlow id="${queryClassName}InputFlow"
+              taskFlowId="/WEB-INF/taskflows/${queryInputResultJsffTaskFlowADFFaceRelativePath}#$queryInputResultJsffTaskFlowADFFaceClassName"
+              activation="immediate"              
+              xmlns="http://xmlns.oracle.com/adf/controller/binding">
+      <parameters>
+#if($isNotVoidInput)
+        <parameter id="${sddInputBeanVariable}" evaluate="eachUse"
+                   xmlns="http://xmlns.oracle.com/adfm/uimodel"
+                   value="#{pageFlowScope.${queryBackingBeanADFFaceVariable}.${sddInputBeanVariable}}"/>
+#end
+      </parameters>
+    </taskFlow>
+    <taskFlow id="detailflowdefinition1"
+              taskFlowId="/WEB-INF/taskflows/$queryInputDetailJsffTaskFlowADFFaceRelativePath#$queryInputDetailJsffTaskFlowADFFaceClassName"
+              activation="immediate" 
+              xmlns="http://xmlns.oracle.com/adf/controller/binding">
+      <parameters>
+        <parameter id="${sddOutputBeanVariable}" evaluate="eachUse"
+                   xmlns="http://xmlns.oracle.com/adfm/uimodel"
+                   value="#{${queryListenerBeanADFFaceVariable}.selected${sddOutputBeanClass}}"/>
+      </parameters>
+    </taskFlow>
+    <methodIterator Binds="get${sddOutputBeanCollectionClass}1.result"
+                    DataControl="${dataControlRef}" RangeSize="100"
+                    BeanClass="${sddOutputBeanCollectionImport}"
+                    id="${sddOutputBeanCollectionVariable}" >
+    </methodIterator>
+    <accessorIterator id="accessorIterator" MasterBinding="${sddOutputBeanCollectionVariable}"
+        Binds="${sddOutputBeanVariable}s" RangeSize="100" BeanClass="${sddOutputBeanImport}"
+    />
+  </executables>
+  <bindings>
+##    <tree IterBinding="${sddOutputBeanCollectionVariable}" id="${sddOutputBeanVariable}s">
+    <tree IterBinding="accessorIterator" id="${sddOutputBeanVariable}s">
+      <nodeDefinition DefName="${sddOutputBeanImport}"
+                      Name="${sddOutputBeanVariable}">
+        <AttrNames>
+#foreach ($column in $outputBean.columns)  
+#putColumnParamNaming()
+          <Item Value="${columnVar}"/>
+#end 
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="get${sddOutputBeanCollectionClass}1"
+                  InstanceName="${ADFSDOWsDcDefClass}.dataProvider"
+                  DataControl="${ADFSDOWsDcDefClass}" RequiresUpdateModel="true"
+                  Action="invokeMethod" MethodName="get${sddOutputBeanCollectionClass}"
+                  IsViewObjectMethod="false"
+                  ReturnName="data.${ADFSDOWsDcDefClass}.methodResults.get${sddOutputBeanCollectionClass}1_result">
+#if($isNotVoidInput)
+      <NamedData NDName="${sddInputBeanVariable}" NDValue="#{pageFlowScope.${queryBackingBeanADFFaceVariable}.${sddInputBeanVariable}}"
+                 NDType="${sddInputBeanImport}"
+                 NDOption="2"/>
+#end
+    </methodAction>
+  </bindings>
+</pageDefinition>

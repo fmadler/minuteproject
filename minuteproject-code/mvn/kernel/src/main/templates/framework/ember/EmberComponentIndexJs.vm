@@ -1,0 +1,75 @@
+#exposeEmberQuerySpecific()
+#set($table=$query.inputBean)
+import Component from '@glimmer/component';
+import { tracked } from "@glimmer/tracking";
+import { action } from "@ember/object";
+import { inject as service } from '@ember/service';
+
+export default class $importEmberQueryComponentIndexClassPath extends Component {
+
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+#if($columnUtils.isLink($column))
+#set($queryId =$column.queryParamLink.queryName)
+#set($fieldKey =$column.queryParamLink.fieldKey)
+#set($fieldName =$column.queryParamLink.fieldName)
+#exposeQueryTarget()
+#set($columnText = $queryUtils.getColumnTextVariable($targetQuery, $fieldName))
+#set($columnValue = $queryUtils.getColumnValueVariable($targetQuery, $fieldKey))
+#set($isMasterData= $queryUtils.isAdminContentType($targetQuery))
+#set($isAutocompletion = $queryParamLinkUtils.isAutocompletion($column.queryParamLink))
+#if ($isAutocompletion)
+ // TODO autocomplete https://ember-power-select.com/docs/custom-search-action
+	${columnVar}Search(term) {
+	debugger;
+    //let url = `https://api.github.com/search/repositories?q=${term}`;
+    //return fetch(url).then((resp) => resp.json()).then((json) => json.items);
+	}
+	@tracked ${columnVar}selected;
+#else
+#set ($sddTargetOutputBeanClass = $commonUtils.getJavaClassName(${targetQuery.getInputBean().getName()}))
+#set ($sddTargetOutputBeanVariable = $commonUtils.getJavaVariableName(${targetQuery.getInputBean().getName()}))
+#set($queryTargetDDL = "${columnVar}DDL")
+
+	@tracked ${sddTargetOutputBeanVariable}Ddl4${columnClass}Options;
+
+	get ${sddTargetOutputBeanVariable}Ddl4${columnClass} () {
+		return this.${model.name}Service.${sddTargetOutputBeanVariable}();
+	}
+
+	@action
+	change${sddTargetOutputBeanClass}4${columnClass} (e) {
+		this.$columnVar = e;
+	}
+
+	@action
+	async show${sddTargetOutputBeanClass}4${columnClass} () {
+		if (!this.${sddTargetOutputBeanVariable}Ddl4${columnClass}Options) {
+			let x = await this.${model.name}Service.${sddTargetOutputBeanVariable}();
+			this.${sddTargetOutputBeanVariable}Ddl4${columnClass}Options =  x.${sddTargetOutputBeanClass}Out;
+		}
+	}
+#end
+#end
+	@tracked $columnVar;// = this.args.$columnVar;
+#end
+
+	@service router;
+	@service('${modelEmberServiceClass}') ${model.name}Service;
+
+	@action
+	search() {
+#set($queryClassName=$formatUtils.getLowcaseHyphen($table.name))
+	    this.router.transitionTo('${query.package.name}.index-${queryClassName}', {
+	      queryParams: {
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+	        $columnVar : this.$columnVar,
+#end
+	      }
+	    });
+	}
+
+}

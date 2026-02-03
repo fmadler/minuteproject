@@ -1,0 +1,23 @@
+#exposeVariableModelSpecific()
+#macro(putTriggerTableHisto $operation)
+CREATE OR REPLACE TRIGGER ${table.name}_I 
+#if($operation=="INS")
+INSERT 
+#elseif($operation=="DEL")
+DELETE
+#elseif($operation=="UPD")
+UPDATE
+#end
+AFTER ${table.name}
+REFERENCING NEW AS NEW OLD AS OLD FOR EACH ROW 
+BEGIN
+#putHistoTriggerInsert("$operation") 
+END ${table.name}_I;
+/
+#end
+#foreach ($table in $entities)
+#createHistoryTable()
+#putTriggerTableHisto("INS")
+#putTriggerTableHisto("UPD")
+#putTriggerTableHisto("DEL")
+#end

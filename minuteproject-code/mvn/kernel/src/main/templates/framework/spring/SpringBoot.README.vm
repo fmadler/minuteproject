@@ -1,0 +1,57 @@
+#exposeEnabledProperties()
+#exposeApplicationSpecific()
+#set($hash = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+# ${application.name} Spring Boot Application
+
+The application can be tested locally or package for deployment on a server
+
+$h2 Local test
+To use embedded connection pool for local test
+
+Inside /REST directory
+
+```bash
+mvn clean package spring-boot:run -Dspring-boot.run.profiles=jdbc-params -Plocal
+# or
+mvn clean package spring-boot:run -DactiveProfiles=jdbc-params -Plocal
+```
+* Maven build profile for local
+* including the jdbc driver
+* Springboot runtime profile jdbc-params for
+* using jdbc connection params
+* local logback storage
+
+Then go to http://localhost:8081/swagger-ui/index.html
+#if($isGraphQLEnabled)
+
+$h3 Graphql thru graphiql app
+Go to http://localhost:8081/graphiql
+#end
+
+$h2 Release
+It builds a war to deploy on server such as tomcat
+$h3 With embedded connection pool
+```bash
+mvn clean package -DactiveProfiles=jdbc-params -Plocal
+```
+$h3 With server CP
+```bash
+mvn clean package -DactiveProfiles=jdbc-cp -Premote
+```
+
+Before the deployment ensure that the connection pool is present on the server
+#generatorSpecific()
+#exposeApplicationSpecific()
+#exposeSpringBootModelSpecific()
+#if($configuration.isSingleModel())
+#springBootJdbcConfigProperties()
+#end
+#foreach ($model in $application.getModels())
+#if ($application.getModels().size()==1)
+#springBootJdbcConfigProperties()
+#else
+## TODO multimodel in SB
+#end
+#end

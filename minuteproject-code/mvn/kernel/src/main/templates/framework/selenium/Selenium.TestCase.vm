@@ -1,0 +1,106 @@
+#exposeVariableModelSpecific()
+#exposeADFBuildSpecific()
+#exposeADFReleaseSpecific()
+package $packageName;
+
+import junit.framework.TestCase;
+
+import com.thoughtworks.selenium.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import java.util.regex.Pattern;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+import java.util.concurrent.TimeUnit;
+
+public class $className extends TestCase {
+
+	private DefaultSelenium selenium;
+	@Before
+	public void setUp() throws Exception {
+//		selenium = new DefaultSelenium("localhost", 4444, "*firefox", "http://${server-hostname}:${server-port}/");
+//		selenium.start();
+	}
+    public void testSomethingSimple() throws Exception {
+//        selenium.open("/$applicationName/faces/homePage");
+
+        //goto homepage 
+        // and check property
+        
+        //click on each menu link
+        // and check link
+        
+        //check crud
+        // check title
+        // check default input
+        //  check create
+        //  search
+        //  check retrieve
+        //  check update
+        //  check delete
+        
+        // check validation
+        
+        // check 404
+/*
+		selenium.click("css=span.x106");
+		selenium.waitForPageToLoad("30000");
+		selenium.click("css=div.accordion_toggler_1 > a > span");
+		selenium.click("css=div.accordion_toggler_2. > a > span");
+		selenium.click("//a[@id='pt1:j_id__ctru12pc4']/span");
+		selenium.waitForPageToLoad("30000");
+		selenium.click("id=pt1:act_sdi2::disAcr");
+		clickOnIdAfterWait(selenium, "pt1:itdetsave", "10000");
+
+		selenium.click("id=d1::msgDlg::cancel");
+
+        selenium.stop();
+*/
+    	WebDriver driver = new FirefoxDriver();
+    	driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+		WebElement createTab;
+		
+		
+#foreach($table in $entities)
+#exposeADFEntitySpecific()
+#ADFHtmlEntityId()
+##set($hasSubmit=false)
+    	driver.get ("http://${server-hostname}:${server-port}/$applicationName/faces/${domainVariableName}View");
+    	createTab = driver.findElement(By.id("pt1:${entityCreateId}::disAcr"));
+    	createTab.click();
+		WebElement ${domainVariableName}Element;
+		
+#foreach ($column in $table.columns)## $presentationUtils.getNotTechnicalColumns($table))  
+#putColumnParams()
+#if(!$isForeignKey)
+#if($columnUtils.isString($column))
+    	${domainVariableName}Element = driver.findElement(By.id("pt1:${columnVar}itdet::content"));
+    	${domainVariableName}Element.sendKeys("Cheese!");
+##set($hasSubmit=true)
+#end
+#end
+#end
+##if($hasSubmit)
+##    	${domainVariableName}Element.submit();
+##end
+         WebElement ${domainVariableName}Save = driver.findElement(By.id("pt1:itdetsave"));
+		 ${domainVariableName}Save.click();
+    //
+#end
+
+		
+    }
+	
+	private void clickOnIdAfterWait (DefaultSelenium selenium, String id, String time) {
+		selenium.waitForCondition(
+				   "selenium.browserbot.getCurrentWindow().document.getElementById('"+id+"')",
+				   time
+				);
+		selenium.click("id="+id);		
+	}
+}

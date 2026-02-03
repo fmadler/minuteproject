@@ -1,0 +1,24 @@
+#exposeJSFApplicationSpecific()
+#exposePrimefacesConfig()
+#set($title="$model.name jsf web")
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:composition template="$modelDecoratorJSFImport">
+    	<ui:define name="title">
+    		<ui:insert name="title">#{i18n.errorPageTitle}</ui:insert>
+    	</ui:define>
+    	<ui:define name="heading">
+    		<h:outputText value="Menu" />
+    	</ui:define>
+		<ui:define name="body">
+##to improve exception are not reported!!
+## check http://stackoverflow.com/questions/460596/jsf-generic-exception-handling
+			<p>#{i18n.errorPageBodyPart1}</p>
+			<p>#{i18n.errorPageBodyPart2} #{requestScope['javax.servlet.error.message']}</p>
+    	</ui:define>
+    </ui:composition>
+</html>	

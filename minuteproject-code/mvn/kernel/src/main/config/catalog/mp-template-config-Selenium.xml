@@ -1,0 +1,34 @@
+<target name="Selenium">		
+	<architecture-target name="Selenium architecture artifacts" description="Selenium architecture">
+	</architecture-target>	
+    <plugin name="seleniumUtils" className="net.sf.minuteProject.plugin.selenium.SeleniumUtils"></plugin>
+
+	<template-target 
+    	name="config"
+		libdir="lib/SELENIUM_LIB.vm"
+		outputdir="src/test/java"
+		belongToPackage="true">
+			 
+		<template name="Selenium.TestCase" templateFileName="Selenium.TestCase.vm" 
+			file-extension="java" technicalPackage="" file-suffix="SeleniumTestCase" 
+			add-model-name="true" model-specific="true">
+		</template>
+
+    </template-target>
+      	
+	<template-target 
+	    name="java"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="Selenium.PomXml" templateFileName="Selenium.PomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>	
+					
+	</template-target>	  	
+  	         		
+</target>

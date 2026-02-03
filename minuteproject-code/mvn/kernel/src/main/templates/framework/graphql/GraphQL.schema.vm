@@ -1,0 +1,215 @@
+#macro(chunkInfo)
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#set ($enumName = $formatUtils.getJavaName("${query.name}_${queryChunk.name}"))
+#end
+#macro(graphqlQueryEntityType $model)
+#exposeVariableModelDetailSpecific()
+#foreach ($package in $businessPackageViews)
+    """
+    Package $package.name model views
+    """
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecific()
+#set ($searchableSize = $tableUtils.getSearchableColumns($table).size())
+#if ($searchableSize>0)
+    ${tableVariableName} (
+#foreach($column in $tableUtils.getSearchableColumns($table))
+#putColumnParamNaming()
+        $columnVar:$graphqlUtils.convertColumnType($column) #if ($velocityCount!=$searchableSize),
+#end
+#end
+
+    ): [${tableClassName}]
+#else
+    ${tableVariableName}: [${tableClassName}]
+#end
+#end
+#end
+#end
+#macro(graphqlQueryEntityTypeOut $model)
+#exposeVariableModelDetailSpecific()
+#foreach ($package in $businessPackageViews)
+    """
+    Package $package.name model views
+    """
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecific()
+type ${tableClassName} {
+#foreach($column in $table.columns)
+#putColumnParamNaming()
+    $columnVar:$graphqlUtils.convertColumnType($column)
+#end
+}
+
+#end
+#end
+#end
+#macro(graphqlQueryMutationType $isWrite)
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#set($pureQueries=$package.getPureQueries($isWrite))
+#if($pureQueries.size()>0)
+    """
+    Package $package.name
+    """
+#end
+#foreach ($query in $pureQueries)
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDInputBean()
+#if($isNotVoidInput || $query.getQueryChunks().size() > 0)
+    ${tableVariableName}(
+#set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
+#foreach($column in $columnList)
+#putColumnParamNaming()
+        $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
+#end
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#chunkInfo()
+        $chunkName:${enumName}
+#end
+
+    ): [${sddOutputBeanClass}]
+#else
+    ${tableVariableName}: [${sddOutputBeanClass}]
+#end
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+#set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
+#if ($columnList.size()>0)
+    ${tableVariableName}${pivotClasses} (
+#foreach($column in $columnList)
+#putColumnParamNaming()
+        $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
+#end
+#end
+
+    ): [${tableClassName}${pivotClass}]
+#else
+    ${tableVariableName}${pivotClasses}: [${tableClassName}${pivotClass}]
+#end
+#end
+#end
+#end
+#end
+##exposeEmberModelSpecific()
+schema {
+## sdd queries
+    query: Query
+## check what to do with composite queries
+#if ($graphqlUtils.hasMutation($model))
+    mutation: Mutation
+#end
+}
+
+scalar Date
+scalar DateTime
+scalar Timestamp
+
+type Query {
+#graphqlQueryEntityType($model)
+#graphqlQueryMutationType(false)
+}
+
+#if ($graphqlUtils.hasMutation($model))
+type Mutation {
+#graphqlQueryMutationType(true)
+}
+#end
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#set($pureQueries=$package.getPureQueries())
+#foreach ($query in $pureQueries)
+#set($table=$query.inputBean)
+## enum in checkconstraint
+#foreach ($column in $table.columns)
+#if (!$column.hasBeenDuplicated())
+#putColumnParamNaming()
+#if ($columnUtils.hasCheckConstraint($column))
+#set($checkConstraints= $columnUtils.getCheckConstraintValues($column))
+enum ${columnClass}Enum {
+#foreach ($property in $checkConstraints)
+#set($propertyName = $formatUtils.getUppercaseUnderscore2($property.name))
+    $propertyName
+#end
+}
+#end
+#end
+#end
+## enum in chunks
+#foreach($queryChunk in $query.getQueryChunks())
+#chunkInfo()
+enum ${enumName} {
+#foreach($queryChunkValue in $queryChunk.queryChunkValues)
+#set($chunkValueName=$javaUtils.getJavaVariableNaming($queryChunkValue.name))
+    $chunkValueName
+#end
+}
+#end
+#end
+#end
+
+#foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
+#set($pureQueries=$package.getPureQueries())
+#if($pureQueries.size()>0)
+    """
+    Package $package.name
+    """
+#end
+#foreach ($query in $pureQueries)
+#putImportQuerySDDBean()
+#exposeQuerySpecific()
+#set($table=$query.outputBean)
+#exposeVariableEntitySpecific()
+#putImportSDDBean()
+
+type ${sddOutputBeanClass} {
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#if ($column.getSeparatorCharacters())
+#putColumnParamNaming()
+    $columnVar:[${sddOutputBeanClass}$columnClass] ##""" $column.arrayElementName  """
+#else
+    $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end
+
+#end
+#end
+}
+
+#foreach($column in $outputBean.columns)
+#if ($column.getSeparatorCharacters())
+#putColumnParamNaming()
+type ${sddOutputBeanClass}$columnClass {
+#foreach($field in $column.structuredArray)
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+#set($fieldVariable = $javaUtils.getJavaVariableNaming($commonUtils.getJavaVariableName($field.name)))
+    $fieldVariable:$fieldType
+#end
+}
+#end
+#end
+
+#foreach ($pivot in $query.pivots)
+#set($pivotClass = $formatUtils.firstUpperCase($pivot.name))
+#set($pivotClasses = $i18nUtils.plurialize($pivotClass))
+    """ pivot $pivotClass """
+type $tableClassName$pivotClass {
+#foreach ($column in $pivot.getColumnList())
+#putColumnParamNaming()
+    $columnVar: $graphqlUtils.convertColumnType($column)
+#end
+#foreach ($sibling in $pivot.getSiblings())
+#set($siblingClass = $formatUtils.firstUpperCase($sibling.name))
+#set($siblingName = $i18nUtils.plurialize($sibling.name))
+    $siblingName: [$tableClassName$siblingClass]
+#end
+}
+#end
+
+#end
+#end
+
+#graphqlQueryEntityTypeOut($model)

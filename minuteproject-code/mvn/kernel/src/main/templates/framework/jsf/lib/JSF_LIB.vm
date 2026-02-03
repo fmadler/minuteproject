@@ -1,0 +1,602 @@
+#macro (putJSFColumnSnippet $tableVariableName $internat)
+
+	<p:outputLabel>#{i18n.$internat$separator$columnVar}#if($column.isRequired()) *#end</p:outputLabel>
+#if($isEnum)
+    <p:selectOneMenu id="lbl${columnClass}-#{idValue}" value="#{${entityControllerJSFVariable}.selected${tableClassName}.${columnVar}}" required="$column.isRequired()" > 
+#if(!$column.isRequired())
+        <f:selectItem noSelectionOption="true" itemLabel="Please Select"/>
+#end
+		<f:selectItems value="#{${lookupEnumVar}.${domainVariableName}${columnClass}Array}" itemValue="#{item}" var="item" itemLabel="#{item.name()}" />
+    </p:selectOneMenu>	
+#else
+#if($columnUtils.isTimeColumn($column))
+    <p:calendar value="#{${entityControllerJSFVariable}.${tableVariableName}.${columnVar}}"
+       id="lbl${columnClass}-#{idValue}" ##converter="dateTsConverter"
+       converterMessage="Invalid Date" required="$column.isRequired()"
+       pattern="dd/MM/yyyy">
+    </p:calendar>
+##	<p:message for="lbl${columnClass}-#{idValue}" />
+#else
+#if($columnUtils.isBoolean($column))
+	<p:selectBooleanCheckbox id="lbl${columnClass}-#{idValue}" value="#{${entityControllerJSFVariable}.${tableVariableName}.${columnVar}}" />
+#else
+#if($presentationUtils.isTextArea($column))
+	<p:inputTextarea rows="$primefacesUtils.getDisplayRows($column)" cols="$primefacesUtils.getDisplayColumns($column)" maxlength="$column.sizeAsInt" width="$column.sizeAsInt" 
+        counterTemplate="{0} characters remaining." autoResize="false"
+#elseif($presentationUtils.isRichText($column))
+	<p:editor 
+#else
+	<p:inputText 
+		size="$primefacesUtils.getDisplayColumns($column)" maxlength="$column.sizeAsInt" 
+#end
+		label="${columnClass}" id="lbl${columnClass}-#{idValue}" value="#{${entityControllerJSFVariable}.${tableVariableName}.${columnVar}}" required="$column.isRequired()"/>
+##	<p:message for="lbl${columnClass}-#{idValue}"/>
+#end
+#end
+#end
+	<p:message for="lbl${columnClass}-#{idValue}" />
+#end
+
+#macro (putJSFColumnSnippet2)
+#putJSFColumnSnippet("selected${tableClassName}" ${tableVariableName})
+#end
+
+#macro (putJSFParentDropDownListSnippet)
+#set ($parentConverterJSFClass = $commonUtils.getTemplateClassName($linktableDB, $model, $templateEntityConverterJSF))
+#set ($parentConverterJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($parentConverterJSFClass))
+    <c:if test="#{fieldToHide != '${columnVar}'}">
+    	<p:outputLabel>#{i18n.$tableVariableName$separator$columnVar}#if($column.isRequired()) *#end</p:outputLabel>
+        <p:selectOneMenu id="lbl${columnClass}-#{idValue}" value="#{${entityControllerJSFVariable}.selected${tableClassName}.${columnVar}}" required="$column.isRequired()" converter="$parentConverterJSFVariable" >
+#if(!$column.isRequired())
+	        <f:selectItem noSelectionOption="true" itemLabel="Please Select"/>
+#end
+        	<f:selectItems value="#{${entityControllerJSFVariable}.${columnVar}s}" id="${columnVar}Items" itemValue="#{item}" var="item" itemLabel="#{item.display()}"/>
+        </p:selectOneMenu>
+        <p:message for="lbl${columnClass}-#{idValue}" />
+	</c:if>
+#end
+
+#macro (putJSFParentAffectationSnippet $cpt)
+	
+    <c:if test="#{fieldToHide != '${columnVar}'}">
+#set ($childrenListClass = $childrenListClass+$cpt)
+		<p:row>
+			<p:outputLabel>#{i18n.$tableVariableName$separator$columnVar}#if($column.isRequired()) * #end</p:outputLabel>
+			<h:outputText value="&#160;&#160;" />
+				<p:commandButton immediate="true" actionListener="#{${entityControllerJSFVariable}.activateRender${localColumnClass}}" title="Search" icon="ui-icon-search" 
+					oncomplete="PF('suc${childrenListClass}Dialog').show()" update="container${childrenListClass}" />
+		</p:row>
+		<p:row>
+            <p:panel id="lbl${columnClass}-#{idValue}" header="#{i18n.$tableVariableName$separator$columnVar} #{jsfSemanticReferenceUtils.getStrippedSemanticReference${linkedTableClass}(${entityControllerJSFVariable}.selected${tableClassName}.${columnVar}, 30)} ..." toggleable="true" toggleSpeed="500" closeSpeed="500" widgetVar="parent${columnVar}" collapsed="#{jsfSemanticReferenceUtils.getSemanticReference${linkedTableClass}(${entityControllerJSFVariable}.selected${tableClassName}.${columnVar}) eq ''}" >
+				<${model.name}:${linkedTableClass}SemanticReference entity="#{${entityControllerJSFVariable}.selected${tableClassName}.${columnVar}}"/>
+			</p:panel>
+        </p:row>
+        <p:message for="lbl${columnClass}-#{idValue}" />
+    </c:if>	
+#end
+
+#macro(exposeSeparator)
+#exposeJSFTemplate()
+#set($separator=$i18nUtils.getSeparator($template, $templateApplicationI18nJSF))
+#end
+
+#macro (exposeJSFEntitySpecific)
+#exposeVariableEntitySpecific()
+#exposeJSFTemplate()
+#exposeJSFConfig()
+#set ($entityCreateJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityCreateJSF))
+#set ($entityCreateJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityCreateJSF))
+#set ($entityCreateJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityCreateJSF))	
+#set ($entityCreateJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityCreateJSF))
+#set ($entityListJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityListJSF))
+#set ($entityListJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityListJSFClass))
+#set ($entityListJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityListJSF))	
+#set ($entityControllerJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityControllerJSF))
+#set ($entityControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityControllerJSFClass))
+#set ($entityControllerJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityControllerJSF))	
+#set ($entityConverterJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityConverterJSF))
+#set ($entityConverterJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityConverterJSFClass))
+#set ($entityConverterJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityConverterJSF))	
+#set ($entityLazyDataModelClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityLazyDataModel))
+#set ($entityLazyDataModelVariable = $commonUtils.getJavaNameVariableFirstLetter($entityLazyAccessModelClass))
+#set ($entityLazyDataModelImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityLazyDataModel))	
+#set ($entityListLazyJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityListLazyJSF))
+#set ($entityEditJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityEditJSF))
+#set ($entityListRowJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityListRowJSF))
+#set ($entityListPortletJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityListPortletJSF))
+#set ($entityPortletJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityPortletJSF))
+#end
+
+#macro (exposeJSFModelSpecific)
+#exposeVariableModelSpecific()
+#exposeJSFConfig()
+#exposeJSFTemplate()
+#set ($modelJSFUtilsClass = $commonUtils.getTemplateClassName($model, $template, $templateModelJSFUtils))
+#set ($modelJSFUtilsImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelJSFUtils))
+#set ($genericLazyDataModelClass = $commonUtils.getTemplateClassName($model, $template, $templateModelGenericLazyDataModel))
+#set ($genericLazyDataModelImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelGenericLazyDataModel))
+#set ($modelLazyDataModelServiceClass = $commonUtils.getTemplateClassName($model, $template, $templateModelLazyDataModelService))
+#set ($modelLazyDataModelServiceVariable = $commonUtils.getJavaNameVariableFirstLetter($modelLazyDataModelServiceClass))
+#set ($modelLazyDataModelServiceImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelLazyDataModelService))
+#set ($modelI18nJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateApplicationI18nJSF))
+#set ($modelI18nJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelI18nJSFClass))
+#set ($modelI18nJSFImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateApplicationI18nJSF))
+#set ($modelBeanManagerLanguageJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelBeanManagerLanguageJSF))
+#set ($modelBeanManagerLanguageJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelBeanManagerLanguageJSFClass))
+#set ($modelBeanManagerMenuJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelBeanManagerMenuJSF))
+#set ($modelBeanManagerMenuJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelBeanManagerMenuJSFClass))
+#set ($modelBeanManagerMenuJSFImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelBeanManagerMenuJSF))
+#set ($modelBeanManagerUserJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelBeanManagerUserJSF))
+#set ($modelBeanManagerUserJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelBeanManagerUserJSFClass))
+#set ($modelBeanManagerUserJSFImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelBeanManagerUserJSF))
+#set ($modelDecoratorJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateModelXhtmlDecoratorJSF))
+#set ($modelPortletDecoratorJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateModelXhtmlPortletDecoratorJSF))
+#set ($modelSemanticReferenceUtilsJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateModelJSFSemanticReferenceUtils))
+#set ($modelSemanticReferenceUtilsJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelJSFSemanticReferenceUtils))
+#set ($modelSemanticReferenceUtilsJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelSemanticReferenceUtilsJSFClass))
+#set ($modelMenuJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateModelXhtmlMenuJSF))
+#set ($modelCssDefaultJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateCssDefaultJSF))
+#set ($controllerBeanPackageName=$commonUtils.getPackageName($model, $template, $templateEntityControllerJSF))
+#set ($converterBeanPackageName=$commonUtils.getPackageName($model, $template, $templateEntityConverterJSF))
+#set ($controllerBeanMenuPackageName=$commonUtils.getPackageName($model, $template, $templateModelBeanManagerMenuJSF))
+#set ($lookupBeanImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateLookupBean))
+#set ($lookupBeanClass=$commonUtils.getTemplateClassName($model, $template, $templateLookupBean))
+#set ($lookupBeanVar=$commonUtils.getJavaNameVariableFirstLetter($lookupBeanClass))
+#set ($lookupEnumImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateLookupEnum))
+#set ($lookupEnumClass=$commonUtils.getTemplateClassName($model, $template, $templateLookupEnum))
+#set ($lookupEnumVar=$commonUtils.getJavaNameVariableFirstLetter($lookupEnumClass))
+#set ($lookupPackageName=$commonUtils.getPackageName($model, $template, $templateLookupBean))
+#set($isPortlet=$template.getPropertyValue("is-portlet",false))
+#end
+
+#macro (exposeJSFApplicationSpecific)
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+#exposeJSFConfig()
+#exposeJSFTemplate()
+#set ($modelI18nJSFClass = $commonUtils.getTemplateClassName($generatorBean, $template, $templateApplicationI18nJSF))
+#set ($modelI18nJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelI18nJSFClass))
+#set ($modelI18nJSFImport = $commonUtils.getModelLevelTemplateFullPath($generatorBean, $template, $templateApplicationI18nJSF))
+#set ($modelI18nBundleJSFImport = $commonUtils.getModelLevelTemplateFullPath($generatorBean, $template, $templateApplicationI18nBundleJSF))
+#set ($modelIndexJSFImport = $commonUtils.getArtifactRootPathDirAndFullName($generatorBean, $template, $templateIndexXhtmlMenuJSF))
+#set ($modelDecoratorJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($generatorBean, $template, $templateModelXhtmlDecoratorJSF))
+#set ($modelBeanManagerLanguageJSFClass = $commonUtils.getTemplateClassName($generatorBean, $template, $templateModelBeanManagerLanguageJSF))
+#set ($modelBeanManagerLanguageJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelBeanManagerLanguageJSFClass))
+#end
+
+#macro (exposeJSFAppFwkSpecific)
+#exposeVariableModelSpecific()
+#set ($dateTsConverterImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateJSFFwkDateTsConverter))
+#set ($modelCssDefaultJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateCssDefaultJSF))
+#end
+
+#macro (exposeJSFTemplate)
+#set ($templateEntityCreateJSF = "JSFXhtmlCreateEntity")
+#set ($templateEntityListJSF = "JSFXhtmlListEntity")
+#set ($templateEntityListLazyJSF = "JSFXhtmlListLazyEntity")
+#set ($templateEntityListPortletJSF = "JSFXhtmlListLazyEntityPortlet")
+#set ($templateEntityPortletJSF = "JSFXhtmlEntityPortlet")
+#set ($templateEntityEditJSF = "JSFXhtmlEditEntity")
+#set ($templateEntityListRowJSF = "JSFXhtmlListRowEntity")
+#set ($templateSDDJSF = "JSFXhtmlSDDInput")
+#set ($templateEntityControllerJSF = "JSFBeanManagerController")
+#set ($templateEntityConverterJSF = "JSFBeanManagerConverter")
+#set ($templateApplicationI18nJSF = "JSFI18nProperties")
+#set ($templateApplicationI18nBundleJSF = "JSFI18nBundle")
+#set ($templateModelXhtmlDecoratorJSF = "JSFXhtmlDecorator")
+#set ($templateModelXhtmlPortletDecoratorJSF = "JSFXhtmlPortletDecorator")
+#set ($templateModelXhtmlMenuJSF = "JSFXhtmlMenu")
+#set ($templateIndexXhtmlMenuJSF = "JSFPrimefacesIndexXhtml")
+#set ($templateCssDefaultJSF = "JSFCssDefault")
+#set ($templateModelBeanManagerMenuJSF = "JSFBeanManagerMenu")
+#set ($templateModelBeanManagerLanguageJSF = "JSFBeanManagerLanguage")
+#set ($templateModelBeanManagerUserJSF = "JSFBeanManagerUser")
+#set ($templateJSFFwkDateTsConverter = "JSFFwkDateTsConverter")
+#set ($templateModelJSFUtils = "JSFUtils")
+#set ($templateModelGenericLazyDataModel = "JSF.PF.Generic.LazyDataModel")
+#set ($templateModelLazyDataModelService = "JSF.PF.LazyDataModel.Service")
+#set ($templateEntityLazyDataModel = "JSF.PF.Entity.LazyDataModel")
+#set ($templateModelJSFSemanticReferenceUtils = "JSFSemanticReferenceUtils")
+#set ($templateChartJSF = "JSFXhtmlChart")
+#set ($templateLookupBean = "JSF.Spring.Lookup.Service")
+#set ($templateLookupEnum = "JSF.Enum.Lookup.Service")
+#end
+
+#macro(exposeJSFConfig)
+#set ($isSpringBackend=$template.hasPropertyValue("add-backend-implementation","spring"))
+#set ($isEJBBackend=$template.hasPropertyValue("add-backend-implementation","ejb"))
+#end
+
+#macro(exposePrimefacesConfig)
+#set ($primefacesVersion=$template.getPropertyValue("primefaces-version","5.1"))
+#set ($primefacesNamespace=$template.getPropertyValue("primefaces-namespace","http://primefaces.org/ui"))
+#end
+
+#macro(putPrimefacesEntityRowExpansion)
+		<p:rowExpansion>  
+			<p:fieldset legend="${domainClassName} Details" align="left">  
+				 <p:toolbar>  
+					<p:toolbarGroup > 
+						<p:commandButton type="button" title="Edit" icon="ui-icon-folder-open"/>  
+						<p:separator />          
+						<p:commandButton type="button" title="Save" icon="ui-icon-disk"/>  
+						<p:separator />  
+						<p:commandButton type="button" title="Cancel" icon="ui-icon-trash"/> 
+					</p:toolbarGroup>  
+				</p:toolbar>
+				<h:panelGrid columns="2" cellpadding="5"  styleClass="list_display_table_TR_even">
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+#end  
+#foreach ($column in $table.attributes)
+#putColumnParams()
+#columnJavaNaming()	
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+				</h:panelGrid>
+			</p:fieldset> 
+
+		</p:rowExpansion>  
+#end
+
+#macro(putPrimefacesChildrenAddEditDialog)
+
+    <!-- dialog to add and manage ${childrenListClass} -->
+	<p:outputLabel id="containerBasicAdd${childrenListClass}">
+		<p:dialog id="basicAdd${childrenListClass}" 
+			rendered="#{${thisEntityControllerJSFVariable}.isRenderAdd${childrenListClass}()}"
+			header="Add ${linkedTableClass}" 
+			widgetVar="add$childrenListClass" 
+			resizable="true" >
+			<h:form id="formAdd$childrenListVariable">
+				<h:panelGrid columns="3" cellpadding="5" id="add${childrenListClass}">
+					<ui:include src="/$entityEditJSFLocation">
+						<ui:param name="affectFormId" value=":formAdd$childrenListVariable" />
+						<ui:param name="idValue" value="$refCnt" />
+						<ui:param name="fieldToHide" value="$linkedColumnVariable" />
+#set($refCnt=$refCnt+1)
+					</ui:include>
+            </h:panelGrid>			
+				<p:commandButton action="#{${entityControllerJSFVariable}.createOrUpdateListener}" id="cmdAdd${childrenListClass}" value="#{i18n.add}" icon="ui-icon-disk" 
+					oncomplete="PF('add${childrenListClass}').hide()" update="$updateFromPopUp">
+					<f:setPropertyActionListener 
+						target="#{${entityControllerJSFVariable}.selected${domainObjectClass}.${linkedColumnVariable}}" 
+						value="#{${thisEntityControllerJSFVariable}.selected${domainClassName}}"/>
+					<f:setPropertyActionListener 
+						target="#{${entityControllerJSFVariable}.selected${domainObjectClass}.${linkedColumnVariable}_}" 
+						value="#{${thisEntityControllerJSFVariable}.selected${domainClassName}.$primaryKeyVariable}"/>
+					<f:setPropertyActionListener 
+						target="#{${thisEntityControllerJSFVariable}.refresh${childrenListClass}}" value="true"/>
+				</p:commandButton>	
+			</h:form>
+		</p:dialog>
+	</p:outputLabel>
+	<p:outputLabel id="containerBasicDialog${childrenListClass}">
+		<p:dialog id="basicDialog${childrenListClass}" 
+			rendered="#{${thisEntityControllerJSFVariable}.isRenderDialog${childrenListClass}()}"
+			header="#{${childrenListVariable}} Details" 
+			widgetVar="detailDialog${childrenListClass}" 
+			resizable="true" >  
+			<h:form id="form${childrenListClass}">
+    			<h:panelGrid columns="3" cellpadding="5" id="display${childrenListClass}">
+    			<ui:include src="/$entityEditJSFLocation">
+    				<ui:param name="affectFormId" value=":form${childrenListClass}" />
+                    <ui:param name="idValue" value="$refCnt" />
+    				<ui:param name="fieldToHide" value="$linkedColumnVariable" />
+#set($refCnt=$refCnt+1)
+                </ui:include>
+                </h:panelGrid>
+    			<p:commandButton actionListener="#{${entityControllerJSFVariable}.createOrUpdateListener}" id="cmdUpdate${childrenListClass}" value="#{i18n.update}" icon="ui-icon-check" 
+    				oncomplete="PF('detailDialog${childrenListClass}').hide()" update="$updateFromPopUp">
+    				<f:setPropertyActionListener target="#{${thisEntityControllerJSFVariable}.refresh${childrenListClass}}" value="true"/>
+    				<!-- todo add reset DD lookup -->
+                </p:commandButton>
+    			<p:commandButton actionListener="#{${entityControllerJSFVariable}.deleteListener}" id="cmdDelete${childrenListClass}" value="#{i18n.delete}" icon="ui-icon-trash" process="@this" 
+    				oncomplete="PF('detailDialog${childrenListClass}').hide()" update="$updateFromPopUp">
+    				<f:setPropertyActionListener target="#{${thisEntityControllerJSFVariable}.refresh${childrenListClass}}" value="true"/>
+                </p:commandButton>
+				<p:commandButton value="#{i18n.cancel}" onclick="PF('detailDialog${childrenListClass}').hide()"/>
+			</h:form>
+		</p:dialog>
+	</p:outputLabel>
+#end
+
+#macro(putPrimefacesM2MChildrenSelectDeleteDialog)
+#if (!$isMasterData)
+     <!-- dialog to add and manage ${childrenListClass} -->
+	 <p:outputPanel id="containerBasicAdd${childrenListClass}" >
+         <p:dialog id="basicAdd${childrenListClass}" 
+			       message="Can you select one item?"
+                   rendered="#{${thisEntityControllerJSFVariable}.isRenderAdd${childrenListClass}()}"
+                   header="Affectation process" severity="alert"
+                   widgetVar="add$childrenListClass"
+				   resizable="true" 
+                   appendTo="@(body)">
+
+             <h:form id="formAdd$childrenListVariable">
+                 <p:dataTable value="#{${entityControllerJSFVariable}.lazyModel}"
+                              var="item"
+                              paginator="true" rows="10"
+                              lazy="true"
+                              selection="#{${entityControllerJSFVariable}.selected${domainObjectClass}}" selectionMode="single"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                              rowsPerPageTemplate="10,20,50"
+                              emptyMessage="No ${domainObjectClass} found with given criteria">
+    
+                     <f:facet name="header">
+                         #{i18n.listOf} #{i18n.$linkedTableVariable} 
+                     </f:facet>
+                     <ui:include src="/$entityListRowJSFLocation">
+                         <ui:param name="isSemanticReference" value="false" />
+                     </ui:include>
+                     <p:column>
+                         <p:commandButton value="#{i18n.affect}"
+                             id="cmdAdd${childrenListClass}"
+                             update="$updateFromPopUp"
+                             action="#{${thisEntityControllerJSFVariable}.affectAndDesactivateRender${childrenListClass}}"
+                             title="Affect"
+                             onclick="PF('add${childrenListClass}').hide()"
+                             process="@this">
+							 <f:actionListener binding="#{${thisEntityControllerJSFVariable}.set${childrenListClass}ToAdd(item)}"/>
+##<f:setPropertyActionListener value="#{item}" target="#{${thisEntityControllerJSFVariable}.${childrenListVariable}ToAdd}" />
+                         </p:commandButton >
+                     </p:column>
+                 </p:dataTable>
+             </h:form>
+         </p:dialog>
+     </p:outputPanel>
+#end
+#end
+
+#macro(putPrimefacesChildrenAddEditCommand)
+                   <p:tab id="child-$childrenListVariable" title="#{i18n.$linkedTableVariable}" > 
+                	 <p:outputPanel id="child-${childrenListVariable}Panel" >
+                		<p:toolbar id="add-$childrenListVariable">  
+                			<p:toolbarGroup align="left"> 
+                				<p:commandButton 
+##									actionListener="#{${entityControllerJSFVariable}.activateRenderAdd${childrenListClass}}"
+                                    immediate="true" 
+									title="Add $linktableDB.name"  
+									icon="ui-icon-plusthick" 
+									value="#{i18n.add}"
+									oncomplete="PF('add${childrenListClass}').show();" 
+									update=":containerBasicAdd${childrenListClass}">
+									<f:actionListener binding="#{${entityControllerJSFVariable}.activateRenderAdd${childrenListClass}()}" />
+									<f:actionListener binding="#{${entityLinkControllerJSFVariable}.resetSelected${linkedTableClass}()}"/>
+                                </p:commandButton>
+							</p:toolbarGroup>
+                		</p:toolbar>
+                        <p:dataTable var="item" 
+							    value="#{${entityControllerJSFVariable}.getLazy${childrenListClass}()}" 
+							    paginator="true" rows="10" 
+								lazy="true"
+                                onRowSelectUpdate="display" 
+                                dynamic="true"  resizableColumns="true"
+                                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                rowsPerPageTemplate="5,10,15"> 
+							<f:facet name="header">  
+                            #{i18n.listOf} #{i18n.$linkedTableVariable}  
+							</f:facet>
+							<ui:include src="/$entityListRowJSFLocation">
+								<ui:param name="isSemanticReference" value="true" />
+							</ui:include>
+							<p:column>
+                            <p:commandButton value="#{i18n.manage}" 
+            					id="detailButton${childrenListClass}" 
+            					update=":containerBasicDialog${childrenListClass}" 
+            					title="Manage Details"
+            					action="#{${entityLinkControllerJSFVariable}.reloadSelected}"
+            					oncomplete="PF('detailDialog${childrenListClass}').show()" 
+            					process="@this">
+                                <f:actionListener binding="#{${thisEntityControllerJSFVariable}.activateRenderDialog${childrenListClass}()}" />
+                                <f:actionListener binding="#{${entityLinkControllerJSFVariable}.setSelected${linkedTableClass}(item)}"/>
+                            </p:commandButton>
+							</p:column>
+						</p:dataTable>
+                	 </p:outputPanel>
+                   </p:tab>
+#end
+
+#macro(putPrimefacesM2MChildrenSelectRemoveCommand)
+#set ($isMasterData= $tableUtils.isAdminContentType($targetTable))
+                   <p:tab id="child-$childrenListVariable" title="#{i18n.$targetTableClassName}" > 
+                	 <p:outputPanel id="child-${childrenListVariable}Panel" >	
+                		<p:toolbar id="add-$childrenListVariable">  
+                			<p:toolbarGroup align="left"> 
+#if (!$isMasterData)
+                				<p:commandButton 
+                                    immediate="true" 
+									value="#{i18n.associate}"
+									title="#{i18n.associate} $targetTable.name"  
+									icon="ui-icon-transfer-e-w" 
+									oncomplete="PF('add${childrenListClass}').show();" 
+									update=":containerBasicAdd${childrenListClass}">
+									<f:actionListener binding="#{${entityControllerJSFVariable}.activateRenderAdd${childrenListClass}()}" />
+                                </p:commandButton>								
+#else
+                				<p:commandButton 
+                                    immediate="true" 
+									value="#{i18n.saveAssociations}"
+									title="#{i18n.add} $targetTable.name #{i18n.elements}"  
+									icon="ui-icon-document" 
+									action="#{${entityControllerJSFVariable}.add${childrenListClass}()}">
+                                </p:commandButton>
+#end								
+							</p:toolbarGroup>
+                		</p:toolbar>						
+#if ($isMasterData)
+#set ($parentConverterJSFClass = $commonUtils.getTemplateClassName($targetTable, $model, $templateEntityConverterJSF))
+#set ($parentConverterJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($parentConverterJSFClass))
+                         <p:pickList id="pickList$childrenListClass" value="#{${entityControllerJSFVariable}.${childrenListVariable}DualListModel}" var="var"
+                                     itemValue="#{var}" itemLabel="#{var.display}" converter="#{${parentConverterJSFVariable}}"
+                                     showSourceControls="true" showTargetControls="true" showCheckbox="true"
+                                     showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >
+							<f:facet name="sourceCaption">Available</f:facet>
+							<f:facet name="targetCaption">Connected</f:facet>
+							<p:ajax event="transfer" listener="#{${entityControllerJSFVariable}.on${childrenListClass}Transfer}" />
+
+						 </p:pickList>	
+#else
+                        <p:dataTable var="item" 
+							    value="#{${entityControllerJSFVariable}.get${childrenListClass}()}" paginator="true" rows="10"  
+                                onRowSelectUpdate="display" 
+                                dynamic="true"  resizableColumns="true"
+                                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                rowsPerPageTemplate="5,10,15"> 
+							<f:facet name="header">  
+                            #{i18n.listOf} #{i18n.$linkedTableVariable}  
+							</f:facet>
+							<ui:include src="/$entityListRowJSFLocation">
+								<ui:param name="isSemanticReference" value="true" />
+							</ui:include>
+							<p:column>
+                            <p:commandButton value="Delete association" 
+            					id="detailButton${childrenListClass}" 
+            					title="Delete"
+								update="$updateFromPopUp"
+								action="#{${thisEntityControllerJSFVariable}.disaffectAndDesactivateRender${childrenListClass}}"
+            					process="@this">
+								<f:actionListener binding="#{${thisEntityControllerJSFVariable}.set${childrenListClass}ToAdd(item)}"/>
+                            </p:commandButton>
+							</p:column>
+						</p:dataTable>
+#end
+                	 </p:outputPanel>
+                   </p:tab>
+#end
+
+#macro(setJsfMenu4Package)
+#set($displayableEntities = $presentationUtils.getDisplayableEntityFromPackage($package))
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#set($packageLabel=$i18nUtils.getPackageName($package))
+#set($subMenuVar = "submenu${package.name}")
+#set($tabVar = "tab${package.name}")
+#if(!$displayableEntities.isEmpty())
+        DefaultSubMenu ${subMenuVar} = new DefaultSubMenu();  
+        ${subMenuVar}.setLabel("${packageLabel}"); 	
+		//
+		Tab $tabVar = new Tab();
+		${tabVar}.setTitle("${packageLabel}");
+		
+#if($entitySecurityUtils.isEntityRoleSecured($package))
+#set($roles=$entitySecurityUtils.getEntitySecuredRoles($package))
+## <mp:isUserInRole role="${roles}"> if(!tx.isCallerInRole ("${roles}")
+#end
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#exposeJSFEntitySpecific()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$primefacesUtils.getAccessUrl($table.name))
+        ${subMenuVar}.addElement(getItem("$tableLabel", ${accessUrl})); 
+		${tabVar}.getChildren().add(getPanel(getTuple (${accessUrl})));
+		
+#end
+#end
+        model.addElement(${subMenuVar});
+		accordion.getChildren().add(${tabVar}) ;
+#end	
+#end
+
+#macro(setJsfMenu4Access)
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+     public static final String ${package.name}_INDEX = "$index";
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#exposeJSFEntitySpecific()
+#set($accessUrl=$primefacesUtils.getAccessUrl($table.name))
+     public static final String ${accessUrl} = "/${entityListLazyJSFLocation}"; 		
+#end
+#end
+#set($index=$index+1)
+#end
+
+#macro(setJsfMenu4SDDAccess)
+#if($model.hasStatementModel())
+	 public static final String SDD_INDEX_ = "$index";
+#set($index=$index+1)
+#foreach ($query in $model.getStatementModel().getQueries().getQueries())
+#exposeQuerySpecific()
+#exposeChartSpecific()
+#set($table=$query.inputBean)
+##&nbsp;exposeJSFEntitySpecific()
+#if (!$isChartLayout)
+#set($sddJSFLocation=$commonUtils.getArtifactRelativePathDirAndFullName($table, $template, $templateSDDJSF))
+#else
+#set($sddJSFLocation=$commonUtils.getArtifactRelativePathDirAndFullName($table, $template, $templateChartJSF))
+#end
+#set($accessUrl=$primefacesUtils.getAccessUrl($table.name))
+     public static final String ${accessUrl} = "/${sddJSFLocation}"; 
+#end
+#end
+#end
+
+#macro(setJsfMenu4AccessUrl)
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#exposeJSFEntitySpecific()
+#set($accessUrl=$primefacesUtils.getAccessUrl($table.name))
+        if (url.endsWith(${accessUrl}))
+            accordion.setActiveIndex(${package.name}_INDEX);		
+#end
+#end
+#end
+
+#macro(setJsfMenu4Map)
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#exposeJSFEntitySpecific()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$primefacesUtils.getAccessUrl($table.name))
+        map.put (${accessUrl}, new MenuTuple(${accessUrl}, ${package.name}_INDEX, "${table.name}","$tableLabel")); 		
+#end
+#end
+#end
+
+#macro(setJsfMenu4SDDMap)
+#if($model.hasStatementModel())
+#foreach ($query in $model.getStatementModel().getQueries().getQueries())
+#set($table=$query.inputBean)
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($accessUrl=$primefacesUtils.getAccessUrl($table.name))
+        map.put (${accessUrl}, new MenuTuple(${accessUrl}, SDD_INDEX_, "${table.name}","$tableLabel"));
+#end
+#end
+#end
+
+#macro (exposeJSFReleaseSpecific)
+##exposeJSFBuildSpecific()
+#set($applicationName=$template.getPropertyValue("application-name","${model.name}App"))
+#set($hasCasAuthentication=$template.getPropertyValue("has-cas-authentication",false))
+#end
+
+#macro (setJsfPrimefacesNamespace)
+	xmlns:p="$primefacesNamespace"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+#end
+
+#macro (setJsfPrimefacesTableExport $target)
+##       <p:commandLink id="pdf" ajax="false">
+	   <h:commandLink id="pdf${target}">
+          <p:graphicImage value="/icon/pdf.png" width="30" height="30"/>
+           <pe:exporter type="pdf" target="$target" fileName="$target" datasetPadding="5"/>
+       </h:commandLink>
+       <p:spacer width="15"/>
+       <h:commandLink id="xls${target}">
+           <p:graphicImage value="/icon/excel.png" width="30" height="30"/>
+           <pe:exporter type="xlsx" target="$target" fileName="$target" datasetPadding="5"/>
+       </h:commandLink>
+#end
+
+#macro (setJsfPrimefacesTablePanelExport $target)
+    <p:panel header="#{i18n.ExportlistInPDFandExcel}">
+#setJsfPrimefacesTableExport($target)
+    </p:panel>
+#end

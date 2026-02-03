@@ -1,0 +1,53 @@
+#exposeOXSpecific()
+#putOXTemplateDefinition()
+@echo off
+set currentdir=%cd%
+
+IF %OX_HOME% == "" (
+set /p OX_HOME= What Openxava home directory?
+)
+IF %MP_HOME% == "" (
+set /p MP_HOME= What Minuteproject home directory?
+)
+##create OX project
+##cd %OX_HOME%\workspace\OpenXavaTemplate
+cd %OX_HOME%\workspace\OpenXava
+call ant -f CreateNewProject.xml -Dproject=$applicationOX
+
+copy %MP_HOME%\target\mp-openxava\*.jar %OX_HOME%\workspace\\$applicationOX\web\WEB-INF\lib
+#if($embedJdbcDriver)
+copy %MP_HOME%\application\lib\extra\*.jar %OX_HOME%\workspace\\$applicationOX\web\WEB-INF\lib	
+copy %OX_HOME%\tomcat\lib\jta.jar %OX_HOME%\workspace\\$applicationOX\web\WEB-INF\lib	
+copy %OX_HOME%\tomcat\lib\ejb.jar %OX_HOME%\workspace\\$applicationOX\web\WEB-INF\lib	
+#end
+##copy generated artifacts into $applicationOX workspace
+cd %currentdir%
+xcopy * %OX_HOME%\workspace\\$applicationOX /y /s
+xcopy JPA2\src\main\java\* %OX_HOME%\workspace\\$applicationOX\src /y /s
+
+##overwrite tomcat context.xml
+copy other\tomcat\snippet\context.xml %OX_HOME%\tomcat\conf
+
+##add jdbc driver dep in tomcat\lib
+xcopy %MP_HOME%\application\lib\extra\*.jar %OX_HOME%\tomcat\lib\*.* /y /s
+
+## start tomcat in appart process
+cd %OX_HOME%\tomcat\bin
+call startup.bat
+
+cd %OX_HOME%\workspace\\$applicationOX
+call ant -f mp4openxava-build.xml
+
+## override addons
+cd %currentdir%
+xcopy web\naviox %OX_HOME%\workspace\Addons\web\naviox /y /s
+cd %OX_HOME%\workspace\\$applicationOX
+call ant
+
+cd %OX_HOME%\workspace\\$applicationOX
+call ant generatePortlets
+
+##call explorer http://localhost:8080/$applicationOX/xava/homeMenu.jsp
+call explorer http://localhost:8080/$applicationOX
+
+cd %currentdir%

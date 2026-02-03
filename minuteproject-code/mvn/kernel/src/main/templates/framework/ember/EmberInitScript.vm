@@ -1,0 +1,14 @@
+ember new ${applicationName}
+# copy generated code
+# check backend REST URLs are up
+
+ember install ember-cli-sass
+
+#**
+Open config/environment.js
+You could see baseURL as / . Change it to /your_app_root_folder (e.g: /myember) that will be stored under tomcat webapps/ folder.
+In terminal, execute ‘ember build production’
+Now, copy /dist and paste it in tomcat webapps/
+rename /dist to /your_app_root_folder (e.g: /myember)
+Start tomcat and connect localhost:port/myember in browser.
+*#

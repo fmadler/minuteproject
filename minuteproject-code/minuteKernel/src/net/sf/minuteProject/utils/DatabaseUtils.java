@@ -7,6 +7,8 @@ import net.sf.minuteProject.configuration.bean.strategy.datamodel.PrimaryKeyPoli
 import net.sf.minuteProject.configuration.bean.strategy.datamodel.PrimaryKeyPolicyPattern;
 import net.sf.minuteProject.configuration.bean.strategy.datamodel.PrimaryKeyPolicyPatternEnum;
 
+import java.util.Optional;
+
 public class DatabaseUtils {
 	
 	public static String providePrimaryKeyLookUpString (Table table) {
@@ -35,7 +37,7 @@ public class DatabaseUtils {
 	}
 	
 	public static String provideSequenceOneGlobal (PrimaryKeyPolicyPattern primaryKeyPolicyPattern) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (primaryKeyPolicyPattern.getPrefix()!=null)
 			sb.append(primaryKeyPolicyPattern.getPrefix());
 		sb.append(primaryKeyPolicyPattern.getSequenceName());
@@ -52,19 +54,20 @@ public class DatabaseUtils {
 		if (primaryKeyPolicy==null) {
 			return "NO LOOK UP for PK";
 		}
-		PrimaryKeyPolicyPattern primaryKeyPolicyPattern = primaryKeyPolicy.getFirstPrimaryKeyPolicyPattern();
-		if (primaryKeyPolicyPattern==null) {
+		Optional<PrimaryKeyPolicyPattern> primaryKeyPolicyPattern = primaryKeyPolicy.getFirstPrimaryKeyPolicyPattern();
+		if (primaryKeyPolicyPattern.isEmpty()) {
 			return "NO LOOK UP for PK : no pattern found";
 		}
+		final PrimaryKeyPolicyPattern primaryKeyPolicyPattern1 = primaryKeyPolicyPattern.get();
 		if (primaryKeyPolicy.isOneGlobal()) {
-			return provideSequenceOneGlobal(primaryKeyPolicyPattern);
+			return provideSequenceOneGlobal(primaryKeyPolicyPattern1);
 		} else if (primaryKeyPolicy.isOneForEachTable()){
-			String seq = initSequence(primaryKeyPolicyPattern, table);
-			if (primaryKeyPolicyPattern.getPrefix()!=null || primaryKeyPolicyPattern.getSuffix()!=null) {
-				if (primaryKeyPolicyPattern.getPrefix()!=null)
-					seq = primaryKeyPolicyPattern.getPrefix() + seq;
-				if (primaryKeyPolicyPattern.getSuffix()!=null)
-				    seq = seq+primaryKeyPolicyPattern.getSuffix();
+			String seq = initSequence(primaryKeyPolicyPattern1, table);
+			if (primaryKeyPolicyPattern1.getPrefix()!=null || primaryKeyPolicyPattern1.getSuffix()!=null) {
+				if (primaryKeyPolicyPattern1.getPrefix()!=null)
+					seq = primaryKeyPolicyPattern1.getPrefix() + seq;
+				if (primaryKeyPolicyPattern1.getSuffix()!=null)
+				    seq = seq+primaryKeyPolicyPattern1.getSuffix();
 				return seq;
 			} else
 				return seq + "_SEQ";
@@ -74,7 +77,7 @@ public class DatabaseUtils {
 	}
 	
 	private static String initSequence(PrimaryKeyPolicyPattern primaryKeyPolicyPattern, Table table) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(table.getName());
 		if (primaryKeyPolicyPattern.isAppendPrimaryKeyName())
 			sb.append("_"+TableUtils.getPrimaryKey(table));
@@ -117,7 +120,7 @@ public class DatabaseUtils {
 			//TODO log should provide a policy pattern
 			return null;
 		}
-		return  primaryKeyPolicy.getFirstPrimaryKeyPolicyPattern();
+		return primaryKeyPolicy.getFirstPrimaryKeyPolicyPattern().orElse(null);
 	}
 	
 	private static PrimaryKeyPolicyPattern getPrimaryKeyPolicyPattern (Model model) {

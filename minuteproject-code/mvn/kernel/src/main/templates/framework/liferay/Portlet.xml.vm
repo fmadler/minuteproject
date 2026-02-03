@@ -1,0 +1,110 @@
+#macro(portlet)
+#if($isVaadin)
+#exposeVaadinDomainObject()
+#elseif ($isPrimefaces)
+#exposeJSFEntitySpecific()
+#elseif ($isOpenxava)
+#exposeOXEntitySpecific()
+#end
+	<portlet id="$domainClassName">
+		<description>$applicationName - $domainClassName</description>       
+		<description xml:lang="en">$applicationName - $domainClassName</description>         
+		<portlet-name>$domainClassName</portlet-name>
+		<display-name>$applicationName - $domainClassName</display-name>    
+		<display-name xml:lang="en">$applicationName - $domainClassName</display-name>   
+#if($isVaadin)
+        <portlet-class>com.vaadin.server.VaadinPortlet</portlet-class>
+        <init-param>
+          <name>UI</name>    
+			<value>$domainObjectApplicationImport</value>
+        </init-param>
+#elseif($isPrimefaces)
+		<portlet-class>javax.portlet.faces.GenericFacesPortlet</portlet-class>
+		<init-param>
+			<name>javax.portlet.faces.defaultViewId.view</name>
+			<value>/$entityPortletJSFLocation</value>
+		</init-param>
+#elseif($isOpenxava)
+		<portlet-class>org.openxava.web.portlets.XavaPortlet</portlet-class>
+		<init-param>
+			<name>Application</name>
+			<value>$applicationOX</value>
+		</init-param>
+		<init-param>
+			<name>Module</name>
+			<value>$domainClassName</value>
+		</init-param> 
+    	<resource-bundle>portlets/$domainClassName</resource-bundle>
+#end
+		<expiration-cache>0</expiration-cache>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale> 
+#putPortletXmlEntitySecurity($table)
+	</portlet>
+#*
+	<portlet>
+		<portlet-name>1</portlet-name>
+		<display-name>PrimeFaces Portlet</display-name>
+		<portlet-class>javax.portlet.faces.GenericFacesPortlet</portlet-class>
+		<init-param>
+			<name>javax.portlet.faces.defaultViewId.view</name>
+			<value>/view.xhtml</value>
+		</init-param>
+		<init-param>
+			<name>javax.portlet.faces.defaultViewId.edit</name>
+			<value>/edit.xhtml</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+			<portlet-mode>edit</portlet-mode>
+		</supports>
+		<portlet-info>
+			<title>PrimeFaces Portlet</title>
+			<short-title>PrimeFaces Portlet</short-title>
+			<keywords>JSF 2.0</keywords>
+		</portlet-info>
+
+        <security-role-ref>
+			<role-name>administrator</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>guest</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>power-user</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>user</role-name>
+		</security-role-ref>
+		*#
+#end
+#exposePortletTechnology()
+#exposeVariableModelSpecific() 
+#exposeApplicationSpecific()
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<portlet-app id="$applicationName"
+	xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd" 
+	version="1.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"> 
+#foreach($table in $model.businessModel.businessPackage.getEntities())
+#exposeVariableEntitySpecific()
+#if (!$isMany2Many)
+#portlet()
+#end
+#end
+#foreach ($table in $model.businessModel.businessPackage.transferEntities)
+#exposeVariableEntitySpecific()
+#portlet()
+#end
+#foreach ($query in $model.getStatementModel().getQueries().getQueries())
+#set($table=$query.inputBean)
+#exposeVariableEntitySpecific()
+#portlet()
+#end
+</portlet-app>

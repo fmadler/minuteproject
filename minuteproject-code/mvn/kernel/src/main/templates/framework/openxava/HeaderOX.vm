@@ -1,0 +1,20 @@
+#exposeVariableModelSpecific() 
+#set ($applicationOX=$configuration.name) 
+#set ($applicationLabel=$formatUtils.getJavaName($applicationOX))
+<%
+ request.setAttribute("ctx", request.getContextPath()); 
+ %>
+
+<div id="menuheader">
+  	<span id="menutitle">$applicationLabel menu 
+      <a href="/<%=request.getContextPath()%>/xava/homeMenu.jsp" ><img src="/<%=request.getContextPath()%>/xava/images/home.gif"></a>
+    </span>
+  	<span id="menuPowerByMP">
+#getTemplatePropertyValue("add-spring-security")
+#if ($value.equals("true"))  	
+  	  <span id="logout"><a href="../j_spring_security_logout">Logoff</a></span>&nbsp;&nbsp;&nbsp;&nbsp;
+#end
+      <a href="http://minuteproject.wikispaces.com" >powered by minuteProject</a>
+       version $minuteprojectUtils.version - $minuteprojectUtils.buildDate<br/>
+	</span>		
+</div>

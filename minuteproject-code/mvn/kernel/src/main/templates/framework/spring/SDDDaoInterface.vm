@@ -1,0 +1,55 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+#if (!$query.isScalar())
+import $sddOutputBeanCollectionImport;
+#end
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: remote interface for ${className} service </p>
+ *
+ */
+public interface ${className} {
+
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#if ($query.isScalar())
+#set ($firstColumn = $columnUtils.getFirstColumn($inputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getJavaType($firstColumn))
+#end
+    public $sddOutputBeanCollectionClass execute (
+#if($isNotVoidInput)
+		$sddInputBeanClass $sddInputBeanVariable
+#end
+#foreach($queryChunk in $query.getQueryChunks())
+#set($chunkName=$javaUtils.getJavaVariableNaming($queryChunk.name))
+#if(!$isNotVoidInput && $velocityCount==1) 
+        String $chunkName 
+#else
+        ,String $chunkName
+#end
+#foreach($queryParam in $queryChunk.getQueryChunkParams())
+#set($columnType = $statementUtils.getJdbcType($queryParam))
+       ,$columnType ${chunkName}_${queryParam.name}
+#end
+#end
+    );
+#end
+$!updatedAreaEnd
+
+$!updatedAreaImplementation
+
+}

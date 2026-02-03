@@ -1,0 +1,505 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+        <conventions>
+            <target-convention type="enable-updatable-code-feature" />
+        </conventions>
+		<model name="porphyry" version="1.0" package-root="net.sf.mp.demo">
+			<description>
+				<CDATA>
+					This model illustrates:
+					Reverse-engineering on tables, views
+					SDD
+					Add ad-hoc forms and actions
+				</CDATA>
+			</description>
+			<data-model database-type="MYSQL">
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/porphyry</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="project">
+					<condition type="package" startsWith="STAT" result="statistics"></condition>
+					<condition type="package" startsWith="SEC" result="security"></condition>
+					<condition type="package" startsWith="ADMIN" result="admin"></condition>
+					<condition type="package" startsWith="RELEASE" result="release"></condition>
+					<condition type="package" startsWith="BUS" result="business"></condition>
+					<condition type="package" startsWith="VIEW_STAT" result="stats"></condition>
+				</business-package>
+				<enrichment>
+					<conventions>
+						<column-naming-convention type="apply-strip-column-name-suffix"
+							pattern-to-strip="_ID" />
+						<reference-naming-convention
+							type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true" />
+						<ordering-convention field-pattern="DISPLAY_ORDER"
+							field-pattern-type="endsWith" ordering="asc" />
+
+						<!-- stereotype email, URL -->
+						<stereotype-convention field-pattern="email"
+							field-pattern-type="contains" stereotype="email" />
+						<stereotype-convention field-pattern="url"
+							field-pattern-type="contains" stereotype="url" />
+						<stereotype-convention field-pattern="password"
+							field-pattern-type="contains" stereotype="password" />
+						<stereotype-convention field-pattern="notes"
+							field-pattern-type="equals" stereotype="text-html" />
+
+						<!-- primary key conv -->
+						<column-naming-convention
+							type="apply-fix-primary-key-column-name-when-no-ambiguity-and-not-natural"
+							default-value="ID" />
+
+						<!-- strip prefix -->
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+							pattern-to-strip="ADMIN_,SEC_,BUS_" />
+						<!-- semantic reference -->
+						<semantic-entity-convention
+							field-pattern="NAME,NUMBER" field-pattern-type="contains"
+							max-number-of-fields="2" />
+
+						<!-- trigger -->
+						<property-convention scope="field" pattern="CREATION_DATE"
+							tag="trigger-insert-with-current-date" type="start-with" />
+						
+						<view-primary-key-convention 
+						            type="apply-default-primary-key-otherwise-first-one" 
+						            default-primary-key-names="IDENTIFIER,ID" /> 
+					</conventions>
+
+					<entity name="ADMIN_ENVIRONMENT" content-type="reference-data">
+						<semantic-reference>
+							<sql-path path="NAME" />
+						</semantic-reference>
+					</entity>
+					<entity name="SEC_USER">
+						<semantic-reference>
+							<sql-path path="IDENTIFIER" />
+						</semantic-reference>
+					</entity>
+					<entity name="BUS_RELEASE">
+						<!-- todo trigger name -->
+						<!-- todo trigger creation date -->
+						<field name="STATUS">
+							<property tag="checkconstraint" alias="release_status">
+
+								<property name="ACTIVE" value="ACTIVE" />
+								<property name="DONE" value="DONE" />
+								<property name="NOT_OK" value="REJECTED" />
+							</property>
+						</field>
+					</entity>
+					<entity name="SEC_PROJECT_RIGHT">
+						<field name="role">
+							<property tag="checkconstraint">
+								<property name="RELEASER" />
+								<property name="RELEASE_VALIDATOR" />
+							</property>
+						</field>
+					</entity>
+					<entity name="bus_user_role_request">
+						<field name="STATUS">
+							<property tag="checkconstraint">
+								<property name="TO_TREAT" />
+								<property name="TREATED" />
+								<property name="REJECTED" />
+							</property>
+						</field>
+					</entity>
+<!-- 					<entity name="ADMIN_ACCESS">
+						todo trigger name
+						todo trigger creation date
+						<field name="ENVIRONMENT_ID">
+							<constraint
+								belongs-to="(APPLICATION_ID)[ADMIN_APPLI_ENV(ADMIN_ENVIRONMENT)]"></constraint>
+						</field>
+					</entity>
+					<entity name="BUS_RELEASE">
+						todo trigger name
+						todo trigger creation date
+						<field name="APPLICATION_ID">
+							<constraint
+								belongs-to="(RELEASER_ID)[SEC_PROJECT_RIGHT(ADMIN_ENVIRONMENT){ADMIN_ROLE='RELEASER'}]"></constraint>
+						</field>
+					</entity> -->
+
+					<!-- views stat <entity name="stat_nb_release_per_app" alias="number 
+						of releases per application"> <virtual-primary-key isRealPrimaryKey="true"> 
+						<property name="virtualPrimaryKey" value="ID" /> </virtual-primary-key> </entity> 
+						<entity name="stat_release_detail" alias="release detail"> <virtual-primary-key 
+						isRealPrimaryKey="true"> <property name="virtualPrimaryKey" value="id" /> 
+						</virtual-primary-key> <field name="stat_mb_per_ctry_conf_ID" linkToTargetEntity="stat_mb_per_ctry_conf" 
+						linkToTargetField="id"></field> </entity> -->
+
+					<!-- batch with SDD -->
+
+					<!-- transient objects -->
+					<entity name="create release" is-transfer-entity="true" is-searchable="false"
+						main-entity="bus_release">
+						<field name="id" hidden="true"></field>
+						<field name="name"></field>
+						<field name="notes"></field>
+						<field name="application_id"></field>
+						<field name="environment_id"></field>
+						<field name="releaser_id" ></field>
+						<field name="status" value="ACTIVE" hidden="true"></field>
+						<field name="creation_date" hidden="true"></field>
+						<!-- <field name="validator_id"></field>  -->
+						<field name="time_to_start"></field>
+						<field name="time_to_end"></field>
+						<field name="validation_reason" hidden="true"></field>
+						<!-- other fields -->
+						<field name="notify" type="string" mandatory="true">
+							<stereotype stereotype="EMAIL" />
+						</field>
+						<actions>
+							<action name="release" default-implementation="insert" >
+								<field name="status" value="ACTIVE"></field>
+							</action>
+						</actions>
+					</entity>
+					<!-- transient objects -->
+					<entity name="validate release" is-transfer-entity="true"
+						main-entity="bus_release" is-editable="false" is-searchable="true">
+						<field name="id" hidden="true"></field>
+						<field name="name"></field>
+						<field name="notes"></field>
+						<field name="application_id"></field>
+						<field name="environment_id"></field>
+						<field name="releaser_id"></field>
+						<field name="status"></field>
+						<field name="creation_date"></field>
+						<field name="validator_id" is-editable="true"/><!-- default-value="profile.user.id"></field> -->
+						<field name="time_to_start"></field>
+						<field name="time_to_end"></field>
+						<field name="validation_reason" is-editable="true"></field>
+						<!-- other fields -->
+						<field name="inform" type="string" mandatory="true"
+							is-editable="true">
+							<stereotype stereotype="EMAIL" />
+						</field>
+						<actions>
+							<action name="validate" default-implementation="update">
+								<action-condition name="statusActive">
+									<field name="status" value="ACTIVE"/>
+								</action-condition>
+								<field name="status" value="DONE"></field>
+							</action>
+							<action name="reject" default-implementation="update">
+								<action-condition name="statusActive">
+									<field name="status" value="ACTIVE"/>
+								</action-condition>
+								<field name="status" value="REJECT"></field>
+							</action>						
+						</actions>
+					</entity>
+				</enrichment>
+			</business-model>
+			<!-- S D D -->
+			<statement-model>
+				<queries>
+					<!-- generic queries -->
+					
+					<query name="generic right" id="genericRight" package-name="generic">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select id, release_name from $view_right where identifier = ?]]>
+                            </value>
+						</query-body>
+						<query-params>
+							<query-param name="identifier" sample="'test'"/>
+						</query-params>
+						<query-chunks>
+							<query-chunk name="view_right">
+								<query-chunk-value name="can release" description="can release">
+									<![CDATA[VIEW_CAN_RELEASE]]>
+								</query-chunk-value>
+								<query-chunk-value name="can archive" description="can archive">
+									<![CDATA[VIEW_CAN_ARCHIVE]]>
+								</query-chunk-value>
+							</query-chunk>
+						</query-chunks>
+					</query>
+					<!-- dashboard queries -->
+					
+					<query name="nb release per status" id="dashAddress" type="dashboard" package-name="dashboard"
+						category="pie-chart">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select status, count(*) as nb, count(*) * 100.0 / (select count(*) from bus_release) as percent from bus_release group by status order by count(*) desc]]>
+                            </value>
+						</query-body>
+						<actions>
+							<action attached-to-column-name="nb" name="release query info" query-id="statusQuery">
+								<action-field-map>
+									<action-field-map-entry output-field="status" to-action-field="status"></action-field-map-entry>
+								</action-field-map>
+							</action>
+							<!-- 
+								<action attached-to-column-name="nb" name="release table info" entity-name="bus_release"/>
+							 -->
+						</actions>
+					</query>
+					
+					<query name="statusQuery" id="statusQuery" type="dashboard" package-name="dashboard">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select * from bus_release where status = ?]]>
+                            </value>
+						</query-body>
+						<query-params>
+							<query-param name="status" sample="'test'"></query-param>
+						</query-params>
+						<actions>
+							<action name="details" default-implementation="showDetails" />
+						</actions>
+					</query>
+					
+					<query name="queryWhere" id="statusQuery" type="dashboard" package-name="dashboard">
+						<query-body> <!-- dimensions column first -->
+							<value>
+<![CDATA[select * from bus_release where status = ? $where1]]>
+                            </value>
+						</query-body>
+						<query-params>
+							<query-param name="status" sample="'test'">
+								<property tag="checkconstraint">
+									<property name="DONE" />
+									<property name="ACTIVE" />
+									<property name="REJECTED" />
+								</property>
+							</query-param>
+						</query-params>
+						<query-filters>
+							<query-filter name="where1">
+							<value>
+<![CDATA[status = ? ]]>
+                            </value>
+							<query-params>
+								<query-param name="status2" sample="'test'"></query-param>
+							</query-params>
+						</query-filter>
+
+						</query-filters>
+						<actions>
+							<action name="details" default-implementation="showDetails"></action>
+						</actions>
+					</query>
+
+					<!-- dashboard queries - end -->
+
+			         <query name="ask_for_role" id="ask_for_role" package-name="secu">
+                         <query-body>
+                         <value>
+<![CDATA[call ask_for_role (?,?,?)]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="username" is-mandatory="true" type="string" sample="'a'" is-id="true"></query-param>
+                             <query-param name="email" is-mandatory="true" type="string" sample="'b'">
+                             	<stereotype stereotype="EMAIL" />
+                             </query-param>
+                             <query-param name="role" is-mandatory="true" type="string" sample="'c'">
+                                <!-- 
+                                <query-param-entity-link entity-name="sec_role" field-name="role"/>  
+                                 -->
+                                <query-param-link sdd-query-name="security_role_list" field-name="role" field-key="id"/>
+                                
+                             </query-param>
+                         </query-params>
+                     </query>
+                     
+                     <!-- sample with multiple refname -->				
+			         <query name="release By Multiple Date" id="releaseByDate" package-name="timeline" >
+                         <query-body>
+                         <value>
+<![CDATA[SELECT * from bus_release where creation_date > ? and creation_date > ? and creation_date > ? order by creation_date desc]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="creationDate" type="date" sample="'2012-11-18'" />
+                             <query-param refname="creationDate"/>
+                             <query-param refname="creationDate"/>
+                         </query-params>
+                     </query>
+                     
+			         <query name="release By Date" id="releaseByDate" package-name="timeline" >
+                         <query-body>
+                         	<value>
+<![CDATA[SELECT * from bus_release where creation_date > ? order by creation_date desc]]>
+                            </value>
+                         </query-body>
+                       	<query-fields>
+                       		<query-field name="id" is-hidden="true" />
+                       	</query-fields>
+                         <query-params>
+                             <query-param name="creationDate" type="date" sample="'2012-11-18'" >
+                             </query-param>
+                         </query-params>
+                         <actions>
+                         	<action name="details" 
+                         		default-implementation="details" 
+                         		query-id="releaseDetails"/>
+                         	<action name="details2" 
+                         		default-implementation="details2" 
+                         		query-id="releaseDetails">
+                         		<action-field-map>
+                         			<action-field-map-entry output-field="id" to-action-field="id" />
+                         		</action-field-map>
+                         	</action>
+                         </actions>
+                         <query-fields>
+                       		<query-field name="id" hidden="true" is-key="true" value="xxx" />
+                       	 </query-fields>
+                       	 
+                     </query>
+                     
+			         <query name="release Detail" id="releaseDetails" package-name="detail" >
+                         <query-body>
+                         	<value>
+<![CDATA[
+SELECT r.name release_name, r.notes, a.name application, e.name environment, u.identifier, u.email 
+from bus_release r, admin_application a, admin_environment e, sec_user u
+where
+r.application_id = a.id and r.environment_id = e.id and r.releaser_id = u.id
+$whereId
+]]>
+                            </value>
+                         </query-body>
+                         <query-filters>
+                         	<query-filter name="whereId" >
+                         		<value><![CDATA[r.id = ?]]></value>
+                         		<query-params>
+                         			<query-param name="id" sample="1" type="int"></query-param>
+                         		</query-params>
+                         	</query-filter>
+                         </query-filters>
+
+                         <actions>
+                         	<action name="details" default-implementation="showDetails"></action>
+                         </actions>
+                     </query>
+
+			         <query name="security_role_list" id="security_role_list" package-name="secu" cache="true">
+                         <query-body>
+                         <value>
+<![CDATA[SELECT id, role from sec_role order by role desc]]>
+                            </value>
+                         </query-body>
+                     </query>
+			         <query name="security_role_list_like" id="security_role_list_like" >
+                         <query-body>
+                         <value>
+<![CDATA[SELECT id, role from sec_role where role like ? order by role desc]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="role" type="string" sample="'a'" >
+                             	<property name="like-mode" value="startsWith"></property>
+                             </query-param>
+                         </query-params>
+                     </query>
+			         <query name="role_request_per_day" id="role_request_per_day" >
+                         <query-body>
+                         <value>
+<![CDATA[SELECT DAY(request_date) as requestDate, COUNT(*) as request
+FROM bus_user_role_request
+GROUP BY DAY(request_date) order by DAY(request_date)]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                         </query-params>
+                     </query>
+			         <query name="release_info_per_status" id="role_request_per_day" >
+                         <query-body>
+                         <value>
+<![CDATA[SELECT DAY(creation_date) as creationDate, COUNT(*) as request
+FROM bus_release
+where status = ?
+GROUP BY DAY(creation_date) order by DAY(creation_date)]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="status" is-mandatory="true" type="string" sample="'a'" is-id="true">
+								<property tag="checkconstraint">
+									<property name="TO_TREAT" />
+									<property name="TREATED" />
+								</property>
+                             </query-param>
+                         </query-params>
+                     </query>
+
+			         <query name="select pending user" id="select-pending-user" >
+                         <query-body>
+                         <value>
+<![CDATA[select * from bus_user_role_request where status = 'TO_TREAT' order by request_date asc]]>
+                            </value>
+                         </query-body>
+                     </query>
+			         <query name="grant user" id="grant-user" >
+                         <query-body>
+                         <value>
+<![CDATA[call grant_user (?)]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="user_role_request_id" is-mandatory="true" type="long" sample="1" is-id="true"></query-param>
+                         </query-params>
+                     </query>                     
+			         <query name="revoke user" id="revoke-user" >
+                         <query-body>
+                         <value>
+<![CDATA[call reject_user (?)]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="user_role_request_id" is-mandatory="true" type="long" sample="1" is-id="true"></query-param>
+                         </query-params>
+                     </query>                     
+                </queries>
+                <nested-statements>
+                	<nested-statement name="manage access" query-id="select-pending-user">
+						<actions>
+							<action name="grant user" default-implementation="statement" 
+							    query-id="grant-user-role" >
+<!-- 								<action-condition name="blocked session">
+									<field name="blocking_session" value="1"/>
+								</action-condition>
+								<statement-mapping>
+									use default mapping
+								</statement-mapping> -->
+							</action>					
+							<action name="reject user" default-implementation="statement" 
+							    query-id="reject-user-role" >
+<!-- 								<action-condition name="blocked session">
+									<field name="blocking_session" value="1"/>
+								</action-condition>
+								<statement-mapping>
+									use default mapping
+								</statement-mapping> -->
+							</action>					
+						</actions>
+                	</nested-statement>
+                </nested-statements>
+            </statement-model>
+		</model>
+
+		<targets catalog-entry="REST-KendoUi" >
+			<property name="target-server" value="tomcat"></property>
+			<property name="auto-complete-sdd-on-like-min-char" value="3"></property>
+			<property name="auto-complete-sdd-on-like-max-record-display" value="10"></property>
+		</targets>
+
+
+	</configuration>
+</generator-config>

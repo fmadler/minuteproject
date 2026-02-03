@@ -1,0 +1,48 @@
+<target name="Cloudfoundry">		
+    <plugin name="cloudUtils" className="net.sf.minuteProject.plugin.cloud.CloudUtils"></plugin>
+ 
+	<template-target 
+    	name="cloudfoundry-manifest"
+		outputdir="../"
+		package-root=""
+		belongToPackage="true">
+
+		<template name="CloudFoundryManifest" templateFileName="CloudFoundryManifest.yml.vm" 
+			file-extension="yml" technicalPackage="" file-suffix="manifest" 
+			application-specific="true" add-model-name="false" has-updatable-nature="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue">
+			<property name="property-presence" value="cloud-platform" ></property>			
+			<property name="property-presence-value" value="cloudfoundry" ></property>	
+			
+		</template>
+
+		<template name="CloudFoundryScript" templateFileName="CloudFoundryScript.cmd.vm" 
+			file-extension="cmd" technicalPackage="" file-suffix="cloudfoundry" 
+			application-specific="true" add-model-name="false" has-updatable-nature="true"
+			check-template-to-generate="true" 
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue" >
+			<property name="property-presence" value="cloud-platform" ></property>			
+			<property name="property-presence-value" value="cloudfoundry" ></property>		
+			
+		</template>
+		
+	</template-target>
+	
+	<template-target 
+    	name="cloudfoundry"
+		outputdir="src/main/webapp"
+		package-root=""
+		belongToPackage="true">
+
+		<template name="CloudFoundryContext" templateFileName="CloudFoundryContext.xml.vm" 
+			file-extension="xml" technicalPackage="META-INF" file-suffix="context" 
+			application-specific="true" add-model-name="false" has-updatable-nature="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue">
+			<property name="property-presence" value="cloud-platform" ></property>			
+			<property name="property-presence-value" value="cloudfoundry" ></property>	
+			
+		</template>
+
+	</template-target>
+
+</target>

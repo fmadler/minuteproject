@@ -1,0 +1,33 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#putImportSDDBean()
+#addedAreas()
+package $packageName;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import $beanImport;
+
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Java Bean ${className} </p>
+ *
+ */
+public class ${className} {
+
+    private List<${beanClass}> $listVariable;
+
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+	
+#putSetterGetterAdder($className, $listVariable, ${beanClass}, ${beanVariable})
+
+$!updatedAreaImplementation
+}
