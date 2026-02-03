@@ -32,7 +32,7 @@ public class UpdatedAreaUtilsTest  {
 	}
 	
 	private void populateUpdatedAreaWith (String key, String value){
-		updatedArea = new HashMap<String, String>();
+		updatedArea = new HashMap<>();
 		updatedArea.put(key, value);
 	}
 	@Test
