@@ -1,3 +1,0 @@
-#macro (exposeDoctrineTemplate)
-#set ($templateDomainObjectDoctrine = "DomainEntityDoctrineAnnotation")
-#end

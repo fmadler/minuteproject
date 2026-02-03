@@ -1,5 +1,0 @@
-    <bean id="${model.name}DataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-#exposeJdbcParam($jdbcJNDI)
-        <property name="jndiName"><value>$paramResult</value></property>
-    </bean>
-    

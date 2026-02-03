@@ -1,1 +1,0 @@
-Place to store the first MinuteProject 4 Vaadin AddOn 

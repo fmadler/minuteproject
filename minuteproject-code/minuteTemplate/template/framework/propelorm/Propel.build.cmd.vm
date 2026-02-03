@@ -1,2 +1,0 @@
-call propel-gen om
-call propel-gen convert-conf
