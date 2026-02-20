@@ -24,10 +24,17 @@
 				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
 				  file-extension="sh" file-prefix="build" file-suffix=""
 				  application-specific="true" add-model-name="false"/>
+
 		<template name="SpringBoot.build.run" templateFileName="SpringBoot.build.run.vm"
 				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
 				  file-extension="cmd" file-prefix="build" file-suffix=""
 				  application-specific="true" add-model-name="false"/>
+
+		<template name="SpringBoot.mise.toml" templateFileName="SpringBoot.mise.toml.vm"
+				  subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="false"
+				  file-extension="toml" file-prefix="mise" file-suffix=""
+				  application-specific="true" add-model-name="false"/>
+
 	</template-target>
 	
 </target>	
