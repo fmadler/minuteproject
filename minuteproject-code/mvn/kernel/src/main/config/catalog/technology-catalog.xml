@@ -540,33 +540,6 @@
             </frameworks>
         </technology>
 
-        <technology name="Vaadin" model-type="rdbms"
-                    template-config-file-name="mp-template-config-vaadin-last-features.xml"
-                    default-outputdir="vaadin" template-dir="@templateRoot@/framework/vaadin"
-                    depends-on-targets="Vaadin_portlet,BSLA_LIB,BSLA-JPA2,SDD-BEANS,JPA2,SpringService,i18n_LIB,EJB3_LIB,MavenMaster"
-                    status="draft"
-                    description="Generates Vaadin Front end on top of a Maven Spring JPA/Hibernate backend and advanced DAOs layer.">
-            <frameworks>
-                <framework name="Vaadin" version="7"></framework>
-            </frameworks>
-            <property name="add-backend-implementation" value="spring"></property>
-            <property name="add-querydsl" value="2.1.2"></property>
-            <property name="add-jpa2-implementation" value="hibernate"></property>
-            <property name="add-domain-specific-method" value="true"></property>
-            <property name="use-temporal" value="true"></property>
-            <property name="web-xml-version" value="3.0"></property>
-        </technology>
-
-        <technology name="Vaadin_portlet" model-type="rdbms"
-                    template-config-file-name="mp-template-config-liferay-portlet-features.xml"
-                    default-outputdir="vaadin" template-dir="@templateRoot@/framework/liferay"
-                    description="Generates Liferay portlet artifacts" is-generable="false">
-            <frameworks>
-                <framework name="Liferay" version="6.1+"></framework>
-            </frameworks>
-            <property name="portlet-technology" value="vaadin"></property>
-        </technology>
-
         <technology name="Primefaces_portlet" model-type="rdbms"
                     template-config-file-name="mp-template-config-liferay-portlet-features.xml"
                     default-outputdir="JSF-primefaces" template-dir="@templateRoot@/framework/liferay"
@@ -642,17 +615,6 @@
             <property name="use-temporal" value="true"></property>
         </technology>
 
-        <!--
-                <technology name="WebService+Spring-Hibernate" model-type="webservice"
-                    template-config-file-name="mp-template-config-WSDL-API.xml"
-                    default-outputdir="wsdl-api" template-dir="@templateRoot@/framework/soa/wsdl"
-                    status="release" description="Generates mvn structure to import wsdl into
-                        java"
-                    depends-on-targets="MVN_SPRING_HIBERNATE_LAST, WS-Impl, ServiceLayer">
-                    <frameworks>
-                        <framework name="metro" version="2.1"></framework>
-                    </frameworks>
-                </technology> -->
         <technology name="WS-API" model-type="webservice"
                     template-config-file-name="mp-template-config-WSDL-API.xml"
                     default-outputdir="wsdl-api" template-dir="@templateRoot@/framework/soa/wsdl"
