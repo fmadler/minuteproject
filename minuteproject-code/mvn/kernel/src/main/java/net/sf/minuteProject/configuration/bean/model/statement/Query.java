@@ -47,6 +47,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private QueryParams outputParams;
 	private boolean isSet = false;
 	private boolean cache = false;
+	private boolean isEnum = false;
 	private Package pack;
 	private String type, category, executeLabel;
 	private Table tableIn, tableOut;
@@ -633,5 +634,14 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 
 	public void setNamingConvention(String namingConvention) {
 		this.namingConvention = namingConvention;
+	}
+
+    public boolean isEnum() {
+		return isEnum;
+    }
+
+
+	public void setEnum(boolean isEnum) {
+		this.isEnum = isEnum;
 	}
 }

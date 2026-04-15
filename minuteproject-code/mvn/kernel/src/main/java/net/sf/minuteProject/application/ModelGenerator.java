@@ -155,7 +155,6 @@ public class ModelGenerator extends AbstractGenerator {
 				Configuration configuration = loadTargets(targets);
 				applyTargetConventionAndGenerate(configuration.getTarget());
 			}
-			targetLoaded = true;
 		} else {
 			applyTargetConventionAndGenerate(model.getConfiguration()
 					.getTarget());

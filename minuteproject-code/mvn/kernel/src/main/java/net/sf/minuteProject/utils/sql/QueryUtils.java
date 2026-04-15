@@ -517,6 +517,14 @@ public class QueryUtils {
 		return false;
 	}
 	
+	public static boolean isToGenerateBasedOnMasterdataAndIsEnum(Template template, GeneratorBean bean) {
+		if (bean instanceof Query) {
+			Query query = (Query) bean;
+			return TableUtils.masterDataContentType.equals(query.getContentType()) && query.isEnum();
+		}
+		return false;
+	}
+
 	public static boolean isToGenerateBasedOnNotScalar(Template template, GeneratorBean bean) {
 		return !isToGenerateBasedOnScalar(template, bean);
 	}

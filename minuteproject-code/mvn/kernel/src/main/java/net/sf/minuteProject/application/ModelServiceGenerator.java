@@ -53,35 +53,7 @@ public class ModelServiceGenerator extends ModelViewGenerator {
 	private static Logger logger = Logger.getLogger(ModelGenerator.class);
 //	public static final String GENERATOR_MODEL_RULES = "net/sf/minuteProject/configuration/model-config-rules.xml";
 
-	/*
-	 * context object 
-	 */
-//	private CommonUtils commonUtils;
-//	private ConvertUtils convertUtils;
-//	private ColumnUtils columnUtils;
-//	private ViewUtils viewUtils;
-//	private FormatUtils formatUtils;
-//	private BslaLibraryUtils bslaLibraryUtils;
-//	private DatabaseUtils databaseUtils;
-//	private ModelUtils modelUtils;
-//	private URLUtils urlUtils;
-//	private TestUtils testUtils;
-//	private WebUtils webUtils;
-//	private SqlUtils sqlUtils;
-//	private TableUtils tableUtils;
-
-	
 	private Model model;
-
-//	private String modelConfig;
-//
-//	public String getModelConfig() {
-//		return modelConfig;
-//	}
-//
-//	public void setModelConfig(String modelConfig) {
-//		this.modelConfig = modelConfig;
-//	}
 
 	/**
 	 * Constructs the generator with its configuration
@@ -91,16 +63,6 @@ public class ModelServiceGenerator extends ModelViewGenerator {
 	public ModelServiceGenerator(String configurationFile) {
 		super(configurationFile);
 	}
-
-//	@Override
-//	public AbstractConfiguration getConfigurationRoot() {
-//		return new Configuration();
-//	}
-//
-//	@Override
-//	public String getConfigurationRulesFile() {
-//		return GENERATOR_MODEL_RULES;
-//	}
 
 	public static void main(String args[]) {
 		String config;
@@ -118,19 +80,7 @@ public class ModelServiceGenerator extends ModelViewGenerator {
 			generator.exit ("");
 		}
 		
-		
-//		Configuration configuration = (Configuration) generator.load();
-//		Model model = configuration.getModel();
-//		generator.setModel(model);
-//		generator.loadModel(model);
-//		generator.loadTarget(model.getConfiguration(), model.getConfiguration()
-//				.getTarget());
-//		generator.generate(model.getConfiguration().getTarget());
-		
-		
 		Date endDate = new Date();
-		//logger.info("start date = "+startDate.getTime());
-		//logger.info("end date = "+endDate.getTime());
 		logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
 	}
 

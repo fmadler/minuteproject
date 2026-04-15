@@ -25,7 +25,15 @@
 			scope-specific-value="sdd-output-bean" 
 			check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedOnNotScalar">
 			<property name="direction" value="out"/>
-		</template>	
+		</template>
+
+		<template name="SDDEnum" templateFileName="SDDEnumMasterData.vm"
+				  subdir="" outputsubdir="" technicalPackage="dto.enumeration"
+				  file-extension="java" file-prefix="" file-suffix="Enum" has-updatable-nature="true"
+				  add-package-name="false" add-business-package-dir-name="false"
+				  scope-specific-value="query"
+				  check-template-to-generate="true" is-template-to-generate-method="queryUtils.isToGenerateBasedOnMasterdataAndIsEnum">
+		</template>
 
 		<!-- composite -->
 		<template name="SDDInputCompositeBeanV2" templateFileName="JavaCompositeBeanV2.vm"
