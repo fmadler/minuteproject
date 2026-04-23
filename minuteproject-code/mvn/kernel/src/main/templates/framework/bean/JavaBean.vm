@@ -111,9 +111,12 @@ public class ${className} {
     private List<$columnClass> ${columnVar};
 #else
 #if ($columnUtils.hasCheckConstraint($column))
-    private ${columnClass}Enum $columnVar;####
+    private ${columnClass}Enum $columnVar;
 #else
-    private $columnType $columnVar;####
+#if ($columnUtils.isLink($column))
+//is link
+#end
+    private $columnType $columnVar;
 #end
 #end
 #if($hasDefaultValue)

@@ -3,6 +3,8 @@ package net.sf.minuteProject.configuration.bean.model.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
 import net.sf.minuteProject.configuration.bean.AbstractConfiguration;
@@ -29,6 +31,8 @@ import net.sf.minuteProject.utils.FormatUtils;
 import net.sf.minuteProject.utils.sql.PaginationUtils;
 import net.sf.minuteProject.utils.sql.QueryUtils;
 
+@Getter
+@Setter
 public class Query<T extends QueryModel> extends AbstractConfiguration {
 
 	public static final String DUPLICATED_TAG ="<DUPLICATED>";
@@ -45,9 +49,11 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private List<QueryLink> queryLinks;
 	private QueryParams queryParams;
 	private QueryParams outputParams;
+	private List<QueryRow> queryRows;
 	private boolean isSet = false;
 	private boolean cache = false;
 	private boolean isEnum = false;
+	private boolean isSemanticReference = false;
 	private Package pack;
 	private String type, category, executeLabel;
 	private Table tableIn, tableOut;
@@ -640,8 +646,8 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 		return isEnum;
     }
 
-
 	public void setEnum(boolean isEnum) {
 		this.isEnum = isEnum;
 	}
+
 }

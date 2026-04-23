@@ -131,7 +131,6 @@ public class ${className} {
 #end
 #end
             );
-        HttpHeaders responseHeaders = new HttpHeaders();
         return ResponseEntity.ok()
 #if(!$query.isWrite() &&$queryUtils.isCache($query))
             .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic())

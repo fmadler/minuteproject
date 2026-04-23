@@ -16,14 +16,11 @@ public class QueryParams extends AbstractConfiguration {
 	//stripped from self reference refid (considered as duplicate)
 	//stripped of implicit and context queryParam
 	private List<QueryParam> uniqueQueryParamsNotContextual; //stuff to display as user input
-	
-	//uniqueQueryParamsNotContextual is enriched with context + implicit param to get uniqueQueryParam
-	//uniqueQueryParam is the input to the system
-	//uniqueQueryParam is enriched with duplicate to get the queryParams
+
 	private boolean isFilter=false;
 	private String filterName; 
 	
-	private Query query;
+	private Query<SqlQueryModel> query;
 
 	public boolean isEmpty () {
 		return getQueryParams().isEmpty();

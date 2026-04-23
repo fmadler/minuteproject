@@ -75,6 +75,11 @@ public class FormatUtils {
 		return "";
 	}
 
+
+	public static String replaceNonAlphaNumWith_AndUpperCase(String s) {
+		return s.replaceAll("[^a-zA-Z0-9]", "_").toUpperCase();
+	}
+
 	public static String getLowcaseHyphen (String name) {
 		name = name.toLowerCase();
 		return StringUtils.replace(name, "_", "-");

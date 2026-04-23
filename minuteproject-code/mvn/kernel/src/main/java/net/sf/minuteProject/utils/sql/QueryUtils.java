@@ -1,20 +1,20 @@
 package net.sf.minuteProject.utils.sql;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import net.sf.minuteProject.configuration.bean.*;
+import net.sf.minuteProject.configuration.bean.model.Field;
 import net.sf.minuteProject.configuration.bean.model.statement.*;
 import net.sf.minuteProject.report.ReportEntry;
 import net.sf.minuteProject.report.ReportEntryCategory;
@@ -79,7 +79,11 @@ public class QueryUtils {
 
 		try (PreparedStatement prest = connection.prepareStatement(q)){
 			ResultSet rs = prest.executeQuery();
-			return getQueryParams(rs.getMetaData());
+			ResultSetMetaData metaData = rs.getMetaData();
+			if (query.isEnum()) {
+				query.setQueryRows(getQueryRows(rs, metaData));
+			}
+			return getQueryParams(metaData);
 		} catch (SQLException e) {
 			logger.error("error executing query : '"+query.getName()+"'\nSQL:\n"+q);
 			logger.error("error sql for query : '"+query.getName()+"'\nError:\n"+e.getMessage());
@@ -131,12 +135,31 @@ public class QueryUtils {
 	}
 
 	private static List<QueryParam> getQueryParamsList(ResultSetMetaData metaData) throws SQLException {
-		List<QueryParam> list = new ArrayList<QueryParam>();
+		List<QueryParam> list = new ArrayList<>();
 		int size = metaData.getColumnCount();
 		for (int i = 1; i < size+1; i++) {
 			list.add(getQueryParam(metaData, i));
 		}
 		return list;
+	}	
+	
+	private static List<QueryRow> getQueryRows(ResultSet rs, ResultSetMetaData metaData) throws SQLException {
+		List<QueryRow> list = new ArrayList<>();
+		int size = metaData.getColumnCount();
+		while (rs.next()) {
+			List<QueryOutputValue> outputValues = new ArrayList<>();
+			for (int i = 1; i < size+1; i++) {
+				QueryOutputValue queryOutputValue = new QueryOutputValue(metaData.getColumnName(i), rs.getString(i));
+				outputValues.add(queryOutputValue);
+			}
+			list.add(new QueryRow(outputValues));
+		}
+		return list;
+	}
+
+
+	public static QueryOutputValue getSemanticReference(Query query, QueryRow queryRow) {
+		return queryRow.queryOutputValues().stream().findFirst().orElse(new QueryOutputValue("MISSING_COLUMN","MISSING_COLUMN_VALUE"));
 	}
 
 	private static QueryParam getQueryParam(ResultSetMetaData metaData, int i) throws SQLException {
@@ -147,15 +170,6 @@ public class QueryUtils {
 		int scale = metaData.getScale(i);
 		qp.setScale(scale);
 		String columnTypeName = metaData.getColumnTypeName(i);
-//		if (columnTypeName.equals("DATE")) {
-//			if (scale>0) {
-//				qp.setType("TIMESTAMP");
-//			} else {
-//				qp.setType(columnTypeName);
-//			}
-//		} else {
-//			qp.setType(columnTypeName);
-//		}
 		qp.setType(columnTypeName);
 		return qp;
 	}

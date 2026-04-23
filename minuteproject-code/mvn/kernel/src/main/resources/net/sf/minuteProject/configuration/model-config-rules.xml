@@ -288,6 +288,7 @@
 								<alias attr-name="is-write" prop-name="write" />
 								<alias attr-name="is-cache" prop-name="cache" />
 								<alias attr-name="is-enum" prop-name="enum" />
+								<alias attr-name="is-semantic-reference" prop-name="semanticReference" />
 								<alias attr-name="execute-label" prop-name="executeLabel" />
 								<!-- strangely the mapping with prop-name="*cardinality" -->
 								<alias attr-name="result-cardinality" prop-name="resultCardinality" />
@@ -2199,6 +2200,7 @@
 							<alias attr-name="is-write" prop-name="write" />
 							<alias attr-name="is-cache" prop-name="cache" />
 							<alias attr-name="is-enum" prop-name="enum" />
+							<alias attr-name="is-semantic-reference" prop-name="semanticReference" />
 							<alias attr-name="execute-label" prop-name="executeLabel" />
 							<!-- strangely the mapping with prop-name="*cardinality" -->
 							<alias attr-name="result-cardinality" prop-name="resultCardinality" />

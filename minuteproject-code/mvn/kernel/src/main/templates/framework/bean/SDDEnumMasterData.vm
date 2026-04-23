@@ -1,76 +1,43 @@
 #exposeQuerySpecific()
 package $packageName;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor()
+@Getter
 public enum $className {
 
-#if($columnUtils.hasCheckConstraint($query))
-#set($property=$columnUtils.getCheckConstraintProperty($query))
-#set($propertyList=$property.getPropertiesArray())
-#foreach ($prop in $propertyList)
-#exposeEnumerationSpecific()
-    $enumName("$enumValue")#if( $velocityHasNext ),
+#foreach ($row in $query.queryRows)
+#set($semRef=$queryUtils.getSemanticReference($query, $row))
+#set($rowSize=$row.queryOutputValues().size())
+    $formatUtils.replaceNonAlphaNumWith_AndUpperCase(${semRef.stringValue()}) (
+#foreach ($outputValue in $row.queryOutputValues())
+     "${outputValue.stringValue()}"#if ($rowSize!=$velocityCount),
 #end
 #end
+        )#if( $velocityHasNext ),
 #end
+#end
+
     ;
 
-    private final String value;
+#set($firstRow=$query.queryRows.get(0))
+#set($semRefFirstRow=$queryUtils.getSemanticReference($query, $firstRow))
+#set($semRefFirstRowVar=$javaUtils.getJavaVariableNaming(${semRefFirstRow.columnName()}))
+#foreach ($outputValue in $firstRow.queryOutputValues())
+#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
+    private final String $javaUtils.getJavaVariableNaming(${outputValue.columnName()});
+#end
 
-    ${className}(String v) {
-        value = v;
+    public static ${className} of(String $semRefFirstRowVar) {
+        return Arrays.stream(${className}.values())
+            .filter(er -> er.${semRefFirstRowVar}.equals($semRefFirstRowVar))
+            .findFirst()
+            .orElse(null);
+## or __NONE
     }
 
-    public String value() {
-        return value;
-    }
-
-    public static ${className} fromValue(String v) {
-        for (${className} c : ${className}.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    /**
-    * Return a list that contains all the enumeration values
-    * @return List<$className> the that contains all the enumeration values
-    */
-    public static List<$className> getList() {
-	    List<$className> list = new ArrayList<$className>();
-	    for ($className c : ${className}.values()) {
-		   list.add(c);
-	 	}
-	    return list;
-    }
-
-    /**
-    * @param value
-    * @return boolean : true if the value exist in the enum
-    */
-    public static boolean contains (String value) {
-       for ($className c : ${className}.values()) {
-          if (c.toString().equals(value))
-             return true;
-          }
-       return false;
-    }
-
-    public static boolean containsValue (String value) {
-        for ($className c : ${className}.values()) {
-           if (c.value().equals(value))
-              return true;
-           }
-        return false;
-    }
-
-    public boolean equals (String s) {
-    	if (s==null) return false;
-    	return s.equals(value);
-    }
 
 }

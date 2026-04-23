@@ -720,6 +720,7 @@
         <xs:attribute name="linkReferenceAlias" type="xs:string"/>
         <xs:attribute name="type-alias" type="xs:string"/>
         <xs:attribute name="is-id" type="xs:boolean"/>
+        <xs:attribute name="is-semantic-reference" type="xs:boolean"/>
         <xs:attribute name="is-mandatory" type="xs:boolean"/>
         <xs:attribute name="is-searchable" type="xs:boolean"/>
         <xs:attribute name="is-editable" type="xs:boolean"/>
