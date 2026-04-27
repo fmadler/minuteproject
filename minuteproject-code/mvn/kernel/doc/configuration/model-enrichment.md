@@ -201,7 +201,21 @@ Specifying some type can lead to specific generation described [here](../concept
 ```
 
 ## Query result enrichment
-### cell graph enrichment
+### Linking result
+A query can be referenced by another query result via a query-param
+```xml
+    <query-params>
+        <query-param name="categories" type="string" is-in-clause="true" sample="'hx','tx'">
+            <query-param-link sdd-query-name="distinct-categories" field-name="name" field-key="category"/>
+        </query-param>
+    </query-params>
+```
+This query has a query param called category that has its input restricted to the result of the referenced
+query-name : 'distinct-categories'. <br/>
+For display purpose the field to see comes from field-name, and the field to query or store comes from field-key. 
+field-name and field-key may be the same. 
+
+### Cell graph enrichment
 A cell (row, column) of a sql result can contain some structured data that can be parsed into object (single or multiple).
 
 **Example** The field winners contains a collection of object (name: string, web_path:web_path)

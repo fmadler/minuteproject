@@ -27,7 +27,7 @@
 			<property name="direction" value="out"/>
 		</template>
 
-		<template name="SDDEnum" templateFileName="SDDEnumMasterData.vm"
+		<template name="SDDEnumMasterData" templateFileName="SDDEnumMasterData.vm"
 				  subdir="" outputsubdir="" technicalPackage="dto.enumeration"
 				  file-extension="java" file-prefix="" file-suffix="Enum" has-updatable-nature="true"
 				  add-package-name="false" add-business-package-dir-name="false"

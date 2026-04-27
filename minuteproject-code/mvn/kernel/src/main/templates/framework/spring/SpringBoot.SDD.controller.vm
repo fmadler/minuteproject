@@ -96,7 +96,14 @@ public class ${className} {
 #end
 #set($hasCheckConstraint=$columnUtils.hasCheckConstraint($column))
 #set($isArray=$column.isArray())
+#set($targetQuery=$columnUtils.getLinkedQueryMasterdataEnum($model, $column))
+#if ($columnUtils.isLink($column) && $targetQuery)
+#exposeSDDMasterDataEnum($targetQuery)
+        @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end) $masterDataEnumImport $columnVar #if($velocityCount!=$size),
+#end
+#else
         @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end)#if ($hasCheckConstraint) #if($isArray) List<${sddInputBeanClass}.${columnClass}Enum> #else ${sddInputBeanClass}.${columnClass}Enum#end#else $columnType#end $columnVar #if($velocityCount!=$size),
+#end
 #end
 #end
 #foreach($queryChunk in $query.getQueryChunks())

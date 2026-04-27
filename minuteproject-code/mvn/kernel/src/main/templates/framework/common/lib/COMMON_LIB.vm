@@ -419,6 +419,13 @@ $readmeUtils.getReadme($template)
 ##end
 #end
 
+#macro (exposeSDDMasterDataEnum $query)
+#set ($templateSDDMasterDataEnum = "SDDEnumMasterData")
+#set ($masterDataEnumImport=$commonUtils.getEntityLevelTemplateFullPath($query, $template, $templateSDDMasterDataEnum))
+#set ($masterDataEnumClass=$commonUtils.getTemplateClassName($query, $template, $templateSDDMasterDataEnum))
+#set ($masterDataEnumVar=$commonUtils.getJavaNameVariableFirstLetter($masterDataEnumClass))
+#end
+
 #macro (putSddJdbcLookup)
 #exposeQueryUpdatedAreas("SDD_EXECUTE_JDBC")
 $!updatedAreaBegin
@@ -900,14 +907,22 @@ $!updatedAreaEnd
 #if($isNotVoidInput)
 #foreach($column in $inputBean.columns)
 #putColumnParamNaming()
+#set($targetQuery=$columnUtils.getLinkedQueryMasterdataEnum($model, $column))
 #if(!$column.isArray())
 #if ($columnUtils.hasCheckConstraint($column))
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.add(${sddInputBeanVariable}.get$columnClass().getValue());
+#elseif ($columnUtils.isLink($column) && $targetQuery)
+#set($targetQueryFieldNameClass=$commonUtils.getJavaClassName($column.queryParamLink.fieldName))
+		if (${sddInputBeanVariable}.get$columnClass()!=null) list.add(${sddInputBeanVariable}.get$columnClass().get${targetQueryFieldNameClass}());
 #else
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.add(${sddInputBeanVariable}.get$columnClass());
 #end
 #else
+#if ($columnUtils.hasCheckConstraint($column))
+		if (${sddInputBeanVariable}.get$columnClass()!=null) ${sddInputBeanVariable}.get$columnClass().stream().forEach(e -> list.add(e.getValue()));
+#else
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.addAll(${sddInputBeanVariable}.get$columnClass());
+#end
 #end
 #end
 #end

@@ -149,7 +149,10 @@ public class QueryUtils {
 		while (rs.next()) {
 			List<QueryOutputValue> outputValues = new ArrayList<>();
 			for (int i = 1; i < size+1; i++) {
-				QueryOutputValue queryOutputValue = new QueryOutputValue(metaData.getColumnName(i), rs.getString(i));
+				QueryOutputValue queryOutputValue = new QueryOutputValue(
+						metaData.getColumnName(i),
+						rs.getMetaData().getColumnType(i),
+						rs.getString(i));
 				outputValues.add(queryOutputValue);
 			}
 			list.add(new QueryRow(outputValues));
@@ -159,7 +162,7 @@ public class QueryUtils {
 
 
 	public static QueryOutputValue getSemanticReference(Query query, QueryRow queryRow) {
-		return queryRow.queryOutputValues().stream().findFirst().orElse(new QueryOutputValue("MISSING_COLUMN","MISSING_COLUMN_VALUE"));
+		return queryRow.queryOutputValues().stream().findFirst().orElse(new QueryOutputValue("MISSING_COLUMN",-1,"MISSING_COLUMN_VALUE"));
 	}
 
 	private static QueryParam getQueryParam(ResultSetMetaData metaData, int i) throws SQLException {

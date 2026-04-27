@@ -114,9 +114,17 @@ public class ${className} {
     private ${columnClass}Enum $columnVar;
 #else
 #if ($columnUtils.isLink($column))
-//is link
-#end
+## is link
+#set($targetQuery=$columnUtils.getLinkedQueryMasterdataEnum($model, $column))
+#if ($targetQuery)
+#exposeSDDMasterDataEnum($targetQuery)
+    private $masterDataEnumImport $columnVar;
+#else
     private $columnType $columnVar;
+#end
+#else
+    private $columnType $columnVar;
+#end
 #end
 #end
 #if($hasDefaultValue)
@@ -152,5 +160,4 @@ public class ${className} {
 #end
 #end
 #end
-$!updatedAreaImplementation
 }

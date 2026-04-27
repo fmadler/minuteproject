@@ -27,8 +27,8 @@ public enum $className {
 #set($semRefFirstRow=$queryUtils.getSemanticReference($query, $firstRow))
 #set($semRefFirstRowVar=$javaUtils.getJavaVariableNaming(${semRefFirstRow.columnName()}))
 #foreach ($outputValue in $firstRow.queryOutputValues())
-#set($fieldType = $convertUtils.getJavaTypeFromDBType($convertUtils.getDBFullTypeFromUMLType($field.type)))
-    private final String $javaUtils.getJavaVariableNaming(${outputValue.columnName()});
+#set($typeEnum = $columnUtils.getDBTypeMapEnum($semRefFirstRow.columnType()))
+    private final ${typeEnum.className} $javaUtils.getJavaVariableNaming(${outputValue.columnName()}); //$semRefFirstRow.columnType()
 #end
 
     public static ${className} of(String $semRefFirstRowVar) {

@@ -97,7 +97,7 @@ public class FunctionUtils {
 		    }
 		    
 		    connection.close();
-		    return new ArrayList<Function>(functions.values());
+		    return new ArrayList<>(functions.values());
 		} catch (Exception e) {
 			log.error("Problem handling store procedures "+e.getMessage());
 		}

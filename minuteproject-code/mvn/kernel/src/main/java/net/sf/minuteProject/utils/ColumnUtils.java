@@ -2,7 +2,14 @@ package net.sf.minuteProject.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+import net.sf.minuteProject.configuration.bean.Model;
+import net.sf.minuteProject.configuration.bean.model.statement.Query;
+import net.sf.minuteProject.configuration.bean.model.statement.SqlQueryModel;
+import net.sf.minuteProject.map.DBTypeMapEnum;
+import net.sf.minuteProject.utils.sql.QueryUtils;
 import org.apache.commons.lang.StringUtils;
 
 import net.sf.minuteProject.configuration.bean.GeneratorBean;
@@ -477,8 +484,21 @@ public class ColumnUtils {
 		return (column.getQueryParamLink()!=null)?true:false; 
 	}
 
+	public static Query getLinkedQueryMasterdataEnum(Model model, Column column) {
+		if (column!=null && column.getQueryParamLink()!=null) {
+			Optional<Query> first = model.getStatementModel().getQueries().getQueries().stream()
+					.filter(q -> Objects.nonNull(q.getContentType()))
+					.filter(q -> q.getContentType().equals(TableUtils.masterDataContentType))
+					.filter(Query::isEnum)
+					.filter(q -> q.getName().equalsIgnoreCase(column.getQueryParamLink().getQueryName()))
+					.findFirst();
+			return first.orElse(null);//for vm template not to crash
+		}
+		return null;
+	}
+
 	public static List<Column> getColumns(Table table, String columns) {
-		List<Column> cols = new ArrayList<Column>();
+		List<Column> cols = new ArrayList<>();
 		for (String columnName : ParserUtils.getList(columns)) {
 			Column column = getColumn(table, columnName);
 			if (column!=null) 
@@ -496,5 +516,13 @@ public class ColumnUtils {
 	
 	public static int getPrecision(Column column) {
 		return column.getPrecisionRadix()-column.getScale();
+	}
+
+	public static int getScale(Column column) {
+		return column.getScale();
+	}
+
+	public static DBTypeMapEnum getDBTypeMapEnum(int sqlType) {
+		return DBTypeMapEnum.of(sqlType);
 	}
 }
