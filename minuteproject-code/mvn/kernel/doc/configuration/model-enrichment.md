@@ -200,20 +200,71 @@ Specifying some type can lead to specific generation described [here](../concept
                          field-pattern-type="endsWith" ordering="asc" />
 ```
 
-## Query result enrichment
-### Linking result
-A query can be referenced by another query result via a query-param
+## Query Input enrichment
+### Query Enumeration Link Input
+A query input can be referenced by another query result via a query-param.
+Based on the following query
+```xml
+<query name="category" id="distinct-categories" package-name="masterdata" content-type="master-data" is-enum="true">
+    <query-body>
+        <value>
+            <![CDATA[select distinct name from category order by name asc]]>
+        </value>
+    </query-body>
+</query>
+```
+That describes a query whose results are collected to form a enum (content-type=master-data and is-enum=true), 
+this query can be referenced by a query-param via query-param-link.<br/>
+The filter can be used with single input or multiple input.
+
+This query has a query param called category that has its input restricted to the result of the referenced
+query-name : 'category. <br/>
+For display purpose the field to see comes from field-name, and the field to query or store comes from field-key.
+field-name and field-key may be the same.
+#### Single value
+```xml
+<query-filter name="wherecategory" and-where-connection="where">
+    <value>
+        <![CDATA[category = ? ]]>
+    </value>
+    <query-params>
+        <query-param name="category" type="string" size="20" sample="'xxx'">
+            <query-param-link sdd-query-name="category" field-name="name" field-key="category"/>
+        </query-param>
+    </query-params>
+</query-filter>
+```
+
+#### Multiple values
+```xml
+<query-filter name="whereInCategories" and-where-connection="where">
+    <value>
+        <![CDATA[category in (?...) ]]>
+    </value>
+    <query-params>
+        <query-param name="categories" type="string" is-in-clause="true" size="20" sample="'xxx'">
+            <query-param-link sdd-query-name="category" field-name="name" field-key="category"/>
+        </query-param>
+    </query-params>
+</query-filter>
+```
+
+### Query Input Constraint
+A query input can reference local set of values
 ```xml
     <query-params>
-        <query-param name="categories" type="string" is-in-clause="true" sample="'hx','tx'">
-            <query-param-link sdd-query-name="distinct-categories" field-name="name" field-key="category"/>
+        <query-param name="rating" type="string" sample="'zzz'">
+            <property tag="checkconstraint">
+                <property name="G" value="G"/>
+                <property name="PG" value="PG"/>
+                <property name="PG-13" value="PG-13"/>
+                <property name="R" value="R"/>
+                <property name="NC-17" value="NC-17"/>
+            </property>
         </query-param>
     </query-params>
 ```
-This query has a query param called category that has its input restricted to the result of the referenced
-query-name : 'distinct-categories'. <br/>
-For display purpose the field to see comes from field-name, and the field to query or store comes from field-key. 
-field-name and field-key may be the same. 
+This constraint can be used for single input or multiple input
 
 ### Cell graph enrichment
 A cell (row, column) of a sql result can contain some structured data that can be parsed into object (single or multiple).

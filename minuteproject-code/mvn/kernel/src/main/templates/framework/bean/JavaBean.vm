@@ -138,6 +138,13 @@ public class ${className} {
 #if ($columnUtils.hasCheckConstraint($column))
     private List<${columnClass}Enum> $columnVar;
 #else
+#if ($columnUtils.isLink($column))
+## is link
+#set($targetQuery=$columnUtils.getLinkedQueryMasterdataEnum($model, $column))
+#if ($targetQuery)
+#exposeSDDMasterDataEnum($targetQuery)
+    private List<$masterDataEnumImport> $columnVar;
+#else
     private String ${columnVar}Input;
     private List<$columnType> $columnVar;
 
@@ -156,6 +163,8 @@ public class ${className} {
             }
         }
     }
+#end
+#end
 #end
 #end
 #end

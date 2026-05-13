@@ -920,6 +920,9 @@ $!updatedAreaEnd
 #else
 #if ($columnUtils.hasCheckConstraint($column))
 		if (${sddInputBeanVariable}.get$columnClass()!=null) ${sddInputBeanVariable}.get$columnClass().stream().forEach(e -> list.add(e.getValue()));
+#elseif ($columnUtils.isLink($column) && $targetQuery)
+#set($targetQueryFieldNameClass=$commonUtils.getJavaClassName($column.queryParamLink.fieldName))
+		if (${sddInputBeanVariable}.get$columnClass()!=null) ${sddInputBeanVariable}.get$columnClass().stream().forEach(e -> list.add(e.get${targetQueryFieldNameClass}()));
 #else
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.addAll(${sddInputBeanVariable}.get$columnClass());
 #end

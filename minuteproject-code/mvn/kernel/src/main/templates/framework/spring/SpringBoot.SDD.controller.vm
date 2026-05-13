@@ -11,14 +11,6 @@ package $packageName;
 $!updatedAreaImport
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
-import java.io.*;
-import java.sql.*;
-
-import java.io.IOException;
-import javax.servlet.http.*;
-import java.util.List;
-import java.util.ArrayList;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,22 +20,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import $springBootJdbcTemplateRepositoryImport;
 import $sddOutputBeanImport;
@@ -99,7 +82,7 @@ public class ${className} {
 #set($targetQuery=$columnUtils.getLinkedQueryMasterdataEnum($model, $column))
 #if ($columnUtils.isLink($column) && $targetQuery)
 #exposeSDDMasterDataEnum($targetQuery)
-        @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end) $masterDataEnumImport $columnVar #if($velocityCount!=$size),
+        @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end)#if(!$column.isArray())$masterDataEnumImport#else List<$masterDataEnumImport>#end $columnVar #if($velocityCount!=$size),
 #end
 #else
         @RequestParam (value="$columnVar", required =#if($isMandatory)true #else false#end)#if ($hasCheckConstraint) #if($isArray) List<${sddInputBeanClass}.${columnClass}Enum> #else ${sddInputBeanClass}.${columnClass}Enum#end#else $columnType#end $columnVar #if($velocityCount!=$size),
