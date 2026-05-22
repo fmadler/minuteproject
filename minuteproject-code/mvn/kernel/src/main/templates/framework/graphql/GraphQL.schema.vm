@@ -63,7 +63,21 @@ type ${tableClassName} {
 #set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
 #foreach($column in $columnList)
 #putColumnParamNaming()
+#set($isArray=$column.isArray())
+#set($targetQuery=$columnUtils.getLinkedQueryMasterdataEnum($model, $column))
+#if ($columnUtils.isLink($column) && $targetQuery)
+#exposeSDDMasterDataEnum($targetQuery)
+#if(!$isArray)
+        $columnVar:${masterDataEnumClass}#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
+#end
+#else
+        $columnVar:[${masterDataEnumClass}]#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
+#end
+#end
+#else
+## normal case
         $columnVar:$graphqlUtils.convertColumnType($column)#if($column.isRequired())!#end #if ($velocityCount!=$columnList.size()),
+#end
 #end
 #end
 #foreach($queryChunk in $query.getQueryChunks())
@@ -123,6 +137,17 @@ type Mutation {
 #foreach ($package in $model.getStatementModel().getSddPackage().getQueryPackages())
 #set($pureQueries=$package.getPureQueries())
 #foreach ($query in $pureQueries)
+#if($queryUtils.isMasterDataAndEnumQuery($query))
+#set ($queryName = $formatUtils.getJavaName(${query.name}))
+enum ${queryName}Enum {
+#foreach ($row in $query.queryRows)
+#set($semRef=$queryUtils.getSemanticReference($query, $row))
+    $formatUtils.replaceNonAlphaNumWith_AndUpperCase(${semRef.stringValue()})#if( $velocityHasNext ),
+#end
+#end
+
+}
+#end
 #set($table=$query.inputBean)
 ## enum in checkconstraint
 #foreach ($column in $table.columns)

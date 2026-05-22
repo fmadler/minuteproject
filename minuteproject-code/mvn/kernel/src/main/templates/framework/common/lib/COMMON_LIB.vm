@@ -890,7 +890,7 @@ $!updatedAreaEnd
 #end
 
 #macro(exposeGetParametersList)
-	public List getParameters(
+	public List<Object> getParameters(
 #if($isNotVoidInput)
 		$sddInputBeanClass $sddInputBeanVariable
 #end
@@ -922,7 +922,9 @@ $!updatedAreaEnd
 		if (${sddInputBeanVariable}.get$columnClass()!=null) ${sddInputBeanVariable}.get$columnClass().stream().forEach(e -> list.add(e.getValue()));
 #elseif ($columnUtils.isLink($column) && $targetQuery)
 #set($targetQueryFieldNameClass=$commonUtils.getJavaClassName($column.queryParamLink.fieldName))
-		if (${sddInputBeanVariable}.get$columnClass()!=null) ${sddInputBeanVariable}.get$columnClass().stream().forEach(e -> list.add(e.get${targetQueryFieldNameClass}()));
+		if (Optional.ofNullable(${sddInputBeanVariable}.get$columnClass()).filter(l -> !l.isEmpty()).isPresent()) {
+			${sddInputBeanVariable}.get$columnClass().stream().forEach(e -> list.add(e.get${targetQueryFieldNameClass}()));
+		}
 #else
 		if (${sddInputBeanVariable}.get$columnClass()!=null) list.addAll(${sddInputBeanVariable}.get$columnClass());
 #end

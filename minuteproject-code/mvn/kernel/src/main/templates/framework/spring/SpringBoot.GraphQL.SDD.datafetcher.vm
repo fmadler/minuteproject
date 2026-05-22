@@ -17,6 +17,8 @@ import graphql.schema.DataFetchingEnvironment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -40,12 +42,36 @@ public class ${className} implements DataFetcher<List<$sddOutputBeanClass>> {
 #if ($columnUtils.isDate($column))
         java.time.OffsetDateTime ${columnVar}OffsetDateTime = dataFetchingEnvironment.getArgument("${columnVar}");
         if (${columnVar}OffsetDateTime!=null) {
-##            java.util.Date ${columnVar}Date = java.util.Date.from(${columnVar}LocalTime.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
             java.util.Date ${columnVar}Date = java.util.Date.from(${columnVar}OffsetDateTime.toInstant());
             ${sddInputBeanVariable}.set$columnClass (${columnVar}Date);
         }
 #else
+#set($isArray=$column.isArray())
+#set($targetQuery=$columnUtils.getLinkedQueryMasterdataEnum($model, $column))
+#if ($columnUtils.isLink($column) && $targetQuery)
+#exposeSDDMasterDataEnum($targetQuery)
+#if(!$isArray)
+        String ${columnVar}Arg = dataFetchingEnvironment.getArgument("${columnVar}");
+        if (${columnVar}Arg!=null) {
+            ${masterDataEnumImport} ${columnVar} = ${masterDataEnumImport}.valueOf(${columnVar}Arg);
+            if (${columnVar}!=null) {
+                ${sddInputBeanVariable}.set$columnClass (${columnVar});
+            }
+        }
+#else
+        List<String> ${columnVar}Arg = dataFetchingEnvironment.getArgument("${columnVar}");
+        if (${columnVar}Arg!=null) {
+            List<${masterDataEnumImport}> ${columnVar}List = ${columnVar}Arg.stream()
+                .map(${masterDataEnumImport}::valueOf)
+                .collect(Collectors.toList());
+            if (${columnVar}List!=null && !${columnVar}List.isEmpty()) {
+                ${sddInputBeanVariable}.set$columnClass (${columnVar}List);
+            }
+        }
+#end
+#else
         ${sddInputBeanVariable}.set$columnClass (dataFetchingEnvironment.getArgument("${columnVar}"));
+#end
 #end
 #elseif ($column.isImplicit()) ##TODO check if sessionParam
 #if ($column.useJwtSubject())
