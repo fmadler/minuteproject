@@ -985,6 +985,7 @@
         <xs:sequence>
             <xs:element name="query-documentation" type="value-documentation"/>
             <xs:element name="query-body" type="value-body"/>
+            <xs:element name="query-security" type="query-security"/>
             <xs:element name="query-display" type="query-display"/>
             <xs:element name="query-chunks" type="query-chunks"/>
             <xs:element name="query-pagination" type="query-pagination"/>
@@ -1164,6 +1165,15 @@
         <xs:attribute name="result-row-link-click-new-window" type="xs:boolean"/>
         <xs:attribute name="result-row-link-field" type="xs:string"/>
         <xs:attribute name="result-row-link-root-url-appended-field" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="query-security">
+        <xs:element name="security-role" type="security-role"/>
+    </xs:complexType>
+
+    <xs:complexType name="security-role">
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="roles" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="query-display-new-column">

@@ -27,6 +27,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import $springBootJdbcTemplateRepositoryImport;
 import $sddOutputBeanImport;
@@ -52,6 +53,9 @@ import $auditLoggingAnnotationImport;
 @AllArgsConstructor
 #set($packName = $formatUtils.firstUpperCase($query.package.name))
 @Tag(name = "${packName}")
+#if ($tableUtils.hasSecurityColorRole($inputBean))
+@PreAuthorize("hasAuthority('$tableUtils.securityColorRoles($inputBean)')")
+#end
 public class ${className} {
 
     private ${springBootJdbcTemplateRepositoryClass} $springBootJdbcTemplateRepositoryVariable;
@@ -64,7 +68,6 @@ public class ${className} {
     @Operation(summary = "${className}")
 	@ResponseBody
     @${auditLoggingAnnotationClass} (logLevel="INFO")
-##    @Tag(name = "${className} API", description = "${className} API")
     public ResponseEntity<List<$sddOutputBeanClass>> execute (
 #set ($columnsNotDuplicatedNorImplicit = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
 #set ($size = $columnsNotDuplicatedNorImplicit.size())

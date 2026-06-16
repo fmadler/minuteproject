@@ -36,6 +36,7 @@ $!updatedAreaEnd
 	<properties>
 		<java.version>8</java.version>
 
+		<git-commit-id-plugin.version>4.9.10</git-commit-id-plugin.version>
 		<!-- test -->
 		<assertj.version>3.23.1</assertj.version>
 		<mutability.detector.version>0.10.6</mutability.detector.version>
@@ -227,6 +228,7 @@ $!updatedAreaEnd
 				<plugin>
 					<groupId>pl.project13.maven</groupId>
 					<artifactId>git-commit-id-plugin</artifactId>
+					<version>${git-commit-id-plugin.version}</version>
 					<executions>
 						<execution>
 							<goals>
