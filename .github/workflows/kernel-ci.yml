@@ -1,0 +1,32 @@
+name: kernel CI
+
+on:
+  push:
+    paths:
+      - 'minuteproject-code/mvn/kernel/**'
+  pull_request:
+    paths:
+      - 'minuteproject-code/mvn/kernel/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build and test
+        run: mvn clean package
+        working-directory: minuteproject-code/mvn/kernel
+
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: minuteproject-code/mvn/kernel/target/site/jacoco/

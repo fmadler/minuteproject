@@ -201,6 +201,13 @@ Specifying some type can lead to specific generation described [here](../concept
 ```
 
 ## Query Input enrichment
+### Query Security
+Global security level (role based)
+```xml
+<query-security>
+    <security-role name="admin-role" roles="ADMIN"/>
+</query-security>
+```
 ### Query Enumeration Link Input
 A query input can be referenced by another query result via a query-param.
 Based on the following query
