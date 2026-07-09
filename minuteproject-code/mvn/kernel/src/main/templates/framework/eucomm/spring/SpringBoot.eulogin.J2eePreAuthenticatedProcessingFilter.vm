@@ -1,0 +1,21 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import javax.servlet.http.HttpServletRequest;
+
+public class $className extends org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter {
+
+    /**
+     * Return the EcasUser (not just the username!). This is needed as Ecas strategy is to provide a JAAS Principal
+     * containing allowed groups (allocated via an implementation of ExtraGroupHandler)
+     */
+    @Override
+    protected Object getPreAuthenticatedPrincipal(HttpServletRequest httpRequest) {
+        final Object principal = httpRequest.getUserPrincipal();
+        if (logger.isDebugEnabled()) {
+            logger.debug("PreAuthenticated EcasUser principal: " + principal);
+        }
+        return principal;
+    }
+}

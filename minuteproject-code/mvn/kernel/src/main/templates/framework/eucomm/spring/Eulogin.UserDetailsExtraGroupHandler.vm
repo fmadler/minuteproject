@@ -1,0 +1,58 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import eu.cec.digit.ecas.client.validation.AbstractUserDetailsExtraGroupHandler;
+import eu.cec.digit.ecas.client.validation.DetailedAuthenticationSuccess;
+import eu.cec.digit.ecas.client.validation.ExtraGroupHandlingException;
+import eu.europa.ec.decide.ms.decision.decisionacl.security.eulogin.users.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * EU Login extra group handler.
+ *
+ * This class is intended to map the received UserPrinciple from EU Login with your own custom roles and groups.
+ * It can contain custom calls to local DAOs to fetch additional information. To implement to your own liking.
+ */
+public class $className extends AbstractUserDetailsExtraGroupHandler {
+    private static final long serialVersionUID = -8478234494646131098L;
+    private static final Logger log = LoggerFactory.getLogger($className.class);
+
+    /**
+     * Callback invoked by ECAS to obtain groups.
+     */
+    @Override
+    public List<String> getGroups(DetailedAuthenticationSuccess detailedAuthenticationSuccess) throws ExtraGroupHandlingException {
+        log.info(">>>>> detailedAuthenticationSuccess: "+detailedAuthenticationSuccess);
+        final List<String> groups = new ArrayList<>();
+
+        // Simplistic user/group assignment, based on domain username (whitelist of users)
+        final List assignedGroups = detailedAuthenticationSuccess.getGroups();
+
+        if (null == assignedGroups || assignedGroups.isEmpty()) {
+            throw new ExtraGroupHandlingException("Not allowed on this section when you don't have any groups");
+        }
+
+        /*
+        This examples uses the JAAS groups to evaluate access to the application, and reassigns its proper groups
+        based upon the set conditions.
+        - VIEW authority is given when the INTERNET group is assigned;
+        - ADMIN authority is given when the DG_DIGIT group is assigned;
+
+        The group filters can be updated in ecas-config.properties (eu.cec.digit.ecas.client.filter.groups)
+         */
+        if (assignedGroups.contains("INTERNET"))
+            groups.add(Role.INTERNET.getName());
+
+        if (assignedGroups.contains("DG_DIGIT"))
+            groups.add(Role.ADMIN_ROLE.getName());
+
+        log.info("Assigning groups to {}: {}", detailedAuthenticationSuccess.getDomainUsername(), groups);
+
+        return groups;
+    }
+}

@@ -25,10 +25,10 @@ public enum $className {
 
 #set($firstRow=$query.queryRows.get(0))
 #set($semRefFirstRow=$queryUtils.getSemanticReference($query, $firstRow))
-#set($semRefFirstRowVar=$javaUtils.getJavaVariableNaming(${semRefFirstRow.columnName()}))
+#set($semRefFirstRowVar=$formatUtils.getJavaNameVariable(${semRefFirstRow.columnName()}))
 #foreach ($outputValue in $firstRow.queryOutputValues())
 #set($typeEnum = $columnUtils.getDBTypeMapEnum($semRefFirstRow.columnType()))
-    private final ${typeEnum.className} $javaUtils.getJavaVariableNaming(${outputValue.columnName()}); //$semRefFirstRow.columnType()
+    private final ${typeEnum.className} $formatUtils.getJavaNameVariable(${outputValue.columnName()});
 #end
 
     public static ${className} of(String $semRefFirstRowVar) {

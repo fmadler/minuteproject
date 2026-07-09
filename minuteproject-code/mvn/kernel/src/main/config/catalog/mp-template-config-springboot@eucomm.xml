@@ -1,0 +1,73 @@
+<target name="springboot"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="./mp-template-config.xsd">	
+	<architecture-target name="springboot eucomm security"/>
+
+	<template-target
+			name="Spring boot eulogin integration"
+			outputdir="src/main/java"
+			belongToPackage="true">
+
+		<template name="SpringBoot.eulogin.J2eePreAuthenticatedProcessingFilter" templateFileName="SpringBoot.eulogin.J2eePreAuthenticatedProcessingFilter.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin.spring"
+				  file-extension="java" file-prefix="" file-suffix="J2eePreAuthenticatedProcessingFilter"
+				  scope-specific-value="model" add-model-name="false">
+			<!-- TODO scope-specific-value="application" with correct packagename "application-package"-->
+		</template>
+
+		<template name="SpringBoot.eulogin.SecurityConfiguration" templateFileName="SpringBoot.eulogin.SecurityConfiguration.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin.spring"
+				  file-extension="java" file-prefix="" file-suffix="SecurityConfiguration"
+				  scope-specific-value="model" add-model-name="false">
+			<!-- TODO scope-specific-value="application" with correct packagename "application-package"-->
+		</template>
+
+		<template name="SpringBoot.eulogin.UserDetailsServiceWrapper" templateFileName="SpringBoot.eulogin.UserDetailsServiceWrapper.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin.spring"
+				  file-extension="java" file-prefix="" file-suffix="UserDetailsServiceWrapper"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.eulogin.WebMvcConfiguration" templateFileName="SpringBoot.eulogin.WebMvcConfiguration.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin.spring"
+				  file-extension="java" file-prefix="" file-suffix="WebFilterConfig"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<!-- tomcat -->
+		<template name="SpringBoot.tomcat.SecurityWithEcasAuthenticator" templateFileName="SpringBoot.tomcat.SecurityWithEcasAuthenticator.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin.tomcat"
+				  file-extension="java" file-prefix="" file-suffix="TomcatSecurityWithEcasAuthenticator"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<!-- user role temp to use master-data with enum for global role -->
+		<template name="SpringBoot.tomcat.SpringBoot.global.Role" templateFileName="SpringBoot.global.Role.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin.role"
+				  file-extension="java" file-prefix="" file-suffix="Role"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<!-- eulogin -->
+		<template name="Eulogin.AuthenticationService" templateFileName="Eulogin.UserDetailsExtraGroupHandler.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin"
+				  file-extension="java" file-prefix="" file-suffix="UserDetailsExtraGroupHandler"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.eulogin.GrantedAuthority" templateFileName="SpringBoot.eulogin.GrantedAuthority.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin"
+				  file-extension="java" file-prefix="" file-suffix="GrantedAuthority"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+		<template name="SpringBoot.eulogin.UserDetails" templateFileName="SpringBoot.eulogin.UserDetails.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin"
+				  file-extension="java" file-prefix="" file-suffix="UserDetails"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+	</template-target>
+
+</target>

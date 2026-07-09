@@ -586,4 +586,8 @@ public class QueryUtils {
 				.anyMatch(QueryUtils::hasVelocityPostProcessor)
 				;
 	}
+
+	public static QuerySecurity getQuerySecurity(Query query) {
+		return query.getQuerySecurity();
+	}
 }

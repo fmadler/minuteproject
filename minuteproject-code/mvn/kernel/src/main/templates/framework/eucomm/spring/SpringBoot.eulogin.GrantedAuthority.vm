@@ -1,0 +1,27 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import org.springframework.security.core.GrantedAuthority;
+
+public class $className implements GrantedAuthority {
+
+    private static final long serialVersionUID = 5276185641559551845L;
+
+    private final String role;
+
+    public $className(String role) {
+        super();
+        this.role = role;
+    }
+
+    @Override
+    public String getAuthority() {
+        return role;
+    }
+
+    @Override
+    public String toString() {
+        return "$className [role=" + role + "]";
+    }
+}

@@ -1,0 +1,92 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import eu.cec.digit.ecas.client.j2ee.tomcat.EcasPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class $className implements UserDetails {
+
+    private static final long serialVersionUID = -5887601504878714771L;
+
+    private final EcasPrincipal ecasPrincipal;
+
+    private final List<org.springframework.security.core.GrantedAuthority> grantedAuthorities;
+
+    public EuLoginUserDetails(EcasPrincipal ecasPrincipal) {
+        this.ecasPrincipal = ecasPrincipal;
+
+        // Cached
+        this.grantedAuthorities = Stream.of(ecasPrincipal.getRoles())
+                .map(EuLoginGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<? extends org.springframework.security.core.GrantedAuthority> getAuthorities() {
+        return grantedAuthorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return ecasPrincipal.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return ecasPrincipal.getDomainUsername();
+    }
+
+    public String getEmail() {
+        return ecasPrincipal.getEmail();
+    }
+
+    public String getFirstName() {
+        return ecasPrincipal.getFirstName();
+    }
+
+    public String getLastName() {
+        return ecasPrincipal.getLastName();
+    }
+
+    public String[] getRoles() {
+        return ecasPrincipal.getRoles();
+    }
+
+    /**
+     * If we reach this point, this is because EU Login considers this account is non expired
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    /**
+     * If we reach this point, this is because EU Login considers this account is not locked
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    /**
+     * If we reach this point, this is because EU Login considers this account's credentials are not expired
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    /**
+     * If we reach this point, this is because EU Login considers this account is enabled
+     */
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+}

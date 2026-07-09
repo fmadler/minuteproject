@@ -483,6 +483,22 @@
 									</set-properties-rule>
 								</pattern>
 							</pattern>
+							<pattern value="query-security">
+								<object-create-rule
+										classname="net.sf.minuteProject.configuration.bean.model.statement.QuerySecurity" />
+								<set-next-rule methodname="setQuerySecurity"
+											   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QuerySecurity" />
+								<pattern value="security-role">
+									<object-create-rule
+											classname="net.sf.minuteProject.configuration.bean.model.statement.QuerySecurityRole" />
+									<set-next-rule methodname="setQuerySecurityRole"
+												   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QuerySecurityRole" />
+									<set-properties-rule>
+										<alias attr-name="name" prop-name="name" />
+										<alias attr-name="roles" prop-name="roles" />
+									</set-properties-rule>
+								</pattern>
+							</pattern>
 							<pattern value="query-filters/query-filter">
 								<object-create-rule
 									classname="net.sf.minuteProject.configuration.bean.model.statement.QueryFilter" />
@@ -2404,6 +2420,22 @@
 									<alias attr-name="is-mandatory" prop-name="isMandatory" />
 									<alias attr-name="input-field-name" prop-name="inputFieldName" />
 									<alias attr-name="input-query-param-name" prop-name="inputQueryParamName" />
+								</set-properties-rule>
+							</pattern>
+						</pattern>
+						<pattern value="query-security">
+							<object-create-rule
+									classname="net.sf.minuteProject.configuration.bean.model.statement.QuerySecurity" />
+							<set-next-rule methodname="setQuerySecurity"
+										   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QuerySecurity" />
+							<pattern value="security-role">
+								<object-create-rule
+										classname="net.sf.minuteProject.configuration.bean.model.statement.QuerySecurityRole" />
+								<set-next-rule methodname="setQuerySecurityRole"
+											   paramtype="net.sf.minuteProject.configuration.bean.model.statement.QuerySecurityRole" />
+								<set-properties-rule>
+									<alias attr-name="name" prop-name="name" />
+									<alias attr-name="roles" prop-name="roles" />
 								</set-properties-rule>
 							</pattern>
 						</pattern>

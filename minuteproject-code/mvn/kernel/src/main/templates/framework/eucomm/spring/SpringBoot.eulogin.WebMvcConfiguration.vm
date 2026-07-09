@@ -1,0 +1,49 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import eu.cec.digit.ecas.client.filter.GatewayFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class $className implements WebMvcConfigurer {
+    private final ApplicationContext applicationContext;
+
+    @Autowired
+    public WebMvcConfiguration(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    @Bean
+    public FilterRegistrationBean<GatewayFilter> gatewayFilter() {
+        FilterRegistrationBean<GatewayFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new GatewayFilter());
+        registrationBean.addUrlPatterns("/gateway/*");
+        return registrationBean;
+    }
+
+    /**
+     * Needed as EU Login redirects to a URL like "/;jsessionid="
+     *
+     * @return
+     */
+    @Bean
+    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+        final StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowSemicolon(true);
+        return firewall;
+    }
+
+    @Bean
+    GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults("");
+    }
+}

@@ -61,38 +61,6 @@
                     description="Generates:\environment properties">
         </technology>
 
-        <!--
-        <technology name="JPA2-groovy" target-name="JPA2-groovy"
-            model-type="rdbms" template-config-file-name="mp-template-config-JPA2-groovy.xml"
-            default-outputdir="JPA2" depends-on-targets="BSLA_LIB,CACHE_LIB,SDD-BEANS"
-            template-dir="@templateRoot@/framework/jpa" status="released"
-            description="Generates:\JPA2 Domain entities with annotation\JPA2 metamodel for compilable criteria queries">
-            <frameworks>
-                <framework name="JPA" version="2"></framework>
-                <framework name="Groovy" version="2+"></framework>
-            </frameworks>
-            <property name="groovify" value="true"></property>
-            <property name="add-querydsl" value="2.1.2"></property>
-            <property name="add-jpa2-implementation" value="hibernate"></property>
-            <property name="add-cache-implementation" value="ehcache"></property>
-        </technology>
--->
-        <!--
-        <technology name="JPA2-ABL" target-name="JPA2-ABL"
-            model-type="rdbms" template-config-file-name="mp-template-config-JPA2.xml"
-            default-outputdir="JPA2" depends-on-targets="BSLA_LIB,CACHE_LIB,ABL-JPA2,COMMON-LIB"
-            template-dir="@templateRoot@/framework/jpa" status="released"
-            description="Generates:\JPA2 Domain entities with annotation\JPA2 metamodel for compilable criteria queries\ABL integration">
-            <frameworks>
-                <framework name="JPA" version="2"></framework>
-                <framework name="ABL"></framework>
-            </frameworks>
-            <property name="add-querydsl" value="2.1.2"></property>
-            <property name="add-automated-business-logic" value="2.2.0"></property>
-            <property name="add-jpa2-implementation" value="hibernate"></property>
-            <property name="add-cache-implementation" value="ehcache"></property>
-        </technology>
-        -->
 
         <technology name="BSLA-JPA2" target-name="BSLA-JPA2"
                     model-type="rdbms" template-config-file-name="mp-template-config-JPA2-bsla.xml"
@@ -284,6 +252,30 @@
             <property name="rest-pom-maven-packaging" value="war"/>
         </technology>
 
+        <technology name="SpringBoot@Comm" model-type="rdbms"
+                    template-config-file-name="mp-template-config-springboot@eucomm.xml"
+                    default-outputdir="REST"
+                    depends-on-targets="SpringBoot,SDD-BEANS.v2,JPA3,SpringData,REST-utils,tomcat,docker,SpringBoot.MavenMaster,cas-security"
+                    depends-on-targets-old="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,CloudFoundry-REST,tomcat,docker,SpringBoot.MavenMaster"
+                    template-dir="@templateRoot@/framework/eucomm/spring"
+                    status="released"
+                    description="Generates:\Springboot REST API and graphql API with EU comm security">
+            <frameworks>
+                <framework name="springboot@comm" ></framework>
+            </frameworks>
+            <property name="springboot" value="2"></property>
+            <property name="swagger-openapi-version" value="3"></property>
+            <property name="add-jpa2-implementation" value="hibernate"></property>
+            <property name="add-domain-specific-method" value="true"></property>
+            <property name="add-cache-implementation" value="ehcache"></property>
+            <property name="use-temporal" value="true"></property>
+            <property name="add-backend-implementation" value="spring"></property>
+            <property name="graphql-enabled" value="true"/>
+            <property name="maven-artifact-finalName-suffix" value="SpringBoot"/>
+            <property name="rest-pom-maven-artifact-finalName-suffix" value="SpringBoot"/>
+            <property name="rest-pom-maven-packaging" value="war"/>
+        </technology>
+
         <technology name="SpringBoot" model-type="rdbms"
                     template-config-file-name="mp-template-config-springboot.xml"
                     default-outputdir="REST"
@@ -307,49 +299,6 @@
             <property name="rest-pom-maven-artifact-finalName-suffix" value="SpringBoot"/>
             <property name="rest-pom-maven-packaging" value="war"/>
         </technology>
-
-        <!--
-        <technology name="REST-TWBS" model-type="rdbms"
-            template-config-file-name="mp-template-config-twbs.xml"
-            default-outputdir="REST" depends-on-targets="JPA2,SDD-BEANS,BSLA-JPA2,SpringService,REST,CloudFoundry-REST,MavenMaster"
-            template-dir="@templateRoot@/framework/twbs" status="released"
-            description="Generates:\REST Spring MVC CRUD app\Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
-            <frameworks>
-                <framework name="spring" version="4"></framework>
-            </frameworks>
-            <property name="add-querydsl" value="2.1.2"></property>
-            <property name="add-jpa2-implementation" value="hibernate"></property>
-            <property name="add-domain-specific-method" value="true"></property>
-            <property name="add-cache-implementation" value="ehcache"></property>
-            <property name="use-temporal" value="true"></property>
-            <property name="add-backend-implementation" value="spring"></property>
-            <property name="maven-artifact-finalName-suffix" value="KendoUiApp" />
-
-            <property name="rest-pom-maven-artifact-finalName-suffix" value="KendoUiApp" />
-            <property name="rest-pom-maven-packaging" value="war" />
-        </technology>
-
--->
-        <!--
-                <technology name="REST-CXF-Spring" model-type="rdbms"
-                    template-config-file-name="mp-template-config-REST-CXF-Spring.xml"
-                    default-outputdir="REST" depends-on-targets="JPA2,SDD-BEANS,BSLA-JPA2,MavenMaster"
-                    template-dir="@templateRoot@/framework/cxf" status="released"
-                    description="Generates:\REST CXF CRUD app\Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
-                    <frameworks>
-                        <framework name="spring" version="4"></framework>
-                    </frameworks>
-                    <property name="add-querydsl" value="2.1.2"></property>
-                    <property name="add-jpa2-implementation" value="hibernate"></property>
-                    <property name="add-cache-implementation" value="ehcache"></property>
-                    <property name="add-domain-specific-method" value="true"></property>
-                    <property name="add-xmlbinding" value="true"></property>
-                    <property name="add-xml-format" value="lowercase-hyphen"></property>
-                                <property name="use-temporal" value="true"></property>
-                    <property name="add-rest-implementation-cxf-version" value="2.2.3"></property>
-                    <property name="add-backend-implementation" value="spring"></property>
-                </technology>
-                -->
 
         <technology name="REST-CXF-JEE" model-type="rdbms"
                     template-config-file-name="mp-template-config-REST-CXF-JEE.xml"
@@ -470,16 +419,6 @@
                 <framework name="MP 4 FitNesse" version=""></framework>
             </frameworks>
         </technology>
-
-        <!--
-        <technology name="Solr" model-type="rdbms"
-            template-config-file-name="mp-template-config-solr.xml" template-dir="@templateRoot@/framework/osem/solr"
-            depends-on-targets="BSLA_LIB" status="released" description="Generates Solr artifacts">
-            <frameworks>
-                <framework name="Solr" version=""></framework>
-            </frameworks>
-        </technology>
-        -->
 
         <technology name="OpenXava" model-type="rdbms"
                     template-config-file-name="mp-template-config-openxava-last-features.xml"

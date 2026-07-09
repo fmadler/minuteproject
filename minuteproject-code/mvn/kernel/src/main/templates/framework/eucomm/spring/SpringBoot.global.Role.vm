@@ -1,0 +1,21 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+public enum $className {
+    ADMIN_ROLE("ADMIN_ROLE"),
+    EUROPEAN_COMMISSION_ROLE("EUROPEAN_COMMISSION_ROLE"),
+    NON_EXISTING_VIP_ROLE("NON_EXISTING_VIP_ROLE"),
+    INTERNET("INTERNET")
+    ; // Keep on this line for easy merging
+
+    private String name;
+
+    Role(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+         return this.name;
+     }
+}

@@ -53,8 +53,10 @@ import $auditLoggingAnnotationImport;
 @AllArgsConstructor
 #set($packName = $formatUtils.firstUpperCase($query.package.name))
 @Tag(name = "${packName}")
-#if ($tableUtils.hasSecurityColorRole($inputBean))
-@PreAuthorize("hasAuthority('$tableUtils.securityColorRoles($inputBean)')")
+#if ($query.querySecurity)
+#if ($query.querySecurity.querySecurityRole)
+@PreAuthorize("hasAuthority('$query.querySecurity.querySecurityRole.roles')")
+#end
 #end
 public class ${className} {
 

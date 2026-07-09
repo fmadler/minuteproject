@@ -1,0 +1,25 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
+@Component
+public class $className {
+
+    /**
+     * Retrieve the actual logged user for programmatic access
+     *
+     * @return
+     */
+    public Authentication getAuthentication() {
+        return SecurityContextHolder.getContext()
+                .getAuthentication();
+    }
+
+    public EuLoginUserDetails getDetails() {
+        return ((EuLoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    }
+}

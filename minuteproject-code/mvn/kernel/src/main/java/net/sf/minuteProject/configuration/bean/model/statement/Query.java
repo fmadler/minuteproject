@@ -68,6 +68,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private Cardinality resultCardinality = Cardinality.MANY;
 	private String secureUserRole;
 	private SecurityColor securityColor=new SecurityColor();
+	private QuerySecurity querySecurity;
 	private Scope queryScope = Scope.ALL_STACKS;
 	private boolean isScalar = false;
 	private boolean pagination = false;

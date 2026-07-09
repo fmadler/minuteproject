@@ -1,0 +1,114 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import eu.europa.ec.decide.ms.decision.decisionacl.security.eulogin.users.Role;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.context.annotation.Bean;
+
+import java.util.Arrays;
+/**
+ * https://webgate.ec.europa.eu/CITnet/confluence/display/RefApp/ECAS+and+Spring+security
+ */
+@SuppressWarnings("JavaDoc")
+@Configuration
+@EnableWebSecurity
+// Needed for standard JEE authentication
+@EnableGlobalMethodSecurity(jsr250Enabled = true, securedEnabled = true, prePostEnabled = true, proxyTargetClass = true)
+public class $className extends WebSecurityConfigurerAdapter {
+    /**
+     * Pre filter, that maps the EU login authenticated Principal (in HttpServletRequest) to the Spring Security UserDetails
+     *
+     * @return
+     * @throws Exception
+     */
+    private J2eePreAuthenticatedProcessingFilter buildJ2eePreAuthenticatedProcessingFilter() throws Exception {
+        final J2eePreAuthenticatedProcessingFilter filter = new J2eePreAuthenticatedProcessingFilter();
+        filter.setAuthenticationManager(authenticationManager());
+        // Following recommendations of https://webgate.ec.europa.eu/CITnet/confluence/display/RefApp/ECAS+and+Spring+security
+        filter.setContinueFilterChainOnUnsuccessfulAuthentication(false);
+        return filter;
+    }
+
+    /**
+     * Authentication provider relying on pre authentication
+     *
+     * @return
+     */
+    private PreAuthenticatedAuthenticationProvider createPreAuthenticatedAuthenticationProvider() {
+        final PreAuthenticatedAuthenticationProvider authenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
+        authenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(new UserDetailsServiceWrapper());
+
+        return authenticatedAuthenticationProvider;
+    }
+
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) {
+        authenticationManagerBuilder.authenticationProvider(createPreAuthenticatedAuthenticationProvider());
+    }
+
+    /**
+     * Configure Spring Security to allow:
+     * - Public access on the root context-path ("/") and static assets or webjars (not used);
+     * - Admin access on the "/admin/*" context-path;
+     * - View access on all other resources
+     *
+     * @param httpSecurity
+     * @throws Exception
+     */
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .addFilterAfter(buildJ2eePreAuthenticatedProcessingFilter(), J2eePreAuthenticatedProcessingFilter.class);
+
+        // Following recommendations of https://webgate.ec.europa.eu/CITnet/confluence/display/RefApp/ECAS+and+Spring+security
+        httpSecurity.sessionManagement().sessionFixation().none();
+
+        httpSecurity
+                .authorizeRequests()
+                .antMatchers("/assets/**", "/webjars/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/", "/welcome.html").permitAll();
+
+        httpSecurity
+                .authorizeRequests()
+                .antMatchers("/admin/*").hasAuthority(Role.ADMIN_ROLE.getName())
+                .antMatchers("/graphiql/**").permitAll()
+                .antMatchers("/graphql/**").permitAll()
+                .antMatchers("/actuator/**").permitAll()
+                .antMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
+                .antMatchers("/api-docs/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .headers()
+                .and()
+                .csrf().disable() //for the demo only TODO add it back
+                .cors()
+                .and()
+                .httpBasic()
+                .disable();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token", "origin"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+}

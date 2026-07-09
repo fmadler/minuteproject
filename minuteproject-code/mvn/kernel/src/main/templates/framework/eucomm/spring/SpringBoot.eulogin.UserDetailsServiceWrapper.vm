@@ -1,0 +1,31 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import eu.europa.ec.decide.ms.decision.decisionacl.security.EuLoginUserDetails;
+import eu.cec.digit.ecas.client.j2ee.tomcat.EcasPrincipal;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+
+/**
+ * Note: Using the provided UserDetailsByNameServiceWrapper and UserDetailsService class and interface are not enough,
+ * as both of their contract rely on getting a String username as Principal.
+ * <p>
+ * Since EU Login relies on an EcasUser as JAAS user, we need to propagate this entire object to properly map roles
+ * and user details (first name, last name, email, etc)
+ *
+ */
+@ConditionalOnClass(name = "eu.cec.digit.ecas.client.j2ee.tomcat.EcasAuthenticator")
+public class $className implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
+    /**
+     * Get the UserDetails object from the wrapped UserDetailsService implementation
+     */
+    @Override
+    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken authentication) throws UsernameNotFoundException {
+        final EcasPrincipal ecasPrincipal = (EcasPrincipal) authentication.getPrincipal();
+        return new EuLoginUserDetails(ecasPrincipal);
+    }
+}

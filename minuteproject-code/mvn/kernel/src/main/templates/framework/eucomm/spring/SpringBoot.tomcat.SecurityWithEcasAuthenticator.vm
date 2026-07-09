@@ -1,0 +1,63 @@
+#generatorSpecific()
+#exposeVariableApplicationSpecific()
+package $packageName;
+
+import eu.cec.digit.ecas.client.j2ee.tomcat.EcasAuthenticator;
+import eu.europa.ec.decide.ms.decision.decisionacl.security.eulogin.users.Role;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * This class helps customising the default embedded Tomcat server bootstrapped by Spring Boot to add the EcasAuthenticator and describe the various URLs to protect.
+ */
+@ConditionalOnClass(name = "eu.cec.digit.ecas.client.j2ee.tomcat.EcasAuthenticator")
+@Configuration
+public class $className implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
+
+    @Override
+    public void customize(TomcatServletWebServerFactory container) {
+        container.addContextValves(newEcasAuthenticator());
+        container.addContextCustomizers(context -> {
+            // Unfortunately, we have to kind of replicated HttpSecurity description of public / restricted pages
+            context.addConstraint(buildNonEuLoginSecurityConstraint());
+            context.addConstraint(buildEuLoginSecurityConstraint());
+
+            for (Role role : Role.values()) {
+                context.addSecurityRole(role.getName());
+            }
+        });
+    }
+
+    private SecurityConstraint buildNonEuLoginSecurityConstraint() {
+        final SecurityCollection collection = new SecurityCollection("public", "public");
+        collection.addPattern("/");
+
+        final SecurityConstraint securityConstraint = new SecurityConstraint();
+        securityConstraint.addCollection(collection);
+
+        return securityConstraint;
+    }
+
+    private SecurityConstraint buildEuLoginSecurityConstraint() {
+        final SecurityCollection collection = new SecurityCollection("all", "all");
+        collection.addPattern("/admin/*");
+        collection.addPattern("/swagger-ui/*");
+        collection.addPattern("/graphiql/*");
+        collection.addPattern("/view");
+
+        final SecurityConstraint securityConstraint = new SecurityConstraint();
+        securityConstraint.addAuthRole(SecurityConstraint.ROLE_ALL_ROLES);
+        securityConstraint.setAuthConstraint(true);
+        securityConstraint.addCollection(collection);
+
+        return securityConstraint;
+    }
+
+    private EcasAuthenticator newEcasAuthenticator() {
+        return new EcasAuthenticator();
+    }
+}
