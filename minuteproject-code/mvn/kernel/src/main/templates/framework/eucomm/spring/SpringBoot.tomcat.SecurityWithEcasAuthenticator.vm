@@ -1,9 +1,10 @@
 #generatorSpecific()
 #exposeVariableApplicationSpecific()
+#exposeSpringEuCommTemplateSpecific()
 package $packageName;
 
 import eu.cec.digit.ecas.client.j2ee.tomcat.EcasAuthenticator;
-import eu.europa.ec.decide.ms.decision.decisionacl.security.eulogin.users.Role;
+import $euloginGlobalRoleImport;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

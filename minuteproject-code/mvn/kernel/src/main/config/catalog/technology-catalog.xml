@@ -255,8 +255,7 @@
         <technology name="SpringBoot@Comm" model-type="rdbms"
                     template-config-file-name="mp-template-config-springboot@eucomm.xml"
                     default-outputdir="REST"
-                    depends-on-targets="SpringBoot,SDD-BEANS.v2,JPA3,SpringData,REST-utils,tomcat,docker,SpringBoot.MavenMaster,cas-security"
-                    depends-on-targets-old="SpringGraphQL,GraphQL,JPA2,LOG,Botdetect,Velocity,environment-REST,SDD-BEANS,BSLA-JPA2,SpringService,CloudFoundry-REST,tomcat,docker,SpringBoot.MavenMaster"
+                    depends-on-targets="SpringBoot,SDD-BEANS.v2,JPA3,SpringData,REST-utils,tomcat,docker,SpringBoot.MavenMaster,cas-security,SPRING_LIB@EUCOMM_LIB"
                     template-dir="@templateRoot@/framework/eucomm/spring"
                     status="released"
                     description="Generates:\Springboot REST API and graphql API with EU comm security">
@@ -828,6 +827,11 @@
         <technology name="SPRING_LIB" target-name="SPRING_LIB"
                     template-config-file-name="mp-template-config-SPRING-LIB.xml"
                     template-dir="@templateRoot@/framework/spring" is-generable="false">
+        </technology>
+
+        <technology name="@EUCOMM_LIB" target-name="@EUCOMM_LIB"
+                    template-config-file-name="mp-template-config-@EUCOMM-LIB.xml"
+                    template-dir="@templateRoot@/framework/eucomm" is-generable="false">
         </technology>
 
         <technology name="LIFERAY_LIB" target-name="LIFERAY_LIB"

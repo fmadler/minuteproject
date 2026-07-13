@@ -1,8 +1,9 @@
 #generatorSpecific()
 #exposeVariableApplicationSpecific()
+#exposeSpringEuCommTemplateSpecific()
 package $packageName;
 
-import eu.europa.ec.decide.ms.decision.decisionacl.security.eulogin.users.Role;
+import $euloginGlobalRoleImport;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

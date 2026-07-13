@@ -18,7 +18,7 @@ public class $className implements WebMvcConfigurer {
     private final ApplicationContext applicationContext;
 
     @Autowired
-    public WebMvcConfiguration(ApplicationContext applicationContext) {
+    public $className (ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 

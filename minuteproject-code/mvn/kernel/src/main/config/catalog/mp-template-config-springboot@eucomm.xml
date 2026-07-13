@@ -31,7 +31,7 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 		<template name="SpringBoot.eulogin.WebMvcConfiguration" templateFileName="SpringBoot.eulogin.WebMvcConfiguration.vm"
 				  subdir="" outputsubdir="" technicalPackage="security.eulogin.spring"
-				  file-extension="java" file-prefix="" file-suffix="WebFilterConfig"
+				  file-extension="java" file-prefix="" file-suffix="WebMvcConfiguration"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 
@@ -43,7 +43,7 @@ xs:schemaLocation="./mp-template-config.xsd">
 		</template>
 
 		<!-- user role temp to use master-data with enum for global role -->
-		<template name="SpringBoot.tomcat.SpringBoot.global.Role" templateFileName="SpringBoot.global.Role.vm"
+		<template name="SpringBoot.global.Role" templateFileName="SpringBoot.global.Role.vm"
 				  subdir="" outputsubdir="" technicalPackage="security.eulogin.role"
 				  file-extension="java" file-prefix="" file-suffix="Role"
 				  scope-specific-value="model" add-model-name="false">
@@ -58,13 +58,13 @@ xs:schemaLocation="./mp-template-config.xsd">
 
 		<template name="SpringBoot.eulogin.GrantedAuthority" templateFileName="SpringBoot.eulogin.GrantedAuthority.vm"
 				  subdir="" outputsubdir="" technicalPackage="security.eulogin"
-				  file-extension="java" file-prefix="" file-suffix="GrantedAuthority"
+				  file-extension="java" file-prefix="" file-suffix="EuLoginGrantedAuthority"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 
 		<template name="SpringBoot.eulogin.UserDetails" templateFileName="SpringBoot.eulogin.UserDetails.vm"
 				  subdir="" outputsubdir="" technicalPackage="security.eulogin"
-				  file-extension="java" file-prefix="" file-suffix="UserDetails"
+				  file-extension="java" file-prefix="" file-suffix="EuLoginUserDetails"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 

@@ -1,0 +1,12 @@
+<target name="SPRING LIB">		
+	<architecture-target name="REST architecture artifacts" description="REST architecture">
+	</architecture-target>
+
+	<template-target 
+    	name="EUCOMM_LIB"
+		libdir="EUCOMM_LIB.vm"
+		outputdir=""
+		belongToPackage="true">
+	</template-target>
+  	         		
+</target>

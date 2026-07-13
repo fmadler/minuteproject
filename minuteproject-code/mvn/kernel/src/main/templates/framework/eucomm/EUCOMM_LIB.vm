@@ -1,0 +1,21 @@
+#macro (exposeSpringEuCommTemplate)
+#set ($templateSbEuloginJ2eePreAuthenticatedProcessingFilter = "SpringBoot.eulogin.J2eePreAuthenticatedProcessingFilter")
+#set ($templateSbEuloginSecurityConfiguration = "SpringBoot.eulogin.SecurityConfiguration")
+#set ($templateSbEuloginUserDetailsServiceWrapper = "SpringBoot.eulogin.UserDetailsServiceWrapper")
+#set ($templateSbEuloginWebMvcConfiguration = "SpringBoot.eulogin.WebMvcConfiguration")
+#set ($templateSbTomcatSecurityWithEcasAuthenticator = "SpringBoot.tomcat.SecurityWithEcasAuthenticator")
+#set ($templateSbEuloginGlobalRole = "SpringBoot.global.Role")
+#set ($templateUserDetailsExtraGroupHandler = "Eulogin.UserDetailsExtraGroupHandler")
+#set ($templateSbEuloginGrantedAuthority = "SpringBoot.eulogin.GrantedAuthority")
+#set ($templateSbEuloginUserDetails = "SpringBoot.eulogin.UserDetails")
+#end
+
+#macro(exposeSpringEuCommTemplateSpecific)
+#exposeSpringEuCommTemplate()
+#set($euloginGlobalRoleClass=$commonUtils.getTemplateClassName($model, $templateSbEuloginGlobalRole))
+#set($euloginGlobalRoleVariable=$commonUtils.getJavaNameVariableFirstLetter($euloginGlobalRoleClass))
+#set($euloginGlobalRoleImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSbEuloginGlobalRole))
+#set($euloginUserDetailsClass=$commonUtils.getTemplateClassName($model, $templateSbEuloginUserDetails))
+#set($euloginUserDetailsVariable=$commonUtils.getJavaNameVariableFirstLetter($euloginUserDetailsClass))
+#set($euloginUserDetailsImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSbEuloginUserDetails))
+#end

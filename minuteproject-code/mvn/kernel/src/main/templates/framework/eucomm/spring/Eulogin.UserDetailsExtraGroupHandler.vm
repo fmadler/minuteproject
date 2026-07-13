@@ -1,13 +1,13 @@
 #generatorSpecific()
+#exposeSpringEuCommTemplateSpecific()
 #exposeVariableApplicationSpecific()
 package $packageName;
 
 import eu.cec.digit.ecas.client.validation.AbstractUserDetailsExtraGroupHandler;
 import eu.cec.digit.ecas.client.validation.DetailedAuthenticationSuccess;
 import eu.cec.digit.ecas.client.validation.ExtraGroupHandlingException;
-import eu.europa.ec.decide.ms.decision.decisionacl.security.eulogin.users.Role;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import $euloginGlobalRoleImport;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +18,9 @@ import java.util.List;
  * This class is intended to map the received UserPrinciple from EU Login with your own custom roles and groups.
  * It can contain custom calls to local DAOs to fetch additional information. To implement to your own liking.
  */
+ @Slf4j
 public class $className extends AbstractUserDetailsExtraGroupHandler {
     private static final long serialVersionUID = -8478234494646131098L;
-    private static final Logger log = LoggerFactory.getLogger($className.class);
 
     /**
      * Callback invoked by ECAS to obtain groups.

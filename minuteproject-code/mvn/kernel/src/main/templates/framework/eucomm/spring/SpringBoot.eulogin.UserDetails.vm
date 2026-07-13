@@ -18,7 +18,7 @@ public class $className implements UserDetails {
 
     private final List<org.springframework.security.core.GrantedAuthority> grantedAuthorities;
 
-    public EuLoginUserDetails(EcasPrincipal ecasPrincipal) {
+    public $className (EcasPrincipal ecasPrincipal) {
         this.ecasPrincipal = ecasPrincipal;
 
         // Cached

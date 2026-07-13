@@ -1,5 +1,6 @@
 #generatorSpecific()
 #exposeVariableApplicationSpecific()
+#exposeSpringEuCommTemplateSpecific()
 package $packageName;
 
 import org.springframework.security.core.Authentication;
