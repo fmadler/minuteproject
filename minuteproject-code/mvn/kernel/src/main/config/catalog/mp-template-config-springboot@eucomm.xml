@@ -50,7 +50,7 @@ xs:schemaLocation="./mp-template-config.xsd">
 		</template>
 
 		<!-- eulogin -->
-		<template name="Eulogin.AuthenticationService" templateFileName="Eulogin.UserDetailsExtraGroupHandler.vm"
+		<template name="Eulogin.UserDetailsExtraGroupHandler" templateFileName="Eulogin.UserDetailsExtraGroupHandler.vm"
 				  subdir="" outputsubdir="" technicalPackage="security.eulogin"
 				  file-extension="java" file-prefix="" file-suffix="UserDetailsExtraGroupHandler"
 				  scope-specific-value="model" add-model-name="false">
@@ -65,6 +65,20 @@ xs:schemaLocation="./mp-template-config.xsd">
 		<template name="SpringBoot.eulogin.UserDetails" templateFileName="SpringBoot.eulogin.UserDetails.vm"
 				  subdir="" outputsubdir="" technicalPackage="security.eulogin"
 				  file-extension="java" file-prefix="" file-suffix="EuLoginUserDetails"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
+	</template-target>
+
+	<template-target
+			name="Spring boot eulogin integration"
+			outputdir="src/main/resources"
+			belongToPackage="true">
+
+		<template name="EuLogin.ecas-config.properties" templateFileName="EuLogin.ecas-config.properties.vm"
+				  package-root="" add-model-dir-name="false" add-business-package-dir-name="false" add-technical-dir-name="false"
+				  file-extension="properties" file-suffix="ecas-config"
+				  add-package-name="false"
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 

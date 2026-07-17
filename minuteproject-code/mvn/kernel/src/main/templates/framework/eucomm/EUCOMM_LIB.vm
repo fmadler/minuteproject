@@ -18,4 +18,5 @@
 #set($euloginUserDetailsClass=$commonUtils.getTemplateClassName($model, $templateSbEuloginUserDetails))
 #set($euloginUserDetailsVariable=$commonUtils.getJavaNameVariableFirstLetter($euloginUserDetailsClass))
 #set($euloginUserDetailsImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSbEuloginUserDetails))
+#set($userDetailsExtraGroupHandlerImport=$commonUtils.getLevelTemplateFullPath($model, $template, $templateUserDetailsExtraGroupHandler))
 #end
