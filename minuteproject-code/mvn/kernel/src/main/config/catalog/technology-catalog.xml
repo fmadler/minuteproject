@@ -252,7 +252,7 @@
             <property name="rest-pom-maven-packaging" value="war"/>
         </technology>
 
-        <technology name="SpringBoot@Comm" model-type="rdbms"
+        <technology name="SpringBoot@EuComm" model-type="rdbms"
                     template-config-file-name="mp-template-config-springboot@eucomm.xml"
                     default-outputdir="REST"
                     depends-on-targets="SpringBoot,SDD-BEANS.v2,JPA3,SpringData,REST-utils,tomcat,docker,SpringBoot.MavenMaster,cas-security,SPRING_LIB@EUCOMM_LIB"
@@ -260,7 +260,7 @@
                     status="released"
                     description="Generates:\Springboot REST API and graphql API with EU comm security">
             <frameworks>
-                <framework name="springboot@comm" ></framework>
+                <framework name="springboot@eucomm" ></framework>
             </frameworks>
             <property name="springboot" value="2"></property>
             <property name="swagger-openapi-version" value="3"></property>
@@ -273,6 +273,7 @@
             <property name="maven-artifact-finalName-suffix" value="SpringBoot"/>
             <property name="rest-pom-maven-artifact-finalName-suffix" value="SpringBoot"/>
             <property name="rest-pom-maven-packaging" value="war"/>
+            <property name="custom-springboot-security-config" value="true"/>
         </technology>
 
         <technology name="SpringBoot" model-type="rdbms"

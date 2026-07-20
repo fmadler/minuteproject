@@ -151,7 +151,11 @@ xs:schemaLocation="./mp-template-config.xsd">
 		<template name="SpringBootWebSecurityConfig" templateFileName="SpringBootWebSecurityConfig.vm"
 				  subdir="" outputsubdir="" technicalPackage="web"
 				  file-extension="java" file-prefix="" file-suffix="WebSecurityConfig"
-				  scope-specific-value="model" add-model-name="false">
+				  scope-specific-value="model" add-model-name="false"
+				  check-template-to-generate="true"
+				  is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotPropertyPresenceValue" >
+			<property name="property-presence" value="custom-springboot-security-config" ></property>
+			<property name="property-presence-value" value="true" ></property>
 		</template>
 
 		<!-- commons -->
