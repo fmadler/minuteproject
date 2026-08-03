@@ -24,7 +24,7 @@ public class Queries extends AbstractConfiguration{
 
 	public List<Query> getQueries() {
 		if (queries==null)
-			queries = new ArrayList<Query>();
+			queries = new ArrayList<>();
 		return queries;
 	}
 

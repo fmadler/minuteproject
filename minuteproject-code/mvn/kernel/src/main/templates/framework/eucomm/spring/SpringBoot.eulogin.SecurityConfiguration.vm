@@ -3,7 +3,7 @@
 #exposeSpringEuCommTemplateSpecific()
 package $packageName;
 
-import $euloginGlobalRoleImport;
+##import $euloginGlobalRoleImport;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -83,7 +83,7 @@ public class $className extends WebSecurityConfigurerAdapter {
 
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("/admin/*").hasAuthority(Role.ADMIN_ROLE.getName())
+##                .antMatchers("/admin/*").hasAuthority(Role.ADMIN_ROLE.getName())
                 .antMatchers("/graphiql/**").permitAll()
                 .antMatchers("/graphql/**").permitAll()
                 .antMatchers("/actuator/**").permitAll()

@@ -3,6 +3,7 @@ package net.sf.minuteProject.utils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import net.sf.minuteProject.configuration.bean.BusinessModel;
 import net.sf.minuteProject.configuration.bean.FunctionModel;
@@ -18,6 +19,7 @@ import net.sf.minuteProject.configuration.bean.model.data.Database;
 import net.sf.minuteProject.configuration.bean.model.data.ForeignKey;
 import net.sf.minuteProject.configuration.bean.model.data.Function;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
+import net.sf.minuteProject.configuration.bean.model.statement.Query;
 import net.sf.minuteProject.configuration.bean.presentation.EntityBlock;
 import net.sf.minuteProject.configuration.bean.presentation.EntityBlocks;
 import net.sf.minuteProject.configuration.bean.presentation.Presentation;
@@ -248,5 +250,16 @@ public class ModelUtils {
 	public static String getModelRootPackage (Model model) {
 		return model.getPackageRoot()+"."+model.getName();
 	}
-	
+
+	public static boolean hasUserGlobalRoleQuery (Model model) {
+		return getFirstUserGlobalRoleQuery(model)
+				.isPresent()
+				;
+	}
+
+	public static Optional<Query> getFirstUserGlobalRoleQuery(Model model) {
+		return model.getStatementModel().getQueries().getQueries().stream()
+				.filter(q -> q.isUserGlobalRole())
+				.findFirst();
+	}
 }

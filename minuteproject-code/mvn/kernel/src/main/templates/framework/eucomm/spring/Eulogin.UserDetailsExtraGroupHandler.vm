@@ -1,16 +1,29 @@
 #generatorSpecific()
 #exposeSpringEuCommTemplateSpecific()
 #exposeVariableApplicationSpecific()
+#exposeSpringBootTemplate()
+#templateCommonDefinitionV2()
+#set($hasUserGlobalRoleQuery=$modelUtils.hasUserGlobalRoleQuery($model))
+#set($globalRoleQuery=$modelUtils.getFirstUserGlobalRoleQuery($model).get())
+#set($userGlobalRoleJdbcTemplate = $queryUtils.getJavaImportClassVariable($model,$globalRoleQuery.name,$template,$templateSpringJdbcTemplateRepository))
+#set($userGlobalRoleJavaInput = $queryUtils.getJavaImportClassVariable($model,$globalRoleQuery.name,$template,$templateSDDInputBean))
+#set($userGlobalRoleJavaOutput = $queryUtils.getJavaImportClassVariable($model,$globalRoleQuery.name,$template,$templateSDDOutputBean))
 package $packageName;
 
 import eu.cec.digit.ecas.client.validation.AbstractUserDetailsExtraGroupHandler;
 import eu.cec.digit.ecas.client.validation.DetailedAuthenticationSuccess;
 import eu.cec.digit.ecas.client.validation.ExtraGroupHandlingException;
-import $euloginGlobalRoleImport;
+import ${euloginSpringContextHolderICV.importV()};
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+
+#if ($hasUserGlobalRoleQuery)
+import $userGlobalRoleJdbcTemplate.importV();
+import $userGlobalRoleJavaInput.importV();
+import $userGlobalRoleJavaOutput.importV();
+#end
 
 /**
  * EU Login extra group handler.
@@ -44,14 +57,38 @@ public class $className extends AbstractUserDetailsExtraGroupHandler {
         - ADMIN authority is given when the DG_DIGIT group is assigned;
 
         The group filters can be updated in ecas-config.properties (eu.cec.digit.ecas.client.filter.groups)
-         */
+
         if (assignedGroups.contains("INTERNET"))
             groups.add(Role.INTERNET.getName());
 
         if (assignedGroups.contains("DG_DIGIT"))
             groups.add(Role.ADMIN_ROLE.getName());
+            */
 
-        log.info("Assigning groups to {}: {}", detailedAuthenticationSuccess.getDomainUsername(), groups);
+            // $model.name
+
+#if($hasUserGlobalRoleQuery)
+        // Add roles from the database using ${globalRoleQuery.name}
+        String userLogin = detailedAuthenticationSuccess.getDomainUsername();
+        try {
+            $userGlobalRoleJdbcTemplate.classV() userGlobalRoleJdbcTemplate = ${euloginSpringContextHolderICV.classV()}.getBean(${userGlobalRoleJdbcTemplate.classV()}.class);
+
+            $userGlobalRoleJavaInput.classV() input = new $userGlobalRoleJavaInput.classV() ();
+            input.setUserLogin(userLogin);
+
+            List<$userGlobalRoleJavaOutput.classV()> dbRoles = ${userGlobalRoleJdbcTemplate.variableV()}.execute(input);
+            for ($userGlobalRoleJavaOutput.classV() dbRole : dbRoles) {
+                if (dbRole.getRole() != null && !groups.contains(dbRole.getRole())) {
+                    groups.add(dbRole.getRole());
+                }
+            }
+            log.info("Database roles for {}: {}", userLogin, dbRoles);
+        } catch (Exception e) {
+            log.warn("Could not fetch database roles for user {}: {}",
+                    userLogin, e.getMessage());
+        }
+#end
+        log.info("Assigning groups to {}: {}", userLogin, groups);
 
         return groups;
     }

@@ -3,7 +3,7 @@
 #exposeSpringEuCommTemplateSpecific()
 package $packageName;
 
-import $euloginUserDetailsImport;
+import ${euloginUserDetailsICV.importV()};
 import eu.cec.digit.ecas.client.j2ee.tomcat.EcasPrincipal;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -25,8 +25,8 @@ public class $className implements AuthenticationUserDetailsService<PreAuthentic
      * Get the UserDetails object from the wrapped UserDetailsService implementation
      */
     @Override
-    public $euloginUserDetailsImport loadUserDetails(PreAuthenticatedAuthenticationToken authentication) throws UsernameNotFoundException {
+    public ${euloginUserDetailsICV.classV()} loadUserDetails(PreAuthenticatedAuthenticationToken authentication) throws UsernameNotFoundException {
         final EcasPrincipal ecasPrincipal = (EcasPrincipal) authentication.getPrincipal();
-        return new ${euloginUserDetailsImport} (ecasPrincipal); //$euloginUserDetailsClass
+        return new ${euloginUserDetailsICV.classV()} (ecasPrincipal);
     }
 }

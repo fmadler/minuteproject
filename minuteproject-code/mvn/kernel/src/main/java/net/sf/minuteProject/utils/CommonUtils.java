@@ -3,6 +3,7 @@ package net.sf.minuteProject.utils;
 import java.io.File;
 import java.util.List;
 
+import net.sf.minuteProject.JavaImportClassVariable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.FileUtils;
@@ -822,5 +823,22 @@ public class CommonUtils {
 			}
 		}
 		return "|";
+	}
+
+    public static JavaImportClassVariable getJavaImportClassVariable (Model model, Template template, String targetTemplate) {
+        var _class = getTemplateClassName(model, template, targetTemplate);
+        var _variable = getJavaNameVariableFirstLetter(_class);
+        var _import = getEntityLevelTemplateFullPath(model, template, targetTemplate);
+        return new JavaImportClassVariable(_import, _class, _variable);
+    }
+    public static JavaImportClassVariable getJavaImportClassVariable (Query query, Template template, String targetTemplate) {
+        var _class = getTemplateClassName(query, template, targetTemplate);
+        var _variable = getJavaNameVariableFirstLetter(_class);
+        var _import = getEntityLevelTemplateFullPath(query, template, targetTemplate);
+        return new JavaImportClassVariable(_import, _class, _variable);
+    }
+	public static JavaImportClassVariable getJavaImportClassVariableNotFound(String name, Template template, String targetTemplate) {
+		String notFound = "not found " + name;
+		return new JavaImportClassVariable(notFound,notFound,notFound);
 	}
 }

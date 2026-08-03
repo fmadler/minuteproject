@@ -71,6 +71,8 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private QuerySecurity querySecurity;
 	private Scope queryScope = Scope.ALL_STACKS;
 	private boolean isScalar = false;
+	private boolean isUserGlobalRole = false;
+	private boolean isRole = false;
 	private boolean pagination = false;
 	private boolean paginationAsFilter = false;
 	private int paginationSize = 0;
@@ -651,4 +653,19 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 		this.isEnum = isEnum;
 	}
 
+	public boolean isUserGlobalRole() {
+		return isUserGlobalRole;
+	}
+
+	public void setUserGlobalRole (boolean isUserGlobalRole) {
+		this.isUserGlobalRole = isUserGlobalRole;
+	}
+
+	public boolean isRole() {
+		return isRole;
+	}
+
+	public void setRole (boolean isRole) {
+		this.isRole = isRole;
+	}
 }

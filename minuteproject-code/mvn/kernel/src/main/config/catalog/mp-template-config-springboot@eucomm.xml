@@ -35,6 +35,12 @@ xs:schemaLocation="./mp-template-config.xsd">
 				  scope-specific-value="model" add-model-name="false">
 		</template>
 
+		<template name="SpringBoot.eulogin.SpringContextHolder" templateFileName="SpringBoot.eulogin.SpringContextHolder.vm"
+				  subdir="" outputsubdir="" technicalPackage="security.eulogin.spring"
+				  file-extension="java" file-prefix="" file-suffix="SpringContextHolder"
+				  scope-specific-value="model" add-model-name="false">
+		</template>
+
 		<!-- tomcat -->
 		<template name="SpringBoot.tomcat.SecurityWithEcasAuthenticator" templateFileName="SpringBoot.tomcat.SecurityWithEcasAuthenticator.vm"
 				  subdir="" outputsubdir="" technicalPackage="security.eulogin.tomcat"

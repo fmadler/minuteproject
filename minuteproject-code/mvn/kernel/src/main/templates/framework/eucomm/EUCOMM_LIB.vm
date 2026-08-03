@@ -8,15 +8,15 @@
 #set ($templateUserDetailsExtraGroupHandler = "Eulogin.UserDetailsExtraGroupHandler")
 #set ($templateSbEuloginGrantedAuthority = "SpringBoot.eulogin.GrantedAuthority")
 #set ($templateSbEuloginUserDetails = "SpringBoot.eulogin.UserDetails")
+#set ($templateSbEuloginSpringContextHolder = "SpringBoot.eulogin.SpringContextHolder")
 #end
 
 #macro(exposeSpringEuCommTemplateSpecific)
 #exposeSpringEuCommTemplate()
-#set($euloginGlobalRoleClass=$commonUtils.getTemplateClassName($model, $templateSbEuloginGlobalRole))
+#set($euloginGlobalRoleClass=$commonUtils.getTemplateClassName($model, $template, $templateSbEuloginGlobalRole))
 #set($euloginGlobalRoleVariable=$commonUtils.getJavaNameVariableFirstLetter($euloginGlobalRoleClass))
 #set($euloginGlobalRoleImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSbEuloginGlobalRole))
-#set($euloginUserDetailsClass=$commonUtils.getTemplateClassName($model, $templateSbEuloginUserDetails))
-#set($euloginUserDetailsVariable=$commonUtils.getJavaNameVariableFirstLetter($euloginUserDetailsClass))
-#set($euloginUserDetailsImport=$commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateSbEuloginUserDetails))
+#set($euloginUserDetailsICV=$commonUtils.getJavaImportClassVariable($model, $template, $templateSbEuloginUserDetails))
 #set($userDetailsExtraGroupHandlerImport=$commonUtils.getLevelTemplateFullPath($model, $template, $templateUserDetailsExtraGroupHandler))
+#set($euloginSpringContextHolderICV=$commonUtils.getJavaImportClassVariable($model, $template, $templateSbEuloginSpringContextHolder))
 #end
