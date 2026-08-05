@@ -1,6 +1,10 @@
 #generatorSpecific()
 #exposeVariableApplicationSpecific()
 #exposeSpringEuCommTemplateSpecific()
+#templateCommonDefinitionV2()
+#set($globalRoleQuery=$modelUtils.getFirstGlobalRoleQuery($model).get())
+#set($hasGlobalRoleQuery = $modelUtils.hasGlobalRoleQuery($model).get())
+#set($userGlobalRoleJavaOutput = $queryUtils.getJavaImportClassVariableForEnum($model,$globalRoleQuery.name,$template,"SDDEnumMasterData"))
 package $packageName;
 
 import eu.cec.digit.ecas.client.j2ee.tomcat.EcasAuthenticator;
@@ -11,7 +15,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Configuration;
-
+#if ($userGlobalRoleJavaOutput)
+import $userGlobalRoleJavaOutput.importV();
+#end
 /**
  * This class helps customising the default embedded Tomcat server bootstrapped by Spring Boot to add the EcasAuthenticator and describe the various URLs to protect.
  */
@@ -26,10 +32,13 @@ public class $className implements WebServerFactoryCustomizer<TomcatServletWebSe
             // Unfortunately, we have to kind of replicated HttpSecurity description of public / restricted pages
             context.addConstraint(buildNonEuLoginSecurityConstraint());
             context.addConstraint(buildEuLoginSecurityConstraint());
-#if($hasGlobalRoleEnum)
-            for (Role role : Role.values()) {
-                context.addSecurityRole(role.getName());
+            //$globalRoleQuery
+#if($userGlobalRoleJavaOutput)
+            for ($userGlobalRoleJavaOutput.classV() role : ${userGlobalRoleJavaOutput.classV()}.values()) {
+                context.addSecurityRole(role.getGlobalRole());
             }
+#else
+            log.error("a query with is-global-role='true' must be configured!"
 #end
         });
     }

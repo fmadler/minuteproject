@@ -1025,7 +1025,7 @@
         <xs:attribute name="pagination" type="xs:boolean"/>
         <xs:attribute name="is-enum" type="xs:boolean"/>
         <xs:attribute name="is-user-global-role" type="xs:boolean"/>
-        <xs:attribute name="is-role" type="xs:boolean"/>
+        <xs:attribute name="is-global-role" type="xs:boolean"/>
         <xs:attribute name="pagination-size" type="xs:int"/>
     </xs:complexType>
 

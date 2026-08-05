@@ -4,10 +4,10 @@
 #exposeSpringBootTemplate()
 #templateCommonDefinitionV2()
 #set($hasUserGlobalRoleQuery=$modelUtils.hasUserGlobalRoleQuery($model))
-#set($globalRoleQuery=$modelUtils.getFirstUserGlobalRoleQuery($model).get())
-#set($userGlobalRoleJdbcTemplate = $queryUtils.getJavaImportClassVariable($model,$globalRoleQuery.name,$template,$templateSpringJdbcTemplateRepository))
-#set($userGlobalRoleJavaInput = $queryUtils.getJavaImportClassVariable($model,$globalRoleQuery.name,$template,$templateSDDInputBean))
-#set($userGlobalRoleJavaOutput = $queryUtils.getJavaImportClassVariable($model,$globalRoleQuery.name,$template,$templateSDDOutputBean))
+#set($userGlobalRoleQuery=$modelUtils.getFirstUserGlobalRoleQuery($model).get())
+#set($userGlobalRoleJdbcTemplate = $queryUtils.getJavaImportClassVariable($model,$userGlobalRoleQuery.name,$template,$templateSpringJdbcTemplateRepository))
+#set($userGlobalRoleJavaInput = $queryUtils.getJavaImportClassVariableForInput($model,$userGlobalRoleQuery.name,$template,$templateSDDInputBean))
+#set($userGlobalRoleJavaOutput = $queryUtils.getJavaImportClassVariableForOutput($model,$userGlobalRoleQuery.name,$template,$templateSDDOutputBean))
 package $packageName;
 
 import eu.cec.digit.ecas.client.validation.AbstractUserDetailsExtraGroupHandler;
@@ -49,23 +49,6 @@ public class $className extends AbstractUserDetailsExtraGroupHandler {
         if (null == assignedGroups || assignedGroups.isEmpty()) {
             throw new ExtraGroupHandlingException("Not allowed on this section when you don't have any groups");
         }
-
-        /*
-        This examples uses the JAAS groups to evaluate access to the application, and reassigns its proper groups
-        based upon the set conditions.
-        - VIEW authority is given when the INTERNET group is assigned;
-        - ADMIN authority is given when the DG_DIGIT group is assigned;
-
-        The group filters can be updated in ecas-config.properties (eu.cec.digit.ecas.client.filter.groups)
-
-        if (assignedGroups.contains("INTERNET"))
-            groups.add(Role.INTERNET.getName());
-
-        if (assignedGroups.contains("DG_DIGIT"))
-            groups.add(Role.ADMIN_ROLE.getName());
-            */
-
-            // $model.name
 
 #if($hasUserGlobalRoleQuery)
         // Add roles from the database using ${globalRoleQuery.name}

@@ -600,4 +600,21 @@ public class QueryUtils {
 				.orElseGet(() -> CommonUtils.getJavaImportClassVariableNotFound(queryName, template, targetTemplate));
 	}
 
+	public JavaImportClassVariable getJavaImportClassVariableForInput(Model model, String queryName, Template template, String targetTemplate) {
+		return getQuery(model, queryName)
+				.map(q -> CommonUtils.getJavaImportClassVariable(q.getInputBean(), template, targetTemplate))
+				.orElseGet(() -> CommonUtils.getJavaImportClassVariableNotFound(queryName +" - input bean", template, targetTemplate));
+	}
+
+	public JavaImportClassVariable getJavaImportClassVariableForOutput(Model model, String queryName, Template template, String targetTemplate) {
+		return getQuery(model, queryName)
+				.map(q -> CommonUtils.getJavaImportClassVariable(q.getOutputBean(), template, targetTemplate))
+				.orElseGet(() -> CommonUtils.getJavaImportClassVariableNotFound(queryName +" - output bean", template, targetTemplate));
+	}
+	
+	public JavaImportClassVariable getJavaImportClassVariableForEnum(Model model, String queryName, Template template, String targetTemplate) {
+		return getQuery(model, queryName)
+				.map(q -> CommonUtils.getJavaImportClassVariable(q, template, targetTemplate))
+				.orElseGet(() -> CommonUtils.getJavaImportClassVariableNotFound(queryName +" - enum", template, targetTemplate));
+	}
 }

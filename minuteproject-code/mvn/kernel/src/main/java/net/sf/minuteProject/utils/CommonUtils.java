@@ -831,10 +831,10 @@ public class CommonUtils {
         var _import = getEntityLevelTemplateFullPath(model, template, targetTemplate);
         return new JavaImportClassVariable(_import, _class, _variable);
     }
-    public static JavaImportClassVariable getJavaImportClassVariable (Query query, Template template, String targetTemplate) {
-        var _class = getTemplateClassName(query, template, targetTemplate);
+    public static JavaImportClassVariable getJavaImportClassVariable (GeneratorBean bean, Template template, String targetTemplate) {
+        var _class = getTemplateClassName(bean, template, targetTemplate);
         var _variable = getJavaNameVariableFirstLetter(_class);
-        var _import = getEntityLevelTemplateFullPath(query, template, targetTemplate);
+        var _import = getEntityLevelTemplateFullPath(bean, template, targetTemplate);
         return new JavaImportClassVariable(_import, _class, _variable);
     }
 	public static JavaImportClassVariable getJavaImportClassVariableNotFound(String name, Template template, String targetTemplate) {

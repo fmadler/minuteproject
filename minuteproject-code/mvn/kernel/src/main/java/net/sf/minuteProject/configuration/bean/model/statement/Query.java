@@ -72,7 +72,7 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 	private Scope queryScope = Scope.ALL_STACKS;
 	private boolean isScalar = false;
 	private boolean isUserGlobalRole = false;
-	private boolean isRole = false;
+	private boolean isGlobalRole = false;
 	private boolean pagination = false;
 	private boolean paginationAsFilter = false;
 	private int paginationSize = 0;
@@ -661,11 +661,11 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 		this.isUserGlobalRole = isUserGlobalRole;
 	}
 
-	public boolean isRole() {
-		return isRole;
+	public boolean isGlobalRole() {
+		return isGlobalRole;
 	}
 
-	public void setRole (boolean isRole) {
-		this.isRole = isRole;
+	public void setGlobalRole(boolean isGlobalRole) {
+		this.isGlobalRole = isGlobalRole;
 	}
 }

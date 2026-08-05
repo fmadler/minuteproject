@@ -288,7 +288,7 @@
 								<alias attr-name="is-write" prop-name="write" />
 								<alias attr-name="is-cache" prop-name="cache" />
 								<alias attr-name="is-enum" prop-name="enum" />
-								<alias attr-name="is-role" prop-name="role" />
+								<alias attr-name="is-global-role" prop-name="globalRole" />
 								<alias attr-name="is-user-global-role" prop-name="userGlobalRole" />
 								<alias attr-name="is-semantic-reference" prop-name="semanticReference" />
 								<alias attr-name="execute-label" prop-name="executeLabel" />
@@ -2218,7 +2218,7 @@
 							<alias attr-name="is-write" prop-name="write" />
 							<alias attr-name="is-cache" prop-name="cache" />
 							<alias attr-name="is-enum" prop-name="enum" />
-							<alias attr-name="is-role" prop-name="role" />
+							<alias attr-name="is-global-role" prop-name="globalRole" />
 							<alias attr-name="is-user-global-role" prop-name="userGlobalRole" />
 							<alias attr-name="is-semantic-reference" prop-name="semanticReference" />
 							<alias attr-name="execute-label" prop-name="executeLabel" />

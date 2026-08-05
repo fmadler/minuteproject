@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import net.sf.minuteProject.configuration.bean.BusinessModel;
 import net.sf.minuteProject.configuration.bean.FunctionModel;
@@ -257,9 +258,23 @@ public class ModelUtils {
 				;
 	}
 
+	public static boolean hasGlobalRoleQuery (Model model) {
+		return getFirstGlobalRoleQuery(model)
+				.isPresent()
+				;
+	}
+
 	public static Optional<Query> getFirstUserGlobalRoleQuery(Model model) {
+		return getFirstQuery(model, q -> q.isUserGlobalRole());
+	}
+
+	public static Optional<Query> getFirstGlobalRoleQuery(Model model) {
+		return getFirstQuery(model, q -> q.isGlobalRole());
+	}
+
+	public static Optional<Query> getFirstQuery(Model model, Predicate<Query> predicate) {
 		return model.getStatementModel().getQueries().getQueries().stream()
-				.filter(q -> q.isUserGlobalRole())
+				.filter(predicate)
 				.findFirst();
 	}
 }
