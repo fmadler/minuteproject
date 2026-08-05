@@ -35,7 +35,9 @@ public class $className implements WebServerFactoryCustomizer<TomcatServletWebSe
             //$globalRoleQuery
 #if($userGlobalRoleJavaOutput)
             for ($userGlobalRoleJavaOutput.classV() role : ${userGlobalRoleJavaOutput.classV()}.values()) {
-                context.addSecurityRole(role.getGlobalRole());
+#set($column = $queryUtils.getQueryFirstOutputColumn($globalRoleQuery))
+#putColumnParamNaming()
+                context.addSecurityRole(role.get$columnClass());
             }
 #else
             log.error("a query with is-global-role='true' must be configured!"

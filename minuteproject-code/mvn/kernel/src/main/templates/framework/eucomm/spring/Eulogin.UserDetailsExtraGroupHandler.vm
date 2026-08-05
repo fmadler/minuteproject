@@ -51,7 +51,7 @@ public class $className extends AbstractUserDetailsExtraGroupHandler {
         }
 
 #if($hasUserGlobalRoleQuery)
-        // Add roles from the database using ${globalRoleQuery.name}
+        // Add roles from the database using $userGlobalRoleQuery.name
         String userLogin = detailedAuthenticationSuccess.getDomainUsername();
         try {
             $userGlobalRoleJdbcTemplate.classV() userGlobalRoleJdbcTemplate = ${euloginSpringContextHolderICV.classV()}.getBean(${userGlobalRoleJdbcTemplate.classV()}.class);
@@ -61,8 +61,10 @@ public class $className extends AbstractUserDetailsExtraGroupHandler {
 
             List<$userGlobalRoleJavaOutput.classV()> dbRoles = ${userGlobalRoleJdbcTemplate.variableV()}.execute(input);
             for ($userGlobalRoleJavaOutput.classV() dbRole : dbRoles) {
-                if (dbRole.getRole() != null && !groups.contains(dbRole.getRole())) {
-                    groups.add(dbRole.getRole());
+#set($column = $queryUtils.getQueryFirstOutputColumn($userGlobalRoleQuery))
+#putColumnParamNaming()
+                if (dbRole.get$columnClass() != null && !groups.contains(dbRole.get$columnClass())) {
+                    groups.add(dbRole.get$columnClass());
                 }
             }
             log.info("Database roles for {}: {}", userLogin, dbRoles);

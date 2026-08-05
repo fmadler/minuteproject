@@ -600,6 +600,7 @@ public class QueryUtils {
 				.orElseGet(() -> CommonUtils.getJavaImportClassVariableNotFound(queryName, template, targetTemplate));
 	}
 
+	//TODO refactor to get the target Generator bean from the targetTemplate
 	public JavaImportClassVariable getJavaImportClassVariableForInput(Model model, String queryName, Template template, String targetTemplate) {
 		return getQuery(model, queryName)
 				.map(q -> CommonUtils.getJavaImportClassVariable(q.getInputBean(), template, targetTemplate))
@@ -617,4 +618,15 @@ public class QueryUtils {
 				.map(q -> CommonUtils.getJavaImportClassVariable(q, template, targetTemplate))
 				.orElseGet(() -> CommonUtils.getJavaImportClassVariableNotFound(queryName +" - enum", template, targetTemplate));
 	}
+	//end TO DO refactor to get the target Generator bean from the targetTemplate
+
+	public Column getQueryFirstInputColumn(Query query) {
+		return query.getInputBean().getColumn(0);
+	}
+
+	public Column getQueryFirstOutputColumn(Query query) {
+		return query.getOutputBean().getColumn(0);
+	}
+
+
 }
