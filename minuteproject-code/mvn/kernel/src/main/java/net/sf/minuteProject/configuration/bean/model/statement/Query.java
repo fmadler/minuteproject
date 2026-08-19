@@ -387,8 +387,9 @@ public class Query<T extends QueryModel> extends AbstractConfiguration {
 					column.setIsArray(queryParam.isArray());
 					column.setScope(queryParam.getScope());
 					column.setValidations(queryParam.getFieldValidations());
-
 					column.setImplicit(queryParam.isImplicit());
+					column.setImplicitContextUserLogin(queryParam.isImplicitContextUserLogin());
+					column.setContext(queryParam.isContext());
 					column.setUseJwtSubject(queryParam.isUseJwtSubject());
 				}
 			}

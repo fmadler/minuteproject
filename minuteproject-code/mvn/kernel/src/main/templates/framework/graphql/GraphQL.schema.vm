@@ -58,7 +58,8 @@ type ${tableClassName} {
 #set($table=$query.inputBean)
 #exposeVariableEntitySpecific()
 #putImportSDDInputBean()
-#if($isNotVoidInput || $query.getQueryChunks().size() > 0)
+####if($isNotVoidInput || $query.getQueryChunks().size() > 0)
+#if($queryUtils.hasQueryInputParams($query))
     ${tableVariableName}(
 #set($columnList = $tableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly($inputBean))
 #foreach($column in $columnList)

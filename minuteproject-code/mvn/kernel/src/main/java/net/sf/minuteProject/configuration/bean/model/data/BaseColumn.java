@@ -223,9 +223,11 @@ public interface BaseColumn extends GeneratorBean{
 	public boolean isContext();
 	
 	public void setImplicit(boolean isImplicit);
-	
+	public void setImplicitContextUserLogin(boolean isImplicitContextUserLogin);
+
 	public boolean isImplicit();
-	
+	public boolean isImplicitContextUserLogin();
+
 	public void setFilterName(String filterName);
 	
 	public void setSessionParamName(String sessionParamName);

@@ -46,5 +46,29 @@ select role from user_role_view where user_login = ?
     </query-body>
 </query>
 ```
-## Springboot with tomcat
-To a
+## Spring security global role 
+### SDD security
+To secure a SDD REST endpoint with a global security role, the following configuration is needed in the query
+
+Example for securing with the role 'ADMIN'.
+```xml
+<query>
+    ...
+    <query-security>
+        <security-role name="admin-role" roles="ADMIN"/>
+    </query-security>
+</query>
+```
+
+### Entity security
+To secure an Entity REST endpoint with a global security role, the following configuration is needed in the query
+
+Example for securing with the role 'ADMIN'.
+```xml
+<query>
+    ...
+    <query-security>
+        <security-role name="admin-role" roles="ADMIN"/>
+    </query-security>
+</query>
+```

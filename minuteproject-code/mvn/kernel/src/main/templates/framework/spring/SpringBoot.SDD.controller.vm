@@ -39,6 +39,10 @@ import org.springframework.http.CacheControl;
 import java.util.concurrent.TimeUnit;
 #end
 import $auditLoggingAnnotationImport;
+#if ($queryUtils.hasImplicitContextUserLogin($query))
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+#end
 
 /**
  *
@@ -67,7 +71,7 @@ public class ${className} {
 #else
     @GetMapping
 #end
-    @Operation(summary = "${className}")
+    @Operation(summary = "$queryUtils.getOperationSummary($query)")
 	@ResponseBody
     @${auditLoggingAnnotationClass} (logLevel="INFO")
     public ResponseEntity<List<$sddOutputBeanClass>> execute (
@@ -106,6 +110,14 @@ public class ${className} {
     ) {
 #if($isNotVoidInput)
 		$sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass ();
+#if ($queryUtils.hasImplicitContextUserLogin($query))
+        // Get the connected user's login from the Spring Security context
+        String _userLogin = ((UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal()).getUsername();
+#set($column=$queryUtils.getImplicitContextUserLogin($query))
+#putColumnParamNaming()
+        ${sddInputBeanVariable}.set$columnClass (_userLogin);
+#end
 #foreach($column in $columnsNotDuplicatedNorImplicit)
 #putColumnParamNaming()
 		${sddInputBeanVariable}.set$columnClass ($columnVar);

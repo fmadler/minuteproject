@@ -1267,6 +1267,7 @@
         <xs:attribute name="use-jwt-subject" type="xs:boolean"/><!-- session param name for implicit parameters -->
         <xs:attribute name="is-implicit" type="xs:boolean"/><!-- relative context bound -->
         <xs:attribute name="is-context" type="xs:boolean"/><!-- global context bound -->
+        <xs:attribute name="is-implicit-context-user-login" type="xs:boolean" default="false"/><!-- global context bound -->
         <xs:attribute name="is-output-param" type="xs:boolean" default="false"/>
         <xs:attribute name="default-value-when-null" type="xs:string"/>
         <xs:attribute name="scope" type="scope-type"/>

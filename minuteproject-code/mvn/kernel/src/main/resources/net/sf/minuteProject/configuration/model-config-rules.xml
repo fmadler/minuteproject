@@ -536,8 +536,8 @@
 											<alias attr-name="use-jwt-subject" prop-name="useJwtSubject" />
 											<alias attr-name="is-implicit" prop-name="isImplicit" /><!--
 												relative context bound -->
-											<alias attr-name="is-context" prop-name="isContext" /><!-- 
-												global context bound -->
+											<alias attr-name="is-context" prop-name="isContext" />
+											<alias attr-name="is-implicit-context-user-login" prop-name="isImplicitContextUserLogin" />
 											<alias attr-name="is-in-clause" prop-name="isArray" />
 											<alias attr-name="is-output-param" prop-name="isOutputParam" />
 											<alias attr-name="regex-start" prop-name="regexStart" />
@@ -674,6 +674,7 @@
 											relative context bound -->
 										<alias attr-name="is-context" prop-name="isContext" /><!-- 
 											global context bound -->
+										<alias attr-name="is-implicit-context-user-login" prop-name="isImplicitContextUserLogin" />
 										<alias attr-name="is-in-clause" prop-name="isArray" />
 										<alias attr-name="is-output-param" prop-name="isOutputParam" />
 										<alias attr-name="regex-start" prop-name="regexStart" />
@@ -2480,6 +2481,7 @@
 											relative context bound -->
 										<alias attr-name="is-context" prop-name="isContext" /><!-- 
 											global context bound -->
+										<alias attr-name="is-implicit-context-user-login" prop-name="isImplicitContextUserLogin" />
 										<alias attr-name="is-in-clause" prop-name="isArray" />
 										<alias attr-name="is-output-param" prop-name="isOutputParam" />
 										<alias attr-name="regex-start" prop-name="regexStart" />
@@ -2608,6 +2610,7 @@
 										relative context bound -->
 									<alias attr-name="is-context" prop-name="isContext" /><!-- 
 										global context bound -->
+									<alias attr-name="is-implicit-context-user-login" prop-name="isImplicitContextUserLogin" />
 									<alias attr-name="is-in-clause" prop-name="isArray" />
 									<alias attr-name="is-output-param" prop-name="isOutputParam" />
 									<alias attr-name="regex-start" prop-name="regexStart" />

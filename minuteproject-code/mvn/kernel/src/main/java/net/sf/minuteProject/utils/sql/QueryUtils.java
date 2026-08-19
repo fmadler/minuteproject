@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import net.sf.minuteProject.JavaImportClassVariable;
 import net.sf.minuteProject.configuration.bean.*;
 import net.sf.minuteProject.configuration.bean.model.Field;
+import net.sf.minuteProject.configuration.bean.model.data.BaseColumn;
 import net.sf.minuteProject.configuration.bean.model.statement.*;
 import net.sf.minuteProject.report.ReportEntry;
 import net.sf.minuteProject.report.ReportEntryCategory;
@@ -628,5 +629,28 @@ public class QueryUtils {
 		return query.getOutputBean().getColumn(0);
 	}
 
+	public String getOperationSummary(Query query) {
+		return "query.getQueryDocumentation() TODO";
+	}
+
+	public boolean hasImplicitContextUserLogin (Query query) {
+		return query.getInputParams().getQueryParams().stream()
+				.anyMatch(QueryParam::isImplicitContextUserLogin)
+				;
+	}
+
+	public static Column getImplicitContextUserLogin (Query query) {
+		return Arrays.stream(query.getInputBean().getColumns())
+				.filter(BaseColumn::isImplicitContextUserLogin)
+				.findFirst()
+				.get()
+				;
+	}
+
+	public static boolean hasQueryInputParams(Query query) {
+		return !TableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly(query.getInputBean()).isEmpty()
+				|| !query.getQueryChunks().isEmpty()
+				;
+	}
 
 }

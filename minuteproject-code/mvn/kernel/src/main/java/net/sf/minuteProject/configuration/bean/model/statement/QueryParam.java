@@ -15,6 +15,7 @@ public class QueryParam extends Field {
 	private QueryParams queryParams;
 	private boolean isImplicit  =false;
 	private boolean isContext   =false;
+	private boolean isImplicitContextUserLogin =false;
 	private boolean hasBeenDuplicated   =false;
 	private String sample;
 	private String sessionParamName;
@@ -108,6 +109,14 @@ public class QueryParam extends Field {
 	}
 	public void setIsImplicit(boolean isImplicit) {
 		this.isImplicit = isImplicit;
+	}
+	public boolean isImplicitContextUserLogin() {
+		return isImplicitContextUserLogin;
+	}
+	public void setIsImplicitContextUserLogin(boolean isImplicitContextUserLogin) {
+		this.isImplicitContextUserLogin = isImplicitContextUserLogin;
+		this.isContext = true;
+		this.isImplicit = true;
 	}
 	public boolean isContext() {
 		return isContext;

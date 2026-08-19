@@ -21,7 +21,7 @@ public abstract class ColumnBaseAbstract extends AbstractConfiguration implement
 
 	private String typeAlias;
 	private boolean isHidden=false, isTransient=false, isSearchable=false, isEditable=true;
-	private boolean isContext=false, isImplicit=false, hasBeenDuplicated=false, isArray = false, isStructuredArray=false, isOutputParam=false;
+	private boolean isContext=false, isImplicit=false, isImplicitContextUserLogin=false, hasBeenDuplicated=false, isArray = false, isStructuredArray=false, isOutputParam=false;
 	private String filterName, sessionParamName, separatorCharacters, arrayColumns="", arrayElementName, arrayColumnsType;
 	private QueryParamLink queryParamLink;
 	private boolean useJwtSubject = false;
@@ -92,7 +92,12 @@ public abstract class ColumnBaseAbstract extends AbstractConfiguration implement
 	public void setImplicit(boolean isImplicit) {
 		this.isImplicit = isImplicit;
 	}
-
+	public boolean isImplicitContextUserLogin() {
+		return isImplicitContextUserLogin;
+	}
+	public void setImplicitContextUserLogin(boolean isImplicitContextUserLogin) {
+		this.isImplicitContextUserLogin = isImplicitContextUserLogin;
+	}
 	public boolean hasBeenDuplicated() {
 		return hasBeenDuplicated;
 	}
