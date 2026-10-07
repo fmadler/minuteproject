@@ -12,9 +12,11 @@ import java.util.stream.Collectors;
 import net.sf.minuteProject.configuration.bean.AbstractConfiguration;
 import net.sf.minuteProject.configuration.bean.Package;
 import net.sf.minuteProject.configuration.bean.Template;
+import net.sf.minuteProject.configuration.bean.model.data.BaseColumn;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.configuration.bean.model.data.constant.Direction;
+import net.sf.minuteProject.utils.TableUtils;
 
 public class Composite extends AbstractConfiguration {
 
@@ -116,7 +118,26 @@ public class Composite extends AbstractConfiguration {
 			.stream()
 			.filter(distinctByKey(p -> p.getName()))
 			.collect(Collectors.toList());
+	}
 
+	public List<Column> getColumnsNotDuplicatedNorImplicitNorOutputOnly() {
+		return TableUtils.getColumnsNotDuplicatedNorImplicitNorOutputOnly(getDistinctInputColumn());
+	}
+
+	public boolean hasImplicitContextUserLogin () {
+		return getDistinctInputColumn()
+				.stream()
+				.anyMatch(BaseColumn::isImplicitContextUserLogin)
+				;
+	}
+
+	public Column getImplicitContextUserLogin () {
+		return getDistinctInputColumn()
+				.stream()
+				.filter(BaseColumn::isImplicitContextUserLogin)
+				.findFirst()
+				.get()
+				;
 	}
 
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

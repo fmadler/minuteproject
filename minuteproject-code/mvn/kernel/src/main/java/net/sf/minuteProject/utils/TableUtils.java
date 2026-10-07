@@ -712,14 +712,21 @@ public class TableUtils {
 		return getColumns(table, u -> !u.hasBeenDuplicated() && !u.isImplicit());
 	}
 
+	public static List<Column> getColumnsNotDuplicatedNorImplicitNorOutputOnly(List<Column> columns) {
+		return getColumns(columns, u -> !u.hasBeenDuplicated() && !u.isImplicit() && !u.isOutputParam());
+	}
+
 	public static List<Column> getColumnsNotDuplicatedNorImplicitNorOutputOnly(Table table) {
 		return getColumns(table, u -> !u.hasBeenDuplicated() && !u.isImplicit() && !u.isOutputParam());
 	}
 
-	public static List<Column> getColumns(Table table, Predicate<Column> predicate) {
-		return Arrays.stream(table.getColumns())
+	public static List<Column> getColumns(List<Column> columns, Predicate<Column> predicate) {
+		return columns.stream()
 				.filter(predicate)
 				.collect(Collectors.toList());
+	}
+	public static List<Column> getColumns(Table table, Predicate<Column> predicate) {
+		return getColumns(Arrays.asList(table.getColumns()), predicate);
 	}
 
 	public static List<Column> getRequiredColumns(Table table) {

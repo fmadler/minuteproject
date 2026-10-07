@@ -630,7 +630,9 @@ public class QueryUtils {
 	}
 
 	public String getOperationSummary(Query query) {
-		return "query.getQueryDocumentation() TODO";
+		return (Objects.nonNull(query.getDocumentation()))?
+				query.getDocumentation().getValue():
+				"";
 	}
 
 	public boolean hasImplicitContextUserLogin (Query query) {

@@ -278,12 +278,14 @@ A cell (row, column) of a sql result can contain some structured data that can b
 
 **Example** The field winners contains a collection of object (name: string, web_path:web_path)
 ```xml
+<query-fields>
     <query-field name="winners"
                  is-structured-array="true"
                  separator-characters=",|"
                  array-columns="name,web_path"
                  array-columns-type="string,string">
     </query-field>
+</query-fields>
 ```
 #### When to use
 When you have a collection of collections such as a query returning a list of users and each user has a list of email addresses.

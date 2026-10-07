@@ -3,15 +3,20 @@ package net.sf.minuteProject.configuration.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import net.sf.minuteProject.configuration.bean.model.statement.Documentation;
 import org.apache.commons.lang.StringUtils;
 
 import net.sf.minuteProject.configuration.bean.system.Property;
 import net.sf.minuteProject.utils.FormatUtils;
 
+@Getter
+@Setter
 public class AbstractConfiguration extends BeanCommon implements GeneratorBean {
 	// TODO IDEALLY set the abstractConfiguration properties after every creation in the digester
 	// Done by AOP
-	
+	private Documentation documentation;
 	protected boolean isCacheEnabled;
 	protected String alias, label, comment;
 	private enum PropertyCriteria {NAME, TAG};

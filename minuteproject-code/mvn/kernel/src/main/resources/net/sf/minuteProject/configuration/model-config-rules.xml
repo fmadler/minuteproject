@@ -309,6 +309,14 @@
 								<set-properties-rule />
 								<bean-property-setter-rule pattern="value" />
 							</pattern>
+							<pattern value="query-documentation">
+								<object-create-rule
+										classname="net.sf.minuteProject.configuration.bean.model.statement.Documentation" />
+								<set-next-rule methodname="setDocumentation"
+											   paramtype="net.sf.minuteProject.configuration.bean.model.statement.Documentation" />
+								<set-properties-rule />
+								<bean-property-setter-rule pattern="value" />
+							</pattern>
 							<pattern value="query-display">
 								<object-create-rule
 									classname="net.sf.minuteProject.configuration.bean.model.statement.QueryDisplay" />
@@ -2240,7 +2248,14 @@
 							<set-properties-rule />
 							<bean-property-setter-rule pattern="value" />
 						</pattern>
-
+						<pattern value="query-documentation">
+							<object-create-rule
+									classname="net.sf.minuteProject.configuration.bean.model.statement.Documentation" />
+							<set-next-rule methodname="setDocumentation"
+										   paramtype="net.sf.minuteProject.configuration.bean.model.statement.Documentation" />
+							<set-properties-rule />
+							<bean-property-setter-rule pattern="value" />
+						</pattern>
 						<pattern value="query-validations">
 							<pattern value="validation-exist-unique">
 								<object-create-rule
