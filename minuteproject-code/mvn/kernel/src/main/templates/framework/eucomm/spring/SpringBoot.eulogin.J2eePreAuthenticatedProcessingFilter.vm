@@ -2,7 +2,7 @@
 #exposeVariableApplicationSpecific()
 package $packageName;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class $className extends org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter {
 

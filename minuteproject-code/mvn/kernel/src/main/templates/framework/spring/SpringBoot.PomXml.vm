@@ -93,9 +93,10 @@
         </dependency>
 
 #end
+        <!-- Caffeine cache (replaces removed EhCache 2 integration). Version managed by Spring Boot BOM. -->
         <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
 
         <dependency>
@@ -272,7 +273,7 @@
                     <mainClass>${springBootModelImport}</mainClass>
 #end
 #end
-
+                    <jvmArguments>--add-opens java.base/java.lang=ALL-UNNAMED</jvmArguments>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

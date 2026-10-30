@@ -21,9 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 #if ($template.hasPropertyValue("direction","in"))
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 #end
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 #putEntityValidationImport()
 
 import org.apache.commons.lang3.StringUtils;

@@ -2,22 +2,30 @@
 #exposeVariableApplicationSpecific()
 package $packageName;
 
+import java.time.Duration;
+
+import com.github.benmanes.caffeine.cache.Caffeine;
+
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
 
 @Configuration
 @EnableCaching
 public class $className {
 
-    @Bean
-    public net.sf.ehcache.CacheManager ehCacheManager() {
-        return net.sf.ehcache.CacheManager.newInstance(getClass().getResource("/ehcache.xml"));
-    }
+## todo for each ehcache entry
+    public static final String DISTINCT_ACTIVE_DG_CODE_CACHE = "distinctActiveDgCodeCache";
 
     @Bean
-    public EhCacheCacheManager cacheManager() {
-        return new EhCacheCacheManager(ehCacheManager());
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager(DISTINCT_ACTIVE_DG_CODE_CACHE);
+        cacheManager.setCaffeine(Caffeine.newBuilder()
+                .maximumSize(5000)
+                .expireAfterWrite(Duration.ofSeconds(600))
+                .expireAfterAccess(Duration.ofSeconds(300)));
+        return cacheManager;
     }
 }

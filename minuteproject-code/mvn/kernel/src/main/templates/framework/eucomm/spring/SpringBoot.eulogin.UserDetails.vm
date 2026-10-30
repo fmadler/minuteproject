@@ -34,7 +34,7 @@ public class $className implements UserDetails {
 
     @Override
     public String getPassword() {
-        return ecasPrincipal.getPassword();
+        return "NOTSET";
     }
 
     @Override

@@ -3,101 +3,95 @@
 #exposeSpringEuCommTemplateSpecific()
 package $packageName;
 
-##import $euloginGlobalRoleImport;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 /**
  * https://webgate.ec.europa.eu/CITnet/confluence/display/RefApp/ECAS+and+Spring+security
  */
-@SuppressWarnings("JavaDoc")
 @Configuration
 @EnableWebSecurity
-// Needed for standard JEE authentication
-@EnableGlobalMethodSecurity(jsr250Enabled = true, securedEnabled = true, prePostEnabled = true, proxyTargetClass = true)
-public class $className extends WebSecurityConfigurerAdapter {
+// Needed for standard JEE authentication (replaces @EnableGlobalMethodSecurity)
+@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true, prePostEnabled = true)
+public class $className {
+
     /**
-     * Pre filter, that maps the EU login authenticated Principal (in HttpServletRequest) to the Spring Security UserDetails
-     *
-     * @return
-     * @throws Exception
+     * Authentication provider relying on pre authentication.
      */
-    private J2eePreAuthenticatedProcessingFilter buildJ2eePreAuthenticatedProcessingFilter() throws Exception {
+    @Bean
+    public PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider() {
+        final PreAuthenticatedAuthenticationProvider authenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
+        authenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(new UserDetailsServiceWrapper());
+        return authenticatedAuthenticationProvider;
+    }
+
+    /**
+     * Authentication manager built from the pre authentication provider.
+     * Replaces the {@code authenticationManager()} / {@code configure(AuthenticationManagerBuilder)}
+     * callbacks of the former {@code WebSecurityConfigurerAdapter}.
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider) {
+        return new ProviderManager(preAuthenticatedAuthenticationProvider);
+    }
+
+    /**
+     * Pre filter, that maps the EU login authenticated Principal (in HttpServletRequest) to the Spring Security UserDetails.
+     */
+    private J2eePreAuthenticatedProcessingFilter buildJ2eePreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager) {
         final J2eePreAuthenticatedProcessingFilter filter = new J2eePreAuthenticatedProcessingFilter();
-        filter.setAuthenticationManager(authenticationManager());
+        filter.setAuthenticationManager(authenticationManager);
         // Following recommendations of https://webgate.ec.europa.eu/CITnet/confluence/display/RefApp/ECAS+and+Spring+security
         filter.setContinueFilterChainOnUnsuccessfulAuthentication(false);
         return filter;
     }
 
-    /**
-     * Authentication provider relying on pre authentication
-     *
-     * @return
-     */
-    private PreAuthenticatedAuthenticationProvider createPreAuthenticatedAuthenticationProvider() {
-        final PreAuthenticatedAuthenticationProvider authenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();
-        authenticatedAuthenticationProvider.setPreAuthenticatedUserDetailsService(new UserDetailsServiceWrapper());
-
-        return authenticatedAuthenticationProvider;
-    }
-
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) {
-        authenticationManagerBuilder.authenticationProvider(createPreAuthenticatedAuthenticationProvider());
-    }
-
-    /**
-     * Configure Spring Security to allow:
-     * - Public access on the root context-path ("/") and static assets or webjars (not used);
-     * - Admin access on the "/admin/*" context-path;
-     * - View access on all other resources
-     *
-     * @param httpSecurity
-     * @throws Exception
-     */
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
         httpSecurity
-                .addFilterAfter(buildJ2eePreAuthenticatedProcessingFilter(), J2eePreAuthenticatedProcessingFilter.class);
+                .addFilterAfter(buildJ2eePreAuthenticatedProcessingFilter(authenticationManager),
+                        AbstractPreAuthenticatedProcessingFilter.class);
 
         // Following recommendations of https://webgate.ec.europa.eu/CITnet/confluence/display/RefApp/ECAS+and+Spring+security
-        httpSecurity.sessionManagement().sessionFixation().none();
+        httpSecurity.sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionFixation(fixation -> fixation.none()));
 
         httpSecurity
-                .authorizeRequests()
-                .antMatchers("/assets/**", "/webjars/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/", "/welcome.html").permitAll();
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/assets/**", "/webjars/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/welcome.html").permitAll()
+                        .requestMatchers("/graphiql/**").permitAll()
+                        .requestMatchers("/graphiql-assets/**").permitAll()
+                        .requestMatchers("/graphql/**").permitAll()
+                        .requestMatchers("/data/graphql/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api-docs/**").permitAll()
+                        .anyRequest().authenticated());
 
         httpSecurity
-                .authorizeRequests()
-##                .antMatchers("/admin/*").hasAuthority(Role.ADMIN_ROLE.getName())
-                .antMatchers("/graphiql/**").permitAll()
-                .antMatchers("/graphql/**").permitAll()
-                .antMatchers("/actuator/**").permitAll()
-                .antMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
-                .antMatchers("/api-docs/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .headers()
-                .and()
-                .csrf().disable() //for the demo only TODO add it back
-                .cors()
-                .and()
-                .httpBasic()
-                .disable();
+                .headers(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable()) //for the demo only TODO add it back
+                .cors(Customizer.withDefaults())
+                .httpBasic(httpBasic -> httpBasic.disable());
+
+        return httpSecurity.build();
     }
 
     @Bean
